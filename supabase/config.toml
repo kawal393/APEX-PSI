@@ -122,3 +122,7 @@ verify_jwt = false
 
 [functions.public-attestation]
 verify_jwt = false
+
+[functions.psi-api]
+verify_jwt = false
+
