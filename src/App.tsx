@@ -47,6 +47,7 @@ import Doctrine from "./pages/Doctrine";
 import Landscape from "./pages/Landscape";
 import PatentPledge from "./pages/PatentPledge";
 import API from "./pages/API";
+import Challenge from "./pages/Challenge";
 
 
 import ChatWidget from "@/components/chat/ChatWidget";
@@ -141,6 +142,7 @@ const App = () => (
               <Route path="/landscape" element={<Landscape />} />
               <Route path="/pledge" element={<PatentPledge />} />
               <Route path="/api" element={<API />} />
+              <Route path="/challenge" element={<Challenge />} />
               
               
               <Route path="/partner" element={<Partner />} />

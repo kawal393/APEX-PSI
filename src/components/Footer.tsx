@@ -70,6 +70,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/pledge" className="hover:text-gold transition-colors">Patent Pledge</Link></li>
               <li><Link to="/api" className="hover:text-gold transition-colors">Unified API</Link></li>
+              <li><Link to="/challenge" className="hover:text-gold transition-colors">Break APEX PSI</Link></li>
               <li><Link to="/privacy" className="hover:text-gold transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="hover:text-gold transition-colors">Terms of Service</Link></li>
               <li><Link to="/cookies" className="hover:text-gold transition-colors">Cookie Policy</Link></li>
