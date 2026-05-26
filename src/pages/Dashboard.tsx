@@ -18,6 +18,7 @@ import UpgradePrompt from "@/components/dashboard/UpgradePrompt";
 import MonitoringToggle from "@/components/dashboard/MonitoringToggle";
 import WebhookConfig from "@/components/dashboard/WebhookConfig";
 import NotaryApiKeys from "@/components/dashboard/NotaryApiKeys";
+import SyncApiKeys from "@/components/dashboard/SyncApiKeys";
 import AgentMonitor from "@/components/dashboard/AgentMonitor";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -375,7 +376,10 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="notary">
-            <NotaryApiKeys />
+            <div className="space-y-6">
+              <NotaryApiKeys />
+              <SyncApiKeys />
+            </div>
           </TabsContent>
 
           <TabsContent value="analytics">

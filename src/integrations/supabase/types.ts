@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      apex_api_keys: {
+        Row: {
+          created_at: string
+          daily_limit: number
+          daily_used: number
+          id: string
+          key_hash: string
+          last_reset: string
+          last_used_at: string | null
+          name: string
+          prefix: string
+          revoked: boolean
+          scopes: string[]
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_limit?: number
+          daily_used?: number
+          id?: string
+          key_hash: string
+          last_reset?: string
+          last_used_at?: string | null
+          name?: string
+          prefix: string
+          revoked?: boolean
+          scopes?: string[]
+          tier?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_limit?: number
+          daily_used?: number
+          id?: string
+          key_hash?: string
+          last_reset?: string
+          last_used_at?: string | null
+          name?: string
+          prefix?: string
+          revoked?: boolean
+          scopes?: string[]
+          tier?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       assessment_leads: {
         Row: {
           company_name: string | null
