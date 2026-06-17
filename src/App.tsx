@@ -48,6 +48,7 @@ import Landscape from "./pages/Landscape";
 import PatentPledge from "./pages/PatentPledge";
 import API from "./pages/API";
 import Challenge from "./pages/Challenge";
+import Pramaan from "./pages/Pramaan";
 
 
 import ChatWidget from "@/components/chat/ChatWidget";
@@ -143,6 +144,7 @@ const App = () => (
               <Route path="/pledge" element={<PatentPledge />} />
               <Route path="/api" element={<API />} />
               <Route path="/challenge" element={<Challenge />} />
+              <Route path="/pramaan" element={<Pramaan />} />
               
               
               <Route path="/partner" element={<Partner />} />
