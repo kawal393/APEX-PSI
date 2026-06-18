@@ -108,7 +108,35 @@ const Pramaan = () => {
     };
   }, [handleFile]);
 
-  const downloadPraman = () => {
+  const downloadPraman = async () => {
+    if (!current) return;
+    try {
+      const { generatePramanPDF } = await import("@/lib/praman-pdf");
+      const blob = await generatePramanPDF({
+        sealed_at: current.ts,
+        fileName: current.fileName,
+        size: current.size,
+        sha256: current.sha256,
+        blockHeight: current.blockHeight,
+        txid: current.txid,
+        mode: current.mode,
+        verified: current.verified,
+        issuer: "apex.psi.pramaan",
+        spec: "PRAMAN-SPEC-v1",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${current.fileName}.praman.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Certificate of Truth downloaded");
+    } catch (e: any) {
+      toast.error(e.message || "PDF generation failed");
+    }
+  };
+
+  const downloadPramanJSON = () => {
     if (!current) return;
     const receipt = {
       spec: "PRAMAN-SPEC-v1",
@@ -124,13 +152,13 @@ const Pramaan = () => {
       mode: current.mode,
       verified: current.verified,
       issuer: "apex.psi.pramaan",
-      notice: "This .praman receipt is a portable, offline-verifiable truth anchor. Re-hash the source file and compare sha256.",
+      notice: "Portable, offline-verifiable truth anchor. Re-hash the source file and compare sha256.",
     };
     const blob = new Blob([JSON.stringify(receipt, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${current.fileName}.praman`;
+    a.download = `${current.fileName}.praman.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
