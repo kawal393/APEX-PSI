@@ -48,7 +48,10 @@ const Hero = () => {
             className="mb-5 sm:mb-6"
           >
             <p className="text-sm sm:text-base md:text-lg font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-primary">
-              The Only Mathematically Verifiable
+              APEX PSI · APEX PRAMAAN
+            </p>
+            <p className="mt-1 text-[11px] sm:text-xs md:text-sm font-bold uppercase tracking-[0.25em] text-gold">
+              World's First Cryptographic Truth Protocol
             </p>
           </motion.div>
 
@@ -106,7 +109,7 @@ const Hero = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <Button variant="hero" size="lg" className="text-sm sm:text-base px-6 sm:px-8 w-full sm:w-auto" asChild>
-              <Link to="/gallows">Enter the Standard <ArrowRight className="ml-1 h-4 w-4" /></Link>
+              <Link to="/seal">Seal Any File <ArrowRight className="ml-1 h-4 w-4" /></Link>
             </Button>
             <Button variant="heroOutline" size="lg" className="text-sm sm:text-base px-6 sm:px-8 w-full sm:w-auto" asChild>
               <Link to="/protocol"><Shield className="mr-1 h-4 w-4" /> Read the Protocol</Link>

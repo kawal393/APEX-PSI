@@ -72,7 +72,7 @@ const SovereignSealStrip = () => {
               {[
                 { id: "PSI", label: "The Mind", role: "Compliance Engine" },
                 { id: "INFRA", label: "The Body", role: "Infrastructure Backbone" },
-                { id: "SHIELD", label: "The Weapon", role: "Consumer Shield" },
+                { id: "SHIELD", label: "The Shield", role: "Consumer Protection" },
               ].map((n, idx) => (
                 <motion.div
                   key={n.id}
