@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import ApexVerifiedStamp from "@/components/ApexVerifiedStamp";
+import { createSHA256 } from "hash-wasm";
 
 const NOTARIZE_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize";
 const VERIFY_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/verify-hash";
