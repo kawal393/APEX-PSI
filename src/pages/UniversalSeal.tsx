@@ -283,8 +283,8 @@ async function apexSeal(file) {
               ) : (
                 <>
                   <Upload className="h-10 w-10 mx-auto mb-3 text-emerald-400/70" />
-                  <p className="font-mono text-sm">Drop any file here — photo · video · audio · doc · zip</p>
-                  <p className="text-xs text-muted-foreground mt-2">Hashed locally via <code>crypto.subtle</code>. Only the hash leaves your device.</p>
+                  <p className="font-mono text-sm">Drop any file here — photo · video · audio · doc · zip · ANY size</p>
+                  <p className="text-xs text-muted-foreground mt-2">Streaming SHA-256 via <code>hash-wasm</code>. Only the hash leaves your device. No file-size limit.</p>
                 </>
               )}
               <input
