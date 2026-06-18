@@ -126,3 +126,6 @@ verify_jwt = false
 [functions.psi-api]
 verify_jwt = false
 
+
+[functions.forge-image]
+verify_jwt = false

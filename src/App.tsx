@@ -51,6 +51,7 @@ import Challenge from "./pages/Challenge";
 import Pramaan from "./pages/Pramaan";
 import UniversalSeal from "./pages/UniversalSeal";
 import EmbedSeal from "./pages/EmbedSeal";
+import Forge from "./pages/Forge";
 
 
 import ChatWidget from "@/components/chat/ChatWidget";
@@ -149,6 +150,7 @@ const App = () => (
               <Route path="/pramaan" element={<Pramaan />} />
               <Route path="/seal" element={<UniversalSeal />} />
               <Route path="/embed/seal" element={<EmbedSeal />} />
+              <Route path="/forge" element={<Forge />} />
               
               
               <Route path="/partner" element={<Partner />} />
