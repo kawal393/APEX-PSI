@@ -80,18 +80,30 @@ const UniversalSeal = () => {
 
   const handleFile = useCallback(async (file: File) => {
     if (!file) return;
-    if (file.size > 500 * 1024 * 1024) {
-      toast.error("File exceeds 500 MB. Hash a smaller file or use the SDK for chunked sealing.");
-      return;
-    }
     setBusy(true);
     setResult(null);
     try {
-      setProgress("Hashing locally (file never leaves your device)…");
-      const buf = await file.arrayBuffer();
-      const hash = await sha256Hex(buf);
+      // Streaming SHA-256 — chunked, no size limit. File never leaves the device.
+      const CHUNK = 8 * 1024 * 1024; // 8 MB
+      const hasher = await createSHA256();
+      hasher.init();
+      let read = 0;
+      const total = file.size;
+      const t0 = performance.now();
+      while (read < total) {
+        const end = Math.min(read + CHUNK, total);
+        const chunk = new Uint8Array(await file.slice(read, end).arrayBuffer());
+        hasher.update(chunk);
+        read = end;
+        const pct = total > 0 ? Math.floor((read / total) * 100) : 100;
+        setProgress(`Hashing locally · ${pct}% · ${bytes(read)} / ${bytes(total)} (file never leaves your device)`);
+        // Yield to UI
+        await new Promise((r) => setTimeout(r, 0));
+      }
+      const hash = hasher.digest("hex");
+      const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+      setProgress(`Hashed ${bytes(total)} in ${elapsed}s · anchoring to APEX ledger…`);
 
-      setProgress("Anchoring to APEX ledger…");
       const res = await fetch(NOTARIZE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
