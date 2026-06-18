@@ -31,6 +31,7 @@ import OpenSourceGateway from "@/components/OpenSourceGateway";
 import AustraliaPositioningBand from "@/components/AustraliaPositioningBand";
 import InevitabilityDoctrine from "@/components/InevitabilityDoctrine";
 import PramaanBanner from "@/components/PramaanBanner";
+import SovereignSealStrip from "@/components/SovereignSealStrip";
 
 const Index = () => {
   return (
@@ -39,6 +40,7 @@ const Index = () => {
       <Navbar />
       <div id="top" />
       <Hero />
+      <SovereignSealStrip />
       <PramaanBanner />
       <AustraliaPositioningBand />
       <VisionSection />
