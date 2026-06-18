@@ -263,9 +263,14 @@ const Pramaan = () => {
                     <span className="text-gold">{current.txid}</span>
                   </div>
                 </div>
-                <Button onClick={downloadPraman} size="sm" variant="hero">
-                  <Download className="h-3 w-3 mr-1" /> Download .praman Receipt
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={downloadPraman} size="sm" variant="hero">
+                    <Download className="h-3 w-3 mr-1" /> Certificate of Truth (PDF)
+                  </Button>
+                  <Button onClick={downloadPramanJSON} size="sm" variant="heroOutline">
+                    <Download className="h-3 w-3 mr-1" /> .praman JSON
+                  </Button>
+                </div>
               </div>
             )}
           </Card>
