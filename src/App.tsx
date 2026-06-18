@@ -49,6 +49,8 @@ import PatentPledge from "./pages/PatentPledge";
 import API from "./pages/API";
 import Challenge from "./pages/Challenge";
 import Pramaan from "./pages/Pramaan";
+import UniversalSeal from "./pages/UniversalSeal";
+import EmbedSeal from "./pages/EmbedSeal";
 
 
 import ChatWidget from "@/components/chat/ChatWidget";
@@ -145,6 +147,8 @@ const App = () => (
               <Route path="/api" element={<API />} />
               <Route path="/challenge" element={<Challenge />} />
               <Route path="/pramaan" element={<Pramaan />} />
+              <Route path="/seal" element={<UniversalSeal />} />
+              <Route path="/embed/seal" element={<EmbedSeal />} />
               
               
               <Route path="/partner" element={<Partner />} />
