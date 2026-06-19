@@ -52,9 +52,9 @@ const SovereignSealStrip = () => {
               The Sovereign Seal · Operational
             </p>
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-black leading-[0.95] tracking-tight mb-6">
-              <span className="text-chrome-gradient">The world will not be</span>
+              <span className="text-chrome-gradient">The world will now watch</span>
               <br />
-              <span className="text-gold-gradient">asked. It will be sealed.</span>
+              <span className="text-gold-gradient">the truth being sealed.</span>
             </h2>
 
             <motion.p
