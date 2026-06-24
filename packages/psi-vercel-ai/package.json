@@ -1,0 +1,11 @@
+{
+  "name": "@apex/psi-vercel-ai",
+  "version": "0.1.0",
+  "description": "Compliance-Receipt middleware for the Vercel AI SDK.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "MIT",
+  "peerDependencies": {
+    "ai": ">=3.0.0"
+  }
+}

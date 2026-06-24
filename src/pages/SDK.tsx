@@ -674,7 +674,55 @@ GET /verify-status?action=stats
           </CardContent>
         </Card>
 
-        {/* CTA */}
+        {/* Runtime Middleware Cards — Compliance-Receipt header adapters */}
+        <Card className="bg-gradient-to-br from-gallows-surface to-gallows-bg border-gallows-border mb-8">
+          <CardHeader>
+            <CardTitle className="font-mono text-lg flex items-center gap-2">
+              <Code2 className="h-5 w-5 text-gallows-approved" />
+              Runtime Adapters — Compliance-Receipt Header
+            </CardTitle>
+            <p className="text-gallows-muted text-xs mt-2">
+              Wrap your AI runtime in one line. Every response carries a signed{" "}
+              <code className="text-gallows-approved">Compliance-Receipt</code> header
+              (<Link to="/standard" className="text-gallows-approved underline">draft-singh-psi-http-01</Link>).
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {[
+                { name: "@apex/psi-openai", target: "OpenAI Node SDK", status: "shipped", install: "npm i @apex/psi-openai" },
+                { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "shipped", install: "npm i @apex/psi-anthropic" },
+                { name: "@apex/psi-vercel-ai", target: "Vercel AI SDK", status: "shipped", install: "npm i @apex/psi-vercel-ai" },
+                { name: "@apex/psi-hono", target: "Hono middleware", status: "shipped", install: "npm i @apex/psi-hono" },
+                { name: "@apex/psi-google", target: "Gemini / Vertex", status: "roadmap", install: "Q1 2026" },
+                { name: "@apex/psi-bedrock", target: "AWS Bedrock", status: "roadmap", install: "Q1 2026" },
+              ].map((pkg) => (
+                <div key={pkg.name} className="border border-gallows-border bg-gallows-bg rounded p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <code className="text-xs text-gallows-approved font-bold">{pkg.name}</code>
+                    <Badge className={pkg.status === "shipped"
+                      ? "bg-gallows-approved/20 text-gallows-approved border-gallows-approved/30 text-[10px]"
+                      : "bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]"}>
+                      {pkg.status}
+                    </Badge>
+                  </div>
+                  <div className="text-[11px] text-gallows-muted mb-2">{pkg.target}</div>
+                  <code className="text-[11px] font-mono text-gallows-text">{pkg.install}</code>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 text-center">
+              <Link to="/header">
+                <Button variant="outline" size="sm" className="border-gallows-border text-gallows-text gap-2">
+                  <Zap className="h-4 w-4" />
+                  Try the live header inspector
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+
+
         <div className="text-center py-8">
           <p className="text-gallows-muted mb-4">
             Ready to integrate compliance verification into your AI systems?

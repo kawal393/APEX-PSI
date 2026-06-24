@@ -1,0 +1,12 @@
+{
+  "name": "@apex/psi-openai",
+  "version": "0.1.0",
+  "description": "Attach Compliance-Receipt headers to every OpenAI chat completion.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "MIT",
+  "keywords": ["apex-psi", "compliance", "openai", "eu-ai-act", "compliance-receipt"],
+  "peerDependencies": {
+    "openai": ">=4.0.0"
+  }
+}

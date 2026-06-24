@@ -383,16 +383,34 @@ const Paper = () => {
         </section>
 
         <section className="px-4 py-12">
-          <div className="container mx-auto max-w-4xl">
+          <div className="container mx-auto max-w-4xl grid md:grid-cols-2 gap-6">
             <div className="rounded-xl border border-primary/20 bg-primary/5 p-6">
-              <h3 className="text-lg font-bold text-foreground mb-3">arXiv Submission Guide</h3>
-              <ol className="space-y-2 text-sm text-foreground/80 list-decimal list-inside">
-                <li>Download the paper as .txt (convert to LaTeX for formal submission)</li>
-                <li>Navigate to <a href="https://arxiv.org/submit" target="_blank" rel="noopener noreferrer" className="text-primary underline">arxiv.org/submit</a></li>
-                <li>Category: <code className="text-primary">cs.CR</code> (Cryptography and Security)</li>
-                <li>Cross-list: <code className="text-primary">cs.AI</code> (Artificial Intelligence)</li>
-                <li>Once submitted, receives a permanent DOI and timestamped record</li>
-              </ol>
+              <h3 className="text-lg font-bold text-foreground mb-3">Submission status</h3>
+              <ul className="space-y-2 text-sm text-foreground/80">
+                <li><span className="text-muted-foreground">Current:</span> <span className="text-primary font-mono">preprint — Zenodo (pending DOI)</span></li>
+                <li><span className="text-muted-foreground">Target venue:</span> USENIX Security '26</li>
+                <li><span className="text-muted-foreground">Cross-list:</span> IEEE S&amp;P '26 · ACM CCS '26</li>
+                <li><span className="text-muted-foreground">arXiv categories:</span> cs.CR, cs.AI</li>
+                <li><span className="text-muted-foreground">Companion IETF:</span> <a className="text-primary underline" href="/ietf/draft-singh-psi-http-01.txt">draft-singh-psi-http-01</a></li>
+              </ul>
+            </div>
+            <div className="rounded-xl border border-border bg-card/80 overflow-hidden">
+              <div className="px-4 py-2 border-b border-border bg-muted/30 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                Cite this
+              </div>
+              <pre className="p-4 text-[11px] font-mono text-foreground/80 whitespace-pre-wrap overflow-x-auto leading-relaxed">
+{`@misc{singh2026psi,
+  author       = {Singh, Kawaljeet},
+  title        = {{PSI}: Proof of Stateful Integrity --
+                  A Cryptographic Protocol for Verifiable
+                  AI Regulatory Compliance Without IP Disclosure},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.PENDING},
+  url          = {https://apex-psi.lovable.app/paper},
+  note         = {Companion IETF draft: draft-singh-psi-http-01}
+}`}
+              </pre>
             </div>
           </div>
         </section>

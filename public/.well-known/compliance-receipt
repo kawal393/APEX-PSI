@@ -1,0 +1,16 @@
+{
+  "issuer": "https://apex-psi.lovable.app",
+  "spec": "draft-singh-psi-http-01",
+  "version": 1,
+  "public_keys": [
+    {
+      "kid": "apex-psi-2026",
+      "alg": "Ed25519",
+      "hex": "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724",
+      "pem": "MCowBQYDK2VwAyEAWTBGhTKLPPpuxxLWYlDQ+WS7n5IWHmXi5YNah38QRyQ="
+    }
+  ],
+  "verify_endpoint": "https://apex-psi.lovable.app/verify",
+  "predicate_registry": "https://apex-psi.lovable.app/registry",
+  "foundation": "https://apex-psi.lovable.app/foundation"
+}
