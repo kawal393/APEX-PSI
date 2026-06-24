@@ -10,13 +10,16 @@ import ThemeToggle from "@/components/ThemeToggle";
 import apexLogo from "@/assets/apex-logo.png";
 
 const infraLinks = [
+  { label: "HTTP Header Standard", href: "/standard", icon: ScrollText, desc: "draft-singh-psi-http-01" },
+  { label: "Live Header Inspector", href: "/header", icon: Hash, desc: "Verify any AI endpoint" },
+  { label: "PSI Foundation", href: "/foundation", icon: Shield, desc: "Governance · in formation" },
   { label: "Open Source", href: "https://github.com/kawal393/digital-gallowsapex-infrastructurecom", icon: GitBranch, desc: "Full protocol on GitHub", external: true },
   { label: "Verified Registry", href: "/registry", icon: Shield, desc: "Public verified entity ledger" },
   { label: "Verify Hash", href: "/verify", icon: Hash, desc: "Public SHA-256 verification" },
   { label: "Regulation Map", href: "/regulations", icon: Globe, desc: "AI laws in 25+ countries" },
   { label: "Free Score", href: "/assess", icon: Shield, desc: "Compliance in 2 minutes" },
   { label: "Trust Badge", href: "/badge", icon: Award, desc: "Embeddable PSI badge" },
-  { label: "Standards", href: "/standards", icon: ScrollText, desc: "NIST / ISO / CISA mapping" },
+  { label: "Standards Map", href: "/standards", icon: ScrollText, desc: "NIST / ISO / CISA mapping" },
   { label: "Submission Kit", href: "/submission-kit", icon: FileText, desc: "CEN-CENELEC regulatory package" },
   { label: "SDK", href: "/sdk", icon: Code, desc: "Developer integration" },
   { label: "Architecture", href: "/architecture", icon: Layers, desc: "Technical deep-dive" },

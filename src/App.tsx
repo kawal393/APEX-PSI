@@ -52,6 +52,9 @@ import Pramaan from "./pages/Pramaan";
 import UniversalSeal from "./pages/UniversalSeal";
 import EmbedSeal from "./pages/EmbedSeal";
 import Forge from "./pages/Forge";
+import Standard from "./pages/Standard";
+import Header from "./pages/Header";
+import Foundation from "./pages/Foundation";
 
 
 import ChatWidget from "@/components/chat/ChatWidget";
@@ -151,6 +154,9 @@ const App = () => (
               <Route path="/seal" element={<UniversalSeal />} />
               <Route path="/embed/seal" element={<EmbedSeal />} />
               <Route path="/forge" element={<Forge />} />
+              <Route path="/standard" element={<Standard />} />
+              <Route path="/header" element={<Header />} />
+              <Route path="/foundation" element={<Foundation />} />
               
               
               <Route path="/partner" element={<Partner />} />

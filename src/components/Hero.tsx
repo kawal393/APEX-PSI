@@ -107,12 +107,15 @@ const Hero = () => {
             <span className="hidden sm:inline">{formattedDate}</span>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 flex-wrap">
             <Button variant="hero" size="lg" className="text-sm sm:text-base px-6 sm:px-8 w-full sm:w-auto" asChild>
               <Link to="/seal">Seal Any File <ArrowRight className="ml-1 h-4 w-4" /></Link>
             </Button>
             <Button variant="heroOutline" size="lg" className="text-sm sm:text-base px-6 sm:px-8 w-full sm:w-auto" asChild>
-              <Link to="/protocol"><Shield className="mr-1 h-4 w-4" /> Read the Protocol</Link>
+              <Link to="/standard"><Shield className="mr-1 h-4 w-4" /> Adopt the Header</Link>
+            </Button>
+            <Button variant="heroOutline" size="lg" className="text-sm sm:text-base px-6 sm:px-8 w-full sm:w-auto" asChild>
+              <Link to="/protocol">Read the Protocol</Link>
             </Button>
           </div>
           <p className="mt-6 text-[10px] sm:text-xs font-mono tracking-[0.25em] uppercase text-muted-foreground/70">
