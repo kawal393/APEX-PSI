@@ -1,0 +1,130 @@
+Network Working Group                                          K. Singh
+Internet-Draft                            Apex Intelligence Empire / PSI
+Intended status: Standards Track                          November 2025
+Expires: May 2026
+
+
+   The Compliance-Receipt HTTP Header for Verifiable AI Responses
+                     draft-singh-psi-http-01
+
+Abstract
+
+   This document defines two HTTP response header fields,
+   "Compliance-Receipt" and "Compliance-Receipt-Policy", that allow an
+   origin serving an AI-generated response to attach a signed,
+   publicly verifiable receipt asserting that the response satisfies
+   one or more regulatory predicates.  Receipts are signed using
+   Ed25519 [RFC8032] over a canonical leaf and link to a public
+   verification URL that any party, including regulators, can audit
+   without prior coordination.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+Copyright Notice
+
+   Copyright (c) 2025 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+1.  Introduction
+
+   AI systems increasingly produce decisions in regulated contexts
+   (EU AI Act 2024/1689, US Executive Order 14110, NIST AI RMF, and
+   others) where verifiable proof of compliance is required.  Existing
+   approaches rely on out-of-band attestations.  This document defines
+   an in-band mechanism: a single HTTP response header that carries a
+   compact, signed receipt linking to a public audit URL.
+
+2.  Conventions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY",
+   and "OPTIONAL" in this document are to be interpreted as described
+   in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in
+   all capitals, as shown here.
+
+3.  The Compliance-Receipt Header
+
+   Compliance-Receipt   = "v=" version 1*( ";" SP param )
+   version              = 1*DIGIT
+   param                = rid-param / pred-param / status-param
+                        / sig-param / anchor-param / verify-param
+   rid-param            = "rid=" 1*VCHAR
+   pred-param           = "pred=" predicate *( "," predicate )
+   predicate            = registry "/" predicate-id
+   status-param         = "status=" ( "compliant" / "challenged"
+                                    / "violation" )
+   sig-param            = "sig=" scheme ":" base64
+   scheme               = "ed25519"
+   anchor-param         = "anchor=" anchor-scheme ":" base64
+   anchor-scheme        = "ots" / "btc" / "polygon"
+   verify-param         = "verify=" absolute-URI
+
+   The "verify" parameter is REQUIRED.  The "sig" parameter is
+   REQUIRED for status=compliant.  The signature is computed over the
+   value of "rid" using the issuer's Ed25519 private key.
+
+4.  The Compliance-Receipt-Policy Header
+
+   Compliance-Receipt-Policy = "v=" version 1*( ";" SP policy-param )
+   policy-param              = mode-param / window-param / issuer-param
+   mode-param                = "mode=" ( "blocking" / "optimistic" )
+   window-param              = "challenge-window=" 1*DIGIT
+   issuer-param              = "issuer=" 1*VCHAR
+
+5.  Status Code Mapping
+
+   200 OK              response carries a compliant receipt.
+   200 OK              with status=challenged: predicate flagged.
+   451 Unavailable     for status=violation: response blocked.
+
+6.  Verification
+
+   A verifier MUST:
+
+   1.  Parse the Compliance-Receipt header.
+   2.  Fetch /.well-known/compliance-receipt from the origin of the
+       "verify" URL.
+   3.  Resolve the issuer Ed25519 public key from the descriptor.
+   4.  Verify the signature over "rid".
+   5.  Optionally fetch the "verify" URL to retrieve the full receipt.
+
+7.  Security Considerations
+
+   The "rid" value MUST be unguessable and collision-resistant.
+   Issuers SHOULD anchor receipts to a public timestamping service
+   (OpenTimestamps, Bitcoin, or a public ledger such as Polygon) and
+   reflect that anchor in the "anchor" parameter.
+
+8.  IANA Considerations
+
+   IANA is requested to register the following message header fields
+   in the "Permanent Message Header Field Names" registry per
+   [RFC3864]:
+
+      Header field name:  Compliance-Receipt
+      Applicable protocol: http
+      Status: standard
+      Reference: This document
+
+      Header field name:  Compliance-Receipt-Policy
+      Applicable protocol: http
+      Status: standard
+      Reference: This document
+
+9.  References
+
+   [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
+              Signature Algorithm (EdDSA)", RFC 8032, January 2017.
+
+   [RFC8785]  Rundgren, A., "JSON Canonicalization Scheme (JCS)",
+              RFC 8785, June 2020.
+
+Author's Address
+
+   Kawaljeet Singh
+   Apex Intelligence Empire
+   Melbourne, Australia
+   Email: contact@apex-infrastructure.com
