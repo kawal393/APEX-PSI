@@ -373,6 +373,48 @@ export type Database = {
         }
         Relationships: []
       }
+      foundation_witness_attestations: {
+        Row: {
+          action_type: string
+          authenticator_data: string | null
+          client_data_json: string | null
+          created_at: string
+          credential_id: string
+          id: string
+          notes: string | null
+          public_key: string | null
+          signature: string
+          target_ref: string
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          authenticator_data?: string | null
+          client_data_json?: string | null
+          created_at?: string
+          credential_id: string
+          id?: string
+          notes?: string | null
+          public_key?: string | null
+          signature: string
+          target_ref: string
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          authenticator_data?: string | null
+          client_data_json?: string | null
+          created_at?: string
+          credential_id?: string
+          id?: string
+          notes?: string | null
+          public_key?: string | null
+          signature?: string
+          target_ref?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       gallows_ledger: {
         Row: {
           action: string
