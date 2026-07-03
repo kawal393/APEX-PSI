@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import ApexVerifiedStamp from "./ApexVerifiedStamp";
 
 const TRUTHS = [
-  "Truth is not opinion. It is anchored.",
-  "Three nodes. One reality. Zero permission.",
-  "Bitcoin secures the seal. Mathematics secures the verdict.",
-  "What is sealed cannot be unsealed. What is anchored cannot be erased.",
+  "We do not judge content. We anchor its existence at a point in time.",
+  "A seal proves the file existed — not that the file is true.",
+  "Once anchored, it cannot be quietly rewritten later.",
+  "Three nodes. One ledger. Zero permission.",
+  "Bitcoin secures the timestamp. Mathematics secures the record.",
 ];
 
 // Approx live Bitcoin block height (auto-advances ~1 per 10 min from a known anchor).
@@ -52,9 +53,9 @@ const SovereignSealStrip = () => {
               The Sovereign Seal · Operational
             </p>
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-black leading-[0.95] tracking-tight mb-6">
-              <span className="text-chrome-gradient">The world will now watch</span>
+              <span className="text-chrome-gradient">A permanent record of</span>
               <br />
-              <span className="text-gold-gradient">the truth being sealed.</span>
+              <span className="text-gold-gradient">what existed, and when.</span>
             </h2>
 
             <motion.p
