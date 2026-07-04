@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, X, Minus, Shield, ArrowRight, Zap, Globe, Lock, Network, FileCode, Bot, Scale } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const features = [
   {
@@ -97,7 +98,17 @@ const Compare = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>APEX PSI vs. Alternatives — Feature Comparison</title>
+        <meta name="description" content="How APEX PSI compares to policy-only, self-attested, and closed compliance platforms. Verifiability, openness, and cost." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/compare" />
+        <meta property="og:title" content="APEX PSI vs. Alternatives — Feature Comparison" />
+        <meta property="og:description" content="How APEX PSI compares to policy-only, self-attested, and closed compliance platforms. Verifiability, openness, and cost." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/compare" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <button onClick={() => navigate("/")} className="font-black text-xl tracking-tight bg-transparent border-none cursor-pointer">
@@ -266,6 +277,7 @@ const Compare = () => {
         </section>
       </main>
     </div>
+  </>
   );
 };
 

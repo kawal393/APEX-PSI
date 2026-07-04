@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Helmet } from "react-helmet-async";
 
 const SDK = () => {
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
@@ -178,7 +179,17 @@ async function generateAIResponse(prompt: string) {
   ];
 
   return (
-    <div className="min-h-screen bg-gallows-bg text-gallows-text">
+    <>
+      <Helmet>
+        <title>SDKs & Integrations — APEX PSI</title>
+        <meta name="description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/gallows-sdk runtime pattern cache." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/sdk" />
+        <meta property="og:title" content="SDKs & Integrations — APEX PSI" />
+        <meta property="og:description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/gallows-sdk runtime pattern cache." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/sdk" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-gallows-bg text-gallows-text">
       {/* Header */}
       <header className="border-b border-gallows-border bg-gallows-surface/50 sticky top-0 z-50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -744,6 +755,7 @@ GET /verify-status?action=stats
         </div>
       </main>
     </div>
+  </>
   );
 };
 

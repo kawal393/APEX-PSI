@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import {
+import { Helmet } from "react-helmet-async";
   ArrowLeft,
   Shield,
   GitBranch,
@@ -24,7 +25,17 @@ const Architecture = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gallows-bg text-gallows-text">
+    <>
+      <Helmet>
+        <title>Architecture — APEX PSI Verification Infrastructure</title>
+        <meta name="description" content="Three-node lattice, tri-verified attestations, Bitcoin anchoring, and zero-knowledge predicates powering APEX PSI." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/architecture" />
+        <meta property="og:title" content="Architecture — APEX PSI Verification Infrastructure" />
+        <meta property="og:description" content="Three-node lattice, tri-verified attestations, Bitcoin anchoring, and zero-knowledge predicates powering APEX PSI." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/architecture" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-gallows-bg text-gallows-text">
       {/* Header */}
       <header className="border-b border-gallows-border px-4 md:px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -603,6 +614,7 @@ const LimitationItem = ({ title, description, status }: {
       </div>
       <p className="text-xs font-mono text-gallows-muted leading-relaxed">{description}</p>
     </div>
+  </>
   );
 };
 

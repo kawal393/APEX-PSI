@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet-async";
 
 const paperText = `
 PSI: Proof of Stateful Integrity — A Cryptographic Protocol
@@ -323,7 +324,17 @@ const Paper = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>APEX PSI White Paper — Verifiable AI Governance</title>
+        <meta name="description" content="Full white paper on Proof of Stateful Integrity: canonicalization, signature schemes, Merkle anchoring, and adversarial review." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/paper" />
+        <meta property="og:title" content="APEX PSI White Paper — Verifiable AI Governance" />
+        <meta property="og:description" content="Full white paper on Proof of Stateful Integrity: canonicalization, signature schemes, Merkle anchoring, and adversarial review." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/paper" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         <section className="py-12 sm:py-20 px-4">
@@ -417,6 +428,7 @@ const Paper = () => {
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 

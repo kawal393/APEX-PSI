@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Shield, ArrowRight, FileCode, Globe, CheckCircle, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
+import { Helmet } from "react-helmet-async";
   Table,
   TableBody,
   TableCell,
@@ -78,7 +79,17 @@ const Standards = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>Standards Cross-Walk — APEX PSI</title>
+        <meta name="description" content="How APEX PSI maps to ISO/IEC 42001, NIST AI RMF, EU AI Act, and SEC 17a-4 obligations." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/standards" />
+        <meta property="og:title" content="Standards Cross-Walk — APEX PSI" />
+        <meta property="og:description" content="How APEX PSI maps to ISO/IEC 42001, NIST AI RMF, EU AI Act, and SEC 17a-4 obligations." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/standards" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <button onClick={() => navigate("/")} className="font-black text-xl tracking-tight bg-transparent border-none cursor-pointer">
@@ -239,6 +250,7 @@ const Standards = () => {
         </section>
       </main>
     </div>
+  </>
   );
 };
 
