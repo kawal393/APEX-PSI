@@ -614,7 +614,6 @@ const LimitationItem = ({ title, description, status }: {
       </div>
       <p className="text-xs font-mono text-gallows-muted leading-relaxed">{description}</p>
     </div>
-  </div>
   );
 };
 
