@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet-async";
 
 type InspectResult = {
   url: string;
@@ -63,7 +64,17 @@ const Header = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>Header Inspector — Compliance-Receipt Live Check</title>
+        <meta name="description" content="Inspect any URL for a valid Compliance-Receipt header and verify its embedded signature and hash chain." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/header" />
+        <meta property="og:title" content="Header Inspector — Compliance-Receipt Live Check" />
+        <meta property="og:description" content="Inspect any URL for a valid Compliance-Receipt header and verify its embedded signature and hash chain." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/header" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         <section className="py-12 px-4">
@@ -201,6 +212,7 @@ const Header = () => {
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 

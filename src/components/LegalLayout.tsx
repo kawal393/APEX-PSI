@@ -1,5 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import apexLogo from "@/assets/apex-logo.png";
 
 interface LegalLayoutProps {
@@ -11,6 +12,10 @@ interface LegalLayoutProps {
 const LegalLayout = ({ title, lastUpdated, children }: LegalLayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{title} — APEX PSI</title>
+        <meta name="description" content={`${title} for APEX PSI. Last updated ${lastUpdated}.`} />
+      </Helmet>
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/90 backdrop-blur-xl">
         <div className="container mx-auto max-w-6xl h-16 px-4 relative flex items-center justify-between">
           <Link to="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-gold transition-colors z-10">

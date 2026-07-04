@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { verifyEd25519Signature, type PSIProofBundle } from "@/lib/psi-signatures";
 import { jcsHash } from "@/lib/psi-canonicalize";
 import { verifyMerkleProof, hashSHA256 } from "@/lib/gallows-engine";
+import { Helmet } from "react-helmet-async";
 
 interface VerificationResult {
   verified: boolean;
@@ -288,7 +289,17 @@ const Verify = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>Verify a Hash — APEX PSI Public Portal</title>
+        <meta name="description" content="Verify any evidence hash against the APEX PSI ledger. Permissionless, public, cryptographically enforced." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/verify" />
+        <meta property="og:title" content="Verify a Hash — APEX PSI Public Portal" />
+        <meta property="og:description" content="Verify any evidence hash against the APEX PSI ledger. Permissionless, public, cryptographically enforced." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/verify" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         {/* Hero */}
@@ -707,6 +718,7 @@ const Verify = () => {
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 

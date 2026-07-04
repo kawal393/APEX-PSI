@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet-async";
 
 const HEADER_EXAMPLE = `HTTP/1.1 200 OK
 Content-Type: application/json
@@ -61,7 +62,17 @@ const Standard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>Compliance-Receipt HTTP Header — draft-singh-psi-http-01</title>
+        <meta name="description" content="The Compliance-Receipt HTTP response header specification for embedding cryptographic evidence in every API response." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/standard" />
+        <meta property="og:title" content="Compliance-Receipt HTTP Header — draft-singh-psi-http-01" />
+        <meta property="og:description" content="The Compliance-Receipt HTTP response header specification for embedding cryptographic evidence in every API response." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/standard" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         <section className="py-12 px-4">
@@ -200,6 +211,7 @@ const Standard = () => {
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 

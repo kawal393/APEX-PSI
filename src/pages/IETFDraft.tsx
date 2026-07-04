@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet-async";
 
 const DRAFT_NAME = "draft-singh-psi-00";
 const DRAFT_DATE = "March 2026";
@@ -638,7 +639,17 @@ const IETFDraft = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>IETF Draft — draft-singh-psi-00 | APEX PSI</title>
+        <meta name="description" content="Internet-Draft: Proof of Stateful Integrity for verifiable AI governance. Full protocol text." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/draft" />
+        <meta property="og:title" content="IETF Draft — draft-singh-psi-00 | APEX PSI" />
+        <meta property="og:description" content="Internet-Draft: Proof of Stateful Integrity for verifiable AI governance. Full protocol text." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/draft" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         {/* Hero */}
@@ -740,6 +751,7 @@ const IETFDraft = () => {
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 

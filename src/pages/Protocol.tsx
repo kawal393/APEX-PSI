@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import OpenSourceGateway from "@/components/OpenSourceGateway";
+import { Helmet } from "react-helmet-async";
 
 const protocolVersion = "1.2";
 
@@ -132,7 +133,17 @@ const proposedChanges = [
 
 const Protocol = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>PSI Protocol — Proof of Stateful Integrity | APEX</title>
+        <meta name="description" content="PSI Protocol spec: canonicalization (RFC 8785), Ed25519 signatures, monotonic sequence counters, and Merkle-anchored evidence chains." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/protocol" />
+        <meta property="og:title" content="PSI Protocol — Proof of Stateful Integrity | APEX" />
+        <meta property="og:description" content="PSI Protocol spec: canonicalization (RFC 8785), Ed25519 signatures, monotonic sequence counters, and Merkle-anchored evidence chains." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/protocol" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         {/* Hero */}
@@ -346,6 +357,7 @@ const Protocol = () => {
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 

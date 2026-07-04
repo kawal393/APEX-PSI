@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import apexLogo from "@/assets/apex-logo.png";
+import { Helmet } from "react-helmet-async";
 
 type BadgeTheme = "dark" | "light" | "gold";
 type BadgeSize = "sm" | "md" | "lg";
@@ -75,7 +76,17 @@ const Badge = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>Trust Badge — Display Your APEX PSI Score</title>
+        <meta name="description" content="Embed a verifiable trust badge on your site. Real-time score, tamper-proof link back to your public attestation." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/badge" />
+        <meta property="og:title" content="Trust Badge — Display Your APEX PSI Score" />
+        <meta property="og:description" content="Embed a verifiable trust badge on your site. Real-time score, tamper-proof link back to your public attestation." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/badge" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         <section className="py-16 sm:py-24 px-4">
@@ -253,6 +264,7 @@ const Badge = () => {
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 

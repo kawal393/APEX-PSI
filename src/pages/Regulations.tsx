@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RegulationMap from "@/components/RegulationMap";
+import { Helmet } from "react-helmet-async";
 
 type RegStatus = "enforced" | "enacted" | "proposed" | "draft" | "none";
 
@@ -84,7 +85,17 @@ const Regulations = () => {
   }, {} as Record<string, number>);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>Global AI Regulation Map — EU AI Act, NIST, Beyond</title>
+        <meta name="description" content="Live tracker of AI regulations across 14+ jurisdictions with enforcement dates and penalty exposure." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/regulations" />
+        <meta property="og:title" content="Global AI Regulation Map — EU AI Act, NIST, Beyond" />
+        <meta property="og:description" content="Live tracker of AI regulations across 14+ jurisdictions with enforcement dates and penalty exposure." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/regulations" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         <section className="py-12 sm:py-20 px-4">
@@ -244,6 +255,7 @@ const Regulations = () => {
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 

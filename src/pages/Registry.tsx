@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet-async";
 
 interface RegistryEntry {
   id: string;
@@ -123,7 +124,17 @@ const Registry = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>APEX PSI Registry — Verified Deployments</title>
+        <meta name="description" content="Public registry of live APEX PSI deployments, their attestation feeds, and verifier trust anchors." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/registry" />
+        <meta property="og:title" content="APEX PSI Registry — Verified Deployments" />
+        <meta property="og:description" content="Public registry of live APEX PSI deployments, their attestation feeds, and verifier trust anchors." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/registry" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         {/* Hero */}
@@ -294,6 +305,7 @@ const Registry = () => {
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 

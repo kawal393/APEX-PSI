@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { Helmet } from "react-helmet-async";
 
 const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID;
 const FN_BASE = `https://${PROJECT_ID}.supabase.co/functions/v1`;
@@ -160,7 +161,17 @@ const Foundation = () => {
     : "text-rose-400 border-rose-500/40";
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
+      <Helmet>
+        <title>APEX PSI Foundation — Governance & Verifier Nodes</title>
+        <meta name="description" content="Foundation charter, board composition, and verifier-node program governing the open PSI standard (in formation)." />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/foundation" />
+        <meta property="og:title" content="APEX PSI Foundation — Governance & Verifier Nodes" />
+        <meta property="og:description" content="Foundation charter, board composition, and verifier-node program governing the open PSI standard (in formation)." />
+        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/foundation" />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-20 pb-16">
         <section className="py-12 px-4">
@@ -386,6 +397,7 @@ curl -s "${AUDIT_MIRROR_URL}?manifest=1"`}
       </div>
       <Footer />
     </div>
+  </>
   );
 };
 
