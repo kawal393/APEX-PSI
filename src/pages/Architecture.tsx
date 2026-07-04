@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import {
-import { Helmet } from "react-helmet-async";
   ArrowLeft,
   Shield,
   GitBranch,
@@ -20,6 +19,7 @@ import { Helmet } from "react-helmet-async";
   Globe,
   Eye,
 } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 const Architecture = () => {
   const navigate = useNavigate();

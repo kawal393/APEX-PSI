@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Shield, ArrowRight, FileCode, Globe, CheckCircle, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
-import { Helmet } from "react-helmet-async";
   Table,
   TableBody,
   TableCell,
@@ -14,6 +13,7 @@ import { Helmet } from "react-helmet-async";
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Helmet } from "react-helmet-async";
 
 interface MappingRow {
   predicateId: string;
