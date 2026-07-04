@@ -43,7 +43,7 @@ import Tribunal from "./pages/Tribunal";
 import Governance from "./pages/Governance";
 import Research from "./pages/Research";
 import Standards from "./pages/Standards";
-import Doctrine from "./pages/Doctrine";
+
 import Landscape from "./pages/Landscape";
 import PatentPledge from "./pages/PatentPledge";
 import API from "./pages/API";
@@ -145,7 +145,7 @@ const App = () => (
               <Route path="/governance" element={<Governance />} />
               <Route path="/research" element={<Research />} />
               <Route path="/standards" element={<Standards />} />
-              <Route path="/doctrine" element={<Doctrine />} />
+              
               <Route path="/landscape" element={<Landscape />} />
               <Route path="/pledge" element={<PatentPledge />} />
               <Route path="/api" element={<API />} />
