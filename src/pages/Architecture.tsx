@@ -511,6 +511,7 @@ function combinePair(a: string, b: string): string {
         </div>
       </main>
     </div>
+    </>
   );
 };
 
