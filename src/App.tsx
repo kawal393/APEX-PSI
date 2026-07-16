@@ -56,6 +56,7 @@ import Standard from "./pages/Standard";
 import Header from "./pages/Header";
 import Foundation from "./pages/Foundation";
 import EUAIAct from "./pages/EUAIAct";
+import Hardening from "./pages/Hardening";
 
 
 import ChatWidget from "@/components/chat/ChatWidget";
@@ -159,6 +160,7 @@ const App = () => (
               <Route path="/header" element={<Header />} />
               <Route path="/foundation" element={<Foundation />} />
               <Route path="/eu-ai-act" element={<EUAIAct />} />
+              <Route path="/hardening" element={<Hardening />} />
               
               
               <Route path="/partner" element={<Partner />} />
