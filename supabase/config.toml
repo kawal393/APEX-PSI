@@ -129,3 +129,12 @@ verify_jwt = false
 
 [functions.forge-image]
 verify_jwt = false
+
+[functions.predicate-prove]
+verify_jwt = false
+
+[functions.quarantine-action]
+verify_jwt = false
+
+[functions.psi-challenge]
+verify_jwt = false
