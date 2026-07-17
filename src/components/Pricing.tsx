@@ -104,6 +104,64 @@ const Pricing = () => {
             </Button>
           </motion.div>
 
+          {/* PSI Prover — Middle tier */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.05 }}
+            className="rounded-xl border-2 border-gold bg-card p-8 flex flex-col relative shadow-[0_0_40px_-12px_hsl(43_85%_52%/0.35)]"
+          >
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+              <span className="bg-gold text-background text-[10px] font-bold px-4 py-1 rounded-full whitespace-nowrap">
+                MOST POPULAR
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3 mb-4 mt-2">
+              <div className="w-12 h-12 rounded-lg bg-gold/10 flex items-center justify-center">
+                <Zap className="h-6 w-6 text-gold" />
+              </div>
+              <div>
+                <h3 className="text-xs font-bold tracking-widest text-gold uppercase">PSI Prover</h3>
+                <div>
+                  <span className="text-3xl font-black text-foreground">$49</span>
+                  <span className="text-muted-foreground text-sm ml-1">/ month</span>
+                </div>
+                <p className="text-[11px] text-muted-foreground font-mono mt-0.5">
+                  + $0.006 per verification
+                </p>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mb-6">
+              For developers and small teams shipping to production. All Open Access features plus managed Notary API, priority anchoring, and a signed EU AI Act certificate.
+            </p>
+
+            <ul className="space-y-2.5 mb-8 flex-1">
+              {[
+                "All Open Access features",
+                "Full Notary API access",
+                "Priority hash anchoring queue",
+                "EU AI Act compliance certificate",
+              ].map((f) => (
+                <li key={f} className="flex items-start gap-2 text-sm text-foreground/80">
+                  <CheckCircle2 className="h-4 w-4 text-gold flex-shrink-0 mt-0.5" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="https://buy.stripe.com/[LINK_ID]"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-gold text-background font-bold text-sm h-11 hover:bg-gold/90 transition-colors"
+            >
+              Start Sealing — $49/mo <ArrowRight className="h-4 w-4" />
+            </a>
+          </motion.div>
+
+
           {/* Institutional Certification — Paid */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
