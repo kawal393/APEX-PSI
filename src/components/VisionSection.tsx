@@ -191,8 +191,8 @@ const VisionSection = () => {
           transition={{ duration: 0.5, delay: 0.7 }}
           className="text-center text-xs sm:text-sm text-muted-foreground/70 italic"
         >
-          We don't talk about becoming the standard.{" "}
-          <span className="text-chrome font-medium">We maintain it.</span>
+          We don't claim to be the standard.{" "}
+          <span className="text-chrome font-medium">We submit drafts to the IETF and let the process decide.</span>
         </motion.p>
       </div>
     </section>
