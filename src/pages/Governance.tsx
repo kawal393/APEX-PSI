@@ -255,10 +255,10 @@ const Governance = () => {
               </p>
               <div className="rounded-xl border border-gold/20 bg-gold/5 p-8 max-w-lg mx-auto">
                 <p className="text-gold font-black text-xl sm:text-2xl tracking-wide leading-snug">
-                  "Shut it down.<br />We dare you."
+                  Open. Verifiable. Permissionless.
                 </p>
                 <p className="text-xs text-muted-foreground mt-3">
-                  You cannot regulate mathematics. You cannot censor a hash. You cannot silence a Merkle root.
+                  Mathematics does not require permission. Every hash is independently verifiable. Every Merkle root persists in the public record.
                 </p>
               </div>
             </motion.div>
