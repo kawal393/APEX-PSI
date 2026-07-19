@@ -57,7 +57,7 @@ export async function hybridSignEphemeral(message: string | Uint8Array): Promise
 
   const seed = crypto.getRandomValues(new Uint8Array(32));
   const ml = ml_dsa65.keygen(seed);
-  const mlSig = ml_dsa65.sign(ml.secretKey, msg);
+  const mlSig = ml_dsa65.sign(msg, ml.secretKey);
 
   const digest = await crypto.subtle.digest("SHA-256", msg as BufferSource);
   return {
