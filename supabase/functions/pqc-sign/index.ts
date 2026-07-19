@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
 
     const msgBytes = new TextEncoder().encode(message);
     const edSig = await ed.signAsync(msgBytes, edSeed);
-    const mlSig = ml_dsa65.sign(mlKeys.secretKey, msgBytes);
+    const mlSig = ml_dsa65.sign(msgBytes, mlKeys.secretKey);
     const digest = await crypto.subtle.digest("SHA-256", msgBytes);
 
     return new Response(JSON.stringify({

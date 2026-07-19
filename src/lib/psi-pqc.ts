@@ -41,7 +41,7 @@ export async function hybridVerify(
     ed_ok = await ed.verifyAsync(unhex(sig.ed25519.sig), msg, unhex(sig.ed25519.pk));
   } catch { ed_ok = false; }
   try {
-    ml_ok = ml_dsa65.verify(unhex(sig.mldsa65.pk), msg, unhex(sig.mldsa65.sig));
+    ml_ok = ml_dsa65.verify(unhex(sig.mldsa65.sig), msg, unhex(sig.mldsa65.pk));
   } catch { ml_ok = false; }
   return { ok: ed_ok && ml_ok, ed25519_ok: ed_ok, mldsa_ok: ml_ok };
 }
