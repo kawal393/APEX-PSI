@@ -5,7 +5,7 @@
 // If a cryptographically-relevant quantum computer breaks Ed25519, ML-DSA holds.
 // If ML-DSA has a classical flaw, Ed25519 holds.
 // ═══════════════════════════════════════════════════════════════════════
-import { ml_dsa65 } from "@noble/post-quantum/ml-dsa";
+import { ml_dsa65 } from "@noble/post-quantum/ml-dsa.js";
 import * as ed from "@noble/ed25519";
 
 export const PQC_ALGO = "ML-DSA-65";
@@ -59,7 +59,7 @@ export async function hybridSignEphemeral(message: string | Uint8Array): Promise
   const ml = ml_dsa65.keygen(seed);
   const mlSig = ml_dsa65.sign(ml.secretKey, msg);
 
-  const digest = await crypto.subtle.digest("SHA-256", msg);
+  const digest = await crypto.subtle.digest("SHA-256", msg as BufferSource);
   return {
     suite: HYBRID_SUITE,
     ed25519: { sig: hex(edSig), pk: hex(edPub) },
