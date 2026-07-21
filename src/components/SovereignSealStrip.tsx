@@ -105,7 +105,7 @@ const SovereignSealStrip = () => {
           <div className="flex flex-col items-center gap-4">
             <ApexVerifiedStamp hash={seal} btcBlock={block.toLocaleString()} size="lg" />
             <div className="text-center">
-              <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold">Live Bitcoin Anchor</p>
+              <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold">Bitcoin Network - Est. Height</p>
               <p className="text-2xl font-black text-foreground tabular-nums">#{block.toLocaleString()}</p>
               <p className="text-[10px] font-mono text-muted-foreground mt-1">
                 Every artifact · Every output · Sealed

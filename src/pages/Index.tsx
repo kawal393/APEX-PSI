@@ -38,10 +38,10 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>APEX PSI — The Definitive Standard for Verifiable AI Governance</title>
+        <title>APEX PSI — The Open Protocol for Verifiable AI Governance</title>
         <meta name="description" content="Mathematically verifiable AI compliance. Ed25519-signed evidence, Bitcoin-anchored proofs, IETF draft-singh-psi-00. EU AI Act ready." />
         <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/" />
-        <meta property="og:title" content="APEX PSI — The Definitive Standard for Verifiable AI Governance" />
+        <meta property="og:title" content="APEX PSI — The Open Protocol for Verifiable AI Governance" />
         <meta property="og:description" content="Mathematically verifiable AI compliance. Ed25519-signed evidence, Bitcoin-anchored proofs, IETF draft-singh-psi-00. EU AI Act ready." />
         <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/" />
         <meta property="og:type" content="website" />

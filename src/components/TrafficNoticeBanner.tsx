@@ -13,7 +13,7 @@ const TrafficNoticeBanner = () => {
       const ts = parseInt(dismissed, 10);
       if (Date.now() - ts < DISMISS_DURATION_MS) return;
     }
-    setVisible(true);
+    setVisible(false);
   }, []);
 
   const handleDismiss = () => {

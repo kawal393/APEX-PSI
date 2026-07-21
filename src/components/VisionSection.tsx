@@ -98,7 +98,7 @@ const VisionSection = () => {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="text-center text-5xl md:text-7xl lg:text-8xl font-black text-gold-gradient leading-[1.05] mb-8"
         >
-          Already Conquered.
+          Built in the Open.
         </motion.h2>
 
         <motion.p
@@ -110,7 +110,7 @@ const VisionSection = () => {
         >
           While the world was debating whether AI could be trusted,&nbsp;
           <span className="text-foreground font-medium not-italic">
-            we shipped the protocol that settled it.
+            we're building the protocol to prove it.
           </span>
         </motion.p>
 

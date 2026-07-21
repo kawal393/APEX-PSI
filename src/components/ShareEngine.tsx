@@ -23,7 +23,7 @@ const ShareEngine = ({ variant = "inline", pageTitle, customMessage }: ShareEngi
   const message =
     customMessage ||
     powerStatements[currentPath] ||
-    `${pageTitle || "PSI Protocol"} — The Definitive Standard for Verifiable AI Governance.`;
+    `${pageTitle || "PSI Protocol"} — The Open Protocol for Verifiable AI Governance.`;
 
   const shareUrl = `${siteUrl}${currentPath}`;
   const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;

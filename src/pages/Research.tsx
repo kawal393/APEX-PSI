@@ -127,7 +127,7 @@ const Research = () => {
         <title>Research & Publications | PSI Protocol — IETF draft-singh-psi-00</title>
         <meta
           name="description"
-          content="IETF drafts, arXiv papers, and institutional citations — the authoritative research behind the Definitive Standard for Verifiable AI Governance."
+          content="IETF drafts, arXiv papers, and institutional citations — the authoritative research behind the Open Protocol for Verifiable AI Governance."
         />
       </Helmet>
       <Navbar />

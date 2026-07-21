@@ -68,7 +68,7 @@ const Hero = () => {
             className="rounded-lg border border-primary/20 bg-primary/5 px-4 sm:px-6 py-3 mb-5 sm:mb-6 max-w-2xl mx-auto"
           >
             <p className="text-xs sm:text-sm md:text-base font-black uppercase tracking-widest text-primary leading-relaxed">
-              Mathematically Verified · Open Evidence Protocol Ratified
+              Mathematically Verified · IETF Internet-Drafts Filed
               <br />
               <span className="text-gold">Zero-Knowledge · Non-Repudiable · Open Source</span>
             </p>
