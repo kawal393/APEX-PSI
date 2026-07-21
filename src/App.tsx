@@ -58,6 +58,10 @@ import Foundation from "./pages/Foundation";
 import EUAIAct from "./pages/EUAIAct";
 import Hardening from "./pages/Hardening";
 import Quantum from "./pages/Quantum";
+import Articles from "./pages/Articles";
+import Article from "./pages/Article";
+
+
 
 
 import ChatWidget from "@/components/chat/ChatWidget";
@@ -163,6 +167,8 @@ const App = () => (
               <Route path="/eu-ai-act" element={<EUAIAct />} />
               <Route path="/hardening" element={<Hardening />} />
               <Route path="/quantum" element={<Quantum />} />
+              <Route path="/articles" element={<Articles />} />
+              <Route path="/articles/:slug" element={<Article />} />
               
               
               <Route path="/partner" element={<Partner />} />
