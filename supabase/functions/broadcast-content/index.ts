@@ -36,46 +36,64 @@ function slugify(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
 }
 
-async function generateArticle(topic: string): Promise<{
-  title: string; description: string; keywords: string[]; content_md: string;
-}> {
+async function callAI(system: string, user: string, json: boolean): Promise<string> {
   const key = Deno.env.get("LOVABLE_API_KEY");
   if (!key) throw new Error("LOVABLE_API_KEY not configured");
-
-  const prompt = `Write a 900-1200 word SEO-optimized article about: "${topic}"
-
-CONTEXT: APEX PSI is the open-source verifiable AI compliance protocol — SHA-256 hashing, Ed25519 signatures, Merkle trees, IETF draft-singh-psi-00, MIT-licensed. It provides cryptographic evidence that an AI decision existed at a specific time. Client-side Pramaan seals produce .praman receipts. Available at ${SITE_ORIGIN}.
-
-Return STRICT JSON only (no markdown fences, no prose before/after) with this schema:
-{
-  "title": "SEO title, <60 chars, includes primary keyword",
-  "description": "Meta description, <155 chars, compelling",
-  "keywords": ["6-10 target keywords"],
-  "content_md": "Full markdown article. Include: H1, intro, 3-5 H2 sections, a comparison table, a code snippet showing a Pramaan receipt or Ed25519 signature, internal links to ${SITE_ORIGIN}/pramaan, ${SITE_ORIGIN}/quantum, ${SITE_ORIGIN}/standard, ${SITE_ORIGIN}/api, and a closing CTA. Be factually accurate. Do NOT invent regulations that don't exist. Do NOT claim APEX is officially adopted by any government."
-}`;
-
   const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Lovable-API-Key": key, Authorization: `Bearer ${key}` },
     body: JSON.stringify({
       model: "google/gemini-2.5-flash",
-      messages: [
-        { role: "system", content: "You are an expert AI governance journalist. Output strict JSON only." },
-        { role: "user", content: prompt },
-      ],
-      response_format: { type: "json_object" },
+      messages: [{ role: "system", content: system }, { role: "user", content: user }],
+      ...(json ? { response_format: { type: "json_object" } } : {}),
     }),
   });
-
-  if (!resp.ok) {
-    const err = await resp.text();
-    throw new Error(`AI gateway ${resp.status}: ${err}`);
-  }
+  if (!resp.ok) throw new Error(`AI gateway ${resp.status}: ${await resp.text()}`);
   const data = await resp.json();
-  const raw = data.choices?.[0]?.message?.content ?? "{}";
-  const cleaned = raw.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
-  return JSON.parse(cleaned);
+  return (data.choices?.[0]?.message?.content ?? "").trim();
 }
+
+async function generateArticle(topic: string): Promise<{
+  title: string; description: string; keywords: string[]; content_md: string;
+}> {
+  // Stage 1: metadata as strict JSON (small, easy to parse)
+  const metaRaw = await callAI(
+    "You are an SEO expert. Output strict JSON only.",
+    `Give SEO metadata for an article about: "${topic}".
+Return JSON: {"title":"<60 char SEO title with primary keyword","description":"<155 char meta description","keywords":["6-10 target keywords"]}`,
+    true,
+  );
+  const metaClean = metaRaw.replace(/^```json\s*/i, "").replace(/```\s*$/i, "").trim();
+  const meta = JSON.parse(metaClean);
+
+  // Stage 2: markdown content as plain text (no JSON escaping issues)
+  const content = await callAI(
+    "You are an expert AI governance journalist writing for developers, regulators, and CIOs. Output raw markdown only — no JSON, no code fences around the whole doc.",
+    `Write a 900-1200 word factually accurate article titled "${meta.title}".
+
+CONTEXT: APEX PSI is the open-source verifiable AI compliance protocol — SHA-256 hashing, Ed25519 signatures, Merkle trees, IETF draft-singh-psi-00, MIT-licensed. It provides cryptographic evidence that an AI decision existed at a specific time. Available at ${SITE_ORIGIN}.
+
+STRUCTURE:
+- Start with a single H1 matching the title
+- Compelling intro paragraph
+- 3-5 H2 sections with clear technical detail
+- One comparison table (markdown)
+- One fenced code snippet (JSON receipt or Ed25519 signature sample)
+- Internal links: [Pramaan](${SITE_ORIGIN}/pramaan), [Quantum](${SITE_ORIGIN}/quantum), [Standard](${SITE_ORIGIN}/standard), [API](${SITE_ORIGIN}/api)
+- Closing paragraph with a CTA to ${SITE_ORIGIN}
+
+Do NOT invent regulations that don't exist. Do NOT claim official government adoption. Return raw markdown.`,
+    false,
+  );
+
+  return {
+    title: String(meta.title || topic).slice(0, 200),
+    description: String(meta.description || "").slice(0, 300),
+    keywords: Array.isArray(meta.keywords) ? meta.keywords.slice(0, 15) : [],
+    content_md: content,
+  };
+}
+
 
 async function submitToIndexNow(urls: string[]): Promise<void> {
   // Ping IndexNow — used by Bing, Yandex, Seznam, Naver, Yep.
