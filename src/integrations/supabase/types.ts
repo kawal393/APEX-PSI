@@ -1081,6 +1081,48 @@ export type Database = {
           },
         ]
       }
+      seo_articles: {
+        Row: {
+          category: string
+          content_md: string
+          created_at: string
+          description: string
+          id: string
+          indexnow_submitted_at: string | null
+          keywords: string[]
+          published: boolean
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          content_md: string
+          created_at?: string
+          description: string
+          id?: string
+          indexnow_submitted_at?: string | null
+          keywords?: string[]
+          published?: boolean
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          content_md?: string
+          created_at?: string
+          description?: string
+          id?: string
+          indexnow_submitted_at?: string | null
+          keywords?: string[]
+          published?: boolean
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       silo_assignments: {
         Row: {
           access_level: string
