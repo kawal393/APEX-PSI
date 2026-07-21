@@ -14,6 +14,7 @@ import AdminAIChat from "@/components/admin/AdminAIChat";
 import BlockchainAnchorPanel from "@/components/admin/BlockchainAnchorPanel";
 import SovereignIntelligence from "@/components/admin/SovereignIntelligence";
 import SocialProofManager from "@/components/admin/SocialProofManager";
+import ContentBroadcastPanel from "@/components/admin/ContentBroadcastPanel";
 
 interface AdminStats {
   total_users: number;
@@ -207,6 +208,9 @@ const Admin = () => {
             <TabsTrigger value="social-proof" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> Social Proof
             </TabsTrigger>
+            <TabsTrigger value="broadcast" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Radar className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> Broadcast
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="intelligence">
@@ -322,10 +326,15 @@ const Admin = () => {
           <TabsContent value="social-proof">
             <SocialProofManager />
           </TabsContent>
+
+          <TabsContent value="broadcast">
+            <ContentBroadcastPanel />
+          </TabsContent>
         </Tabs>
       </main>
     </div>
   );
 };
+
 
 export default Admin;
