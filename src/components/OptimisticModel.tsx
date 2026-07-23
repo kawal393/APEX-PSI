@@ -1,34 +1,34 @@
 import { motion } from "framer-motion";
-import { ShieldCheck, AlertTriangle, Fingerprint, TrendingDown } from "lucide-react";
+import { Hash, PenTool, Network, ShieldCheck } from "lucide-react";
 
 const steps = [
   {
-    icon: ShieldCheck,
+    icon: Hash,
     step: "01",
-    title: "Optimistic Registration",
-    label: "DEFAULT STATE",
-    desc: "All AI outputs registered in our immutable SHA-256 hash chain ledger. Outputs are assumed compliant by default — \"innocent until proven guilty.\" Inspired by optimistic rollups (Optimism, Arbitrum).",
+    title: "Hash the File",
+    label: "SHA-256",
+    desc: "Every artifact is hashed client-side using the browser's native crypto.subtle SHA-256 implementation. The file itself never leaves the user's device — only the fingerprint.",
   },
   {
-    icon: AlertTriangle,
+    icon: PenTool,
     step: "02",
-    title: "Regulatory Challenge",
-    label: "CHALLENGE WINDOW",
-    desc: "A regulator, auditor, or affected party challenges a specific output. This triggers a formal challenge window — just like a fraud proof challenge period in blockchain.",
+    title: "Sign with Ed25519",
+    label: "SIGNATURE",
+    desc: "The hash is signed with an Ed25519 keypair. Anyone holding the public key can verify authorship. No shared secret. No trusted intermediary.",
   },
   {
-    icon: Fingerprint,
+    icon: Network,
     step: "03",
-    title: "Targeted ZK Fraud Proof",
-    label: "PROOF GENERATION",
-    desc: "Only for the challenged output, we generate a targeted Zero-Knowledge proof. This proves the output was produced by a compliant model — without revealing model weights or proprietary architecture.",
+    title: "Aggregate into a Merkle Tree",
+    label: "MERKLE ROOT",
+    desc: "Signed hashes fold into a Merkle root. A single 32-byte root commits to every artifact underneath it. Inclusion proofs are compact and offline-verifiable.",
   },
   {
-    icon: TrendingDown,
+    icon: ShieldCheck,
     step: "04",
-    title: "99.9% Cost Reduction",
-    label: "RESULT",
-    desc: "Since less than 0.1% of outputs are ever challenged, you only pay for proofs when needed. Cost drops from $1,000+ per output (full ZKML) to <$0.01 average — making compliance economically viable for the first time.",
+    title: "Verify Anytime, Anywhere",
+    label: "PERMISSIONLESS",
+    desc: "Any third party — regulator, auditor, journalist, or opponent — can verify a receipt using only public math and the published root. No account, no API key, no permission.",
   },
 ];
 

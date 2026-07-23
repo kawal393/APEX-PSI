@@ -13,7 +13,7 @@ const regulations = [
   {
     name: "NIST AI RMF",
     jurisdiction: "United States",
-    status: "aligned",
+    status: "tracking",
     date: "Active",
     flag: "🇺🇸",
     detail: "Risk management framework mapped",
@@ -45,7 +45,7 @@ const regulations = [
   {
     name: "AI Safety Bill",
     jurisdiction: "United Kingdom",
-    status: "aligned",
+    status: "tracking",
     date: "Active",
     flag: "🇬🇧",
     detail: "Pro-innovation regulation framework",

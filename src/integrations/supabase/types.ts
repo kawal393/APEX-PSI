@@ -761,6 +761,93 @@ export type Database = {
         }
         Relationships: []
       }
+      predicate_proofs: {
+        Row: {
+          created_at: string
+          ed25519_signature: string | null
+          evidence: Json
+          id: string
+          input_hash: string
+          output_hash: string
+          predicate_id: string
+          predicate_version: string
+          proof_hash: string
+          receipt_id: string
+          verdict: string
+        }
+        Insert: {
+          created_at?: string
+          ed25519_signature?: string | null
+          evidence?: Json
+          id?: string
+          input_hash: string
+          output_hash: string
+          predicate_id: string
+          predicate_version?: string
+          proof_hash: string
+          receipt_id: string
+          verdict: string
+        }
+        Update: {
+          created_at?: string
+          ed25519_signature?: string | null
+          evidence?: Json
+          id?: string
+          input_hash?: string
+          output_hash?: string
+          predicate_id?: string
+          predicate_version?: string
+          proof_hash?: string
+          receipt_id?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
+      psi_challenges: {
+        Row: {
+          bond_amount_wei: string
+          bond_hash: string
+          challenge_id: string
+          challenger_pubkey: string
+          claim: string
+          created_at: string
+          id: string
+          receipt_id: string
+          resolution: string | null
+          resolved_at: string | null
+          status: string
+          window_expires_at: string
+        }
+        Insert: {
+          bond_amount_wei?: string
+          bond_hash: string
+          challenge_id: string
+          challenger_pubkey: string
+          claim: string
+          created_at?: string
+          id?: string
+          receipt_id: string
+          resolution?: string | null
+          resolved_at?: string | null
+          status?: string
+          window_expires_at: string
+        }
+        Update: {
+          bond_amount_wei?: string
+          bond_hash?: string
+          challenge_id?: string
+          challenger_pubkey?: string
+          claim?: string
+          created_at?: string
+          id?: string
+          receipt_id?: string
+          resolution?: string | null
+          resolved_at?: string | null
+          status?: string
+          window_expires_at?: string
+        }
+        Relationships: []
+      }
       public_attestations: {
         Row: {
           attestation_hash: string
@@ -788,6 +875,42 @@ export type Database = {
           id?: string
           ip_country?: string | null
           verification_result?: string
+        }
+        Relationships: []
+      }
+      quarantine_events: {
+        Row: {
+          action: string
+          created_at: string
+          event_hash: string
+          id: string
+          model_id: string
+          quorum_reached: boolean
+          reason: string
+          signatures: Json
+          threshold_required: number
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          event_hash: string
+          id?: string
+          model_id: string
+          quorum_reached?: boolean
+          reason: string
+          signatures?: Json
+          threshold_required?: number
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          event_hash?: string
+          id?: string
+          model_id?: string
+          quorum_reached?: boolean
+          reason?: string
+          signatures?: Json
+          threshold_required?: number
         }
         Relationships: []
       }
@@ -957,6 +1080,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      seo_articles: {
+        Row: {
+          category: string
+          content_md: string
+          created_at: string
+          description: string
+          id: string
+          indexnow_submitted_at: string | null
+          keywords: string[]
+          published: boolean
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          content_md: string
+          created_at?: string
+          description: string
+          id?: string
+          indexnow_submitted_at?: string | null
+          keywords?: string[]
+          published?: boolean
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          content_md?: string
+          created_at?: string
+          description?: string
+          id?: string
+          indexnow_submitted_at?: string | null
+          keywords?: string[]
+          published?: boolean
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       silo_assignments: {
         Row: {

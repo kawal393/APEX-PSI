@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowRight, Shield, Globe, Clock } from "lucide-react";
+import { ArrowRight, Shield, Globe, Clock, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import apexLogo from "@/assets/apex-logo.png";
 import { useVisitorLocation, useLiveClock } from "@/hooks/use-visitor-info";
@@ -117,6 +117,15 @@ const Hero = () => {
             <Button variant="heroOutline" size="lg" className="text-sm sm:text-base px-6 sm:px-8 w-full sm:w-auto" asChild>
               <Link to="/protocol">Read the Protocol</Link>
             </Button>
+          </div>
+          <div className="mt-5 flex justify-center">
+            <Link
+              to="/#pricing"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-gold bg-gold/5 px-5 py-2.5 text-xs sm:text-sm font-bold text-gold hover:bg-gold/10 transition-colors"
+            >
+              <Zap className="h-4 w-4" />
+              Seal Your Content — From $0.006/verification
+            </Link>
           </div>
           <p className="mt-6 text-[10px] sm:text-xs font-mono tracking-[0.25em] uppercase text-muted-foreground/70">
             We do not solicit adoption. The standard exists.

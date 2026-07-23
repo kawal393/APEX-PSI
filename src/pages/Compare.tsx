@@ -9,73 +9,18 @@ import { Helmet } from "react-helmet-async";
 
 const features = [
   {
-    category: "Cryptographic Infrastructure",
+    category: "What APEX PSI Actually Ships Today",
     items: [
-      { name: "SHA-256 Commit Hashing", apex: true, guardian: true, attested: true, microsoft: true, taskhawk: true },
+      { name: "SHA-256 Commit Hashing (crypto.subtle)", apex: true, guardian: true, attested: true, microsoft: true, taskhawk: true },
+      { name: "Ed25519 Signature Verification", apex: true, guardian: "partial" as const, attested: false, microsoft: "partial" as const, taskhawk: "partial" as const },
       { name: "Live Merkle Tree Visualization", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "Bitcoin-Anchored Audit Trails (OpenTimestamps)", apex: true, guardian: "partial" as const, attested: false, microsoft: false, taskhawk: false },
-      { name: "Groth16-Compatible ZK Privacy Proofs (BN128)", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "Real-time Merkle Inclusion Proofs", apex: true, guardian: true, attested: false, microsoft: false, taskhawk: false },
-    ],
-  },
-  {
-    category: "Cryptographic Runtime Governance (CRG)",
-    items: [
-      { name: "3-Node MPC Consensus (2-of-3 Threshold)", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "Runtime Attestation Sealing", apex: true, guardian: false, attested: "partial" as const, microsoft: "partial" as const, taskhawk: "partial" as const },
-      { name: "Sealed Governance Artifacts", apex: true, guardian: true, attested: "partial" as const, microsoft: false, taskhawk: true },
-      { name: "Sovereign Pause — Protocol Kill Switch (Art. 14)", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "Visual 4-Stage Pipeline", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "QR Code Verification Certificates", apex: true, guardian: true, attested: false, microsoft: false, taskhawk: false },
-    ],
-  },
-  {
-    category: "Regulatory Coverage (14 Jurisdictions)",
-    items: [
-      { name: "EU AI Act (10 Articles)", apex: true, guardian: true, attested: "partial" as const, microsoft: false, taskhawk: false },
-      { name: "California EO N-5-26 Attestation", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "MiFID II Financial Trading", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "DORA Operational Resilience", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "Colorado AI Act (SB 24-205)", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "California ADT + SB 1047 Frontier Safety", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "Singapore Model Governance Framework", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "ISO 42001 / ISO 23894 Clause-Level Mapping", apex: true, guardian: "partial" as const, attested: false, microsoft: false, taskhawk: false },
-      { name: "NIST AI RMF 100-1 (All 4 Functions)", apex: true, guardian: "partial" as const, attested: true, microsoft: "partial" as const, taskhawk: "partial" as const },
-      { name: "CISA AI Governance Guidelines", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "62+ Multi-Regulatory Predicate Engine", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-    ],
-  },
-  {
-    category: "Agentic AI Monitoring",
-    items: [
-      { name: "Real-time Agent Action Interception", apex: true, guardian: false, attested: false, microsoft: true, taskhawk: true },
-      { name: "Multi-Agent Chain-of-Thought Verification", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "Tool Call Compliance Gates", apex: true, guardian: false, attested: false, microsoft: true, taskhawk: true },
-      { name: "Autonomous Workflow Kill Switch", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "OWASP Agentic Top 10 Coverage", apex: true, guardian: false, attested: false, microsoft: true, taskhawk: "partial" as const },
-      { name: "Sub-millisecond Policy Enforcement", apex: true, guardian: false, attested: false, microsoft: true, taskhawk: true },
-    ],
-  },
-  {
-    category: "Enterprise Distribution",
-    items: [
-      { name: "Microsoft Marketplace Listing", apex: false, guardian: false, attested: false, microsoft: true, taskhawk: true },
-      { name: "Azure-Native Integration", apex: false, guardian: false, attested: false, microsoft: true, taskhawk: true },
-      { name: "MCP Server Protocol", apex: false, guardian: false, attested: true, microsoft: false, taskhawk: false },
-      { name: "REST API / Developer SDK", apex: true, guardian: true, attested: "partial" as const, microsoft: true, taskhawk: true },
-    ],
-  },
-  {
-    category: "Standards & Independence",
-    items: [
-      { name: "IETF Internet Draft Submitted", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
+      { name: "IETF Internet Draft Filed (draft-singh-psi)", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
       { name: "Fully Open Source (MIT)", apex: true, guardian: false, attested: "partial" as const, microsoft: true, taskhawk: false },
-      { name: "Vendor-Neutral Standard", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
-      { name: "No Patent Encumbrance", apex: true, guardian: false, attested: false, microsoft: true, taskhawk: false },
-      { name: "Cross-Jurisdictional Predicate Engine", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
+      { name: "Client-Side Pramaan Seals (browser-native)", apex: true, guardian: false, attested: false, microsoft: false, taskhawk: false },
     ],
   },
 ];
+
 
 const CellIcon = ({ value }: { value: boolean | "partial" }) => {
   if (value === true) return <Check className="h-5 w-5 text-gallows-approved" />;
@@ -84,15 +29,14 @@ const CellIcon = ({ value }: { value: boolean | "partial" }) => {
 };
 
 const pillars = [
-  { icon: Lock, title: "ZK Privacy Proofs", desc: "Groth16-compatible commitments on BN128 curve. Prove compliance without revealing proprietary AI logic." },
-  { icon: Network, title: "MPC Consensus", desc: "3 independent nodes verify every action. 2-of-3 threshold prevents single point of failure." },
-  { icon: Zap, title: "Runtime SDK", desc: "Block non-compliant AI responses in <15ms. Express middleware drops in with one line." },
-  { icon: Globe, title: "Bitcoin Anchoring", desc: "Every Merkle root timestamped via OpenTimestamps. Immutable external proof of existence." },
-  { icon: Shield, title: "12 Jurisdictions", desc: "EU AI Act + MiFID II + DORA + Colorado + California + ISO 42001 + NIST AI RMF. 55+ predicates." },
-  { icon: Bot, title: "Agent Monitoring", desc: "Real-time interception of agentic AI workflows. Verify every tool call, chain step, and autonomous action." },
-  { icon: Scale, title: "ISO/NIST Mapping", desc: "ISO 42001, ISO 23894, and NIST AI RMF control mapping. Enterprise standards coverage built-in." },
-  { icon: FileCode, title: "Open Architecture", desc: "Full technical documentation. Every hash, proof, and certificate independently verifiable." },
+  { icon: Lock, title: "SHA-256 Hashing", desc: "Every artifact hashed client-side via the browser's native crypto.subtle. No server trust required." },
+  { icon: FileCode, title: "Ed25519 Signatures", desc: "Signed receipts a third party can verify with the public key alone. No secret handshake." },
+  { icon: Network, title: "Merkle Aggregation", desc: "Per-commit hashes fold into a Merkle root. Inclusion proofs are small, portable, and offline-verifiable." },
+  { icon: Scale, title: "IETF Draft Filed", desc: "draft-singh-psi submitted to the Internet Engineering Task Force. The standards process decides — not us." },
+  { icon: Globe, title: "MIT Open Source", desc: "Full source, MIT licensed. Fork it, audit it, replace us. That is the point." },
+  { icon: Shield, title: "Client-Side Pramaan Seals", desc: "Users seal their own files in-browser. We never see the content — only the hash." },
 ];
+
 
 const Compare = () => {
   const navigate = useNavigate();
