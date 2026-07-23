@@ -70,9 +70,26 @@ const Pramaan = () => {
 
   const handleFile = useCallback(async (file: File) => {
     setBusy(true);
+    // Fire GPS request in parallel (non-blocking). User may grant/deny.
+    let capturedGps: { lat: number; lng: number; accuracy?: number } | null = null;
+    const gpsPromise = new Promise<void>((resolve) => {
+      if (!("geolocation" in navigator)) return resolve();
+      const timer = setTimeout(() => resolve(), 5000);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          capturedGps = { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy };
+          clearTimeout(timer);
+          resolve();
+        },
+        () => { clearTimeout(timer); resolve(); },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
+      );
+    });
     try {
       const buf = await file.arrayBuffer();
       const hash = await sha256Hex(buf);
+      await gpsPromise;
+      setGps(capturedGps);
       const bh = simulatedBlockHeight();
       const entry: AuditEntry = {
         id: crypto.randomUUID(),
@@ -83,34 +100,24 @@ const Pramaan = () => {
         blockHeight: bh,
         txid: shortTxid(hash),
         mode,
-        verified: mode === "VERIFY",
+        verified: true,
+        gps: capturedGps,
       };
       setCurrent(entry);
       persist([entry, ...audit]);
-      toast.success(mode === "VERIFY" ? "Sealed. Truth anchored." : "AI artifact hashed & lineage recorded.");
+      // Increment global witness counter
+      try {
+        const cur = parseInt(localStorage.getItem(WITNESS_COUNT_KEY) || "0", 10) || 0;
+        localStorage.setItem(WITNESS_COUNT_KEY, String(cur + 1));
+        window.dispatchEvent(new CustomEvent("praman:witness", { detail: cur + 1 }));
+      } catch { /* noop */ }
+      toast.success("Sealed. Truth anchored.");
     } catch (e: any) {
       toast.error(e.message || "Hashing failed");
     } finally {
       setBusy(false);
     }
   }, [audit, mode]);
-
-  useEffect(() => {
-    const el = dropRef.current;
-    if (!el) return;
-    const prevent = (e: DragEvent) => { e.preventDefault(); e.stopPropagation(); };
-    const onDrop = (e: DragEvent) => {
-      prevent(e);
-      const f = e.dataTransfer?.files?.[0];
-      if (f) handleFile(f);
-    };
-    ["dragenter", "dragover", "dragleave", "drop"].forEach(ev => el.addEventListener(ev, prevent as any));
-    el.addEventListener("drop", onDrop as any);
-    return () => {
-      ["dragenter", "dragover", "dragleave", "drop"].forEach(ev => el.removeEventListener(ev, prevent as any));
-      el.removeEventListener("drop", onDrop as any);
-    };
-  }, [handleFile]);
 
   const downloadPraman = async () => {
     if (!current) return;
