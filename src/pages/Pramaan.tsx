@@ -134,6 +134,7 @@ const Pramaan = () => {
         verified: current.verified,
         issuer: "apex.psi.pramaan",
         spec: "PRAMAN-SPEC-v1",
+        gps: current.gps ?? null,
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
