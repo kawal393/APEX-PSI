@@ -46,13 +46,13 @@ function shortTxid(hash: string) {
 }
 
 const Pramaan = () => {
-  const [mode, setMode] = useState<"AI_GEN" | "VERIFY">("VERIFY");
+  const mode: "VERIFY" = "VERIFY";
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState<AuditEntry | null>(null);
   const [audit, setAudit] = useState<AuditEntry[]>([]);
   const [blockHeight, setBlockHeight] = useState(simulatedBlockHeight());
+  const [gps, setGps] = useState<{ lat: number; lng: number; accuracy?: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const dropRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
