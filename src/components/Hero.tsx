@@ -72,6 +72,9 @@ const Hero = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4">
+            <Button size="lg" className="bg-gold hover:bg-gold/90 text-background font-black tracking-[0.15em] px-8 border border-gold shadow-lg shadow-gold/30" asChild>
+              <Link to="/pramaan">🧿 I WITNESS THIS <ArrowRight className="ml-2 h-4 w-4" /></Link>
+            </Button>
             <PWAInstallButton />
             <Button variant="heroOutline" size="sm" asChild>
               <Link to="/verify"><Zap className="mr-1 h-3.5 w-3.5" /> Verify a Receipt</Link>
