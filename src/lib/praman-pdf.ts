@@ -261,7 +261,7 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
   doc.setFontSize(7);
   doc.text("VERIFY", qrBoxX + 12, anchorY + 18, { charSpace: 2 });
 
-  const verifyUrl = `https://apex-psi.lovable.app/verify?h=${r.sha256}`;
+  const verifyUrl = `https://digital-gallows.apex-infrastructure.com/verify?h=${r.sha256}`;
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
     margin: 0,
     width: 400,
@@ -276,7 +276,7 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
   setText(doc, GOLD);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-  doc.text("apex-psi.lovable.app", qrBoxX + 110, anchorY + 64);
+  doc.text("apex-infrastructure.com", qrBoxX + 110, anchorY + 64);
   doc.text("/verify", qrBoxX + 110, anchorY + 76);
 
   // === FOOTER LEDGER STRIP ===
