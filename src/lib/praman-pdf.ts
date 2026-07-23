@@ -313,7 +313,10 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
   setText(doc, MUTED);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
-  doc.text("This receipt is portable, offline-verifiable, and free forever.", W - 62, footY + 40, { align: "right" });
+  const gpsLine = r.gps
+    ? `GPS  ${r.gps.lat.toFixed(5)}, ${r.gps.lng.toFixed(5)}${r.gps.accuracy ? `  ±${Math.round(r.gps.accuracy)}m` : ""}`
+    : "This receipt is portable, offline-verifiable, and free forever.";
+  doc.text(gpsLine, W - 62, footY + 40, { align: "right" });
 
   // bottom microcopy
   setText(doc, [90, 95, 115]);
