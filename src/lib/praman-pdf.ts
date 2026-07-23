@@ -12,6 +12,7 @@ export type PramanReceipt = {
   verified: boolean;
   issuer?: string;
   spec?: string;
+  gps?: { lat: number; lng: number; accuracy?: number } | null;
 };
 
 const NAVY: [number, number, number] = [10, 14, 26];
