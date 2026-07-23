@@ -19,7 +19,11 @@ type AuditEntry = {
   txid: string;
   mode: "AI_GEN" | "VERIFY";
   verified: boolean;
+  gps?: { lat: number; lng: number; accuracy?: number } | null;
 };
+
+const WITNESS_COUNT_KEY = "praman.witness.count";
+const VERIFY_BASE = "https://digital-gallows.apex-infrastructure.com/verify";
 
 const STORAGE_KEY = "praman.audit.v1";
 
