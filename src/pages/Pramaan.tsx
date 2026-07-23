@@ -5,8 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Upload, Shield, Anchor, Download, CheckCircle2, FileCheck, Cpu, Eye, Copy, Sparkles } from "lucide-react";
+// Switch removed — VERIFY is the only mode now
+import { Camera, Shield, Anchor, Download, CheckCircle2, FileCheck, Cpu, Eye, Copy, Sparkles, Share2, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 type AuditEntry = {
@@ -19,7 +19,11 @@ type AuditEntry = {
   txid: string;
   mode: "AI_GEN" | "VERIFY";
   verified: boolean;
+  gps?: { lat: number; lng: number; accuracy?: number } | null;
 };
+
+const WITNESS_COUNT_KEY = "praman.witness.count";
+const VERIFY_BASE = "https://digital-gallows.apex-infrastructure.com/verify";
 
 const STORAGE_KEY = "praman.audit.v1";
 
@@ -42,13 +46,13 @@ function shortTxid(hash: string) {
 }
 
 const Pramaan = () => {
-  const [mode, setMode] = useState<"AI_GEN" | "VERIFY">("VERIFY");
+  const mode: "VERIFY" = "VERIFY";
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState<AuditEntry | null>(null);
   const [audit, setAudit] = useState<AuditEntry[]>([]);
   const [blockHeight, setBlockHeight] = useState(simulatedBlockHeight());
+  const [gps, setGps] = useState<{ lat: number; lng: number; accuracy?: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const dropRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     try {
@@ -66,9 +70,26 @@ const Pramaan = () => {
 
   const handleFile = useCallback(async (file: File) => {
     setBusy(true);
+    // Fire GPS request in parallel (non-blocking). User may grant/deny.
+    let capturedGps: { lat: number; lng: number; accuracy?: number } | null = null;
+    const gpsPromise = new Promise<void>((resolve) => {
+      if (!("geolocation" in navigator)) return resolve();
+      const timer = setTimeout(() => resolve(), 5000);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          capturedGps = { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy };
+          clearTimeout(timer);
+          resolve();
+        },
+        () => { clearTimeout(timer); resolve(); },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
+      );
+    });
     try {
       const buf = await file.arrayBuffer();
       const hash = await sha256Hex(buf);
+      await gpsPromise;
+      setGps(capturedGps);
       const bh = simulatedBlockHeight();
       const entry: AuditEntry = {
         id: crypto.randomUUID(),
@@ -79,34 +100,24 @@ const Pramaan = () => {
         blockHeight: bh,
         txid: shortTxid(hash),
         mode,
-        verified: mode === "VERIFY",
+        verified: true,
+        gps: capturedGps,
       };
       setCurrent(entry);
       persist([entry, ...audit]);
-      toast.success(mode === "VERIFY" ? "Sealed. Truth anchored." : "AI artifact hashed & lineage recorded.");
+      // Increment global witness counter
+      try {
+        const cur = parseInt(localStorage.getItem(WITNESS_COUNT_KEY) || "0", 10) || 0;
+        localStorage.setItem(WITNESS_COUNT_KEY, String(cur + 1));
+        window.dispatchEvent(new CustomEvent("praman:witness", { detail: cur + 1 }));
+      } catch { /* noop */ }
+      toast.success("Sealed. Truth anchored.");
     } catch (e: any) {
       toast.error(e.message || "Hashing failed");
     } finally {
       setBusy(false);
     }
   }, [audit, mode]);
-
-  useEffect(() => {
-    const el = dropRef.current;
-    if (!el) return;
-    const prevent = (e: DragEvent) => { e.preventDefault(); e.stopPropagation(); };
-    const onDrop = (e: DragEvent) => {
-      prevent(e);
-      const f = e.dataTransfer?.files?.[0];
-      if (f) handleFile(f);
-    };
-    ["dragenter", "dragover", "dragleave", "drop"].forEach(ev => el.addEventListener(ev, prevent as any));
-    el.addEventListener("drop", onDrop as any);
-    return () => {
-      ["dragenter", "dragover", "dragleave", "drop"].forEach(ev => el.removeEventListener(ev, prevent as any));
-      el.removeEventListener("drop", onDrop as any);
-    };
-  }, [handleFile]);
 
   const downloadPraman = async () => {
     if (!current) return;
@@ -123,6 +134,7 @@ const Pramaan = () => {
         verified: current.verified,
         issuer: "apex.psi.pramaan",
         spec: "PRAMAN-SPEC-v1",
+        gps: current.gps ?? null,
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -149,6 +161,9 @@ const Pramaan = () => {
         txid_preview: current.txid,
         method: "merkle-aggregate (client-side simulation; published anchors via /verify)",
       },
+      geolocation: current.gps
+        ? { lat: current.gps.lat, lng: current.gps.lng, accuracy_m: current.gps.accuracy ?? null }
+        : null,
       mode: current.mode,
       verified: current.verified,
       issuer: "apex.psi.pramaan",
@@ -161,6 +176,31 @@ const Pramaan = () => {
     a.download = `${current.fileName}.praman.json`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const shareReceipt = async () => {
+    if (!current) return;
+    const url = `${VERIFY_BASE}?h=${current.sha256}`;
+    const shareData = {
+      title: "I WITNESS THIS",
+      text: `🔐 APEX PRAMAAN seal: ${current.sha256}`,
+      url,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(`${shareData.text}\n${url}`);
+        toast.success("Verify link copied to clipboard");
+      }
+    } catch (e: any) {
+      if (e?.name !== "AbortError") {
+        try {
+          await navigator.clipboard.writeText(`${shareData.text}\n${url}`);
+          toast.success("Verify link copied to clipboard");
+        } catch { /* noop */ }
+      }
+    }
   };
 
   const copyHash = (h: string) => {
@@ -208,35 +248,35 @@ const Pramaan = () => {
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <div className="flex items-center gap-2">
                 <FileCheck className="h-5 w-5 text-emerald-400" />
-                <h2 className="text-lg font-bold">Seal Photo · Video · File</h2>
+                <h2 className="text-lg font-bold">I Witness This</h2>
               </div>
-              <div className="flex items-center gap-3 text-xs font-mono">
-                <span className={mode === "AI_GEN" ? "text-foreground" : "text-muted-foreground"}>AI GEN</span>
-                <Switch
-                  checked={mode === "VERIFY"}
-                  onCheckedChange={(c) => setMode(c ? "VERIFY" : "AI_GEN")}
-                />
-                <span className={mode === "VERIFY" ? "text-emerald-400" : "text-muted-foreground"}>VERIFY</span>
-              </div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 border border-emerald-400/40 rounded-full px-2 py-0.5">
+                MODE · VERIFY
+              </span>
             </div>
 
-            <div
-              ref={dropRef}
+            <button
+              type="button"
+              disabled={busy}
               onClick={() => inputRef.current?.click()}
-              className="border-2 border-dashed border-emerald-400/30 hover:border-emerald-400/70 transition-colors rounded-lg p-10 text-center cursor-pointer bg-background/40"
+              className="w-full group relative overflow-hidden rounded-lg border-2 border-gold/70 hover:border-gold bg-gradient-to-br from-gold/20 via-gold/5 to-transparent hover:from-gold/30 transition-all p-8 md:p-12 text-center cursor-pointer disabled:opacity-60 disabled:cursor-wait"
             >
-              <Upload className="h-10 w-10 mx-auto mb-3 text-emerald-400/70" />
-              <p className="font-mono text-sm">
-                {busy ? "HASHING IN BROWSER…" : "Drop a file here, or click to select"}
+              <Camera className="h-14 w-14 md:h-16 md:w-16 mx-auto mb-4 text-gold" strokeWidth={2.2} />
+              <p className="text-2xl md:text-3xl font-black tracking-[0.2em] text-gold-gradient">
+                {busy ? "SEALING…" : "I WITNESS THIS"}
               </p>
-              <p className="text-xs text-muted-foreground mt-2">SHA-256 computed locally via <code>crypto.subtle</code>. The file never leaves your device.</p>
+              <p className="text-xs text-muted-foreground mt-3 font-mono">
+                {busy ? "Hashing in browser via crypto.subtle" : "Tap to capture · SHA-256 stays on your device"}
+              </p>
               <input
                 ref={inputRef}
                 type="file"
+                accept="image/*"
+                capture="environment"
                 className="hidden"
                 onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
               />
-            </div>
+            </button>
 
             {current && (
               <div className="mt-6 space-y-3 font-mono text-xs">
@@ -262,10 +302,21 @@ const Pramaan = () => {
                     <span className="text-muted-foreground">txid</span>
                     <span className="text-gold">{current.txid}</span>
                   </div>
+                  {current.gps && (
+                    <div className="flex justify-between gap-2">
+                      <span className="text-muted-foreground flex items-center gap-1"><MapPin className="h-3 w-3" /> gps</span>
+                      <span className="text-emerald-400">
+                        📍 {current.gps.lat.toFixed(5)}, {current.gps.lng.toFixed(5)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-2">
+                  <Button onClick={shareReceipt} size="sm" className="bg-gold hover:bg-gold/90 text-background font-bold">
+                    <Share2 className="h-3 w-3 mr-1" /> Share
+                  </Button>
                   <Button onClick={downloadPraman} size="sm" variant="hero">
-                    <Download className="h-3 w-3 mr-1" /> Certificate of Truth (PDF)
+                    <Download className="h-3 w-3 mr-1" /> Certificate (PDF)
                   </Button>
                   <Button onClick={downloadPramanJSON} size="sm" variant="heroOutline">
                     <Download className="h-3 w-3 mr-1" /> .praman JSON
