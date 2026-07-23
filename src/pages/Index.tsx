@@ -1,49 +1,29 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import NotaryCTA from "@/components/notary/NotaryCTA";
+import TwoPillars from "@/components/TwoPillars";
+import HowToUse from "@/components/HowToUse";
+import SovereignSealStrip from "@/components/SovereignSealStrip";
 import ComplianceClock from "@/components/ComplianceClock";
-import SocialProofBar from "@/components/SocialProofBar";
-import ProblemSection from "@/components/ProblemSection";
-import VisionSection from "@/components/VisionSection";
-
-import SolutionSection from "@/components/SolutionSection";
-import TrioSection from "@/components/TrioSection";
-import TrustSection from "@/components/TrustSection";
-import SocialProofWall from "@/components/SocialProofWall";
 import RegulatoryAlignment from "@/components/RegulatoryAlignment";
-import OptimisticModel from "@/components/OptimisticModel";
-import HowItWorks from "@/components/HowItWorks";
-import LiveCaseStudy from "@/components/LiveCaseStudy";
-import ComparisonTable from "@/components/ComparisonTable";
-import AdversarialReview from "@/components/AdversarialReview";
-import FreeToolsCTA from "@/components/FreeToolsCTA";
-import BusinessModel from "@/components/BusinessModel";
+import OpenSourceGateway from "@/components/OpenSourceGateway";
 import TechSpecs from "@/components/TechSpecs";
-import FeaturedResearch from "@/components/FeaturedResearch";
-import ArticlesSection from "@/components/ArticlesSection";
-import ResearchReferences from "@/components/ResearchReferences";
 import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import TrafficNoticeBanner from "@/components/TrafficNoticeBanner";
-import OpenSourceGateway from "@/components/OpenSourceGateway";
-import AustraliaPositioningBand from "@/components/AustraliaPositioningBand";
-import InevitabilityDoctrine from "@/components/InevitabilityDoctrine";
-import PramaanBanner from "@/components/PramaanBanner";
-import SovereignSealStrip from "@/components/SovereignSealStrip";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   return (
     <>
       <Helmet>
-        <title>APEX PSI — The Open Protocol for Verifiable AI Governance</title>
-        <meta name="description" content="Mathematically verifiable AI compliance. Ed25519-signed evidence, Bitcoin-anchored proofs, IETF draft-singh-psi-00. EU AI Act ready." />
+        <title>APEX PSI — Verifiable AI. APEX PRAMAAN — Verifiable Humans.</title>
+        <meta name="description" content="One open standard, two pillars. APEX PSI proves what AI did. APEX PRAMAAN proves what humans saw. IETF draft-singh-psi-00. Ed25519 + ML-DSA-65. MIT open source." />
         <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/" />
-        <meta property="og:title" content="APEX PSI — The Open Protocol for Verifiable AI Governance" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Articles" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />
-        <meta property="og:description" content="Mathematically verifiable AI compliance. Ed25519-signed evidence, Bitcoin-anchored proofs, IETF draft-singh-psi-00. EU AI Act ready." />
+        <meta property="og:title" content="APEX PSI — Verifiable AI. APEX PRAMAAN — Verifiable Humans." />
+        <meta property="og:description" content="One open standard, two pillars. Cryptographic truth for AI systems and human witnesses. IETF draft-singh-psi-00." />
         <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -64,65 +44,41 @@ const Index = () => {
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
+          name: "APEX PRAMAAN",
+          applicationCategory: "SecurityApplication",
+          operatingSystem: "Web, iOS, Android",
+          description: "Client-side cryptographic sealing for photos, videos, audio, and documents. A 2 KB portable receipt verifiable on any device.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
           name: "APEX PSI Protocol",
           applicationCategory: "SecurityApplication",
           operatingSystem: "Any",
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
           description: "Open-source cryptographic evidence protocol for AI governance. SHA-256, Ed25519, ML-DSA-65 hybrid signatures.",
         })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: [
-            { "@type": "Question", name: "What is APEX PSI?",
-              acceptedAnswer: { "@type": "Answer", text: "APEX PSI (Proof of Stateful Integrity) is an open-source cryptographic protocol that produces tamper-evident evidence for AI decisions using Ed25519 signatures, SHA-256 Merkle trees, and hybrid post-quantum ML-DSA-65 signatures." } },
-            { "@type": "Question", name: "Does APEX PSI meet EU AI Act requirements?",
-              acceptedAnswer: { "@type": "Answer", text: "APEX PSI produces the cryptographic record-keeping evidence referenced in EU AI Act Article 12 (record-keeping), Article 13 (transparency), Article 14 (human oversight), and Article 15 (accuracy and robustness)." } },
-            { "@type": "Question", name: "Is APEX PSI open source?",
-              acceptedAnswer: { "@type": "Answer", text: "Yes. APEX PSI is MIT-licensed. The IETF draft is draft-singh-psi-00 and the HTTP header specification is draft-singh-psi-http-01." } },
-            { "@type": "Question", name: "Is APEX PSI quantum resistant?",
-              acceptedAnswer: { "@type": "Answer", text: "Yes. APEX PSI uses hybrid signatures combining classical Ed25519 with NIST FIPS 204 ML-DSA-65 (Dilithium3), providing defense-in-depth against future cryptographically-relevant quantum computers." } },
-          ],
         })}</script>
       </Helmet>
       <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <TrafficNoticeBanner />
-      <Navbar />
-      <div id="top" />
-      <Hero />
-      <SovereignSealStrip />
-      <PramaanBanner />
-      <AustraliaPositioningBand />
-      <VisionSection />
-      <ComplianceClock />
-      <SocialProofBar />
-      <OpenSourceGateway />
-      <ProblemSection />
-      
-      <FreeToolsCTA />
-      <SolutionSection />
-      <TrioSection />
-      <TrustSection />
-      <SocialProofWall />
-      <RegulatoryAlignment />
-      <OptimisticModel />
-      <HowItWorks />
-      <LiveCaseStudy />
-      <ComparisonTable />
-      <AdversarialReview />
-      <InevitabilityDoctrine />
-      <BusinessModel />
-      <TechSpecs />
-      <NotaryCTA />
-      <FeaturedResearch />
-      <ArticlesSection />
-      <ResearchReferences />
-      <Pricing />
-      <FAQ />
-      <ContactSection />
-      <Footer />
-    </div>
-  </>
+        <TrafficNoticeBanner />
+        <Navbar />
+        <div id="top" />
+        <Hero />
+        <TwoPillars />
+        <HowToUse />
+        <SovereignSealStrip />
+        <ComplianceClock />
+        <RegulatoryAlignment />
+        <OpenSourceGateway />
+        <TechSpecs />
+        <Pricing />
+        <FAQ />
+        <ContactSection />
+        <Footer />
+      </div>
+    </>
   );
 };
 

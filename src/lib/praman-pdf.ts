@@ -12,6 +12,7 @@ export type PramanReceipt = {
   verified: boolean;
   issuer?: string;
   spec?: string;
+  gps?: { lat: number; lng: number; accuracy?: number } | null;
 };
 
 const NAVY: [number, number, number] = [10, 14, 26];
@@ -261,7 +262,7 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
   doc.setFontSize(7);
   doc.text("VERIFY", qrBoxX + 12, anchorY + 18, { charSpace: 2 });
 
-  const verifyUrl = `https://apex-psi.lovable.app/verify?h=${r.sha256}`;
+  const verifyUrl = `https://digital-gallows.apex-infrastructure.com/verify?h=${r.sha256}`;
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
     margin: 0,
     width: 400,
@@ -276,7 +277,7 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
   setText(doc, GOLD);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-  doc.text("apex-psi.lovable.app", qrBoxX + 110, anchorY + 64);
+  doc.text("apex-infrastructure.com", qrBoxX + 110, anchorY + 64);
   doc.text("/verify", qrBoxX + 110, anchorY + 76);
 
   // === FOOTER LEDGER STRIP ===
@@ -312,7 +313,10 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
   setText(doc, MUTED);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
-  doc.text("This receipt is portable, offline-verifiable, and free forever.", W - 62, footY + 40, { align: "right" });
+  const gpsLine = r.gps
+    ? `GPS  ${r.gps.lat.toFixed(5)}, ${r.gps.lng.toFixed(5)}${r.gps.accuracy ? `  ±${Math.round(r.gps.accuracy)}m` : ""}`
+    : "This receipt is portable, offline-verifiable, and free forever.";
+  doc.text(gpsLine, W - 62, footY + 40, { align: "right" });
 
   // bottom microcopy
   setText(doc, [90, 95, 115]);
