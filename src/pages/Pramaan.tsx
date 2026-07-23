@@ -160,6 +160,9 @@ const Pramaan = () => {
         txid_preview: current.txid,
         method: "merkle-aggregate (client-side simulation; published anchors via /verify)",
       },
+      geolocation: current.gps
+        ? { lat: current.gps.lat, lng: current.gps.lng, accuracy_m: current.gps.accuracy ?? null }
+        : null,
       mode: current.mode,
       verified: current.verified,
       issuer: "apex.psi.pramaan",
@@ -172,6 +175,31 @@ const Pramaan = () => {
     a.download = `${current.fileName}.praman.json`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const shareReceipt = async () => {
+    if (!current) return;
+    const url = `${VERIFY_BASE}?h=${current.sha256}`;
+    const shareData = {
+      title: "I WITNESS THIS",
+      text: `🔐 APEX PRAMAAN seal: ${current.sha256}`,
+      url,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(`${shareData.text}\n${url}`);
+        toast.success("Verify link copied to clipboard");
+      }
+    } catch (e: any) {
+      if (e?.name !== "AbortError") {
+        try {
+          await navigator.clipboard.writeText(`${shareData.text}\n${url}`);
+          toast.success("Verify link copied to clipboard");
+        } catch { /* noop */ }
+      }
+    }
   };
 
   const copyHash = (h: string) => {
