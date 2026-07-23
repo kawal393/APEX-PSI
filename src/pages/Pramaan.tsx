@@ -247,35 +247,35 @@ const Pramaan = () => {
             <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <div className="flex items-center gap-2">
                 <FileCheck className="h-5 w-5 text-emerald-400" />
-                <h2 className="text-lg font-bold">Seal Photo · Video · File</h2>
+                <h2 className="text-lg font-bold">I Witness This</h2>
               </div>
-              <div className="flex items-center gap-3 text-xs font-mono">
-                <span className={mode === "AI_GEN" ? "text-foreground" : "text-muted-foreground"}>AI GEN</span>
-                <Switch
-                  checked={mode === "VERIFY"}
-                  onCheckedChange={(c) => setMode(c ? "VERIFY" : "AI_GEN")}
-                />
-                <span className={mode === "VERIFY" ? "text-emerald-400" : "text-muted-foreground"}>VERIFY</span>
-              </div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 border border-emerald-400/40 rounded-full px-2 py-0.5">
+                MODE · VERIFY
+              </span>
             </div>
 
-            <div
-              ref={dropRef}
+            <button
+              type="button"
+              disabled={busy}
               onClick={() => inputRef.current?.click()}
-              className="border-2 border-dashed border-emerald-400/30 hover:border-emerald-400/70 transition-colors rounded-lg p-10 text-center cursor-pointer bg-background/40"
+              className="w-full group relative overflow-hidden rounded-lg border-2 border-gold/70 hover:border-gold bg-gradient-to-br from-gold/20 via-gold/5 to-transparent hover:from-gold/30 transition-all p-8 md:p-12 text-center cursor-pointer disabled:opacity-60 disabled:cursor-wait"
             >
-              <Upload className="h-10 w-10 mx-auto mb-3 text-emerald-400/70" />
-              <p className="font-mono text-sm">
-                {busy ? "HASHING IN BROWSER…" : "Drop a file here, or click to select"}
+              <Camera className="h-14 w-14 md:h-16 md:w-16 mx-auto mb-4 text-gold" strokeWidth={2.2} />
+              <p className="text-2xl md:text-3xl font-black tracking-[0.2em] text-gold-gradient">
+                {busy ? "SEALING…" : "I WITNESS THIS"}
               </p>
-              <p className="text-xs text-muted-foreground mt-2">SHA-256 computed locally via <code>crypto.subtle</code>. The file never leaves your device.</p>
+              <p className="text-xs text-muted-foreground mt-3 font-mono">
+                {busy ? "Hashing in browser via crypto.subtle" : "Tap to capture · SHA-256 stays on your device"}
+              </p>
               <input
                 ref={inputRef}
                 type="file"
+                accept="image/*"
+                capture="environment"
                 className="hidden"
                 onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
               />
-            </div>
+            </button>
 
             {current && (
               <div className="mt-6 space-y-3 font-mono text-xs">
@@ -301,10 +301,21 @@ const Pramaan = () => {
                     <span className="text-muted-foreground">txid</span>
                     <span className="text-gold">{current.txid}</span>
                   </div>
+                  {current.gps && (
+                    <div className="flex justify-between gap-2">
+                      <span className="text-muted-foreground flex items-center gap-1"><MapPin className="h-3 w-3" /> gps</span>
+                      <span className="text-emerald-400">
+                        📍 {current.gps.lat.toFixed(5)}, {current.gps.lng.toFixed(5)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-2">
+                  <Button onClick={shareReceipt} size="sm" className="bg-gold hover:bg-gold/90 text-background font-bold">
+                    <Share2 className="h-3 w-3 mr-1" /> Share
+                  </Button>
                   <Button onClick={downloadPraman} size="sm" variant="hero">
-                    <Download className="h-3 w-3 mr-1" /> Certificate of Truth (PDF)
+                    <Download className="h-3 w-3 mr-1" /> Certificate (PDF)
                   </Button>
                   <Button onClick={downloadPramanJSON} size="sm" variant="heroOutline">
                     <Download className="h-3 w-3 mr-1" /> .praman JSON
