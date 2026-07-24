@@ -60,6 +60,11 @@ import Hardening from "./pages/Hardening";
 import Quantum from "./pages/Quantum";
 import Articles from "./pages/Articles";
 import Article from "./pages/Article";
+import AGILedger from "./pages/AGILedger";
+import ModelRegistry from "./pages/ModelRegistry";
+import Regulator from "./pages/Regulator";
+import Cite from "./pages/Cite";
+import WitnessWall from "./pages/WitnessWall";
 
 
 
@@ -169,6 +174,12 @@ const App = () => (
               <Route path="/quantum" element={<Quantum />} />
               <Route path="/articles" element={<Articles />} />
               <Route path="/articles/:slug" element={<Article />} />
+              <Route path="/agi-ledger" element={<AGILedger />} />
+              <Route path="/models" element={<ModelRegistry />} />
+              <Route path="/regulator" element={<Regulator />} />
+              <Route path="/cite" element={<Cite />} />
+              <Route path="/witness-wall" element={<WitnessWall />} />
+              
               
               
               <Route path="/partner" element={<Partner />} />
