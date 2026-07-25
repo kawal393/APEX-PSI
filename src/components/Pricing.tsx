@@ -152,7 +152,7 @@ const Pricing = () => {
             </ul>
 
             <a
-              href="https://buy.stripe.com/[LINK_ID]"
+              href="https://buy.stripe.com/00wdR148112o9wkaosb7y09"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-gold text-background font-bold text-sm h-11 hover:bg-gold/90 transition-colors"
