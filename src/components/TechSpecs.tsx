@@ -6,7 +6,7 @@ const specs = [
   { icon: ClipboardList, title: "Annex III Risk Classifier", desc: "Automated risk categorization covering EU AI Act, Colorado SB 24-205, California SB 1047" },
   { icon: FileText, title: "NIST / ISO Control Mapping", desc: "Full NIST AI RMF 100-1 + ISO 42001 + CISA control mapping for enterprise compliance" },
   { icon: ShieldCheck, title: "Optimistic ZK Fraud Proof", desc: "Groth16-compatible ZK proofs on BN128 curve — prove compliance without revealing AI logic" },
-  { icon: BookOpen, title: "12-Jurisdiction Coverage", desc: "EU, USA (CO, CA), Australia, India, MiFID II, DORA, ISO 42001, ISO 23894, NIST AI RMF" },
+  { icon: BookOpen, title: "6-Jurisdiction Coverage", desc: "EU, USA (CO, CA), Australia, India, Canada, UK" },
 ];
 
 const TechSpecs = () => (
