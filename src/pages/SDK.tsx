@@ -745,12 +745,12 @@ GET /verify-status?action=stats
                 Try Live Demo
               </Button>
             </Link>
-            <Link to="/contact">
+            <a href="/#contact">
               <Button variant="outline" className="border-gallows-border text-gallows-text gap-2">
                 <ExternalLink className="h-4 w-4" />
                 Contact Sales
               </Button>
-            </Link>
+            </a>
           </div>
         </div>
       </main>
