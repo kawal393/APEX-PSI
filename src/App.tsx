@@ -65,6 +65,7 @@ import ModelRegistry from "./pages/ModelRegistry";
 import Regulator from "./pages/Regulator";
 import Cite from "./pages/Cite";
 import WitnessWall from "./pages/WitnessWall";
+import Gallery from "./pages/Gallery";
 
 
 
