@@ -64,7 +64,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><a href="mailto:apexinfrastructure369@gmail.com" className="hover:text-gold transition-colors">apexinfrastructure369@gmail.com</a></li>
               <li><a href="https://apex-infrastructure.com" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors inline-flex items-center gap-1">apex-infrastructure.com <ExternalLink className="h-3 w-3" /></a></li>
-              <li><a href="https://github.com/kawal393/digital-gallowsapex-infrastructurecom" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors inline-flex items-center gap-1"><Github className="h-3 w-3" /> GitHub <ExternalLink className="h-3 w-3" /></a></li>
+              <li><a href="https://github.com/kawal393/digital-gallows-apex-infrastructure" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors inline-flex items-center gap-1"><Github className="h-3 w-3" /> GitHub <ExternalLink className="h-3 w-3" /></a></li>
             </ul>
             <h4 className="text-sm font-semibold text-foreground mt-4 mb-3">Legal</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -81,7 +81,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
 
         <div className="border-t border-border pt-8 space-y-4">
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] text-muted-foreground font-mono">
-            <span>Patent AMCZ-2615560564 — Filed</span>
+            <span>Australian Provisional Patent — Filed</span>
             <span className="hidden sm:inline text-border">|</span>
             <span>IETF Internet-Draft draft-singh-psi-00 — Active</span>
           </div>

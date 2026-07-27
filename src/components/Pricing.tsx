@@ -112,12 +112,6 @@ const Pricing = () => {
             transition={{ delay: 0.05 }}
             className="rounded-xl border-2 border-gold bg-card p-8 flex flex-col relative shadow-[0_0_40px_-12px_hsl(43_85%_52%/0.35)]"
           >
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-gold text-background text-[10px] font-bold px-4 py-1 rounded-full whitespace-nowrap">
-                MOST POPULAR
-              </span>
-            </div>
-
             <div className="flex items-center gap-3 mb-4 mt-2">
               <div className="w-12 h-12 rounded-lg bg-gold/10 flex items-center justify-center">
                 <Zap className="h-6 w-6 text-gold" />
