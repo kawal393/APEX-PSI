@@ -57,7 +57,7 @@ const CountdownBanner = () => {
 
           <div className="text-center space-y-1">
             <p className="text-xs sm:text-sm text-foreground font-semibold">
-              August 2, 2026 — Full obligations for high-risk AI systems
+              August 2, 2026 — Article 50 — Transparency obligations for synthetic content
             </p>
             <p className="text-[10px] sm:text-xs text-muted-foreground">
               Maximum penalties: <span className="text-destructive font-bold">€35,000,000</span> or{" "}
