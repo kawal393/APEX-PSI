@@ -180,6 +180,7 @@ const App = () => (
               <Route path="/regulator" element={<Regulator />} />
               <Route path="/cite" element={<Cite />} />
               <Route path="/witness-wall" element={<WitnessWall />} />
+              <Route path="/gallery" element={<Gallery />} />
               
               
               
