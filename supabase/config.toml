@@ -138,3 +138,9 @@ verify_jwt = false
 
 [functions.psi-challenge]
 verify_jwt = false
+
+[functions.score-and-enroll-leads]
+verify_jwt = false
+
+[functions.broadcast-content]
+verify_jwt = false
