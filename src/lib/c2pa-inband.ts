@@ -25,7 +25,10 @@
 // asset OR of the claim breaks either the binding or the hybrid signature.
 // ═══════════════════════════════════════════════════════════════════════
 
-import { hybridSignEphemeral, hybridVerify, HybridSignature, HYBRID_SUITE } from "@/lib/psi-pqc";
+import {
+  hybridSignEphemeral, hybridSignInstitutional, hybridVerify, isInstitutionalSignature,
+  HybridSignature, HYBRID_SUITE, ISSUER_ID, TRUST_ANCHOR_URL,
+} from "@/lib/psi-pqc";
 import { jcsCanonicalize } from "@/lib/psi-canonicalize";
 import { watermarkImageToPng, detectWatermarkInBlob, WM_METHOD, WatermarkDetection } from "@/lib/psi-watermark";
 
@@ -34,6 +37,17 @@ export const PSI_MANIFEST_SPEC = "PSI-INBAND-v1";
 export const C2PA_UUID = new Uint8Array([
   0xd8, 0xfe, 0xc3, 0xd6, 0x1b, 0x0e, 0x48, 0x3c, 0x92, 0x97, 0x58, 0x28, 0x87, 0x7e, 0xc4, 0x81,
 ]);
+
+/**
+ * Seal mode.
+ *  institutional — signed by the published APEX PSI identity. Attributable:
+ *                  the manifest chains to /.well-known/apex-psi-trust-anchor.json
+ *  self          — ephemeral random keypair, discarded after signing. Proves
+ *                  integrity only; NOT attributable to any identity.
+ */
+export type SealMode = "institutional" | "self";
+
+export const SELF_SEAL_ISSUER = "urn:apex-psi:issuer:self-sealed";
 
 export const DIGITAL_SOURCE_TYPES = {
   aiGenerated: "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
@@ -51,6 +65,10 @@ export interface PsiClaim {
   format: string;
   title: string;
   signature_suite: typeof HYBRID_SUITE;
+  /** Identity that signed this claim, or the self-sealed sentinel. */
+  issuer: string;
+  /** Where the public half of the issuer identity is published. */
+  trust_anchor: string | null;
   assertions: Array<{ label: string; data: Record<string, unknown> }>;
   hard_binding: { alg: "sha256"; pre_embed_sha256: string; size_bytes: number };
   verify_url: string;
@@ -61,6 +79,7 @@ export interface PsiManifest {
   claim: PsiClaim;
   signature: HybridSignature;
 }
+
 
 // ── byte helpers ───────────────────────────────────────────────────────
 const enc = new TextEncoder();
