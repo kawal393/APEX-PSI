@@ -467,7 +467,7 @@ function combinePair(a: string, b: string): string {
             </p>
             <div className="grid sm:grid-cols-2 gap-2">
               {[
-                ["JPEG / PNG", "APP1 segment manifest"],
+                ["JPEG / PNG", "APP11 / JUMBF manifest"],
                 ["MP4", "ISO BMFF box manifest"],
                 ["WAV / MP3", "ID3v2 signed metadata block"],
                 ["PDF", "XMP + PDF/A-3 signed manifest"],
