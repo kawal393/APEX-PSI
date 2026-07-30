@@ -474,6 +474,12 @@ export interface InBandVerification {
   computedSha256: string | null;
   watermark: WatermarkDetection | null;
   verdict: "VALID" | "TAMPERED" | "UNSIGNED";
+  /** Issuer declared in the claim (or null when unsigned). */
+  issuer: string | null;
+  /** True only if the signing keys match the published APEX PSI trust anchor. */
+  issuerVerified: boolean;
+  /** Human-readable attribution verdict. */
+  attribution: "APEX PSI institutional seal" | "Self-sealed (integrity only)" | "Unknown issuer" | "None";
   notes: string[];
 }
 
@@ -497,6 +503,7 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
       signatureValid: false, ed25519Valid: false, mldsaValid: false, bindingValid: false,
       computedSha256: await sha256Hex(bytes), watermark,
       verdict: "UNSIGNED",
+      issuer: null, issuerVerified: false, attribution: "None",
       notes: ["No APEX PSI in-band manifest present in this asset."],
     };
   }
@@ -515,6 +522,21 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
     if (!watermark.present) notes.push("Declared watermark could not be recovered (asset was re-encoded or cropped).");
   }
 
+  // Attribution: do the signing keys actually match the published anchor?
+  const issuer = manifest.claim.issuer ?? null;
+  const issuerVerified = sig.ok && (await isInstitutionalSignature(manifest.signature));
+  let attribution: InBandVerification["attribution"];
+  if (issuerVerified) {
+    attribution = "APEX PSI institutional seal";
+    notes.push(`Signing keys match the published trust anchor (${issuer}). This seal is attributable.`);
+  } else if (issuer === SELF_SEAL_ISSUER || issuer === null) {
+    attribution = "Self-sealed (integrity only)";
+    notes.push("Self seal: an ephemeral keypair signed this claim. It proves the bytes are unmodified, not who sealed them.");
+  } else {
+    attribution = "Unknown issuer";
+    notes.push(`Claim declares issuer "${issuer}" but the signing keys do not match the published APEX PSI trust anchor.`);
+  }
+
   const ok = sig.ok && bindingValid;
   if (ok) notes.push("Hybrid signature and hard binding both verify. Asset is unmodified since sealing.");
 
@@ -523,7 +545,9 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
     signatureValid: sig.ok, ed25519Valid: sig.ed25519_ok, mldsaValid: sig.mldsa_ok,
     bindingValid, computedSha256, watermark,
     verdict: ok ? "VALID" : "TAMPERED",
+    issuer, issuerVerified, attribution,
     notes,
+
   };
 }
 
