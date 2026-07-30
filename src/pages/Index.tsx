@@ -12,6 +12,7 @@ import FAQ from "@/components/FAQ";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import TrafficNoticeBanner from "@/components/TrafficNoticeBanner";
+import EUCodeBanner from "@/components/EUCodeBanner";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
