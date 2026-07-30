@@ -89,7 +89,7 @@ const Compare = () => {
             <span className="text-foreground">Vendor Toolkits</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            The only IETF-submitted, vendor-neutral, open-source cryptographic governance protocol.
+            An IETF-submitted, vendor-neutral, open-source cryptographic governance protocol.
             Compare against GuardianChain, Attested Intelligence, TaskHawk (Kevros), and Microsoft's Agent Governance Toolkit.
           </p>
         </motion.section>
