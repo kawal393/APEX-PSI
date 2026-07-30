@@ -24,7 +24,7 @@ const Hero = () => {
           <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5 mb-6 border-glow">
             <Shield className="h-3.5 w-3.5 text-gold" />
             <span className="text-[10px] sm:text-xs font-black text-gold tracking-[0.25em] uppercase">
-              The World's First Cryptographic Truth Protocol
+              Post-Quantum Provenance · IETF draft-singh-psi-00
             </span>
           </div>
 

@@ -228,7 +228,7 @@ async function apexSeal(file) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>APEX Seal — World's First Cryptographic Truth Stamp for Any File</title>
+        <title>APEX Seal — Post-Quantum Integrity Seal for Any File</title>
         <meta
           name="description"
           content="Stamp any photo, video, audio, document, or file with APEX PSI · APEX Pramaan. Client-side SHA-256, anchored receipt, verifiable forever. Free, open, no login."
@@ -245,12 +245,12 @@ async function apexSeal(file) {
             <Sparkles className="h-3 w-3" /> APEX PSI · APEX PRAMAAN
           </div>
           <h1 className="text-3xl md:text-6xl font-black tracking-tight mb-4 leading-[1.05]">
-            <span className="text-chrome-gradient">World's First Cryptographic</span>
+            <span className="text-chrome-gradient">Post-Quantum Integrity</span>
             <br />
-            <span className="text-gold-gradient">Truth Stamp for Any File</span>
+            <span className="text-gold-gradient">Seal for Any File</span>
           </h1>
           <p className="text-base md:text-xl text-muted-foreground max-w-3xl mb-8">
-            Drop any photo, video, audio, document, or archive. APEX seals it in your browser, anchors it to an immutable ledger, and returns a permanent, verifiable receipt — in seconds. No login. No upload. No vendor.
+            Drop any photo, video, audio, document, or archive. APEX hashes it in your browser, records it in an append-only ledger, and returns a verifiable receipt — in seconds. No login. No upload. No vendor. It proves the file existed in this exact byte state at this time — not that its contents are true.
           </p>
           <div className="flex flex-wrap gap-3 text-xs font-mono">
             <span className="px-3 py-1.5 rounded-full border border-emerald-400/30 text-emerald-400">SHA-256 in browser</span>
