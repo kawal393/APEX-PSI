@@ -357,24 +357,30 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
 
   const preEmbedSha256 = await sha256Hex(bytes);
 
-  const claim: PsiClaim = {
+  const requestedMode: SealMode = opts.mode ?? "institutional";
+  const instanceId = `urn:uuid:${crypto.randomUUID()}`;
+  const createdAt = new Date().toISOString();
+
+  const buildClaim = (mode: SealMode): PsiClaim => ({
     spec: PSI_MANIFEST_SPEC,
     claim_generator: opts.generator ?? "APEX-PSI/1.0 (apex-pramaan)",
-    instance_id: `urn:uuid:${crypto.randomUUID()}`,
-    created_at: new Date().toISOString(),
+    instance_id: instanceId,
+    created_at: createdAt,
     format: mime,
     title: outName,
     signature_suite: HYBRID_SUITE,
+    issuer: mode === "institutional" ? ISSUER_ID : SELF_SEAL_ISSUER,
+    trust_anchor: mode === "institutional" ? TRUST_ANCHOR_URL : null,
     assertions: [
       {
         label: "c2pa.actions",
         data: {
           actions: [
             {
-              action: sourceType === "capture" ? "c2pa.created" : "c2pa.created",
+              action: "c2pa.created",
               digitalSourceType: DIGITAL_SOURCE_TYPES[sourceType],
               softwareAgent: opts.generator ?? "APEX PSI",
-              when: new Date().toISOString(),
+              when: createdAt,
             },
           ],
         },
@@ -390,10 +396,25 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
     ],
     hard_binding: { alg: "sha256", pre_embed_sha256: preEmbedSha256, size_bytes: bytes.length },
     verify_url: `${opts.verifyBase ?? VERIFY_BASE}?h=${preEmbedSha256}`,
-  };
+  });
 
-  const canonical = jcsCanonicalize(claim);
-  const signature = await hybridSignEphemeral(canonical);
+  let mode: SealMode = requestedMode;
+  let claim = buildClaim(mode);
+  let signature: HybridSignature;
+  if (mode === "institutional") {
+    try {
+      signature = await hybridSignInstitutional(jcsCanonicalize(claim));
+    } catch {
+      // Signer unreachable → degrade to an honest self seal rather than
+      // claiming an attribution we cannot prove.
+      mode = "self";
+      claim = buildClaim(mode);
+      signature = await hybridSignEphemeral(jcsCanonicalize(claim));
+    }
+  } else {
+    signature = await hybridSignEphemeral(jcsCanonicalize(claim));
+  }
+
   const manifest: PsiManifest = { magic: PSI_BOX_MAGIC, claim, signature };
   const box = packBox(manifest);
 
@@ -418,8 +439,11 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
     preEmbedSha256,
     finalSha256: await sha256Hex(out),
     claimDigest: signature.message_hash,
+    mode,
+    issuer: claim.issuer,
   };
 }
+
 
 function stripExistingBox(bytes: Uint8Array, container: Container): Uint8Array {
   if (container === "jpeg") return stripJpeg(bytes);
