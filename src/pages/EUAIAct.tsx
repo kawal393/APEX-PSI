@@ -202,6 +202,10 @@ export default function EUAIAct() {
                 </p>
               </motion.div>
 
+              <Section1Compliance />
+
+
+
               {/* TIMELINE */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
