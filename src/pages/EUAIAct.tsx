@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { motion } from "framer-motion";
 import { Shield, ShieldCheck, Clock, ExternalLink, CheckCircle2, AlertTriangle, FileText, Lock, Eye, Hash, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -353,7 +353,7 @@ export default function EUAIAct() {
 
                       {/* Rows */}
                       {COST_COMPARISON.map((row, i) => (
-                        <>
+                        <Fragment key={`row-${i}`}>
                           <div key={`m-${i}`} className={`p-3 text-sm font-semibold ${row.recommended ? "bg-gold/5 text-gold" : "bg-background text-foreground"}`}>
                             {row.recommended && <span className="mr-1">★</span>}{row.method}
                           </div>
@@ -369,7 +369,7 @@ export default function EUAIAct() {
                           <div key={`f-${i}`} className={`p-3 text-xs ${row.recommended ? "bg-gold/5 text-foreground/80" : "bg-background text-muted-foreground"}`}>
                             {row.features}
                           </div>
-                        </>
+                        </Fragment>
                       ))}
                     </div>
                   </div>

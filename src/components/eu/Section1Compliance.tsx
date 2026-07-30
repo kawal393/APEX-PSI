@@ -2,29 +2,35 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, FileSignature, Lock, Globe, BookMarked, PlayCircle, Stamp } from "lucide-react";
+import InBandTool from "@/components/eu/InBandTool";
 
 const IN_BAND = [
   {
-    format: "JPEG / PNG",
-    mech: "C2PA Content Credentials manifest embedded in the APP1 segment. Ed25519 + ML-DSA-65 signed.",
+    format: "JPEG",
+    mech: "APP11 marker segment carrying a JUMBF superbox (C2PA UUID). Multi-segment for manifests over 64 KB. Ed25519 + ML-DSA-65 signed.",
   },
   {
-    format: "MP4 Video",
-    mech: "C2PA Content Credentials manifest in ISO BMFF boxes. Ed25519 + ML-DSA-65 signed.",
+    format: "PNG",
+    mech: "caBX ancillary chunk inserted before IEND, CRC32 protected. Plus invisible RGB-LSB watermark. Ed25519 + ML-DSA-65 signed.",
   },
   {
-    format: "WAV / MP3 Audio",
-    mech: "ID3v2 tags carrying signed metadata blocks.",
+    format: "MP4 / ISO BMFF",
+    mech: "Top-level uuid box with the C2PA UUID d8fec3d6-1b0e-483c-9297-5828877ec481. Ed25519 + ML-DSA-65 signed.",
   },
   {
-    format: "PDF Documents",
-    mech: "XMP metadata + signed PDF/A-3 manifest.",
+    format: "WAV / RIFF Audio",
+    mech: "Dedicated C2PA RIFF chunk appended, RIFF size field repaired. Ed25519 + ML-DSA-65 signed.",
+  },
+  {
+    format: "PDF & any other format",
+    mech: "Trailing signed block after %%EOF, delimited by %%APEX-PSI-C2PA markers. Ed25519 + ML-DSA-65 signed.",
   },
   {
     format: "HTTP AI Responses",
     mech: "Compliance-Receipt header (IETF draft-singh-psi-http-01). Signed Ed25519.",
   },
 ];
+
 
 const CRYPTO_STACK = [
   { name: "Ed25519", spec: "RFC 8032", note: "Fast, deterministic signatures" },
@@ -117,9 +123,13 @@ const Section1Compliance = () => (
           ))}
         </div>
         <p className="text-xs text-foreground/70 leading-relaxed">
-          Metadata is tamperproof — removing or altering it breaks the cryptographic signature. Any C2PA-compatible
-          tool can read and verify it.
+          The manifest is tamper-evident by construction: it binds <code className="font-mono text-gold">hard_binding.pre_embed_sha256</code>,
+          the SHA-256 of the exact asset bytes before insertion. A verifier strips the manifest box, re-hashes, and
+          compares. Altering one byte of the asset or one character of the claim breaks either the binding or both
+          signatures. Manifest layout, container mechanisms and the detector are open-source and specified at{" "}
+          <Link to="/inband" className="text-gold hover:underline">/inband</Link>.
         </p>
+
       </SectionShell>
 
       <SectionShell letter="B" title="Cryptographic Stack" icon={Lock}>
@@ -204,12 +214,20 @@ const Section1Compliance = () => (
 
       <SectionShell letter="F" title="Live Demonstration" icon={PlayCircle}>
         <p className="text-sm text-foreground/80 mb-4">
-          Try it now. No account required.
+          Working implementation of the Section 1 mandatory measures. Runs entirely in your browser — no account, no
+          upload, no API key. Mark a file, download it, change one byte, and the verifier will say so.
         </p>
-        <div className="flex flex-wrap gap-3">
+        <InBandTool />
+        <div className="flex flex-wrap gap-3 mt-5">
+          <Link
+            to="/inband"
+            className="rounded-lg border border-gold/40 bg-gold/5 px-4 py-2 text-xs font-bold text-gold hover:bg-gold/10 transition-colors"
+          >
+            Full specification → /inband
+          </Link>
           <Link
             to="/pramaan"
-            className="rounded-lg border border-gold/40 bg-gold/5 px-4 py-2 text-xs font-bold text-gold hover:bg-gold/10 transition-colors"
+            className="rounded-lg border border-border px-4 py-2 text-xs font-bold text-foreground hover:border-gold/40 transition-colors"
           >
             Seal any file → /pramaan
           </Link>
@@ -221,6 +239,7 @@ const Section1Compliance = () => (
           </Link>
         </div>
       </SectionShell>
+
 
       <SectionShell letter="G" title="Code of Practice Signatory Status" icon={ShieldCheck}>
         <p className="text-sm text-foreground/80">
