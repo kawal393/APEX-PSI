@@ -57,6 +57,27 @@ const Hero = () => {
             ))}
           </div>
 
+          {/* Regulator entry point — full technical specification */}
+          <Link
+            to="/spec"
+            className="group block max-w-2xl mx-auto mb-10 rounded-lg border border-gold/40 bg-gold/[0.06] hover:bg-gold/[0.12] hover:border-gold/70 transition-all px-5 py-4 text-left"
+          >
+            <div className="flex items-center gap-4">
+              <FileText className="h-5 w-5 text-gold shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold mb-1">
+                  Full Technical Specification
+                </p>
+                <p className="text-sm text-foreground/90 leading-snug">
+                  Every algorithm, endpoint, and{" "}
+                  <span className="font-bold text-foreground">stated limitation</span> — with a direct
+                  EU AI Act Article 50 mapping.
+                </p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-gold shrink-0 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
+
           {/* Dual CTA — one per pillar */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4">
             <Button variant="hero" size="lg" className="text-sm sm:text-base px-8 w-full sm:w-auto" asChild>
