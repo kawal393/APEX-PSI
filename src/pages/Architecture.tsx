@@ -452,6 +452,35 @@ function combinePair(a: string, b: string): string {
           </CardContent>
         </Card>
 
+        {/* C2PA Content Credentials Integration */}
+        <Card className="bg-gallows-surface border-gallows-border">
+          <CardHeader>
+            <CardTitle className="text-lg font-mono text-gallows-text">
+              C2PA Content Credentials Integration
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-xs font-mono text-gallows-muted leading-relaxed">
+              Content files are signed using C2PA Content Credentials manifests. The manifest contains: claim store,
+              signature, certificate chain, and timestamp. Signatures use Ed25519 + ML-DSA-65 hybrid mode. Timestamps
+              anchored to Bitcoin via OpenTimestamps. Verification is permissionless and offline-capable.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              {[
+                ["JPEG / PNG", "APP1 segment manifest"],
+                ["MP4", "ISO BMFF box manifest"],
+                ["WAV / MP3", "ID3v2 signed metadata block"],
+                ["PDF", "XMP + PDF/A-3 signed manifest"],
+              ].map(([f, m]) => (
+                <div key={f} className="p-3 rounded border border-gallows-border">
+                  <span className="font-mono text-xs text-gallows-approved font-bold block">{f}</span>
+                  <span className="font-mono text-[11px] text-gallows-muted">{m}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Known Limitations — Intellectual Honesty */}
         <Card className="bg-gallows-surface border-gallows-border">
           <CardHeader>
