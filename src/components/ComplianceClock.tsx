@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AlertTriangle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const DEADLINE = new Date("2026-08-02T00:00:00Z").getTime();
 
