@@ -150,8 +150,8 @@ export default function EUAIAct() {
   return (
     <>
       <Helmet>
-        <title>EU AI Act Compliance — Article 50 Ready with Apex PSI</title>
-        <meta name="description" content="Comprehensive EU AI Act compliance guide. Map Articles 4, 12, 13, 14, and 50 to Apex PSI at $0.006/verification. Code of Practice signatory." />
+        <title>EU AI Act Code of Practice — Section 1 Compliance | APEX PSI</title>
+        <meta name="description" content="APEX PSI technical documentation for Section 1 of the EU Code of Practice on Transparency of AI-Generated Content: in-band signed tamperproof metadata, C2PA Content Credentials, Ed25519 + ML-DSA-65." />
         <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/eu-ai-act" />
         <meta property="og:title" content="EU AI Act Compliance — Article 50 Ready with Apex PSI" />
         <meta property="og:description" content="Map every EU AI Act article to Apex PSI. $0.006/verification. Code of Practice signatory." />
