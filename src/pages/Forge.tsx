@@ -288,8 +288,19 @@ const Forge = () => {
                       {meta.hash.slice(0, 22)}… <Copy className="h-3 w-3" />
                     </button>
                   </div>
+                  {marked && (
+                    <div className="rounded border border-gold/30 bg-gold/5 p-2 space-y-1">
+                      <p className="text-gold">IN-BAND CREDENTIALS · {marked.mechanism}</p>
+                      <p className="text-muted-foreground">
+                        digitalSourceType: trainedAlgorithmicMedia · {marked.manifest.claim.signature_suite} ·
+                        invisible watermark {marked.watermarked ? "on" : "off"}
+                      </p>
+                      <a href="/inband" className="text-emerald-400 hover:underline">Verify the marked file → /inband</a>
+                    </div>
+                  )}
                 </div>
               )}
+
               <div className="mt-4 flex flex-wrap gap-2">
                 <Button onClick={download} variant="hero" size="sm">
                   <Download className="h-3 w-3 mr-1" /> Download PNG
