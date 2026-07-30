@@ -2,16 +2,22 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
-  Upload, Download, ShieldCheck, ShieldAlert, ShieldX, Loader2, FileSignature, Fingerprint,
+  Upload, Download, ShieldCheck, ShieldAlert, ShieldX, Loader2, FileSignature, Fingerprint, BadgeCheck,
 } from "lucide-react";
 import {
-  embedInBandCredentials, verifyInBandCredentials, EmbedResult, InBandVerification, SourceType,
+  embedInBandCredentials, verifyInBandCredentials, EmbedResult, InBandVerification, SourceType, SealMode,
 } from "@/lib/c2pa-inband";
+import { TRUST_ANCHOR_URL } from "@/lib/psi-pqc";
 
 const SOURCE_OPTIONS: Array<{ id: SourceType; label: string; hint: string }> = [
   { id: "aiGenerated", label: "AI-generated", hint: "trainedAlgorithmicMedia" },
   { id: "aiEdited", label: "AI-modified", hint: "compositeWithTrainedAlgorithmicMedia" },
   { id: "capture", label: "Camera / human capture", hint: "digitalCapture" },
+];
+
+const MODE_OPTIONS: Array<{ id: SealMode; label: string; hint: string }> = [
+  { id: "institutional", label: "Institutional seal", hint: "Signed by the published APEX PSI identity — attributable." },
+  { id: "self", label: "Self seal", hint: "Ephemeral keypair, fully offline — proves integrity, not identity." },
 ];
 
 const Row = ({ k, v, mono = true }: { k: string; v: string; mono?: boolean }) => (
@@ -24,6 +30,7 @@ const Row = ({ k, v, mono = true }: { k: string; v: string; mono?: boolean }) =>
 const InBandTool = () => {
   const [busy, setBusy] = useState<null | "seal" | "verify">(null);
   const [sourceType, setSourceType] = useState<SourceType>("aiGenerated");
+  const [mode, setMode] = useState<SealMode>("institutional");
   const [watermark, setWatermark] = useState(true);
   const [sealed, setSealed] = useState<EmbedResult | null>(null);
   const [check, setCheck] = useState<InBandVerification | null>(null);
@@ -37,16 +44,22 @@ const InBandTool = () => {
       const res = await embedInBandCredentials(file, {
         sourceType,
         watermark,
+        mode,
         generator: "APEX-PSI/1.0 (eu-code-of-practice-section-1)",
       });
       setSealed(res);
-      toast.success(`In-band credentials written — ${res.mechanism}`);
+      if (mode === "institutional" && res.mode === "self") {
+        toast.warning("Institutional signer unreachable — fell back to a self seal (integrity only).");
+      } else {
+        toast.success(`In-band credentials written — ${res.mechanism}`);
+      }
     } catch (e: any) {
       toast.error(e?.message || "Embedding failed");
     } finally {
       setBusy(null);
     }
   };
+
 
   const doVerify = async (file: File) => {
     setBusy("verify");
