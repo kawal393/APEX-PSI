@@ -26,7 +26,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { hybridSignEphemeral, hybridVerify, HybridSignature, HYBRID_SUITE } from "@/lib/psi-pqc";
-import { canonicalize } from "@/lib/psi-canonicalize";
+import { jcsCanonicalize } from "@/lib/psi-canonicalize";
 import { watermarkImageToPng, detectWatermarkInBlob, WM_METHOD, WatermarkDetection } from "@/lib/psi-watermark";
 
 export const PSI_BOX_MAGIC = "APEXPSI-C2PA-V1";
@@ -313,7 +313,7 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
   const name = (file as File).name || "asset.bin";
   const mime = file.type || "application/octet-stream";
   const sourceType: SourceType = opts.sourceType ?? "capture";
-  let bytes = new Uint8Array(await file.arrayBuffer());
+  let bytes: Uint8Array<ArrayBufferLike> = new Uint8Array(await file.arrayBuffer());
   let container = detectContainer(bytes, mime);
 
   // Strip any prior PSI box so re-sealing is idempotent, never nested.
@@ -367,7 +367,7 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
     verify_url: `${opts.verifyBase ?? VERIFY_BASE}?h=${preEmbedSha256}`,
   };
 
-  const canonical = canonicalize(claim as unknown as Record<string, unknown>);
+  const canonical = jcsCanonicalize(claim);
   const signature = await hybridSignEphemeral(canonical);
   const manifest: PsiManifest = { magic: PSI_BOX_MAGIC, claim, signature };
   const box = packBox(manifest);
@@ -453,7 +453,7 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
   }
 
   const manifest = found.manifest;
-  const canonical = canonicalize(manifest.claim as unknown as Record<string, unknown>);
+  const canonical = jcsCanonicalize(manifest.claim);
   const sig = await hybridVerify(canonical, manifest.signature);
   if (!sig.ed25519_ok) notes.push("Ed25519 signature does not match the claim.");
   if (!sig.mldsa_ok) notes.push("ML-DSA-65 signature does not match the claim.");
