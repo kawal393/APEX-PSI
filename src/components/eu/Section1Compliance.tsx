@@ -246,7 +246,7 @@ const Section1Compliance = () => (
           APEX PSI has applied to sign the EU Code of Practice on Transparency of AI-Generated Content. Technical
           documentation is publicly available on this page. Source code is open-source on{" "}
           <a
-            href="https://github.com/kawal393/digital-gallows-apex-infrastructure"
+            href="https://github.com/kawal393/digital-gallowsapex-infrastructurecom"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gold hover:underline"
