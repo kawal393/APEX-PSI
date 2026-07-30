@@ -170,6 +170,7 @@ const App = () => (
               <Route path="/embed/seal" element={<EmbedSeal />} />
               <Route path="/forge" element={<Forge />} />
               <Route path="/standard" element={<Standard />} />
+              <Route path="/spec" element={<Spec />} />
               <Route path="/header" element={<Header />} />
               <Route path="/foundation" element={<Foundation />} />
               <Route path="/eu-ai-act" element={<EUAIAct />} />
