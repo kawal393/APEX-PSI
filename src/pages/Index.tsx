@@ -62,6 +62,7 @@ const Index = () => {
       </Helmet>
       <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
         <TrafficNoticeBanner />
+        <EUCodeBanner />
         <Navbar />
         <div id="top" />
         <Hero />
