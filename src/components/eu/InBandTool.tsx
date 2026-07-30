@@ -231,7 +231,21 @@ const InBandTool = () => {
               />
               <span className="text-sm font-black tracking-widest">{check.verdict}</span>
             </div>
+            {check.found && (
+              <div
+                className={`flex items-start gap-2 rounded-lg border p-3 mb-3 ${
+                  check.issuerVerified ? "border-gold/40 bg-gold/5" : "border-border bg-muted/10"
+                }`}
+              >
+                <BadgeCheck className={`h-4 w-4 mt-0.5 ${check.issuerVerified ? "text-gold" : "text-muted-foreground"}`} />
+                <div>
+                  <div className="text-xs font-black uppercase tracking-widest text-foreground">{check.attribution}</div>
+                  <div className="text-[11px] text-muted-foreground break-all font-mono">{check.issuer ?? "—"}</div>
+                </div>
+              </div>
+            )}
             <Row k="Container" v={`${check.container?.toUpperCase() ?? "—"} — ${check.mechanism ?? "—"}`} mono={false} />
+
             <Row k="Ed25519" v={check.ed25519Valid ? "verified" : "not verified"} />
             <Row k="ML-DSA-65" v={check.mldsaValid ? "verified" : "not verified"} />
             <Row k="Hard binding" v={check.bindingValid ? "matches asset bytes" : "mismatch"} />
