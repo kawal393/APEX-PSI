@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Sparkles, Loader2, Download, Shield, Copy, Wand2 } from "lucide-react";
+import { embedInBandCredentials, EmbedResult } from "@/lib/c2pa-inband";
 import { toast } from "sonner";
 
 const FORGE_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/forge-image";
@@ -110,12 +111,13 @@ const Forge = () => {
   const [stage, setStage] = useState("");
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [meta, setMeta] = useState<{ hash: string; receiptId: string; merkleRoot?: string } | null>(null);
+  const [marked, setMarked] = useState<EmbedResult | null>(null);
   const aRef = useRef<HTMLAnchorElement>(null);
 
   const run = useCallback(async () => {
     const p = prompt.trim();
     if (p.length < 3) { toast.error("Write a longer prompt"); return; }
-    setBusy(true); setImgUrl(null); setMeta(null);
+    setBusy(true); setImgUrl(null); setMeta(null); setMarked(null);
     try {
       setStage("Generating image via Lovable AI…");
       const res = await fetch(FORGE_URL, {
@@ -152,6 +154,19 @@ const Forge = () => {
       const stamped = await stampImage(data.image, hash, nd.receipt_id);
       setImgUrl(stamped);
       setMeta({ hash, receiptId: nd.receipt_id, merkleRoot: nd.merkle_root });
+
+      setStage("Writing in-band C2PA-compatible credentials + watermark…");
+      const stampedBlob = await (await fetch(stamped)).blob();
+      const embedded = await embedInBandCredentials(stampedBlob, {
+        sourceType: "aiGenerated",
+        watermark: true,
+        generator: `APEX-FORGE/1.0 (${data.model || "apex.forge"})`,
+        extraAssertions: [
+          { label: "psi.prompt", data: { prompt: p } },
+          { label: "psi.notary", data: { receipt_id: nd.receipt_id, merkle_root: nd.merkle_root ?? null, source_sha256: hash } },
+        ],
+      });
+      setMarked(embedded);
       toast.success("Forged + sealed. Flood the internet.");
     } catch (e: any) {
       toast.error(e.message || "Forge failed");
@@ -161,10 +176,20 @@ const Forge = () => {
   }, [prompt]);
 
   const download = () => {
-    if (!imgUrl) return;
+    if (!marked && !imgUrl) return;
     const a = document.createElement("a");
-    a.href = imgUrl;
-    a.download = `apex-verified-${meta?.receiptId || Date.now()}.png`;
+    const name = `apex-verified-${meta?.receiptId || Date.now()}.png`;
+    if (marked) {
+      const url = URL.createObjectURL(marked.blob);
+      a.href = url;
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Downloaded with in-band signed metadata + invisible watermark");
+      return;
+    }
+    a.href = imgUrl!;
+    a.download = name;
     a.click();
   };
 
