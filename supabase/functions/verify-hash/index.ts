@@ -66,11 +66,14 @@ Deno.serve(async (req) => {
     }
 
     // Search across all hash columns
+    // Normalize: accept "sha256:<hex>" prefixed hashes and receipt IDs
+    const clean = hash.trim().replace(/^sha256:/i, "");
+
     const { data, error } = await supabase
       .from("gallows_ledger")
       .select("*")
       .or(
-        `commit_hash.eq.${hash},merkle_leaf_hash.eq.${hash},proof_hash.eq.${hash},challenge_hash.eq.${hash}`
+        `commit_hash.eq.${clean},merkle_leaf_hash.eq.${clean},proof_hash.eq.${clean},challenge_hash.eq.${clean},commit_id.eq.${clean}`
       )
       .limit(1);
 

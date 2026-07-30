@@ -175,6 +175,7 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
     status: "APPROVED",
     commit_hash: commitHash,
     merkle_leaf_hash: merkleLeaf,
+    proof_hash: decisionHash,
     ed25519_signature: signature,
     merkle_root: merkleRoot,
   });
