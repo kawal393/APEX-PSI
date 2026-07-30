@@ -204,12 +204,20 @@ const Section1Compliance = () => (
 
       <SectionShell letter="F" title="Live Demonstration" icon={PlayCircle}>
         <p className="text-sm text-foreground/80 mb-4">
-          Try it now. No account required.
+          Working implementation of the Section 1 mandatory measures. Runs entirely in your browser — no account, no
+          upload, no API key. Mark a file, download it, change one byte, and the verifier will say so.
         </p>
-        <div className="flex flex-wrap gap-3">
+        <InBandTool />
+        <div className="flex flex-wrap gap-3 mt-5">
+          <Link
+            to="/inband"
+            className="rounded-lg border border-gold/40 bg-gold/5 px-4 py-2 text-xs font-bold text-gold hover:bg-gold/10 transition-colors"
+          >
+            Full specification → /inband
+          </Link>
           <Link
             to="/pramaan"
-            className="rounded-lg border border-gold/40 bg-gold/5 px-4 py-2 text-xs font-bold text-gold hover:bg-gold/10 transition-colors"
+            className="rounded-lg border border-border px-4 py-2 text-xs font-bold text-foreground hover:border-gold/40 transition-colors"
           >
             Seal any file → /pramaan
           </Link>
@@ -221,6 +229,7 @@ const Section1Compliance = () => (
           </Link>
         </div>
       </SectionShell>
+
 
       <SectionShell letter="G" title="Code of Practice Signatory Status" icon={ShieldCheck}>
         <p className="text-sm text-foreground/80">
