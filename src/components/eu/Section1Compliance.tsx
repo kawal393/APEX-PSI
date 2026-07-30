@@ -123,9 +123,13 @@ const Section1Compliance = () => (
           ))}
         </div>
         <p className="text-xs text-foreground/70 leading-relaxed">
-          Metadata is tamperproof — removing or altering it breaks the cryptographic signature. Any C2PA-compatible
-          tool can read and verify it.
+          The manifest is tamper-evident by construction: it binds <code className="font-mono text-gold">hard_binding.pre_embed_sha256</code>,
+          the SHA-256 of the exact asset bytes before insertion. A verifier strips the manifest box, re-hashes, and
+          compares. Altering one byte of the asset or one character of the claim breaks either the binding or both
+          signatures. Manifest layout, container mechanisms and the detector are open-source and specified at{" "}
+          <Link to="/inband" className="text-gold hover:underline">/inband</Link>.
         </p>
+
       </SectionShell>
 
       <SectionShell letter="B" title="Cryptographic Stack" icon={Lock}>
