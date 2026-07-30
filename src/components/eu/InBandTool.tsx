@@ -126,6 +126,28 @@ const InBandTool = () => {
             </button>
           ))}
         </div>
+        <div className="flex flex-wrap gap-2 mb-1">
+          {MODE_OPTIONS.map((o) => (
+            <button
+              key={o.id}
+              onClick={() => setMode(o.id)}
+              className={`rounded-lg border px-3 py-1.5 text-[11px] font-bold transition-colors ${
+                mode === o.id
+                  ? "border-gold/60 bg-gold/10 text-gold"
+                  : "border-border text-muted-foreground hover:border-gold/30"
+              }`}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <p className="text-[11px] text-muted-foreground mb-3">
+          {MODE_OPTIONS.find((o) => o.id === mode)?.hint}{" "}
+          <a href={TRUST_ANCHOR_URL} target="_blank" rel="noreferrer" className="underline hover:text-gold">
+            Trust anchor
+          </a>
+        </p>
+
         <label className="flex items-center gap-2 text-xs text-foreground/80 mb-4 cursor-pointer">
           <input type="checkbox" checked={watermark} onChange={(e) => setWatermark(e.target.checked)} className="accent-[hsl(var(--gold))]" />
           Also embed invisible watermark (images → lossless PNG output)
@@ -144,12 +166,19 @@ const InBandTool = () => {
 
         {sealed && (
           <div className="mt-4">
+            <Row
+              k="Seal mode"
+              v={sealed.mode === "institutional" ? "Institutional — attributable to APEX PSI" : "Self seal — integrity only"}
+              mono={false}
+            />
+            <Row k="Issuer" v={sealed.issuer} />
             <Row k="Container" v={`${sealed.container.toUpperCase()} — ${sealed.mechanism}`} mono={false} />
             <Row k="Signature suite" v={sealed.manifest.claim.signature_suite} />
             <Row k="Watermark" v={sealed.watermarked ? "psi.lsb-spread-v1 (RGB LSB)" : "not applied"} />
             <Row k="Hard binding" v={sealed.preEmbedSha256} />
             <Row k="Sealed file SHA-256" v={sealed.finalSha256} />
             <Row k="Claim digest" v={sealed.claimDigest} />
+
             <div className="flex flex-wrap gap-2 mt-4">
               <Button size="sm" onClick={download}>
                 <Download className="h-3.5 w-3.5 mr-2" /> Download marked file
