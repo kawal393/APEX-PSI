@@ -218,6 +218,73 @@ const Protocol = () => {
           </div>
         </section>
 
+        {/* Article 50 — In-band metadata */}
+        <section className="px-4 py-12 sm:py-16">
+          <div className="container mx-auto max-w-5xl">
+            <h2 className="text-2xl sm:text-3xl font-black mb-2 text-center">
+              <span className="text-chrome-gradient">Article 50:</span>{" "}
+              <span className="text-gold-gradient">Transparency Obligations for Synthetic Content</span>
+            </h2>
+            <p className="text-sm text-muted-foreground text-center max-w-3xl mx-auto mb-8">
+              PSI Protocol implements Article 50 through in-band signed metadata embedded directly in content files
+              using C2PA Content Credentials (Specification 2.1).
+            </p>
+            <div className="grid md:grid-cols-3 gap-4">
+              {[
+                {
+                  n: "Mechanism 1",
+                  t: "In-Band Signed Metadata",
+                  tag: "Mandatory",
+                  items: [
+                    "C2PA Content Credentials embedded in JPEG, PNG, MP4, WAV, PDF",
+                    "Ed25519 + ML-DSA-65 hybrid signatures (post-quantum ready)",
+                    "Tamperproof: metadata cannot be removed without breaking the signature",
+                    "Machine-readable: any C2PA-compatible tool can read and verify",
+                  ],
+                },
+                {
+                  n: "Mechanism 2",
+                  t: "Compliance-Receipt HTTP Header",
+                  tag: "Mandatory",
+                  items: [
+                    "IETF draft-singh-psi-http-01",
+                    "Every AI API response carries a signed receipt",
+                    "Public verification at /.well-known/compliance-receipt",
+                  ],
+                },
+                {
+                  n: "Mechanism 3",
+                  t: "Public Verification",
+                  tag: "Optional",
+                  items: [
+                    "Anyone verifies at /verify without accounts",
+                    "Bitcoin-anchored timestamps via OpenTimestamps",
+                    "Offline verification supported",
+                  ],
+                },
+              ].map((m) => (
+                <div key={m.n} className="rounded-xl border border-border bg-card/60 p-5">
+                  <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">{m.n}</p>
+                  <div className="flex items-center gap-2 mt-1 mb-3 flex-wrap">
+                    <h3 className="text-base font-bold text-foreground">{m.t}</h3>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-gold border border-gold/30 rounded-full px-2 py-0.5">
+                      {m.tag}
+                    </span>
+                  </div>
+                  <ul className="space-y-2">
+                    {m.items.map((i) => (
+                      <li key={i} className="flex items-start gap-2 text-xs text-foreground/80">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-compliant shrink-0 mt-0.5" />
+                        <span>{i}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Cryptographic Specifications */}
         <section className="px-4 py-12 sm:py-16 bg-card/30">
           <div className="container mx-auto max-w-5xl">
