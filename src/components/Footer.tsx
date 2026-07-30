@@ -46,6 +46,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
           <div>
             <h4 className="text-sm font-semibold text-foreground mb-3">Navigation</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/eu-ai-act" className="hover:text-gold transition-colors">EU AI Act Compliance</Link></li>
               <li><Link to="/protocol" className="hover:text-gold transition-colors">PSI Protocol</Link></li>
               <li><Link to="/gallows" className="hover:text-gold transition-colors">Verification Portal</Link></li>
               <li><Link to="/verify" className="hover:text-gold transition-colors">Verify Hash</Link></li>

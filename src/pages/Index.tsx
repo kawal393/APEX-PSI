@@ -12,6 +12,7 @@ import FAQ from "@/components/FAQ";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import TrafficNoticeBanner from "@/components/TrafficNoticeBanner";
+import EUCodeBanner from "@/components/EUCodeBanner";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -62,6 +63,7 @@ const Index = () => {
       </Helmet>
       <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
         <TrafficNoticeBanner />
+        <EUCodeBanner />
         <Navbar />
         <div id="top" />
         <Hero />

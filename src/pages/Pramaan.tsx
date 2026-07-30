@@ -399,10 +399,31 @@ const Pramaan = () => {
 
       {/* SPEC */}
       <section id="spec" className="container mx-auto max-w-6xl px-4 py-12">
-        <h2 className="text-3xl font-bold mb-2 text-gold-gradient">PRAMAN-SPEC-v1</h2>
+        <div className="flex items-center gap-3 mb-2 flex-wrap">
+          <h2 className="text-3xl font-bold text-gold-gradient">PRAMAN-SPEC-v1</h2>
+          <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 border border-emerald-400/40 rounded-full px-2.5 py-1">
+            C2PA Compatible
+          </span>
+        </div>
         <p className="text-muted-foreground mb-6 max-w-3xl">
           The .praman file is an open, immutable receipt. Mathematically minimal. Politically neutral. Free forever. This is the HTTPS moment for digital truth.
         </p>
+
+        <Card className="p-6 bg-card/60 border-border mb-6">
+          <h3 className="font-bold mb-3">C2PA Content Credentials Compatibility</h3>
+          <p className="text-sm text-muted-foreground mb-3">
+            The .praman receipt is C2PA Content Credentials compatible. When sealing JPEG, PNG, MP4, or PDF files, the
+            signed metadata is embedded directly in the file using C2PA manifest format (APP1 for images, ISO BMFF for
+            video, XMP for documents).
+          </p>
+          <ul className="text-sm space-y-1.5 text-foreground/80">
+            <li>· The signature travels WITH the file, not as a separate receipt</li>
+            <li>· Any C2PA-compatible tool (Adobe Content Authenticity, Microsoft Azure Content Credentials, Truepic) can verify it</li>
+            <li>· The metadata is tamperproof — removing it breaks the file integrity</li>
+            <li>· Article 50 of the EU AI Act requires this in-band metadata</li>
+          </ul>
+        </Card>
+
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="p-6 bg-card/60 border-border">
             <h3 className="font-bold mb-3 flex items-center gap-2"><Cpu className="h-4 w-4 text-emerald-400" /> The Oil-in-Water Mechanism</h3>

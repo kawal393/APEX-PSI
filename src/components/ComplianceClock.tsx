@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AlertTriangle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const DEADLINE = new Date("2026-08-02T00:00:00Z").getTime();
 
@@ -69,6 +70,11 @@ const ComplianceClock = () => {
               Maximum penalties: <span className="text-destructive font-bold">€35,000,000</span> or{" "}
               <span className="text-destructive font-bold">7% of global annual turnover</span>
               <span className="text-muted-foreground/60"> — EU AI Act Art. 99</span>
+            </p>
+            <p className="text-[10px] sm:text-xs text-foreground/70 max-w-2xl mx-auto pt-2">
+              APEX PSI is compliant with Section 1 of the EU Code of Practice on Transparency of AI-Generated Content.
+              In-band signed metadata via C2PA Content Credentials.{" "}
+              <Link to="/eu-ai-act" className="text-gold hover:underline font-semibold">See /eu-ai-act for technical proof.</Link>
             </p>
           </div>
 

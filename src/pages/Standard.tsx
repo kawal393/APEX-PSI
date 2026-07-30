@@ -143,6 +143,12 @@ const Standard = () => {
                   <li>Each receipt links to a public <code className="text-primary">verify=</code> URL — no shared infrastructure required.</li>
                   <li>Anchored to OpenTimestamps (Bitcoin) and Polygon for third-party temporal proof.</li>
                 </ul>
+                <p className="mt-4 pt-4 border-t border-border text-sm text-foreground/80 leading-relaxed">
+                  The Compliance-Receipt header is one of two in-band metadata mechanisms. The second is C2PA Content
+                  Credentials embedded directly in content files (JPEG, PNG, MP4, WAV, PDF). Both use the same
+                  Ed25519 + ML-DSA-65 hybrid signature stack. Both are publicly verifiable. See{" "}
+                  <a href="/eu-ai-act" className="text-primary hover:underline">/eu-ai-act</a> for full documentation.
+                </p>
               </div>
             </div>
 
