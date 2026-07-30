@@ -2,29 +2,35 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, FileSignature, Lock, Globe, BookMarked, PlayCircle, Stamp } from "lucide-react";
+import InBandTool from "@/components/eu/InBandTool";
 
 const IN_BAND = [
   {
-    format: "JPEG / PNG",
-    mech: "C2PA Content Credentials manifest embedded in the APP1 segment. Ed25519 + ML-DSA-65 signed.",
+    format: "JPEG",
+    mech: "APP11 marker segment carrying a JUMBF superbox (C2PA UUID). Multi-segment for manifests over 64 KB. Ed25519 + ML-DSA-65 signed.",
   },
   {
-    format: "MP4 Video",
-    mech: "C2PA Content Credentials manifest in ISO BMFF boxes. Ed25519 + ML-DSA-65 signed.",
+    format: "PNG",
+    mech: "caBX ancillary chunk inserted before IEND, CRC32 protected. Plus invisible RGB-LSB watermark. Ed25519 + ML-DSA-65 signed.",
   },
   {
-    format: "WAV / MP3 Audio",
-    mech: "ID3v2 tags carrying signed metadata blocks.",
+    format: "MP4 / ISO BMFF",
+    mech: "Top-level uuid box with the C2PA UUID d8fec3d6-1b0e-483c-9297-5828877ec481. Ed25519 + ML-DSA-65 signed.",
   },
   {
-    format: "PDF Documents",
-    mech: "XMP metadata + signed PDF/A-3 manifest.",
+    format: "WAV / RIFF Audio",
+    mech: "Dedicated C2PA RIFF chunk appended, RIFF size field repaired. Ed25519 + ML-DSA-65 signed.",
+  },
+  {
+    format: "PDF & any other format",
+    mech: "Trailing signed block after %%EOF, delimited by %%APEX-PSI-C2PA markers. Ed25519 + ML-DSA-65 signed.",
   },
   {
     format: "HTTP AI Responses",
     mech: "Compliance-Receipt header (IETF draft-singh-psi-http-01). Signed Ed25519.",
   },
 ];
+
 
 const CRYPTO_STACK = [
   { name: "Ed25519", spec: "RFC 8032", note: "Fast, deterministic signatures" },
