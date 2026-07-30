@@ -6,7 +6,8 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 // Switch removed — VERIFY is the only mode now
-import { Camera, Shield, Anchor, Download, CheckCircle2, FileCheck, Cpu, Eye, Copy, Sparkles, Share2, MapPin } from "lucide-react";
+import { Camera, Shield, Anchor, Download, CheckCircle2, FileCheck, Cpu, Eye, Copy, Sparkles, Share2, MapPin, Stamp } from "lucide-react";
+import { embedInBandCredentials } from "@/lib/c2pa-inband";
 import { toast } from "sonner";
 
 type AuditEntry = {
@@ -53,6 +54,8 @@ const Pramaan = () => {
   const [blockHeight, setBlockHeight] = useState(simulatedBlockHeight());
   const [gps, setGps] = useState<{ lat: number; lng: number; accuracy?: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastFileRef = useRef<File | null>(null);
+  const [embedding, setEmbedding] = useState(false);
 
   useEffect(() => {
     try {
@@ -70,6 +73,7 @@ const Pramaan = () => {
 
   const handleFile = useCallback(async (file: File) => {
     setBusy(true);
+    lastFileRef.current = file;
     // Fire GPS request in parallel (non-blocking). User may grant/deny.
     let capturedGps: { lat: number; lng: number; accuracy?: number } | null = null;
     const gpsPromise = new Promise<void>((resolve) => {
@@ -203,6 +207,33 @@ const Pramaan = () => {
     }
   };
 
+  const downloadInBand = async () => {
+    const file = lastFileRef.current;
+    if (!file || !current) return;
+    setEmbedding(true);
+    try {
+      const res = await embedInBandCredentials(file, {
+        sourceType: "capture",
+        watermark: true,
+        generator: "APEX-PSI/1.0 (apex-pramaan)",
+        extraAssertions: current.gps
+          ? [{ label: "psi.geolocation", data: { lat: current.gps.lat, lng: current.gps.lng, accuracy_m: current.gps.accuracy ?? null } }]
+          : [],
+      });
+      const url = URL.createObjectURL(res.blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = res.fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success(`In-band credentials embedded — ${res.mechanism}`);
+    } catch (e: any) {
+      toast.error(e?.message || "In-band embedding failed");
+    } finally {
+      setEmbedding(false);
+    }
+  };
+
   const copyHash = (h: string) => {
     navigator.clipboard.writeText(h);
     toast.success("SHA-256 copied");
@@ -320,6 +351,9 @@ const Pramaan = () => {
                   </Button>
                   <Button onClick={downloadPramanJSON} size="sm" variant="heroOutline">
                     <Download className="h-3 w-3 mr-1" /> .praman JSON
+                  </Button>
+                  <Button onClick={downloadInBand} size="sm" variant="heroOutline" disabled={embedding}>
+                    <Stamp className="h-3 w-3 mr-1" /> {embedding ? "Embedding…" : "Marked file (in-band + watermark)"}
                   </Button>
                 </div>
               </div>
