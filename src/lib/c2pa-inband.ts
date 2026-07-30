@@ -308,6 +308,8 @@ export interface EmbedOptions {
   watermark?: boolean; // rasters only; forces lossless PNG output
   extraAssertions?: Array<{ label: string; data: Record<string, unknown> }>;
   verifyBase?: string;
+  /** Default "institutional" — falls back to a self seal if the signer is unreachable. */
+  mode?: SealMode;
 }
 
 export interface EmbedResult {
@@ -320,7 +322,11 @@ export interface EmbedResult {
   preEmbedSha256: string;
   finalSha256: string;
   claimDigest: string;
+  /** Mode actually used (may differ from the request if the signer was down). */
+  mode: SealMode;
+  issuer: string;
 }
+
 
 const VERIFY_BASE = "https://digital-gallows.apex-infrastructure.com/verify";
 
