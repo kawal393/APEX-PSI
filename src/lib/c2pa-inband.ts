@@ -25,7 +25,10 @@
 // asset OR of the claim breaks either the binding or the hybrid signature.
 // ═══════════════════════════════════════════════════════════════════════
 
-import { hybridSignEphemeral, hybridVerify, HybridSignature, HYBRID_SUITE } from "@/lib/psi-pqc";
+import {
+  hybridSignEphemeral, hybridSignInstitutional, hybridVerify, isInstitutionalSignature,
+  HybridSignature, HYBRID_SUITE, ISSUER_ID, TRUST_ANCHOR_URL,
+} from "@/lib/psi-pqc";
 import { jcsCanonicalize } from "@/lib/psi-canonicalize";
 import { watermarkImageToPng, detectWatermarkInBlob, WM_METHOD, WatermarkDetection } from "@/lib/psi-watermark";
 
@@ -34,6 +37,17 @@ export const PSI_MANIFEST_SPEC = "PSI-INBAND-v1";
 export const C2PA_UUID = new Uint8Array([
   0xd8, 0xfe, 0xc3, 0xd6, 0x1b, 0x0e, 0x48, 0x3c, 0x92, 0x97, 0x58, 0x28, 0x87, 0x7e, 0xc4, 0x81,
 ]);
+
+/**
+ * Seal mode.
+ *  institutional — signed by the published APEX PSI identity. Attributable:
+ *                  the manifest chains to /.well-known/apex-psi-trust-anchor.json
+ *  self          — ephemeral random keypair, discarded after signing. Proves
+ *                  integrity only; NOT attributable to any identity.
+ */
+export type SealMode = "institutional" | "self";
+
+export const SELF_SEAL_ISSUER = "urn:apex-psi:issuer:self-sealed";
 
 export const DIGITAL_SOURCE_TYPES = {
   aiGenerated: "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
@@ -51,6 +65,10 @@ export interface PsiClaim {
   format: string;
   title: string;
   signature_suite: typeof HYBRID_SUITE;
+  /** Identity that signed this claim, or the self-sealed sentinel. */
+  issuer: string;
+  /** Where the public half of the issuer identity is published. */
+  trust_anchor: string | null;
   assertions: Array<{ label: string; data: Record<string, unknown> }>;
   hard_binding: { alg: "sha256"; pre_embed_sha256: string; size_bytes: number };
   verify_url: string;
@@ -61,6 +79,7 @@ export interface PsiManifest {
   claim: PsiClaim;
   signature: HybridSignature;
 }
+
 
 // ── byte helpers ───────────────────────────────────────────────────────
 const enc = new TextEncoder();
@@ -289,6 +308,8 @@ export interface EmbedOptions {
   watermark?: boolean; // rasters only; forces lossless PNG output
   extraAssertions?: Array<{ label: string; data: Record<string, unknown> }>;
   verifyBase?: string;
+  /** Default "institutional" — falls back to a self seal if the signer is unreachable. */
+  mode?: SealMode;
 }
 
 export interface EmbedResult {
@@ -301,7 +322,11 @@ export interface EmbedResult {
   preEmbedSha256: string;
   finalSha256: string;
   claimDigest: string;
+  /** Mode actually used (may differ from the request if the signer was down). */
+  mode: SealMode;
+  issuer: string;
 }
+
 
 const VERIFY_BASE = "https://digital-gallows.apex-infrastructure.com/verify";
 
@@ -332,24 +357,30 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
 
   const preEmbedSha256 = await sha256Hex(bytes);
 
-  const claim: PsiClaim = {
+  const requestedMode: SealMode = opts.mode ?? "institutional";
+  const instanceId = `urn:uuid:${crypto.randomUUID()}`;
+  const createdAt = new Date().toISOString();
+
+  const buildClaim = (mode: SealMode): PsiClaim => ({
     spec: PSI_MANIFEST_SPEC,
     claim_generator: opts.generator ?? "APEX-PSI/1.0 (apex-pramaan)",
-    instance_id: `urn:uuid:${crypto.randomUUID()}`,
-    created_at: new Date().toISOString(),
+    instance_id: instanceId,
+    created_at: createdAt,
     format: mime,
     title: outName,
     signature_suite: HYBRID_SUITE,
+    issuer: mode === "institutional" ? ISSUER_ID : SELF_SEAL_ISSUER,
+    trust_anchor: mode === "institutional" ? TRUST_ANCHOR_URL : null,
     assertions: [
       {
         label: "c2pa.actions",
         data: {
           actions: [
             {
-              action: sourceType === "capture" ? "c2pa.created" : "c2pa.created",
+              action: "c2pa.created",
               digitalSourceType: DIGITAL_SOURCE_TYPES[sourceType],
               softwareAgent: opts.generator ?? "APEX PSI",
-              when: new Date().toISOString(),
+              when: createdAt,
             },
           ],
         },
@@ -365,10 +396,25 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
     ],
     hard_binding: { alg: "sha256", pre_embed_sha256: preEmbedSha256, size_bytes: bytes.length },
     verify_url: `${opts.verifyBase ?? VERIFY_BASE}?h=${preEmbedSha256}`,
-  };
+  });
 
-  const canonical = jcsCanonicalize(claim);
-  const signature = await hybridSignEphemeral(canonical);
+  let mode: SealMode = requestedMode;
+  let claim = buildClaim(mode);
+  let signature: HybridSignature;
+  if (mode === "institutional") {
+    try {
+      signature = await hybridSignInstitutional(jcsCanonicalize(claim));
+    } catch {
+      // Signer unreachable → degrade to an honest self seal rather than
+      // claiming an attribution we cannot prove.
+      mode = "self";
+      claim = buildClaim(mode);
+      signature = await hybridSignEphemeral(jcsCanonicalize(claim));
+    }
+  } else {
+    signature = await hybridSignEphemeral(jcsCanonicalize(claim));
+  }
+
   const manifest: PsiManifest = { magic: PSI_BOX_MAGIC, claim, signature };
   const box = packBox(manifest);
 
@@ -393,8 +439,11 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
     preEmbedSha256,
     finalSha256: await sha256Hex(out),
     claimDigest: signature.message_hash,
+    mode,
+    issuer: claim.issuer,
   };
 }
+
 
 function stripExistingBox(bytes: Uint8Array, container: Container): Uint8Array {
   if (container === "jpeg") return stripJpeg(bytes);
@@ -425,6 +474,12 @@ export interface InBandVerification {
   computedSha256: string | null;
   watermark: WatermarkDetection | null;
   verdict: "VALID" | "TAMPERED" | "UNSIGNED";
+  /** Issuer declared in the claim (or null when unsigned). */
+  issuer: string | null;
+  /** True only if the signing keys match the published APEX PSI trust anchor. */
+  issuerVerified: boolean;
+  /** Human-readable attribution verdict. */
+  attribution: "APEX PSI institutional seal" | "Self-sealed (integrity only)" | "Unknown issuer" | "None";
   notes: string[];
 }
 
@@ -448,6 +503,7 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
       signatureValid: false, ed25519Valid: false, mldsaValid: false, bindingValid: false,
       computedSha256: await sha256Hex(bytes), watermark,
       verdict: "UNSIGNED",
+      issuer: null, issuerVerified: false, attribution: "None",
       notes: ["No APEX PSI in-band manifest present in this asset."],
     };
   }
@@ -466,6 +522,21 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
     if (!watermark.present) notes.push("Declared watermark could not be recovered (asset was re-encoded or cropped).");
   }
 
+  // Attribution: do the signing keys actually match the published anchor?
+  const issuer = manifest.claim.issuer ?? null;
+  const issuerVerified = sig.ok && (await isInstitutionalSignature(manifest.signature));
+  let attribution: InBandVerification["attribution"];
+  if (issuerVerified) {
+    attribution = "APEX PSI institutional seal";
+    notes.push(`Signing keys match the published trust anchor (${issuer}). This seal is attributable.`);
+  } else if (issuer === SELF_SEAL_ISSUER || issuer === null) {
+    attribution = "Self-sealed (integrity only)";
+    notes.push("Self seal: an ephemeral keypair signed this claim. It proves the bytes are unmodified, not who sealed them.");
+  } else {
+    attribution = "Unknown issuer";
+    notes.push(`Claim declares issuer "${issuer}" but the signing keys do not match the published APEX PSI trust anchor.`);
+  }
+
   const ok = sig.ok && bindingValid;
   if (ok) notes.push("Hybrid signature and hard binding both verify. Asset is unmodified since sealing.");
 
@@ -474,7 +545,9 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
     signatureValid: sig.ok, ed25519Valid: sig.ed25519_ok, mldsaValid: sig.mldsa_ok,
     bindingValid, computedSha256, watermark,
     verdict: ok ? "VALID" : "TAMPERED",
+    issuer, issuerVerified, attribution,
     notes,
+
   };
 }
 

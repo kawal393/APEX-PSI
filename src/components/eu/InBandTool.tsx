@@ -2,16 +2,22 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
-  Upload, Download, ShieldCheck, ShieldAlert, ShieldX, Loader2, FileSignature, Fingerprint,
+  Upload, Download, ShieldCheck, ShieldAlert, ShieldX, Loader2, FileSignature, Fingerprint, BadgeCheck,
 } from "lucide-react";
 import {
-  embedInBandCredentials, verifyInBandCredentials, EmbedResult, InBandVerification, SourceType,
+  embedInBandCredentials, verifyInBandCredentials, EmbedResult, InBandVerification, SourceType, SealMode,
 } from "@/lib/c2pa-inband";
+import { TRUST_ANCHOR_URL } from "@/lib/psi-pqc";
 
 const SOURCE_OPTIONS: Array<{ id: SourceType; label: string; hint: string }> = [
   { id: "aiGenerated", label: "AI-generated", hint: "trainedAlgorithmicMedia" },
   { id: "aiEdited", label: "AI-modified", hint: "compositeWithTrainedAlgorithmicMedia" },
   { id: "capture", label: "Camera / human capture", hint: "digitalCapture" },
+];
+
+const MODE_OPTIONS: Array<{ id: SealMode; label: string; hint: string }> = [
+  { id: "institutional", label: "Institutional seal", hint: "Signed by the published APEX PSI identity — attributable." },
+  { id: "self", label: "Self seal", hint: "Ephemeral keypair, fully offline — proves integrity, not identity." },
 ];
 
 const Row = ({ k, v, mono = true }: { k: string; v: string; mono?: boolean }) => (
@@ -24,6 +30,7 @@ const Row = ({ k, v, mono = true }: { k: string; v: string; mono?: boolean }) =>
 const InBandTool = () => {
   const [busy, setBusy] = useState<null | "seal" | "verify">(null);
   const [sourceType, setSourceType] = useState<SourceType>("aiGenerated");
+  const [mode, setMode] = useState<SealMode>("institutional");
   const [watermark, setWatermark] = useState(true);
   const [sealed, setSealed] = useState<EmbedResult | null>(null);
   const [check, setCheck] = useState<InBandVerification | null>(null);
@@ -37,16 +44,22 @@ const InBandTool = () => {
       const res = await embedInBandCredentials(file, {
         sourceType,
         watermark,
+        mode,
         generator: "APEX-PSI/1.0 (eu-code-of-practice-section-1)",
       });
       setSealed(res);
-      toast.success(`In-band credentials written — ${res.mechanism}`);
+      if (mode === "institutional" && res.mode === "self") {
+        toast.warning("Institutional signer unreachable — fell back to a self seal (integrity only).");
+      } else {
+        toast.success(`In-band credentials written — ${res.mechanism}`);
+      }
     } catch (e: any) {
       toast.error(e?.message || "Embedding failed");
     } finally {
       setBusy(null);
     }
   };
+
 
   const doVerify = async (file: File) => {
     setBusy("verify");
@@ -113,6 +126,28 @@ const InBandTool = () => {
             </button>
           ))}
         </div>
+        <div className="flex flex-wrap gap-2 mb-1">
+          {MODE_OPTIONS.map((o) => (
+            <button
+              key={o.id}
+              onClick={() => setMode(o.id)}
+              className={`rounded-lg border px-3 py-1.5 text-[11px] font-bold transition-colors ${
+                mode === o.id
+                  ? "border-gold/60 bg-gold/10 text-gold"
+                  : "border-border text-muted-foreground hover:border-gold/30"
+              }`}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <p className="text-[11px] text-muted-foreground mb-3">
+          {MODE_OPTIONS.find((o) => o.id === mode)?.hint}{" "}
+          <a href={TRUST_ANCHOR_URL} target="_blank" rel="noreferrer" className="underline hover:text-gold">
+            Trust anchor
+          </a>
+        </p>
+
         <label className="flex items-center gap-2 text-xs text-foreground/80 mb-4 cursor-pointer">
           <input type="checkbox" checked={watermark} onChange={(e) => setWatermark(e.target.checked)} className="accent-[hsl(var(--gold))]" />
           Also embed invisible watermark (images → lossless PNG output)
@@ -131,12 +166,19 @@ const InBandTool = () => {
 
         {sealed && (
           <div className="mt-4">
+            <Row
+              k="Seal mode"
+              v={sealed.mode === "institutional" ? "Institutional — attributable to APEX PSI" : "Self seal — integrity only"}
+              mono={false}
+            />
+            <Row k="Issuer" v={sealed.issuer} />
             <Row k="Container" v={`${sealed.container.toUpperCase()} — ${sealed.mechanism}`} mono={false} />
             <Row k="Signature suite" v={sealed.manifest.claim.signature_suite} />
             <Row k="Watermark" v={sealed.watermarked ? "psi.lsb-spread-v1 (RGB LSB)" : "not applied"} />
             <Row k="Hard binding" v={sealed.preEmbedSha256} />
             <Row k="Sealed file SHA-256" v={sealed.finalSha256} />
             <Row k="Claim digest" v={sealed.claimDigest} />
+
             <div className="flex flex-wrap gap-2 mt-4">
               <Button size="sm" onClick={download}>
                 <Download className="h-3.5 w-3.5 mr-2" /> Download marked file
@@ -189,7 +231,21 @@ const InBandTool = () => {
               />
               <span className="text-sm font-black tracking-widest">{check.verdict}</span>
             </div>
+            {check.found && (
+              <div
+                className={`flex items-start gap-2 rounded-lg border p-3 mb-3 ${
+                  check.issuerVerified ? "border-gold/40 bg-gold/5" : "border-border bg-muted/10"
+                }`}
+              >
+                <BadgeCheck className={`h-4 w-4 mt-0.5 ${check.issuerVerified ? "text-gold" : "text-muted-foreground"}`} />
+                <div>
+                  <div className="text-xs font-black uppercase tracking-widest text-foreground">{check.attribution}</div>
+                  <div className="text-[11px] text-muted-foreground break-all font-mono">{check.issuer ?? "—"}</div>
+                </div>
+              </div>
+            )}
             <Row k="Container" v={`${check.container?.toUpperCase() ?? "—"} — ${check.mechanism ?? "—"}`} mono={false} />
+
             <Row k="Ed25519" v={check.ed25519Valid ? "verified" : "not verified"} />
             <Row k="ML-DSA-65" v={check.mldsaValid ? "verified" : "not verified"} />
             <Row k="Hard binding" v={check.bindingValid ? "matches asset bytes" : "mismatch"} />
