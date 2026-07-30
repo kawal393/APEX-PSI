@@ -76,9 +76,14 @@ serve(async (req) => {
     }
   }
 
-  if (!isAuthorized) {
+  // Read-only public transparency view: the lattice status board is a public
+  // liveness dashboard, so it is readable without credentials.
+  const isPublicRead = action === "lattice-status";
+
+  if (!isAuthorized && !isPublicRead) {
     return json({ error: "Unauthorized — valid X-Platform-Key or Bearer token required" }, 401);
   }
+
 
   // ── ACTION: node-status ───────────────────────────────────────────────────
   if (action === "node-status") {
