@@ -53,6 +53,7 @@ import UniversalSeal from "./pages/UniversalSeal";
 import EmbedSeal from "./pages/EmbedSeal";
 import Forge from "./pages/Forge";
 import Standard from "./pages/Standard";
+import Spec from "./pages/Spec";
 import Header from "./pages/Header";
 import Foundation from "./pages/Foundation";
 import EUAIAct from "./pages/EUAIAct";
