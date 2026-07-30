@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
+import Section1Compliance from "@/components/eu/Section1Compliance";
+
 
 interface Deadline {
   date: string;
