@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowRight, Shield, Globe, Clock, Zap, Camera } from "lucide-react";
+import { ArrowRight, Shield, Globe, Clock, Zap, Camera, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import apexLogo from "@/assets/apex-logo.png";
 import PWAInstallButton from "@/components/PWAInstallButton";
