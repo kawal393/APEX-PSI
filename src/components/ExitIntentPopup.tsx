@@ -25,7 +25,7 @@ export default function ExitIntentPopup() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-md rounded-2xl border border-primary/30 bg-card shadow-2xl shadow-primary/10 p-8 text-center"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[92vw] max-w-lg rounded-2xl border border-primary/30 bg-card shadow-2xl shadow-primary/10 p-7 text-left"
           >
             <button
               onClick={dismiss}
@@ -34,35 +34,28 @@ export default function ExitIntentPopup() {
               <X className="h-4 w-4" />
             </button>
 
-            <div className="h-14 w-14 rounded-2xl bg-primary/15 flex items-center justify-center mx-auto mb-5">
-              <Shield className="h-7 w-7 text-primary" />
+            <div className="h-12 w-12 rounded-2xl bg-primary/15 flex items-center justify-center mb-4">
+              <Shield className="h-6 w-6 text-primary" />
             </div>
 
-            <h2 className="text-xl font-bold text-foreground mb-2">
-              Wait — Is Your AI Compliant?
+            <h2 className="text-lg font-bold text-foreground mb-1">
+              Before you go — take the Article 50 pack
             </h2>
-            <p className="text-sm text-muted-foreground mb-1">
-              The EU AI Act deadline is <span className="text-primary font-semibold">August 2, 2026</span>.
-            </p>
-            <p className="text-sm text-muted-foreground mb-6">
-              Fines up to <span className="text-destructive font-semibold">€35M or 7% of global revenue</span>.
-              Get your free compliance score in 2 minutes.
+            <p className="text-sm text-muted-foreground mb-4">
+              The EU AI Act transparency obligations apply from{" "}
+              <span className="text-primary font-semibold">August 2, 2026</span>. This is the
+              spec, the clause mapping and a sealed sample receipt you can verify yourself.
             </p>
 
-            <button
-              onClick={handleCTA}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold py-3 px-6 hover:brightness-110 active:scale-[0.98] transition-all text-sm"
-            >
-              Free Compliance Assessment
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            <LeadCaptureOffer intent="exit_intent" variant="inline" subtitle="" onDone={dismiss} />
 
             <button
               onClick={dismiss}
               className="mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
-              No thanks, I'm already compliant
+              No thanks
             </button>
+
           </motion.div>
         </>
       )}
