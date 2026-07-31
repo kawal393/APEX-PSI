@@ -12,10 +12,11 @@ const corsHeaders = {
 };
 
 const SITE = "https://digital-gallows.apex-infrastructure.com";
-// Resend sandbox sender: delivers only to the operator address until a
-// sending domain is verified in Resend. Swap to noreply@apex-infrastructure.com
-// once that domain is verified and pack delivery goes out automatically.
-const FROM_ADDRESS = "APEX PSI <onboarding@resend.dev>";
+// Branded sender. Starts delivering to leads automatically the moment
+// apex-infrastructure.com is verified in Resend. Until then Resend rejects it
+// (403) and we fall back to the sandbox sender, which still reaches the operator.
+const FROM_ADDRESS = "APEX PSI <noreply@apex-infrastructure.com>";
+const FALLBACK_FROM = "APEX PSI <onboarding@resend.dev>";
 
 const OPERATOR_EMAIL = "apex.manraj888@gmail.com";
 
