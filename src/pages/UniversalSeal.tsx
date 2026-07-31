@@ -337,9 +337,17 @@ async function apexSeal(file) {
                 <div className="flex justify-center md:justify-end">
                   <ApexVerifiedStamp hash={result.sha256} btcBlock={result.receipt_id.slice(-6)} size="md" />
                 </div>
+                </div>
+                <div className="mt-6 pt-6 border-t border-border/60">
+                  <p className="text-sm font-semibold text-foreground mb-2">
+                    Need this to hold up with a regulator?
+                  </p>
+                  <LeadCaptureOffer intent="sealed_artifact" variant="inline" />
+                </div>
               </div>
             )}
           </Card>
+
 
           <Card className="p-6 bg-card/60 backdrop-blur-xl border-border">
             <div className="flex items-center gap-2 mb-4">
