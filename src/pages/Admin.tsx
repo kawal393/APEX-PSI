@@ -198,10 +198,13 @@ const Admin = () => {
             <TabsTrigger value="intelligence" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Radar className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> Intelligence
             </TabsTrigger>
+            <TabsTrigger value="campaigns" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Megaphone className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> Campaigns
+            </TabsTrigger>
             <TabsTrigger value="ai" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-
               <Shield className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> AI
             </TabsTrigger>
+
             <TabsTrigger value="customers" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> Customers
             </TabsTrigger>
