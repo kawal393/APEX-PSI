@@ -12,9 +12,11 @@ const corsHeaders = {
 };
 
 const SITE = "https://digital-gallows.apex-infrastructure.com";
-// Verified sending domain in Resend. Swap to an apex-infrastructure.com
-// address once that domain is verified.
-const FROM_ADDRESS = "APEX PSI <noreply@www.theinevitableman.company>";
+// Resend sandbox sender: delivers only to the operator address until a
+// sending domain is verified in Resend. Swap to noreply@apex-infrastructure.com
+// once that domain is verified and pack delivery goes out automatically.
+const FROM_ADDRESS = "APEX PSI <onboarding@resend.dev>";
+
 const OPERATOR_EMAIL = "apex.manraj888@gmail.com";
 
 
