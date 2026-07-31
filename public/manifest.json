@@ -1,20 +1,44 @@
 {
-  "name": "APEX PSI",
-  "short_name": "APEX",
+  "name": "APEX PSI — Verifiable AI Governance",
+  "short_name": "APEX PSI",
   "description": "EU AI Act Compliance Platform — Provable Stateful Integrity",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#070810",
   "theme_color": "#d4a017",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.png",
+      "src": "/favicon-32.png?v=5",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "/apple-touch-icon.png",
+      "src": "/favicon-96.png?v=5",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-192.png?v=5",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-512.png?v=5",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-512.png?v=5",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png?v=5",
       "sizes": "180x180",
       "type": "image/png"
     }
