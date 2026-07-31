@@ -624,6 +624,69 @@ export type Database = {
         }
         Relationships: []
       }
+      marketing_leads: {
+        Row: {
+          company: string | null
+          country: string | null
+          created_at: string
+          email: string
+          id: string
+          intent: string
+          landing_page: string | null
+          name: string | null
+          referrer: string | null
+          score: number
+          source_page: string | null
+          status: string
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          intent?: string
+          landing_page?: string | null
+          name?: string | null
+          referrer?: string | null
+          score?: number
+          source_page?: string | null
+          status?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          intent?: string
+          landing_page?: string | null
+          name?: string | null
+          referrer?: string | null
+          score?: number
+          source_page?: string | null
+          status?: string
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: []
+      }
       monitoring_schedules: {
         Row: {
           created_at: string
@@ -1217,6 +1280,7 @@ export type Database = {
           country: string | null
           created_at: string
           id: string
+          landing_page: string | null
           language: string | null
           page_path: string
           referrer: string | null
@@ -1225,6 +1289,11 @@ export type Database = {
           session_id: string | null
           user_agent: string | null
           user_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
           visitor_id: string
         }
         Insert: {
@@ -1232,6 +1301,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           id?: string
+          landing_page?: string | null
           language?: string | null
           page_path: string
           referrer?: string | null
@@ -1240,6 +1310,11 @@ export type Database = {
           session_id?: string | null
           user_agent?: string | null
           user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
           visitor_id: string
         }
         Update: {
@@ -1247,6 +1322,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           id?: string
+          landing_page?: string | null
           language?: string | null
           page_path?: string
           referrer?: string | null
@@ -1255,6 +1331,11 @@ export type Database = {
           session_id?: string | null
           user_agent?: string | null
           user_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
           visitor_id?: string
         }
         Relationships: []
