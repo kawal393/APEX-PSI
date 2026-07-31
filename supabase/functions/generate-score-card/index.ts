@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
   ${industry ? `<text x="600" y="510" text-anchor="middle" fill="#666" font-size="16" font-family="system-ui">${escapeXml(industry)}</text>` : ""}
   
   <!-- CTA -->
-  <text x="600" y="580" text-anchor="middle" fill="#d4a017" font-size="14" font-family="system-ui" opacity="0.7">Check your compliance score → apex-psi.apex-infrastructure.com/assess</text>
+  <text x="600" y="580" text-anchor="middle" fill="#d4a017" font-size="14" font-family="system-ui" opacity="0.7">Check your compliance score → digital-gallows.apex-infrastructure.com/assess</text>
   
   <!-- Decorative -->
   <rect x="0" y="626" width="1200" height="4" fill="url(#gold)"/>

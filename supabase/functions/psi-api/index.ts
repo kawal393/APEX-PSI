@@ -244,7 +244,7 @@ Deno.serve(async (req) => {
       "GET /v1/health": "Liveness probe",
     },
     auth: "Authorization: Bearer apex_sk_…  OR  apex_ntry_…",
-    docs: "https://apex-psi.apex-infrastructure.com/api",
+    docs: "https://digital-gallows.apex-infrastructure.com/api",
   });
 
   if (path === "/v1/health") return json({ ok: true, ts: new Date().toISOString() });

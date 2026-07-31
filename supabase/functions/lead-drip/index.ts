@@ -27,7 +27,7 @@ const DRIP_EMAILS = [
           <li><strong style="color:#e8e0d0;">Zero-Knowledge</strong> — Prove compliance without revealing your models.</li>
         </ul>
         <div style="text-align:center;margin:32px 0;">
-          <a href="https://apex-psi.apex-infrastructure.com/assess" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Get Your Free Compliance Score →</a>
+          <a href="https://digital-gallows.apex-infrastructure.com/assess" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Get Your Free Compliance Score →</a>
         </div>
         <hr style="border:none;border-top:1px solid #1a1a2e;margin:32px 0;">
         <p style="color:#555;font-size:11px;text-align:center;">APEX PSI · EU AI Act Compliance Platform</p>
@@ -50,7 +50,7 @@ const DRIP_EMAILS = [
         <p style="color:#a89878;line-height:1.7;">Most companies are using <strong style="color:#e8e0d0;">annual audits</strong> — checking compliance once a year. That's like checking your smoke alarm once a year and hoping nothing burns down in between.</p>
         <p style="color:#a89878;line-height:1.7;">APEX uses <strong style="color:#d4a017;">Provable Stateful Integrity (PSI)</strong> to verify compliance <em>continuously</em> and <em>cryptographically</em>. Every state change is committed, challenged, and proven.</p>
         <div style="text-align:center;margin:32px 0;">
-          <a href="https://apex-psi.apex-infrastructure.com/gallows" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Try the Free Gallows Engine →</a>
+          <a href="https://digital-gallows.apex-infrastructure.com/gallows" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Try the Free Gallows Engine →</a>
         </div>
         <hr style="border:none;border-top:1px solid #1a1a2e;margin:32px 0;">
         <p style="color:#555;font-size:11px;text-align:center;">APEX PSI · EU AI Act Compliance Platform</p>
@@ -89,7 +89,7 @@ const DRIP_EMAILS = [
         </table>
         <p style="color:#a89878;line-height:1.7;">Plans start at <strong style="color:#e8e0d0;">$499/mo</strong>. Every day you wait is another day of unverified compliance risk.</p>
         <div style="text-align:center;margin:32px 0;">
-          <a href="https://apex-psi.apex-infrastructure.com/auth" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Start Your Free Trial →</a>
+          <a href="https://digital-gallows.apex-infrastructure.com/auth" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Start Your Free Trial →</a>
         </div>
         <hr style="border:none;border-top:1px solid #1a1a2e;margin:32px 0;">
         <p style="color:#555;font-size:11px;text-align:center;">APEX PSI · EU AI Act Compliance Platform<br>Reply STOP to unsubscribe</p>

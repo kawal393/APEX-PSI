@@ -66,7 +66,7 @@ const Badge = () => {
 </svg>`;
 
   const embedCode = `<!-- APEX PSI Trust Badge -->
-<a href="https://apex-psi.apex-infrastructure.com/verify" target="_blank" rel="noopener noreferrer" title="PSI Verified by APEX PSI">
+<a href="https://digital-gallows.apex-infrastructure.com/verify" target="_blank" rel="noopener noreferrer" title="PSI Verified by APEX PSI">
   <img src="data:image/svg+xml,${encodeURIComponent(badgeSvg)}" alt="PSI Verified - ${companyName}" width="${s.w}" height="${s.h}" />
 </a>`;
 
@@ -245,7 +245,7 @@ const Badge = () => {
               <EmbedCodeGenerator
                 title="EU AI Act Countdown Widget"
                 description="Embed a live countdown to the August 2, 2026 enforcement deadline on any website. Drives traffic back to APEX."
-                embedUrl="https://apex-psi.apex-infrastructure.com/embed/countdown"
+                embedUrl="https://digital-gallows.apex-infrastructure.com/embed/countdown"
                 defaultWidth={400}
                 defaultHeight={220}
               />
@@ -253,7 +253,7 @@ const Badge = () => {
                 <EmbedCodeGenerator
                   title="Live Compliance Pulse"
                   description="Show your real-time compliance status on your website. Auto-updates as your score changes."
-                  embedUrl={`https://apex-psi.apex-infrastructure.com/embed/pulse/${user?.id || ""}`}
+                  embedUrl={`https://digital-gallows.apex-infrastructure.com/embed/pulse/${user?.id || ""}`}
                   defaultWidth={320}
                   defaultHeight={160}
                 />

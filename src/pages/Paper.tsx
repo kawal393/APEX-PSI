@@ -241,7 +241,7 @@ The reference implementation is open source (MIT License):
 
   Repository: github.com/apex-intelligence-empire
   SDK:        apex-psi-sdk (npm package)
-  Live:       apex-psi.apex-infrastructure.com
+  Live:       digital-gallows.apex-infrastructure.com
 
 Runtime: Deno (Edge Functions), React (Frontend)
 Database: PostgreSQL with Row-Level Security

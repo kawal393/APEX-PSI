@@ -50,7 +50,7 @@ const EmbedPulse = () => {
       padding: 16,
     }}>
       <a
-        href="https://apex-psi.apex-infrastructure.com/verify"
+        href="https://digital-gallows.apex-infrastructure.com/verify"
         target="_blank"
         rel="noopener noreferrer"
         style={{

@@ -48,7 +48,7 @@ const ScoreCard = () => {
   else if (score >= 50) { color = "text-warning"; Icon = ShieldAlert; }
 
   const ogImageUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-score-card?id=${shareId}`;
-  const pageUrl = `https://apex-psi.apex-infrastructure.com/score/${shareId}`;
+  const pageUrl = `https://digital-gallows.apex-infrastructure.com/score/${shareId}`;
 
   const shareOnLinkedIn = () => {
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`, "_blank");

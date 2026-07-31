@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
           proof_structure: "Merkle Inclusion Proof",
           canonicalization: "RFC 8785 (JCS)",
         },
-        verification_portal: "https://apex-psi.apex-infrastructure.com/verify",
+        verification_portal: "https://digital-gallows.apex-infrastructure.com/verify",
         queried_at: new Date().toISOString(),
         engine: "APEX PSI Protocol v1.0",
       });
@@ -128,8 +128,8 @@ Deno.serve(async (req) => {
         registry: "/verify-status?action=registry&limit=50&offset=0",
         statistics: "/verify-status?action=stats",
       },
-      documentation: "https://apex-psi.apex-infrastructure.com/protocol",
-      verification_portal: "https://apex-psi.apex-infrastructure.com/verify",
+      documentation: "https://digital-gallows.apex-infrastructure.com/protocol",
+      verification_portal: "https://digital-gallows.apex-infrastructure.com/verify",
     });
   } catch (err) {
     console.error("Verify-status error:", err);
