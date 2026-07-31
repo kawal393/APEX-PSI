@@ -43,5 +43,5 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-Sitemap: https://apex-psi.lovable.app/sitemap.xml
+Sitemap: https://digital-gallows.apex-infrastructure.com/sitemap.xml
 Sitemap: https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/dynamic-sitemap
