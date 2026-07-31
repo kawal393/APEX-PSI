@@ -122,7 +122,7 @@ export default function LeadCaptureOffer({
   if (variant === "inline") {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-muted-foreground">{subtitle}</p>
+        {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
         {form}
         <p className="text-[11px] text-muted-foreground">
           One email with the pack. No tracking pixels, no third-party sharing.
