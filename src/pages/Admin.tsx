@@ -229,6 +229,12 @@ const Admin = () => {
             <SovereignIntelligence data={siteIntelligence} />
           </TabsContent>
 
+          <TabsContent value="campaigns">
+            <CampaignPanel campaigns={campaigns} leads={marketingLeads} />
+          </TabsContent>
+
+
+
           <TabsContent value="ai">
             <AdminAIChat />
           </TabsContent>
