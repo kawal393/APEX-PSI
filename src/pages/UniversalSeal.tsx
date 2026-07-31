@@ -235,7 +235,7 @@ async function apexSeal(file) {
           name="description"
           content="Stamp any photo, video, audio, document, or file with APEX PSI · APEX Pramaan. Client-side SHA-256, anchored receipt, verifiable forever. Free, open, no login."
         />
-        <link rel="canonical" href="https://apex-psi.lovable.app/seal" />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/seal" />
       </Helmet>
       <Navbar />
 

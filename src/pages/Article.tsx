@@ -57,7 +57,7 @@ export default function Article() {
     );
   }
 
-  const url = `https://apex-psi.lovable.app/articles/${article.slug}`;
+  const url = `https://digital-gallows.apex-infrastructure.com/articles/${article.slug}`;
 
   return (
     <>
@@ -85,7 +85,7 @@ export default function Article() {
           publisher: {
             "@type": "Organization",
             name: "APEX PSI",
-            url: "https://apex-psi.lovable.app",
+            url: "https://digital-gallows.apex-infrastructure.com",
           },
           mainEntityOfPage: url,
         })}</script>

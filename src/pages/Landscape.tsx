@@ -90,7 +90,7 @@ const Landscape = () => (
         name="description"
         content="The toll booth where law, cryptography, and compliance meet. APEX PSI versus ZKMLOps, SCITT VeritasChain (draft-ietf-scitt-vcp), Google Longfellow, and DAAP (draft-aylward-daap-v2-00)."
       />
-      <link rel="canonical" href="https://apex-psi.lovable.app/landscape" />
+      <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/landscape" />
     </Helmet>
 
     <Navbar />

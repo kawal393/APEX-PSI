@@ -418,7 +418,7 @@ const Paper = () => {
   year         = {2026},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.PENDING},
-  url          = {https://apex-psi.lovable.app/paper},
+  url          = {https://digital-gallows.apex-infrastructure.com/paper},
   note         = {Companion IETF draft: draft-singh-psi-http-01}
 }`}
               </pre>

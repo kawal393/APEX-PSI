@@ -32,7 +32,7 @@ const PROJECT_ID = "qhtntebpcribjiwrdtdd";
 const INSPECT_URL = `https://${PROJECT_ID}.supabase.co/functions/v1/inspect-header`;
 
 const Header = () => {
-  const [url, setUrl] = useState("https://apex-psi.lovable.app/api/echo");
+  const [url, setUrl] = useState("https://digital-gallows.apex-infrastructure.com/api/echo");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<InspectResult | null>(null);
 
