@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
         method: "POST",
         headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          from: "APEX PSI <onboarding@resend.dev>",
+          from: FROM_ADDRESS,
           to: [email],
           subject,
           html,
@@ -123,7 +123,32 @@ Deno.serve(async (req) => {
       });
       delivered = res.ok;
       if (!res.ok) console.error(`Resend failed [${res.status}]: ${await res.text()}`);
+
+      // Always notify the operator so no lead is lost, even if delivery fails.
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: FROM_ADDRESS,
+          to: [OPERATOR_EMAIL],
+          subject: `New lead (${score}): ${email}${company ? " · " + company : ""}`,
+          html: `<pre style="font-family:ui-monospace,monospace;font-size:13px">${JSON.stringify(
+            {
+              email, name, company, intent, score,
+              source_page: sourcePage,
+              utm_source: pick("utm_source"),
+              utm_medium: pick("utm_medium"),
+              utm_campaign: pick("utm_campaign"),
+              utm_content: pick("utm_content"),
+              pack_delivered: delivered,
+            },
+            null,
+            2,
+          )}</pre>`,
+        }),
+      }).catch((e) => console.error("operator notify failed:", String(e)));
     }
+
 
     // High-intent leads enter the existing drip sequence.
     if (score >= 60) {
