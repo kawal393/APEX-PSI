@@ -1,16 +1,11 @@
 import { useExitIntent } from "@/hooks/use-exit-intent";
-import { X, Shield, ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { X, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import LeadCaptureOffer from "@/components/LeadCaptureOffer";
 
 export default function ExitIntentPopup() {
   const { showPopup, dismiss } = useExitIntent();
-  const navigate = useNavigate();
 
-  const handleCTA = () => {
-    dismiss();
-    navigate("/assess");
-  };
 
   return (
     <AnimatePresence>
