@@ -1,7 +1,9 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TwoPillars from "@/components/TwoPillars";
+import LeadCaptureOffer from "@/components/LeadCaptureOffer";
 import HowToUse from "@/components/HowToUse";
+
 import SovereignSealStrip from "@/components/SovereignSealStrip";
 import ComplianceClock from "@/components/ComplianceClock";
 import RegulatoryAlignment from "@/components/RegulatoryAlignment";
@@ -68,6 +70,8 @@ const Index = () => {
         <div id="top" />
         <Hero />
         <TwoPillars />
+        <LeadCaptureOffer />
+
         <HowToUse />
         <SovereignSealStrip />
         <ComplianceClock />

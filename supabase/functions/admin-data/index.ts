@@ -42,7 +42,7 @@ serve(async (req) => {
     const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const last30d = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-    const [subsRes, compRes, vhRes, gallowsRes, usersRes, visits24hRes, visits7dRes, visits30dRes, visitsRecentRes] = await Promise.all([
+    const [subsRes, compRes, vhRes, gallowsRes, usersRes, visits24hRes, visits7dRes, visits30dRes, visitsRecentRes, campaignVisitsRes, leadsRes] = await Promise.all([
       supabase.from("subscriptions").select("*").order("created_at", { ascending: false }),
       supabase.from("compliance_results").select("*").order("updated_at", { ascending: false }),
       supabase.from("verification_history").select("*").order("created_at", { ascending: false }).limit(100),
@@ -52,7 +52,10 @@ serve(async (req) => {
       supabase.from("site_visits").select("visitor_id, page_path, referrer, created_at, user_agent").gte("created_at", last7d).order("created_at", { ascending: false }).limit(1000),
       supabase.from("site_visits").select("visitor_id, page_path, referrer, created_at").gte("created_at", last30d).order("created_at", { ascending: false }).limit(1000),
       supabase.from("site_visits").select("visitor_id, page_path, referrer, created_at, user_agent, language, session_id, screen_width, screen_height").order("created_at", { ascending: false }).limit(50),
+      supabase.from("site_visits").select("visitor_id, created_at, utm_source, utm_medium, utm_campaign, utm_content, landing_page").gte("created_at", last30d).order("created_at", { ascending: false }).limit(5000),
+      supabase.from("marketing_leads").select("*").order("created_at", { ascending: false }).limit(500),
     ]);
+
 
     const subscriptions = subsRes.data || [];
     const complianceResults = compRes.data || [];
@@ -63,6 +66,54 @@ serve(async (req) => {
     const visits7d = visits7dRes.data || [];
     const visits30d = visits30dRes.data || [];
     const visitsRecent = visitsRecentRes.data || [];
+    const campaignVisits = campaignVisitsRes.data || [];
+    const marketingLeads = leadsRes.data || [];
+
+    // Campaign attribution (last 30 days)
+    const campaignMap: Record<string, {
+      source: string; medium: string; campaign: string; content: string;
+      views: number; visitors: Set<string>; landing: Record<string, number>;
+    }> = {};
+    campaignVisits.forEach((v: Record<string, string | null>) => {
+      const source = v.utm_source || "";
+      const campaign = v.utm_campaign || "";
+      if (!source && !campaign) return;
+      const key = `${source}|${v.utm_medium || ""}|${campaign}|${v.utm_content || ""}`;
+      if (!campaignMap[key]) {
+        campaignMap[key] = {
+          source: source || "(none)", medium: v.utm_medium || "(none)",
+          campaign: campaign || "(none)", content: v.utm_content || "(none)",
+          views: 0, visitors: new Set(), landing: {},
+        };
+      }
+      const c = campaignMap[key];
+      c.views++;
+      if (v.visitor_id) c.visitors.add(v.visitor_id);
+      const lp = v.landing_page || "/";
+      c.landing[lp] = (c.landing[lp] || 0) + 1;
+    });
+
+    const leadsBySource: Record<string, number> = {};
+    marketingLeads.forEach((l: Record<string, unknown>) => {
+      const k = `${(l.utm_source as string) || "(none)"}|${(l.utm_campaign as string) || "(none)"}`;
+      leadsBySource[k] = (leadsBySource[k] || 0) + 1;
+    });
+
+    const campaigns = Object.values(campaignMap)
+      .map((c) => {
+        const visitors = c.visitors.size;
+        const leads = leadsBySource[`${c.source}|${c.campaign}`] || 0;
+        const topLanding = Object.entries(c.landing).sort((a, b) => b[1] - a[1])[0]?.[0] || "/";
+        return {
+          source: c.source, medium: c.medium, campaign: c.campaign, content: c.content,
+          views: c.views, visitors, leads,
+          conversion_rate: visitors > 0 ? Number(((leads / visitors) * 100).toFixed(1)) : 0,
+          top_landing: topLanding,
+        };
+      })
+      .sort((a, b) => b.visitors - a.visitors)
+      .slice(0, 25);
+
 
     // Calculate stats
     const totalUsers = users.length;
@@ -142,6 +193,9 @@ serve(async (req) => {
       customers,
       recent_verifications: recentVerifications.slice(0, 50),
       recent_ledger: recentLedger,
+      campaigns,
+      marketing_leads: marketingLeads,
+
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

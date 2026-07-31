@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { getAttribution } from "@/lib/attribution";
+
 
 const VISITOR_KEY = "apex_visitor_id";
 const SESSION_KEY = "apex_session_id";
@@ -25,6 +27,7 @@ export function usePageTracker() {
 
     const visitorId = getOrCreateId(VISITOR_KEY, localStorage);
     const sessionId = getOrCreateId(SESSION_KEY, sessionStorage);
+    const attribution = getAttribution();
 
     const record = {
       visitor_id: visitorId,
@@ -35,7 +38,9 @@ export function usePageTracker() {
       screen_width: window.screen.width,
       screen_height: window.screen.height,
       language: navigator.language,
+      ...attribution,
     };
+
 
     supabase.from("site_visits").insert(record).then(({ error }) => {
       if (error) console.error("Visit tracking error:", error.message);

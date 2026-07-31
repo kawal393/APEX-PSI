@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, CreditCard, Shield, Activity, ArrowLeft, RefreshCw, Anchor, Radar, Sparkles } from "lucide-react";
+import { Users, CreditCard, Shield, Activity, ArrowLeft, RefreshCw, Anchor, Radar, Sparkles, Megaphone } from "lucide-react";
 import apexLogo from "@/assets/apex-logo.png";
 import { toast } from "sonner";
 import AdminAIChat from "@/components/admin/AdminAIChat";
 import BlockchainAnchorPanel from "@/components/admin/BlockchainAnchorPanel";
 import SovereignIntelligence from "@/components/admin/SovereignIntelligence";
+import CampaignPanel from "@/components/admin/CampaignPanel";
+
 import SocialProofManager from "@/components/admin/SocialProofManager";
 import ContentBroadcastPanel from "@/components/admin/ContentBroadcastPanel";
 
@@ -55,6 +57,9 @@ const Admin = () => {
   const [recentVerifications, setRecentVerifications] = useState<any[]>([]);
   const [recentLedger, setRecentLedger] = useState<any[]>([]);
   const [siteIntelligence, setSiteIntelligence] = useState<any>(null);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [marketingLeads, setMarketingLeads] = useState<any[]>([]);
+
 
   const fetchAdminData = async () => {
     setLoading(true);
@@ -79,6 +84,9 @@ const Admin = () => {
       setRecentVerifications(data.recent_verifications || []);
       setRecentLedger(data.recent_ledger || []);
       setSiteIntelligence(data.site_intelligence || null);
+      setCampaigns(data.campaigns || []);
+      setMarketingLeads(data.marketing_leads || []);
+
     } catch (e: any) {
       toast.error(e.message || "Failed to load admin data");
       setForbidden(true);
@@ -190,9 +198,13 @@ const Admin = () => {
             <TabsTrigger value="intelligence" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Radar className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> Intelligence
             </TabsTrigger>
+            <TabsTrigger value="campaigns" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Megaphone className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> Campaigns
+            </TabsTrigger>
             <TabsTrigger value="ai" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Shield className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> AI
             </TabsTrigger>
+
             <TabsTrigger value="customers" className="text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> Customers
             </TabsTrigger>
@@ -216,6 +228,12 @@ const Admin = () => {
           <TabsContent value="intelligence">
             <SovereignIntelligence data={siteIntelligence} />
           </TabsContent>
+
+          <TabsContent value="campaigns">
+            <CampaignPanel campaigns={campaigns} leads={marketingLeads} />
+          </TabsContent>
+
+
 
           <TabsContent value="ai">
             <AdminAIChat />
