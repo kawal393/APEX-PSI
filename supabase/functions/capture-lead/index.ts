@@ -118,28 +118,22 @@ Deno.serve(async (req) => {
     const resendKey = Deno.env.get("RESEND_API_KEY");
     let delivered = false;
     if (resendKey) {
+      const send = (payload: Record<string, unknown>) =>
+        fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
       const { subject, html } = packEmail(name);
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: FROM_ADDRESS,
-          to: [email],
-          subject,
-          html,
-        }),
-      });
+      const res = await send({ from: FROM_ADDRESS, to: [email], subject, html });
       delivered = res.ok;
       if (!res.ok) console.error(`Resend failed [${res.status}]: ${await res.text()}`);
 
       // Always notify the operator so no lead is lost, even if delivery fails.
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: FROM_ADDRESS,
-          to: [OPERATOR_EMAIL],
-          subject: `New lead (${score}): ${email}${company ? " · " + company : ""}`,
+      const operatorPayload = {
+        to: [OPERATOR_EMAIL],
+        subject: `New lead (${score}): ${email}${company ? " · " + company : ""}`,
           html: `<pre style="font-family:ui-monospace,monospace;font-size:13px">${JSON.stringify(
             {
               email, name, company, intent, score,
