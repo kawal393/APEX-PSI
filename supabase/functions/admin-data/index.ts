@@ -193,6 +193,9 @@ serve(async (req) => {
       customers,
       recent_verifications: recentVerifications.slice(0, 50),
       recent_ledger: recentLedger,
+      campaigns,
+      marketing_leads: marketingLeads,
+
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
