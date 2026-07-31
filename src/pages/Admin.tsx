@@ -82,6 +82,9 @@ const Admin = () => {
       setRecentVerifications(data.recent_verifications || []);
       setRecentLedger(data.recent_ledger || []);
       setSiteIntelligence(data.site_intelligence || null);
+      setCampaigns(data.campaigns || []);
+      setMarketingLeads(data.marketing_leads || []);
+
     } catch (e: any) {
       toast.error(e.message || "Failed to load admin data");
       setForbidden(true);
