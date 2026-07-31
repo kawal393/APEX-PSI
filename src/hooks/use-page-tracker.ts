@@ -27,6 +27,7 @@ export function usePageTracker() {
 
     const visitorId = getOrCreateId(VISITOR_KEY, localStorage);
     const sessionId = getOrCreateId(SESSION_KEY, sessionStorage);
+    const attribution = getAttribution();
 
     const record = {
       visitor_id: visitorId,
@@ -37,7 +38,9 @@ export function usePageTracker() {
       screen_width: window.screen.width,
       screen_height: window.screen.height,
       language: navigator.language,
+      ...attribution,
     };
+
 
     supabase.from("site_visits").insert(record).then(({ error }) => {
       if (error) console.error("Visit tracking error:", error.message);
