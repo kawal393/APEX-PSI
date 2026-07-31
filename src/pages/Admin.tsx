@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, CreditCard, Shield, Activity, ArrowLeft, RefreshCw, Anchor, Radar, Sparkles } from "lucide-react";
+import { Users, CreditCard, Shield, Activity, ArrowLeft, RefreshCw, Anchor, Radar, Sparkles, Megaphone } from "lucide-react";
 import apexLogo from "@/assets/apex-logo.png";
 import { toast } from "sonner";
 import AdminAIChat from "@/components/admin/AdminAIChat";
