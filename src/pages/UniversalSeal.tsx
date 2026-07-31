@@ -337,8 +337,7 @@ async function apexSeal(file) {
                 <div className="flex justify-center md:justify-end">
                   <ApexVerifiedStamp hash={result.sha256} btcBlock={result.receipt_id.slice(-6)} size="md" />
                 </div>
-                </div>
-                <div className="mt-6 pt-6 border-t border-border/60">
+                <div className="md:col-span-2 mt-2 pt-6 border-t border-border/60">
                   <p className="text-sm font-semibold text-foreground mb-2">
                     Need this to hold up with a regulator?
                   </p>
@@ -346,6 +345,7 @@ async function apexSeal(file) {
                 </div>
               </div>
             )}
+
           </Card>
 
 
