@@ -241,7 +241,7 @@ The reference implementation is open source (MIT License):
 
   Repository: github.com/apex-intelligence-empire
   SDK:        apex-psi-sdk (npm package)
-  Live:       apex-psi.apex-infrastructure.com
+  Live:       digital-gallows.apex-infrastructure.com
 
 Runtime: Deno (Edge Functions), React (Frontend)
 Database: PostgreSQL with Row-Level Security
@@ -418,7 +418,7 @@ const Paper = () => {
   year         = {2026},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.PENDING},
-  url          = {https://apex-psi.lovable.app/paper},
+  url          = {https://digital-gallows.apex-infrastructure.com/paper},
   note         = {Companion IETF draft: draft-singh-psi-http-01}
 }`}
               </pre>

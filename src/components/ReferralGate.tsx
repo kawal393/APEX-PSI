@@ -13,7 +13,7 @@ interface ReferralGateProps {
 }
 
 const ReferralGate = ({ shareId, referralCount, requiredReferrals = 2, unlocked, children }: ReferralGateProps) => {
-  const referralUrl = `https://apex-psi.apex-infrastructure.com/assess?ref=${shareId}`;
+  const referralUrl = `https://digital-gallows.apex-infrastructure.com/assess?ref=${shareId}`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(referralUrl);

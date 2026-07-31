@@ -1,46 +1,31 @@
-## Goal
+## Part 1 — Why your logo isn't showing in search
 
-Your YouTube promotions sent ~2,576 impressions and 133 clicks to the site. Right now those visitors are logged in `site_visits` with page path, referrer, city/country and device only — no campaign attribution, and nothing asks them for an email. They arrive, read, and vanish. This plan turns that traffic into identified, contactable leads.
+I inspected the live files. There are four real defects, all fixable:
 
-Note on IP addresses: harvesting visitor IPs to identify people is a GDPR problem (and your audience is EU regulators). The defensible, more valuable play is consented email capture plus campaign attribution — that gives you a list you can actually email, without legal exposure.
+1. **The icon files are broken as icons.** `public/favicon.ico`, `favicon.png` and `apple-touch-icon.png` are all the *same* 2.1 MB, 1024×1331 **non-square** PNG. `favicon.ico` isn't an ICO at all — it's a PNG with an `.ico` extension. Google/Bing require a **square** icon, at least 48×48, in a real supported format, under a sane file size. A non-square 2 MB file gets silently dropped — which is exactly the grey globe you saw on the `apex-infrastructure.com` result.
+2. **`og-image.png` is actually a JPEG** with a `.png` name. Same class of mismatch — crawlers that trust the extension can reject it.
+3. **Every canonical/OG/JSON-LD URL points at `https://apex-psi.apex-infrastructure.com`**, which is not the live domain. The live domain is `https://digital-gallows.apex-infrastructure.com`. The favicon and logo Google fetches are resolved *relative to the canonical URL*, so it's looking for the icon on the wrong host. This alone breaks logo attribution.
+4. **`public/apex.svg` is a plain gold triangle**, not the actual APEX brand mark that exists at `src/assets/apex-logo.png`. That's the SVG referenced first in the head and in the Organization JSON-LD `logo` field.
 
-## What gets built
+Also: `robots.txt` advertises `Sitemap: https://apex-psi.lovable.app/sitemap.xml` while the sitemap itself lists `digital-gallows.apex-infrastructure.com` URLs — mixed signals to crawlers.
 
-### 1. Campaign attribution (know which ad worked)
-- Capture `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term` and the landing page on first visit, persist them for the session, and store them on every `site_visits` row.
-- Add those columns to the visits table so each visit is traceable back to the exact YouTube promotion.
-- Gives per-campaign numbers: visits, pages per session, and conversions — so you know whether the $0.46 ad or the $2.79 ad actually produces leads.
+### The fix
 
-### 2. The capture offer (get the email)
-A single high-value offer shown to unidentified visitors, not a generic newsletter box:
+- Generate a proper icon set from the real APEX brand mark (`src/assets/apex-logo.png`), square, padded not stretched: `favicon-32.png`, `favicon-192.png`, `favicon-512.png`, `apple-touch-icon.png` (180×180), and a genuine multi-size `favicon.ico`.
+- Replace `public/apex.svg` with the actual brand mark (or drop the SVG link and lead with the PNG set) so the gold APEX mark is what's served.
+- Re-save `og-image` as a true PNG at 1200×630 with the logo present, and correct the `og:image` / `twitter:image` MIME + dimensions.
+- Point **canonical, `og:url`, `twitter:*`, and both JSON-LD blocks** at `https://digital-gallows.apex-infrastructure.com`, and add `"logo"` + `"image"` to the Organization schema using the absolute 512px logo URL (this is the field Google reads for the knowledge-panel logo).
+- Rewrite `public/manifest.json` icon entries to the new square files with correct `sizes` and add `purpose: "any maskable"`.
+- Fix the `Sitemap:` line in `robots.txt` to the custom domain.
+- Add `<meta name="msapplication-TileImage">` so Bing (your screenshot is Bing) picks the tile up.
 
-> **"Get the EU AI Act Article 50 Compliance Pack"** — the technical spec, the Article 50 clause mapping, and a verifiable sealed sample receipt.
+**Honest expectation:** the code fix is immediate, but Google/Bing re-crawl on their own schedule — the icon typically appears within days to a few weeks, not instantly. After publishing I'll tell you exactly which URL to submit in Search Console / Bing Webmaster Tools to force a re-crawl. Note also that the first result in your screenshot (`apex-infrastructure.com`, "Open Reconciliation Infrastructure") is a **different site**, not this project — I can only fix this project's subdomain from here.
 
-Surfaced in three places, all dismissible and shown at most once per visitor:
-- An inline band on the homepage under the two-pillar section.
-- The existing exit-intent popup, repointed at this offer.
-- A post-action prompt after someone seals a file on `/pramaan` or `/seal` — the highest-intent moment on the site ("email me the verifiable receipt for this seal").
+## Part 2 — Email sender (as you approved)
 
-Each submission writes email, campaign attribution, the page they converted on, and intent signal into the leads table.
+- Once `apex-infrastructure.com` is verified in Resend (you add the SPF/DKIM/DMARC records at your registrar and click verify), I switch the sender in `capture-lead` and the other email functions from `onboarding@resend.dev` to `noreply@apex-infrastructure.com`, then run one end-to-end lead capture so we confirm the EU AI Act pack lands in a visitor's inbox rather than only your operator address.
+- If you'd rather not wait, I can flip the sender now and it will start working the moment verification completes — it just fails closed to operator-only until then.
 
-### 3. Automatic follow-up
-Reuse the existing `score-and-enroll-leads` / drip-queue machinery: a new lead is scored (regulator/enterprise domain, pages viewed, whether they sealed something) and enrolled in a short sequence — pack delivery, then the spec, then a contact prompt for high-score leads.
+## Technical detail
 
-### 4. Campaign dashboard
-A new "Campaigns" panel in `/admin` showing, per UTM campaign: visits, unique visitors, leads captured, conversion rate, top landing pages, and countries. Plus a CSV export of leads with their attribution, so you can work the list manually or in an email tool.
-
-### 5. Ready-to-use tracked links
-A small reference block in the admin panel that builds the tagged URLs to paste into YouTube/Reddit/email, e.g. `?utm_source=youtube&utm_medium=paid&utm_campaign=eu-aug2`, so every future ad is attributable from the first click.
-
-## Technical details
-
-- Migration: add `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `landing_page` to `public.site_visits`; create `public.marketing_leads` (email, name, company, source page, intent, utm fields, visitor_id, score, status) with RLS — public `INSERT` only, reads restricted to admins via `has_role`, plus the required `GRANT`s.
-- `src/hooks/use-page-tracker.ts` extended to parse UTMs on first landing, store them in `sessionStorage`, and attach them to every insert.
-- New `src/components/LeadCaptureOffer.tsx` (inline + modal variants) with zod-validated email input; wired into the homepage, `ExitIntentPopup`, `/pramaan` and `/seal`.
-- New `src/components/admin/CampaignPanel.tsx` reading aggregates through the existing `admin-data` edge function (extended with a `campaigns` action) so no raw visitor data is exposed client-side.
-- Follow-up handled by extending the existing lead-scoring/drip functions rather than new infrastructure.
-- No IP collection, no third-party trackers; the offer states what the email is used for.
-
-## Out of scope unless you ask
-- Buying company-identification services (Clearbit/RB2B-style IP-to-company enrichment).
-- Retargeting pixels (Meta/Google), which would add third-party tracking to a privacy-positioned site.
+Icon generation via ImageMagick from `src/assets/apex-logo.png` with `-background none -gravity center -extent`, so a non-square mark is padded rather than distorted. All head/meta edits are in `index.html`; manifest and robots are static files under `public/`. No app logic changes.

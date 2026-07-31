@@ -119,7 +119,7 @@ const Registry = () => {
   );
 
   const copyProofLink = (id: string) => {
-    navigator.clipboard.writeText(`https://apex-psi.apex-infrastructure.com/verify?entity=${id}`);
+    navigator.clipboard.writeText(`https://digital-gallows.apex-infrastructure.com/verify?entity=${id}`);
     toast.success("Verification link copied");
   };
 

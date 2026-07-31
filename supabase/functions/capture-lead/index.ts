@@ -12,10 +12,11 @@ const corsHeaders = {
 };
 
 const SITE = "https://digital-gallows.apex-infrastructure.com";
-// Resend sandbox sender: delivers only to the operator address until a
-// sending domain is verified in Resend. Swap to noreply@apex-infrastructure.com
-// once that domain is verified and pack delivery goes out automatically.
-const FROM_ADDRESS = "APEX PSI <onboarding@resend.dev>";
+// Branded sender. Starts delivering to leads automatically the moment
+// apex-infrastructure.com is verified in Resend. Until then Resend rejects it
+// (403) and we fall back to the sandbox sender, which still reaches the operator.
+const FROM_ADDRESS = "APEX PSI <noreply@apex-infrastructure.com>";
+const FALLBACK_FROM = "APEX PSI <onboarding@resend.dev>";
 
 const OPERATOR_EMAIL = "apex.manraj888@gmail.com";
 
@@ -117,43 +118,43 @@ Deno.serve(async (req) => {
     const resendKey = Deno.env.get("RESEND_API_KEY");
     let delivered = false;
     if (resendKey) {
+      const send = (payload: Record<string, unknown>) =>
+        fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
       const { subject, html } = packEmail(name);
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: FROM_ADDRESS,
-          to: [email],
-          subject,
-          html,
-        }),
-      });
+      const res = await send({ from: FROM_ADDRESS, to: [email], subject, html });
       delivered = res.ok;
       if (!res.ok) console.error(`Resend failed [${res.status}]: ${await res.text()}`);
 
       // Always notify the operator so no lead is lost, even if delivery fails.
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: FROM_ADDRESS,
-          to: [OPERATOR_EMAIL],
-          subject: `New lead (${score}): ${email}${company ? " · " + company : ""}`,
-          html: `<pre style="font-family:ui-monospace,monospace;font-size:13px">${JSON.stringify(
-            {
-              email, name, company, intent, score,
-              source_page: sourcePage,
-              utm_source: pick("utm_source"),
-              utm_medium: pick("utm_medium"),
-              utm_campaign: pick("utm_campaign"),
-              utm_content: pick("utm_content"),
-              pack_delivered: delivered,
-            },
-            null,
-            2,
-          )}</pre>`,
-        }),
-      }).catch((e) => console.error("operator notify failed:", String(e)));
+      const operatorPayload = {
+        to: [OPERATOR_EMAIL],
+        subject: `New lead (${score}): ${email}${company ? " · " + company : ""}`,
+        html: `<pre style="font-family:ui-monospace,monospace;font-size:13px">${JSON.stringify(
+          {
+            email, name, company, intent, score,
+            source_page: sourcePage,
+            utm_source: pick("utm_source"),
+            utm_medium: pick("utm_medium"),
+            utm_campaign: pick("utm_campaign"),
+            utm_content: pick("utm_content"),
+            pack_delivered: delivered,
+          },
+          null,
+          2,
+        )}</pre>`,
+      };
+
+      const opRes = await send({ from: FROM_ADDRESS, ...operatorPayload }).catch(() => null);
+      if (!opRes || !opRes.ok) {
+        await send({ from: FALLBACK_FROM, ...operatorPayload }).catch((e) =>
+          console.error("operator notify failed:", String(e)),
+        );
+      }
     }
 
 

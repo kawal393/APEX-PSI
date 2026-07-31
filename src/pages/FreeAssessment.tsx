@@ -156,8 +156,8 @@ const FreeAssessment = () => {
   };
 
   const scorePageUrl = shareId
-    ? `https://apex-psi.apex-infrastructure.com/score/${shareId}`
-    : "https://apex-psi.apex-infrastructure.com/assess";
+    ? `https://digital-gallows.apex-infrastructure.com/score/${shareId}`
+    : "https://digital-gallows.apex-infrastructure.com/assess";
   const shareText = `I just scored ${result.score}% on the APEX AI Compliance Assessment! Check yours at`;
   const shareUrl = scorePageUrl;
 

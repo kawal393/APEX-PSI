@@ -244,7 +244,7 @@ const Pramaan = () => {
       <Helmet>
         <title>Apex Pramaan — The Truth Protocol | Chapter II</title>
         <meta name="description" content="Apex Pramaan: client-side cryptographic proof for any photo, video, or file. Seal it, anchor it, verify it — in 30 seconds, on any phone." />
-        <link rel="canonical" href="https://apex-psi.lovable.app/pramaan" />
+        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/pramaan" />
       </Helmet>
       <Navbar />
 

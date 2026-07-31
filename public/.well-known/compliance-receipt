@@ -1,5 +1,5 @@
 {
-  "issuer": "https://apex-psi.lovable.app",
+  "issuer": "https://digital-gallows.apex-infrastructure.com",
   "spec": "draft-singh-psi-http-01",
   "version": 1,
   "public_keys": [
@@ -10,7 +10,7 @@
       "pem": "MCowBQYDK2VwAyEAWTBGhTKLPPpuxxLWYlDQ+WS7n5IWHmXi5YNah38QRyQ="
     }
   ],
-  "verify_endpoint": "https://apex-psi.lovable.app/verify",
-  "predicate_registry": "https://apex-psi.lovable.app/registry",
-  "foundation": "https://apex-psi.lovable.app/foundation"
+  "verify_endpoint": "https://digital-gallows.apex-infrastructure.com/verify",
+  "predicate_registry": "https://digital-gallows.apex-infrastructure.com/registry",
+  "foundation": "https://digital-gallows.apex-infrastructure.com/foundation"
 }
