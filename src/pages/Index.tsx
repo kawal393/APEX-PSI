@@ -70,6 +70,8 @@ const Index = () => {
         <div id="top" />
         <Hero />
         <TwoPillars />
+        <LeadCaptureOffer />
+
         <HowToUse />
         <SovereignSealStrip />
         <ComplianceClock />
