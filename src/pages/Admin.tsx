@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import AdminAIChat from "@/components/admin/AdminAIChat";
 import BlockchainAnchorPanel from "@/components/admin/BlockchainAnchorPanel";
 import SovereignIntelligence from "@/components/admin/SovereignIntelligence";
+import CampaignPanel from "@/components/admin/CampaignPanel";
+
 import SocialProofManager from "@/components/admin/SocialProofManager";
 import ContentBroadcastPanel from "@/components/admin/ContentBroadcastPanel";
 
