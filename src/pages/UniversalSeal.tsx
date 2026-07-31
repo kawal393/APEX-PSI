@@ -2,6 +2,8 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import LeadCaptureOffer from "@/components/LeadCaptureOffer";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
