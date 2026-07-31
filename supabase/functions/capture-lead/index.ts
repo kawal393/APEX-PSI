@@ -134,21 +134,27 @@ Deno.serve(async (req) => {
       const operatorPayload = {
         to: [OPERATOR_EMAIL],
         subject: `New lead (${score}): ${email}${company ? " · " + company : ""}`,
-          html: `<pre style="font-family:ui-monospace,monospace;font-size:13px">${JSON.stringify(
-            {
-              email, name, company, intent, score,
-              source_page: sourcePage,
-              utm_source: pick("utm_source"),
-              utm_medium: pick("utm_medium"),
-              utm_campaign: pick("utm_campaign"),
-              utm_content: pick("utm_content"),
-              pack_delivered: delivered,
-            },
-            null,
-            2,
-          )}</pre>`,
-        }),
-      }).catch((e) => console.error("operator notify failed:", String(e)));
+        html: `<pre style="font-family:ui-monospace,monospace;font-size:13px">${JSON.stringify(
+          {
+            email, name, company, intent, score,
+            source_page: sourcePage,
+            utm_source: pick("utm_source"),
+            utm_medium: pick("utm_medium"),
+            utm_campaign: pick("utm_campaign"),
+            utm_content: pick("utm_content"),
+            pack_delivered: delivered,
+          },
+          null,
+          2,
+        )}</pre>`,
+      };
+
+      const opRes = await send({ from: FROM_ADDRESS, ...operatorPayload }).catch(() => null);
+      if (!opRes || !opRes.ok) {
+        await send({ from: FALLBACK_FROM, ...operatorPayload }).catch((e) =>
+          console.error("operator notify failed:", String(e)),
+        );
+      }
     }
 
 
