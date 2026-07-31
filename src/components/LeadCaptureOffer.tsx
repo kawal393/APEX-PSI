@@ -41,6 +41,7 @@ export default function LeadCaptureOffer({
   const [company, setCompany] = useState("");
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [delivered, setDelivered] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +54,7 @@ export default function LeadCaptureOffer({
     setSending(true);
     try {
       const attribution = getAttribution();
-      const { error } = await supabase.functions.invoke("capture-lead", {
+      const { data, error } = await supabase.functions.invoke("capture-lead", {
         body: {
           email: parsed.data.email,
           company: parsed.data.company || null,
@@ -65,8 +66,11 @@ export default function LeadCaptureOffer({
         },
       });
       if (error) throw error;
+      setDelivered(Boolean(data?.delivered));
       setDone(true);
-      toast.success("Sent — check your inbox for the pack.");
+      toast.success(
+        data?.delivered ? "Sent — check your inbox for the pack." : "Request received.",
+      );
       onDone?.();
     } catch {
       toast.error("Could not send the pack. Please try again.");
@@ -77,15 +81,39 @@ export default function LeadCaptureOffer({
 
   if (done) {
     return (
-      <div className="flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 px-5 py-4">
-        <Check className="h-5 w-5 text-primary shrink-0" />
-        <p className="text-sm text-foreground">
-          Pack sent to <span className="font-semibold">{email}</span>. Everything in it is publicly
-          verifiable — nothing is gated.
-        </p>
+      <div className="flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-5 py-4">
+        <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+        <div className="text-sm text-foreground space-y-1">
+          {delivered ? (
+            <p>
+              Pack sent to <span className="font-semibold">{email}</span>. Everything in it is
+              publicly verifiable — nothing is gated.
+            </p>
+          ) : (
+            <p>
+              Request logged for <span className="font-semibold">{email}</span> — the pack follows
+              shortly.
+            </p>
+          )}
+          <p className="text-muted-foreground text-xs">
+            You don&apos;t have to wait:{" "}
+            <a href="/spec" className="text-primary underline">
+              full specification
+            </a>{" "}
+            ·{" "}
+            <a href="/eu-ai-act" className="text-primary underline">
+              Article 50 mapping
+            </a>{" "}
+            ·{" "}
+            <a href="/inband" className="text-primary underline">
+              in-band marking
+            </a>
+          </p>
+        </div>
       </div>
     );
   }
+
 
   const form = (
     <form onSubmit={submit} className="flex flex-col sm:flex-row gap-2 w-full">
