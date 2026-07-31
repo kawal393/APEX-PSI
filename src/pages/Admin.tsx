@@ -55,6 +55,9 @@ const Admin = () => {
   const [recentVerifications, setRecentVerifications] = useState<any[]>([]);
   const [recentLedger, setRecentLedger] = useState<any[]>([]);
   const [siteIntelligence, setSiteIntelligence] = useState<any>(null);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [marketingLeads, setMarketingLeads] = useState<any[]>([]);
+
 
   const fetchAdminData = async () => {
     setLoading(true);
