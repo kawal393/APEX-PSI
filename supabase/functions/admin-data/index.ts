@@ -42,7 +42,7 @@ serve(async (req) => {
     const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const last30d = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-    const [subsRes, compRes, vhRes, gallowsRes, usersRes, visits24hRes, visits7dRes, visits30dRes, visitsRecentRes] = await Promise.all([
+    const [subsRes, compRes, vhRes, gallowsRes, usersRes, visits24hRes, visits7dRes, visits30dRes, visitsRecentRes, campaignVisitsRes, leadsRes] = await Promise.all([
       supabase.from("subscriptions").select("*").order("created_at", { ascending: false }),
       supabase.from("compliance_results").select("*").order("updated_at", { ascending: false }),
       supabase.from("verification_history").select("*").order("created_at", { ascending: false }).limit(100),
@@ -52,7 +52,10 @@ serve(async (req) => {
       supabase.from("site_visits").select("visitor_id, page_path, referrer, created_at, user_agent").gte("created_at", last7d).order("created_at", { ascending: false }).limit(1000),
       supabase.from("site_visits").select("visitor_id, page_path, referrer, created_at").gte("created_at", last30d).order("created_at", { ascending: false }).limit(1000),
       supabase.from("site_visits").select("visitor_id, page_path, referrer, created_at, user_agent, language, session_id, screen_width, screen_height").order("created_at", { ascending: false }).limit(50),
+      supabase.from("site_visits").select("visitor_id, created_at, utm_source, utm_medium, utm_campaign, utm_content, landing_page").gte("created_at", last30d).order("created_at", { ascending: false }).limit(5000),
+      supabase.from("marketing_leads").select("*").order("created_at", { ascending: false }).limit(500),
     ]);
+
 
     const subscriptions = subsRes.data || [];
     const complianceResults = compRes.data || [];
