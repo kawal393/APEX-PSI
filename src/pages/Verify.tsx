@@ -273,6 +273,26 @@ const Verify = () => {
       } else {
         updateStep(5, "pass", "No signature in bundle (pre-Ed25519 commit)");
       }
+
+      // Step 7: Post-quantum LMS-W4-SHA256 signature (verified locally)
+      const anyBundle = bundle as unknown as Record<string, any>;
+      const pqSig: LMSSignature | undefined = anyBundle.pqSignature || anyBundle.pq_signature;
+      if (pqSig?.wots_signature) {
+        const pqPub: string | undefined =
+          anyBundle.pqPublicKey || anyBundle.pq_public_key || pqSig.public_key;
+        const signedPayload: string =
+          (anyBundle.signedPayload || anyBundle.signed_payload || "").replace(/^sha256:/, "")
+          || bundle.merkleLeafHash;
+        const pqValid = await lmsVerify(
+          new TextEncoder().encode(signedPayload),
+          pqSig,
+          pqPub,
+        );
+        setPqResult({ present: true, valid: pqValid, signature: pqSig, publicKey: pqPub });
+      } else {
+        setPqResult({ present: false, valid: false });
+      }
+
     } catch (err: any) {
       toast.error("Verification error: " + err.message);
     } finally {
