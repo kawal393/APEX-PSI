@@ -166,6 +166,21 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
 
   const signature = await signEd25519(merkleLeaf, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "psi");
 
+  // Post-quantum LMS-W4-SHA256 over the same signed payload
+  let pqSignature: any = null;
+  let pqPublicKey: string | null = null;
+  try {
+    const { count } = await supabase
+      .from("gallows_ledger")
+      .select("id", { count: "exact", head: true })
+      .not("pq_signature", "is", null);
+    const sig = await lmsSignInstitutional(new TextEncoder().encode(merkleLeaf), count ?? 0);
+    pqSignature = sig;
+    pqPublicKey = sig.public_key;
+  } catch (e) {
+    console.error("[psi-api] LMS signing failed", e);
+  }
+
   const { error: insErr } = await supabase.from("gallows_ledger").insert({
     commit_id: rid,
     user_id: auth.userId ?? null,
@@ -178,6 +193,9 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
     proof_hash: decisionHash,
     ed25519_signature: signature,
     merkle_root: merkleRoot,
+    pq_signature: pqSignature,
+    pq_public_key: pqPublicKey,
+    pq_algorithm: pqSignature ? LMS_ALGORITHM : null,
   });
   if (insErr) return json({ error: "persist_failed", detail: insErr.message }, 500);
 
@@ -190,11 +208,17 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
     merkle_leaf: `sha256:${merkleLeaf}`,
     merkle_root: `sha256:${merkleRoot}`,
     ed25519_signature: signature,
+    signed_payload: `sha256:${merkleLeaf}`,
+    post_quantum: !!pqSignature,
+    pq_signature: pqSignature,
+    pq_public_key: pqPublicKey,
+    algorithm: pqSignature ? "SHA-256 + Ed25519 + LMS-W4-SHA256" : "SHA-256 + Ed25519",
     predicate_applied: predicateId,
     receipt_version: "PSI-1.2",
     engine: "APEX PSI v1 — Unified API",
   }, 201);
 }
+
 
 async function handleVerify(hash: string | null, supabase: any, auth: AuthResult) {
   if (!auth.scopes?.includes("verify:read"))
