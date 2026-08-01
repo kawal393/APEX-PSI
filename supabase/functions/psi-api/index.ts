@@ -249,10 +249,34 @@ async function handleVerify(hash: string | null, supabase: any, auth: AuthResult
     verified: true, found: true,
     commit_id: e.commit_id, predicate_id: e.predicate_id, phase: e.phase, status: e.status,
     merkle_root: e.merkle_root, ed25519_signature: e.ed25519_signature,
+    signed_payload: e.merkle_leaf_hash ? `sha256:${e.merkle_leaf_hash}` : null,
+    post_quantum: !!e.pq_signature,
+    pq_signature: e.pq_signature ?? null,
+    pq_public_key: e.pq_public_key ?? null,
+    pq_algorithm: e.pq_algorithm ?? null,
+    algorithm: e.pq_signature ? "SHA-256 + Ed25519 + LMS-W4-SHA256" : "SHA-256 + Ed25519",
     created_at: e.created_at, queried_hash: clean,
     queried_at: new Date().toISOString(),
     engine: "APEX PSI v1",
   });
+}
+
+/** Current institutional LMS state (public, unauthenticated). */
+async function pqState(supabase: any) {
+  const { count } = await supabase
+    .from("gallows_ledger")
+    .select("id", { count: "exact", head: true })
+    .not("pq_signature", "is", null);
+  const used = count ?? 0;
+  return {
+    algorithm: LMS_ALGORITHM,
+    standard: LMS_STANDARD,
+    public_key: await lmsInstitutionalPublicKey(used),
+    tree_height: 5,
+    one_time_keys_per_epoch: LMS_LEAVES,
+    epoch: Math.floor(used / LMS_LEAVES),
+    signatures_used_in_epoch: used % LMS_LEAVES,
+  };
 }
 
 Deno.serve(async (req) => {
@@ -268,14 +292,25 @@ Deno.serve(async (req) => {
       "GET /v1/verify/:hash": "Verify a hash (scope: verify:read)",
       "GET /v1/verify?hash=…": "Verify a hash (query)",
       "GET /v1/health": "Liveness probe",
+      "GET /v1/pq-public-key": "Post-quantum LMS-W4-SHA256 public key (no auth)",
     },
     auth: "Authorization: Bearer apex_sk_…  OR  apex_ntry_…",
     docs: "https://digital-gallows.apex-infrastructure.com/api",
   });
 
-  if (path === "/v1/health") return json({ ok: true, ts: new Date().toISOString() });
-
   const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+
+  if (path === "/v1/health") {
+    let pq: any = null;
+    try { pq = await pqState(supabase); } catch { /* liveness must not fail */ }
+    return json({ ok: true, ts: new Date().toISOString(), post_quantum: pq });
+  }
+
+  if (path === "/v1/pq-public-key") {
+    try { return json(await pqState(supabase)); }
+    catch (e: any) { return json({ error: "pq_state_failed", detail: e?.message }, 500); }
+  }
+
   const auth = await authenticate(req, supabase);
   if (!auth.ok) return json({ error: auth.error }, 401);
 
