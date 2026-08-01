@@ -3,7 +3,8 @@
 // POST /v1/notarize        — Notarize a decision (scope: notarize:write)
 // GET  /v1/verify/:hash    — Verify a hash against the ledger (scope: verify:read)
 // GET  /v1/verify?hash=…   — Same, query-string form
-// GET  /v1/health          — Liveness
+// GET  /v1/health          — Liveness (includes the LMS public key)
+// GET  /v1/pq-public-key   — Current LMS-W4-SHA256 Merkle root (public, no auth)
 //
 // Auth: pass EITHER
 //   - Authorization: Bearer apex_sk_…  (scoped key from apex_api_keys)
@@ -11,6 +12,7 @@
 //   - X-Apex-Api-Key: <key>             (either format)
 // ═══════════════════════════════════════════════════════════════════════
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { lmsSignInstitutional, lmsInstitutionalPublicKey, LMS_ALGORITHM, LMS_STANDARD, LMS_LEAVES } from "../_shared/pq_lms.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
