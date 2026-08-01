@@ -3,7 +3,8 @@
 // POST /v1/notarize        — Notarize a decision (scope: notarize:write)
 // GET  /v1/verify/:hash    — Verify a hash against the ledger (scope: verify:read)
 // GET  /v1/verify?hash=…   — Same, query-string form
-// GET  /v1/health          — Liveness
+// GET  /v1/health          — Liveness (includes the LMS public key)
+// GET  /v1/pq-public-key   — Current LMS-W4-SHA256 Merkle root (public, no auth)
 //
 // Auth: pass EITHER
 //   - Authorization: Bearer apex_sk_…  (scoped key from apex_api_keys)
@@ -11,6 +12,7 @@
 //   - X-Apex-Api-Key: <key>             (either format)
 // ═══════════════════════════════════════════════════════════════════════
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { lmsSignInstitutional, lmsInstitutionalPublicKey, LMS_ALGORITHM, LMS_STANDARD, LMS_LEAVES } from "../_shared/pq_lms.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -166,6 +168,21 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
 
   const signature = await signEd25519(merkleLeaf, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "psi");
 
+  // Post-quantum LMS-W4-SHA256 over the same signed payload
+  let pqSignature: any = null;
+  let pqPublicKey: string | null = null;
+  try {
+    const { count } = await supabase
+      .from("gallows_ledger")
+      .select("id", { count: "exact", head: true })
+      .not("pq_signature", "is", null);
+    const sig = await lmsSignInstitutional(new TextEncoder().encode(merkleLeaf), count ?? 0);
+    pqSignature = sig;
+    pqPublicKey = sig.public_key;
+  } catch (e) {
+    console.error("[psi-api] LMS signing failed", e);
+  }
+
   const { error: insErr } = await supabase.from("gallows_ledger").insert({
     commit_id: rid,
     user_id: auth.userId ?? null,
@@ -178,6 +195,9 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
     proof_hash: decisionHash,
     ed25519_signature: signature,
     merkle_root: merkleRoot,
+    pq_signature: pqSignature,
+    pq_public_key: pqPublicKey,
+    pq_algorithm: pqSignature ? LMS_ALGORITHM : null,
   });
   if (insErr) return json({ error: "persist_failed", detail: insErr.message }, 500);
 
@@ -190,11 +210,17 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
     merkle_leaf: `sha256:${merkleLeaf}`,
     merkle_root: `sha256:${merkleRoot}`,
     ed25519_signature: signature,
+    signed_payload: `sha256:${merkleLeaf}`,
+    post_quantum: !!pqSignature,
+    pq_signature: pqSignature,
+    pq_public_key: pqPublicKey,
+    algorithm: pqSignature ? "SHA-256 + Ed25519 + LMS-W4-SHA256" : "SHA-256 + Ed25519",
     predicate_applied: predicateId,
     receipt_version: "PSI-1.2",
     engine: "APEX PSI v1 — Unified API",
   }, 201);
 }
+
 
 async function handleVerify(hash: string | null, supabase: any, auth: AuthResult) {
   if (!auth.scopes?.includes("verify:read"))
@@ -223,10 +249,34 @@ async function handleVerify(hash: string | null, supabase: any, auth: AuthResult
     verified: true, found: true,
     commit_id: e.commit_id, predicate_id: e.predicate_id, phase: e.phase, status: e.status,
     merkle_root: e.merkle_root, ed25519_signature: e.ed25519_signature,
+    signed_payload: e.merkle_leaf_hash ? `sha256:${e.merkle_leaf_hash}` : null,
+    post_quantum: !!e.pq_signature,
+    pq_signature: e.pq_signature ?? null,
+    pq_public_key: e.pq_public_key ?? null,
+    pq_algorithm: e.pq_algorithm ?? null,
+    algorithm: e.pq_signature ? "SHA-256 + Ed25519 + LMS-W4-SHA256" : "SHA-256 + Ed25519",
     created_at: e.created_at, queried_hash: clean,
     queried_at: new Date().toISOString(),
     engine: "APEX PSI v1",
   });
+}
+
+/** Current institutional LMS state (public, unauthenticated). */
+async function pqState(supabase: any) {
+  const { count } = await supabase
+    .from("gallows_ledger")
+    .select("id", { count: "exact", head: true })
+    .not("pq_signature", "is", null);
+  const used = count ?? 0;
+  return {
+    algorithm: LMS_ALGORITHM,
+    standard: LMS_STANDARD,
+    public_key: await lmsInstitutionalPublicKey(used),
+    tree_height: 5,
+    one_time_keys_per_epoch: LMS_LEAVES,
+    epoch: Math.floor(used / LMS_LEAVES),
+    signatures_used_in_epoch: used % LMS_LEAVES,
+  };
 }
 
 Deno.serve(async (req) => {
@@ -242,14 +292,25 @@ Deno.serve(async (req) => {
       "GET /v1/verify/:hash": "Verify a hash (scope: verify:read)",
       "GET /v1/verify?hash=…": "Verify a hash (query)",
       "GET /v1/health": "Liveness probe",
+      "GET /v1/pq-public-key": "Post-quantum LMS-W4-SHA256 public key (no auth)",
     },
     auth: "Authorization: Bearer apex_sk_…  OR  apex_ntry_…",
     docs: "https://digital-gallows.apex-infrastructure.com/api",
   });
 
-  if (path === "/v1/health") return json({ ok: true, ts: new Date().toISOString() });
-
   const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+
+  if (path === "/v1/health") {
+    let pq: any = null;
+    try { pq = await pqState(supabase); } catch { /* liveness must not fail */ }
+    return json({ ok: true, ts: new Date().toISOString(), post_quantum: pq });
+  }
+
+  if (path === "/v1/pq-public-key") {
+    try { return json(await pqState(supabase)); }
+    catch (e: any) { return json({ error: "pq_state_failed", detail: e?.message }, 500); }
+  }
+
   const auth = await authenticate(req, supabase);
   if (!auth.ok) return json({ error: auth.error }, 401);
 

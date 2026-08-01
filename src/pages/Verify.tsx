@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { verifyEd25519Signature, type PSIProofBundle } from "@/lib/psi-signatures";
 import { jcsHash } from "@/lib/psi-canonicalize";
 import { verifyMerkleProof, hashSHA256 } from "@/lib/gallows-engine";
+import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD, type LMSSignature } from "@/lib/psi-lms";
 import { Helmet } from "react-helmet-async";
 
 interface VerificationResult {
@@ -62,13 +63,22 @@ const Verify = () => {
   const [receiptResult, setReceiptResult] = useState<VerificationResult | null>(null);
   const [searched, setSearched] = useState(false);
   const [activeTab, setActiveTab] = useState("hash");
-  
+
+  // Post-quantum (LMS-W4-SHA256) verification state for the proof bundle
+  const [pqResult, setPqResult] = useState<{
+    present: boolean;
+    valid: boolean;
+    signature?: LMSSignature;
+    publicKey?: string;
+  } | null>(null);
+
   // Public Audit state
   const [auditCommitId, setAuditCommitId] = useState("");
   const [auditResult, setAuditResult] = useState<"VERIFIED" | "FAILED" | "CONTESTED">("VERIFIED");
   const [auditSubmitting, setAuditSubmitting] = useState(false);
   const [auditCount, setAuditCount] = useState(0);
   const [auditSubmitted, setAuditSubmitted] = useState(false);
+
 
   const fetchAttestationCount = async (commitId: string) => {
     if (!commitId.trim()) return;
@@ -186,6 +196,7 @@ const Verify = () => {
 
     setBundleVerifying(true);
     setBundleResult(null);
+    setPqResult(null);
 
     const steps: { label: string; status: "pending" | "pass" | "fail"; value?: string }[] = [
       { label: "Parse JSON Bundle", status: "pending" },
@@ -263,6 +274,26 @@ const Verify = () => {
       } else {
         updateStep(5, "pass", "No signature in bundle (pre-Ed25519 commit)");
       }
+
+      // Step 7: Post-quantum LMS-W4-SHA256 signature (verified locally)
+      const anyBundle = bundle as unknown as Record<string, any>;
+      const pqSig: LMSSignature | undefined = anyBundle.pqSignature || anyBundle.pq_signature;
+      if (pqSig?.wots_signature) {
+        const pqPub: string | undefined =
+          anyBundle.pqPublicKey || anyBundle.pq_public_key || pqSig.public_key;
+        const signedPayload: string =
+          (anyBundle.signedPayload || anyBundle.signed_payload || "").replace(/^sha256:/, "")
+          || bundle.merkleLeafHash;
+        const pqValid = await lmsVerify(
+          new TextEncoder().encode(signedPayload),
+          pqSig,
+          pqPub,
+        );
+        setPqResult({ present: true, valid: pqValid, signature: pqSig, publicKey: pqPub });
+      } else {
+        setPqResult({ present: false, valid: false });
+      }
+
     } catch (err: any) {
       toast.error("Verification error: " + err.message);
     } finally {
@@ -581,6 +612,96 @@ const Verify = () => {
                     )}
                   </motion.div>
                 )}
+
+                {/* Post-Quantum Verification — LMS-W4-SHA256, computed locally */}
+                {pqResult && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    className="rounded-xl border border-gold/30 bg-card/80 backdrop-blur-sm p-6">
+                    <h3 className="text-sm font-bold text-foreground mb-1 flex items-center gap-2">
+                      <Lock className="h-4 w-4 text-gold" />
+                      Post-Quantum Verification: {LMS_ALGORITHM}
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground mb-4">{LMS_STANDARD}</p>
+
+                    {!pqResult.present ? (
+                      <div className="p-4 rounded-lg border border-border bg-muted/5">
+                        <p className="text-xs text-muted-foreground">
+                          No post-quantum signature in this bundle (pre-LMS seal). Classical Ed25519 verification above still applies.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className={`flex items-center gap-2 p-3 rounded-lg border ${
+                          pqResult.valid ? "border-compliant/30 bg-compliant/5" : "border-destructive/30 bg-destructive/5"
+                        }`}>
+                          {pqResult.valid
+                            ? <ShieldCheck className="h-4 w-4 text-compliant" />
+                            : <ShieldX className="h-4 w-4 text-destructive" />}
+                          <span className={`font-mono text-sm font-bold tracking-wider ${
+                            pqResult.valid ? "text-compliant" : "text-destructive"
+                          }`}>
+                            {pqResult.valid ? "PQ SIGNATURE VALID" : "PQ SIGNATURE INVALID"}
+                          </span>
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="p-3 rounded-lg border border-border bg-muted/5">
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">One-Time Leaf Index</p>
+                            <p className="font-mono text-xs text-foreground">{pqResult.signature?.leaf_index} / 32</p>
+                          </div>
+                          <div className="p-3 rounded-lg border border-border bg-muted/5">
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Winternitz Chains</p>
+                            <p className="font-mono text-xs text-foreground">68 × SHA-256 (W-4, depth 16)</p>
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-lg border border-border bg-muted/5">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Public Key (Merkle Root)</p>
+                            {pqResult.publicKey && (
+                              <button onClick={() => copyToClipboard(pqResult.publicKey!)} className="text-muted-foreground hover:text-foreground">
+                                <Copy className="h-3 w-3" />
+                              </button>
+                            )}
+                          </div>
+                          <p className="font-mono text-[11px] text-foreground break-all">{pqResult.publicKey}</p>
+                        </div>
+
+                        <div className="p-3 rounded-lg border border-border bg-muted/5">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">W-OTS Signature (68 × 32 bytes)</p>
+                            {pqResult.signature?.wots_signature && (
+                              <button onClick={() => copyToClipboard(pqResult.signature!.wots_signature)} className="text-muted-foreground hover:text-foreground">
+                                <Copy className="h-3 w-3" />
+                              </button>
+                            )}
+                          </div>
+                          <p className="font-mono text-[10px] text-muted-foreground break-all">
+                            {pqResult.signature?.wots_signature.substring(0, 128)}…
+                          </p>
+                        </div>
+
+                        <div className="p-3 rounded-lg border border-border bg-muted/5">
+                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Merkle Authentication Path</p>
+                          <div className="space-y-1">
+                            {pqResult.signature?.auth_path.map((h, i) => (
+                              <p key={i} className="font-mono text-[10px] text-muted-foreground break-all">
+                                h{i}: {h}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+
+                        <p className="text-[11px] text-muted-foreground">
+                          Hash-based signature — security rests only on SHA-256 preimage resistance, so it survives Shor's algorithm.
+                          Verified entirely in your browser; nothing was sent to any server.
+                        </p>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+
 
                 {/* ZK Visualization */}
                 {!bundleResult && (
