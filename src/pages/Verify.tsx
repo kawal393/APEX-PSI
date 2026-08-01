@@ -62,13 +62,22 @@ const Verify = () => {
   const [receiptResult, setReceiptResult] = useState<VerificationResult | null>(null);
   const [searched, setSearched] = useState(false);
   const [activeTab, setActiveTab] = useState("hash");
-  
+
+  // Post-quantum (LMS-W4-SHA256) verification state for the proof bundle
+  const [pqResult, setPqResult] = useState<{
+    present: boolean;
+    valid: boolean;
+    signature?: LMSSignature;
+    publicKey?: string;
+  } | null>(null);
+
   // Public Audit state
   const [auditCommitId, setAuditCommitId] = useState("");
   const [auditResult, setAuditResult] = useState<"VERIFIED" | "FAILED" | "CONTESTED">("VERIFIED");
   const [auditSubmitting, setAuditSubmitting] = useState(false);
   const [auditCount, setAuditCount] = useState(0);
   const [auditSubmitted, setAuditSubmitted] = useState(false);
+
 
   const fetchAttestationCount = async (commitId: string) => {
     if (!commitId.trim()) return;
