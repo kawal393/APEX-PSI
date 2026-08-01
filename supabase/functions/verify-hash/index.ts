@@ -121,6 +121,12 @@ Deno.serve(async (req) => {
         phase: entry.phase,
         status: entry.status,
         merkle_root: entry.merkle_root,
+        ed25519_signature: entry.ed25519_signature,
+        signed_payload: entry.merkle_leaf_hash ? `sha256:${entry.merkle_leaf_hash}` : null,
+        post_quantum: !!entry.pq_signature,
+        pq_signature: entry.pq_signature ?? null,
+        pq_public_key: entry.pq_public_key ?? null,
+        pq_algorithm: entry.pq_algorithm ?? null,
         action_summary: entry.action.length > 100 
           ? entry.action.substring(0, 97) + "..." 
           : entry.action,
@@ -132,7 +138,9 @@ Deno.serve(async (req) => {
         queried_hash: hash,
         queried_at: new Date().toISOString(),
         engine: "APEX PSI v2.0",
-        algorithm: "SHA-256",
+        algorithm: entry.pq_signature
+          ? "SHA-256 + Ed25519 + LMS-W4-SHA256"
+          : "SHA-256 + Ed25519",
         eu_ai_act_compliance: entry.status === "APPROVED",
       }),
       {
