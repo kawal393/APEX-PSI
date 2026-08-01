@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
       latest_sequence: latest?.sequence_number ?? null,
       totals: { entries: total, committed, challenged, violations },
       anomaly_score: Number(anomaly.toFixed(4)),
-      verify_via: "https://apex-psi.lovable.app/verify",
+      verify_via: "https://digital-gallows.apex-infrastructure.com/verify",
     };
 
     return new Response(JSON.stringify(body, null, 2), {

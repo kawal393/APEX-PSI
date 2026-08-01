@@ -78,7 +78,7 @@ async function sendCustomEmail(
     <p style="color:#a89878;margin:0;font-size:13px;font-style:italic;">${reason}</p>
   </div>
   <div style="text-align:center;margin:28px 0;">
-    <a href="https://apex-psi.lovable.app/pramaan" style="display:inline-block;padding:14px 28px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;">Try Pramaan (60 sec, no signup) →</a>
+    <a href="https://digital-gallows.apex-infrastructure.com/pramaan" style="display:inline-block;padding:14px 28px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;">Try Pramaan (60 sec, no signup) →</a>
   </div>
   <p style="color:#a89878;line-height:1.7;">
     If it helps, reply to this email — I'll route you straight to the founder.

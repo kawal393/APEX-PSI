@@ -2,7 +2,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SITE = "https://apex-psi.lovable.app";
+const SITE = "https://digital-gallows.apex-infrastructure.com";
 
 const STATIC = [
   { loc: "/", priority: "1.0", changefreq: "daily" },

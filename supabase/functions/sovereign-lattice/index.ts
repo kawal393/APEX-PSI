@@ -110,7 +110,7 @@ serve(async (req) => {
       node: NODE_CONFIG.id,
       name: NODE_CONFIG.name,
       role: NODE_CONFIG.role,
-      domain: "apex-psi.lovable.app",
+      domain: "digital-gallows.apex-infrastructure.com",
       supabaseProjectId: NODE_CONFIG.projectId,
       status: "online",
       timestamp: now(),

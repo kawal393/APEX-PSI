@@ -51,8 +51,8 @@ Deno.serve(async (req) => {
         latest_sequence: latestSeq,
         body_sha256: bodyHash,
         format: "application/jsonl",
-        verify_via: "https://apex-psi.lovable.app/verify",
-        well_known: "https://apex-psi.lovable.app/.well-known/compliance-receipt",
+        verify_via: "https://digital-gallows.apex-infrastructure.com/verify",
+        well_known: "https://digital-gallows.apex-infrastructure.com/.well-known/compliance-receipt",
       };
       return new Response(JSON.stringify(manifest, null, 2), {
         headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "public, max-age=30" },

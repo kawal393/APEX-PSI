@@ -11,24 +11,35 @@ const corsHeaders = {
 };
 
 const INDEXNOW_KEY = "5a1fe5a9d86545db89162919e099461320f9e878ee424c1592145af783ddd96e";
-const SITE_HOST = "apex-psi.lovable.app";
+const SITE_HOST = "digital-gallows.apex-infrastructure.com";
 const SITE_ORIGIN = `https://${SITE_HOST}`;
 
 const TOPICS = [
+  // Head terms — the phrases we intend to own
+  "What is AI governance? A technical definition for 2026",
+  "AI governance standards compared: EU AI Act, NIST AI RMF, ISO 42001",
+  "Cryptographic truth: proving what an AI system actually did",
+  "Verifiable AI governance: from policy documents to cryptographic evidence",
+  "AI governance framework checklist for regulated enterprises",
+  "AI transparency requirements: what regulators actually ask for",
+  "AI audit trail requirements under the EU AI Act",
+  "AI accountability: why logs are not evidence",
+  "Provenance and content credentials for AI outputs (C2PA)",
+  "AI compliance automation: what can and cannot be automated",
+  // Long tail — technical depth
   "EU AI Act Article 12 record-keeping compliance",
+  "EU AI Act Article 50 marking and detection obligations",
   "Ed25519 signatures for AI audit trails",
   "Bitcoin-anchored proofs for AI governance",
   "IETF draft-singh-psi-00 verifiable AI compliance",
-  "Post-quantum signatures for AI systems (ML-DSA)",
+  "Post-quantum signatures for AI systems (ML-DSA and LMS)",
   "SHA-256 Merkle trees for tamper-evident AI logs",
   "NIST AI RMF vs EU AI Act comparison",
   "Cryptographic evidence for AI transparency requirements",
   "AI compliance receipts and the Compliance-Receipt HTTP header",
   "How to prove an AI decision existed at a specific time",
   "Verifiable AI governance without trusting the vendor",
-  "APEX PSI vs traditional AI audit logs",
   "Insurance underwriting for AI systems using cryptographic proofs",
-  "Regulatory sandbox strategies for verifiable AI",
   "OpenTimestamps and permanent AI decision records",
 ];
 
@@ -126,7 +137,7 @@ Deno.serve(async (req) => {
     );
 
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
-    const requestedCount = Math.min(Math.max(Number(body.count) || 1, 1), 5);
+    const requestedCount = Math.min(Math.max(Number(body.count) || 1, 1), 12);
     const customTopic: string | undefined = body.topic;
 
     const results: any[] = [];

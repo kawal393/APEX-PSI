@@ -18,7 +18,7 @@ const res = await openai.chat.completions.create({
 
 console.log(res.compliance_receipt);
 // v=1; rid=psi_...; pred=eu-ai-act/art-6,...; status=compliant;
-// sig=ed25519:...; verify=https://apex-psi.lovable.app/verify/psi_...
+// sig=ed25519:...; verify=https://digital-gallows.apex-infrastructure.com/verify/psi_...
 ```
 
 ## Why
@@ -27,7 +27,7 @@ Every AI response on the internet should carry a publicly verifiable proof
 of regulatory compliance, the way every HTTPS response carries a TLS
 certificate. This package gives you that with a single function call.
 
-See [the spec](https://apex-psi.lovable.app/standard) and
-[the live inspector](https://apex-psi.lovable.app/header).
+See [the spec](https://digital-gallows.apex-infrastructure.com/standard) and
+[the live inspector](https://digital-gallows.apex-infrastructure.com/header).
 
 MIT · APEX PSI Foundation (in formation)
