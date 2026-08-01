@@ -183,6 +183,23 @@ Deno.serve(async (req) => {
 
     const signature = await signEd25519(merkleLeaf, supabaseKey);
 
+    // Post-quantum: LMS-W4-SHA256 over the same content hash.
+    // The one-time leaf index comes from the count of PQ-sealed ledger rows,
+    // so each leaf is used once and the key rotates every 32 signatures.
+    let pqSignature: Record<string, unknown> | null = null;
+    let pqPublicKey: string | null = null;
+    try {
+      const { count } = await supabase
+        .from("gallows_ledger")
+        .select("id", { count: "exact", head: true })
+        .not("pq_signature", "is", null);
+      const sig = await lmsSignInstitutional(new TextEncoder().encode(merkleLeaf), count ?? 0);
+      pqSignature = sig as unknown as Record<string, unknown>;
+      pqPublicKey = sig.public_key;
+    } catch (e) {
+      console.error("[Notary] LMS signing failed:", e);
+    }
+
     // Store in gallows_ledger for Merkle tree integration
     const { error: insertError } = await supabase.from("gallows_ledger").insert({
       commit_id: receiptId,
@@ -196,7 +213,11 @@ Deno.serve(async (req) => {
       proof_hash: decisionHash,
       ed25519_signature: signature,
       merkle_root: merkleRoot,
+      pq_signature: pqSignature,
+      pq_public_key: pqPublicKey,
+      pq_algorithm: pqSignature ? LMS_ALGORITHM : null,
     });
+
 
     if (insertError) {
       console.error("[Notary] Insert failed:", insertError);
