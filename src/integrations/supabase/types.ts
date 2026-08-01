@@ -429,6 +429,9 @@ export type Database = {
           merkle_proof: Json | null
           merkle_root: string | null
           phase: string
+          pq_algorithm: string | null
+          pq_public_key: string | null
+          pq_signature: Json | null
           predicate_id: string
           proof_hash: string | null
           proven_at: string | null
@@ -455,6 +458,9 @@ export type Database = {
           merkle_proof?: Json | null
           merkle_root?: string | null
           phase?: string
+          pq_algorithm?: string | null
+          pq_public_key?: string | null
+          pq_signature?: Json | null
           predicate_id: string
           proof_hash?: string | null
           proven_at?: string | null
@@ -481,6 +487,9 @@ export type Database = {
           merkle_proof?: Json | null
           merkle_root?: string | null
           phase?: string
+          pq_algorithm?: string | null
+          pq_public_key?: string | null
+          pq_signature?: Json | null
           predicate_id?: string
           proof_hash?: string | null
           proven_at?: string | null
