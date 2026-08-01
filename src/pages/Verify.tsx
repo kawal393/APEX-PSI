@@ -613,6 +613,96 @@ const Verify = () => {
                   </motion.div>
                 )}
 
+                {/* Post-Quantum Verification — LMS-W4-SHA256, computed locally */}
+                {pqResult && (
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                    className="rounded-xl border border-gold/30 bg-card/80 backdrop-blur-sm p-6">
+                    <h3 className="text-sm font-bold text-foreground mb-1 flex items-center gap-2">
+                      <Lock className="h-4 w-4 text-gold" />
+                      Post-Quantum Verification: {LMS_ALGORITHM}
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground mb-4">{LMS_STANDARD}</p>
+
+                    {!pqResult.present ? (
+                      <div className="p-4 rounded-lg border border-border bg-muted/5">
+                        <p className="text-xs text-muted-foreground">
+                          No post-quantum signature in this bundle (pre-LMS seal). Classical Ed25519 verification above still applies.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className={`flex items-center gap-2 p-3 rounded-lg border ${
+                          pqResult.valid ? "border-compliant/30 bg-compliant/5" : "border-destructive/30 bg-destructive/5"
+                        }`}>
+                          {pqResult.valid
+                            ? <ShieldCheck className="h-4 w-4 text-compliant" />
+                            : <ShieldX className="h-4 w-4 text-destructive" />}
+                          <span className={`font-mono text-sm font-bold tracking-wider ${
+                            pqResult.valid ? "text-compliant" : "text-destructive"
+                          }`}>
+                            {pqResult.valid ? "PQ SIGNATURE VALID" : "PQ SIGNATURE INVALID"}
+                          </span>
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="p-3 rounded-lg border border-border bg-muted/5">
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">One-Time Leaf Index</p>
+                            <p className="font-mono text-xs text-foreground">{pqResult.signature?.leaf_index} / 32</p>
+                          </div>
+                          <div className="p-3 rounded-lg border border-border bg-muted/5">
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Winternitz Chains</p>
+                            <p className="font-mono text-xs text-foreground">68 × SHA-256 (W-4, depth 16)</p>
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-lg border border-border bg-muted/5">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Public Key (Merkle Root)</p>
+                            {pqResult.publicKey && (
+                              <button onClick={() => copyToClipboard(pqResult.publicKey!)} className="text-muted-foreground hover:text-foreground">
+                                <Copy className="h-3 w-3" />
+                              </button>
+                            )}
+                          </div>
+                          <p className="font-mono text-[11px] text-foreground break-all">{pqResult.publicKey}</p>
+                        </div>
+
+                        <div className="p-3 rounded-lg border border-border bg-muted/5">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">W-OTS Signature (68 × 32 bytes)</p>
+                            {pqResult.signature?.wots_signature && (
+                              <button onClick={() => copyToClipboard(pqResult.signature!.wots_signature)} className="text-muted-foreground hover:text-foreground">
+                                <Copy className="h-3 w-3" />
+                              </button>
+                            )}
+                          </div>
+                          <p className="font-mono text-[10px] text-muted-foreground break-all">
+                            {pqResult.signature?.wots_signature.substring(0, 128)}…
+                          </p>
+                        </div>
+
+                        <div className="p-3 rounded-lg border border-border bg-muted/5">
+                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Merkle Authentication Path</p>
+                          <div className="space-y-1">
+                            {pqResult.signature?.auth_path.map((h, i) => (
+                              <p key={i} className="font-mono text-[10px] text-muted-foreground break-all">
+                                h{i}: {h}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+
+                        <p className="text-[11px] text-muted-foreground">
+                          Hash-based signature — security rests only on SHA-256 preimage resistance, so it survives Shor's algorithm.
+                          Verified entirely in your browser; nothing was sent to any server.
+                        </p>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+
+
                 {/* ZK Visualization */}
                 {!bundleResult && (
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
