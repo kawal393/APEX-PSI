@@ -44,4 +44,3 @@ User-agent: facebookexternalhit
 Allow: /
 
 Sitemap: https://digital-gallows.apex-infrastructure.com/sitemap.xml
-Sitemap: https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/dynamic-sitemap
