@@ -17,4 +17,4 @@ const msg = await anthropic.messages.create({
 console.log(msg.compliance_receipt);
 ```
 
-Spec: https://apex-psi.lovable.app/standard · MIT
+Spec: https://digital-gallows.apex-infrastructure.com/standard · MIT

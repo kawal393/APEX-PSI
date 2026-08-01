@@ -3,7 +3,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SITE = "https://apex-psi.lovable.app";
+const SITE = "https://digital-gallows.apex-infrastructure.com";
 
 Deno.serve(async () => {
   const supabase = createClient(

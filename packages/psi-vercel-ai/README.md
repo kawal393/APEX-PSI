@@ -19,4 +19,4 @@ export async function POST(req: Request) {
 }
 ```
 
-Spec: https://apex-psi.lovable.app/standard · MIT
+Spec: https://digital-gallows.apex-infrastructure.com/standard · MIT
