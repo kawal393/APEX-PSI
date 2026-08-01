@@ -196,6 +196,7 @@ const Verify = () => {
 
     setBundleVerifying(true);
     setBundleResult(null);
+    setPqResult(null);
 
     const steps: { label: string; status: "pending" | "pass" | "fail"; value?: string }[] = [
       { label: "Parse JSON Bundle", status: "pending" },
