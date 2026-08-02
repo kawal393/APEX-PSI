@@ -42,7 +42,7 @@ export default function ExitIntentPopup() {
               Before you go — take the Article 50 pack
             </h2>
             <p className="text-sm text-muted-foreground mb-4">
-              The EU AI Act transparency obligations apply from{" "}
+              The EU AI Act transparency obligations have applied since{" "}
               <span className="text-primary font-semibold">August 2, 2026</span>. This is the
               spec, the clause mapping and a sealed sample receipt you can verify yourself.
             </p>

@@ -244,7 +244,7 @@ const Badge = () => {
             <div className="grid lg:grid-cols-2 gap-8 mt-12">
               <EmbedCodeGenerator
                 title="EU AI Act Countdown Widget"
-                description="Embed a live countdown to the August 2, 2026 enforcement deadline on any website. Drives traffic back to APEX."
+                description="Embed a live in-force clock for the August 2, 2026 Article 50 enforcement on any website. Drives traffic back to APEX."
                 embedUrl="https://digital-gallows.apex-infrastructure.com/embed/countdown"
                 defaultWidth={400}
                 defaultHeight={220}

@@ -13,7 +13,7 @@ const references = [
     category: "Regulation" as Category,
     title: "EU AI Act (Regulation 2024/1689)",
     source: "Official Journal of the European Union",
-    desc: "The world's first comprehensive AI regulation. Full enforcement for high-risk systems: August 2, 2026. Fines up to €35M or 7% of global turnover.",
+    desc: "The world's first comprehensive AI regulation. Full enforcement for high-risk systems began August 2, 2026. Fines up to €35M or 7% of global turnover.",
     url: "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
   },
   {

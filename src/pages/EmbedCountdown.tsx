@@ -53,7 +53,7 @@ const EmbedCountdown = () => {
           ))}
         </div>
         <div style={{ fontSize: 12, color: "#888", marginBottom: 12 }}>
-          August 2, 2026 — Full enforcement begins
+          August 2, 2026 — Full enforcement is live
         </div>
         <a
           href="https://digital-gallows.apex-infrastructure.com/assess"

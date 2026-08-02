@@ -98,7 +98,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "When does Article 50 take effect?",
-    a: "August 2, 2026. All AI systems that generate synthetic audio, image, video, or text content must comply with transparency obligations — including marking, watermarking, and metadata disclosure.",
+    a: "August 2, 2026 — now in force. All AI systems that generate synthetic audio, image, video, or text content must comply with transparency obligations — including marking, watermarking, and metadata disclosure.",
   },
   {
     q: "Who must comply?",
@@ -126,7 +126,7 @@ export default function EUAIAct() {
     const target = new Date("2026-08-02T00:00:00Z").getTime();
     const tick = () => {
       const now = Date.now();
-      const diff = Math.max(0, target - now);
+      const diff = Math.max(0, now - target);
       setCountdown({
         days: Math.floor(diff / 86400000),
         hours: Math.floor((diff % 86400000) / 3600000),
@@ -180,11 +180,11 @@ export default function EUAIAct() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
-                className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 sm:p-8 text-center mb-12"
+                className="rounded-xl border border-gold/30 bg-gold/5 p-6 sm:p-8 text-center mb-12"
               >
                 <div className="flex items-center justify-center gap-2 mb-3">
-                  <AlertTriangle className="h-5 w-5 text-destructive" />
-                  <span className="text-sm font-bold text-destructive tracking-wider">ARTICLE 50 ENFORCEMENT DEADLINE</span>
+                  <ShieldCheck className="h-5 w-5 text-gold" />
+                  <span className="text-sm font-bold text-gold tracking-wider">ARTICLE 50 IS NOW IN FORCE</span>
                 </div>
                 <div className="flex justify-center gap-4 sm:gap-6 mb-4">
                   {[
@@ -200,7 +200,7 @@ export default function EUAIAct() {
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  August 2, 2026 — All AI-generated content must be marked, watermarked, and metadata-labeled.
+                  Live since August 2, 2026 — all AI-generated content must be marked, watermarked, and metadata-labeled.
                 </p>
               </motion.div>
 
@@ -466,7 +466,7 @@ export default function EUAIAct() {
                 className="rounded-xl border border-gold/20 bg-gold/5 p-6 sm:p-8 text-center"
               >
                 <h3 className="text-lg font-bold text-foreground mb-2">
-                  Article 50 Takes Effect <span className="text-gold-gradient">August 2, 2026</span>
+                  Article 50 Is In Force — <span className="text-gold-gradient">Since August 2, 2026</span>
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
                   Every AI-generated content piece must be marked, watermarked, and metadata-labeled.
