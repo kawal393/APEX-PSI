@@ -21,9 +21,9 @@ const statusLabels: Record<string, string> = {
 };
 
 const ComplianceStatus = ({ score, status }: Props) => {
-  const deadline = new Date("2026-08-02T00:00:00Z");
+  const inForce = new Date("2026-08-02T00:00:00Z");
   const now = new Date();
-  const daysLeft = Math.max(0, Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+  const daysInForce = Math.max(0, Math.floor((now.getTime() - inForce.getTime()) / (1000 * 60 * 60 * 24)));
 
   return (
     <Card className="border-glow bg-card/80">
@@ -44,10 +44,10 @@ const ComplianceStatus = ({ score, status }: Props) => {
           <div className="text-right">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <CalendarClock className="h-3.5 w-3.5" />
-              Aug 2, 2026
+              In force since Aug 2, 2026
             </div>
-            <p className="text-2xl font-bold text-foreground">{daysLeft}</p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Days Left</p>
+            <p className="text-2xl font-bold text-foreground">{daysInForce}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Days In Force</p>
           </div>
         </div>
         <Progress value={score} className="h-2" />

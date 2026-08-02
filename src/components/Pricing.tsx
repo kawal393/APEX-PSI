@@ -59,7 +59,7 @@ const Pricing = () => {
         >
           <p className="text-sm text-foreground">
             <Zap className="h-4 w-4 text-warning inline mr-1 -mt-0.5" />
-            <span className="font-bold text-warning">EU AI Act enforcement: August 2, 2026.</span>
+            <span className="font-bold text-warning">EU AI Act Article 50 enforcement is live since August 2, 2026.</span>
             {" "}Non-compliance fines up to <span className="font-bold">€35M or 7% of global revenue</span>.
           </p>
         </motion.div>
