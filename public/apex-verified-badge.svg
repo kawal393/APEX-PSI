@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="40" viewBox="0 0 220 40" role="img" aria-label="APEX PSI Verified">
+  <rect width="220" height="40" rx="6" fill="#0b0d10"/>
+  <rect x="0.5" y="0.5" width="219" height="39" rx="5.5" fill="none" stroke="#c9a227" stroke-opacity="0.6"/>
+  <path d="M20 9l8 3v7c0 5-3.4 9-8 11-4.6-2-8-6-8-11v-7l8-3z" fill="none" stroke="#c9a227" stroke-width="1.6"/>
+  <path d="M16.5 19.5l2.6 2.6 4.6-5" fill="none" stroke="#c9a227" stroke-width="1.8" stroke-linecap="round"/>
+  <text x="38" y="17" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" letter-spacing="1.6" fill="#c9a227">APEX PSI</text>
+  <text x="38" y="30" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" letter-spacing="1.2" fill="#e6e6e6">VERIFIED PROOF</text>
+</svg>

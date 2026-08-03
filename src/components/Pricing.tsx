@@ -2,6 +2,8 @@ import { Shield, FileText, Globe, Zap, ArrowRight, CheckCircle2 } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { CHECKOUT } from "@/lib/commerce";
+
 
 const openAccessFeatures = [
   "Full PSI Protocol verification engine",
@@ -204,6 +206,66 @@ const Pricing = () => {
           </motion.div>
         </div>
 
+        {/* Pay-per-proof and registry listing — no subscription required */}
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-xl border border-gold/30 bg-gold/[0.04] p-6 flex flex-col"
+          >
+            <h3 className="text-xs font-bold tracking-widest text-gold uppercase mb-2">
+              {CHECKOUT.conformityReceipt.label}
+            </h3>
+            <div className="mb-3">
+              <span className="text-3xl font-black text-foreground">{CHECKOUT.conformityReceipt.price}</span>
+              <span className="text-muted-foreground text-sm ml-1">/ {CHECKOUT.conformityReceipt.cadence}</span>
+            </div>
+            <p className="text-sm text-muted-foreground mb-5 flex-1">
+              Sealing is free. This is one proof countersigned by the APEX PSI institutional trust
+              anchor (Ed25519 + LMS-W4-SHA256), Bitcoin-anchored via OpenTimestamps, and issued as a
+              regulator-ready PDF at a permanent public receipt URL. No subscription.
+            </p>
+            <a
+              href={CHECKOUT.conformityReceipt.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-gold text-background font-bold text-sm h-11 hover:bg-gold/90 transition-colors"
+            >
+              Get a countersigned receipt <ArrowRight className="h-4 w-4" />
+            </a>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.05 }}
+            className="rounded-xl border border-primary/40 bg-card p-6 flex flex-col"
+          >
+            <h3 className="text-xs font-bold tracking-widest text-primary uppercase mb-2">
+              {CHECKOUT.registryListing.label}
+            </h3>
+            <div className="mb-3">
+              <span className="text-3xl font-black text-foreground">{CHECKOUT.registryListing.price}</span>
+              <span className="text-muted-foreground text-sm ml-1">/ {CHECKOUT.registryListing.cadence}</span>
+            </div>
+            <p className="text-sm text-muted-foreground mb-5 flex-1">
+              Buyers, auditors and regulators check supplier domains for free in the{" "}
+              <Link to="/registry/check" className="text-primary underline">procurement console</Link>.
+              A listing shows your organisation as Verified, with continuous monitoring and lapse alerts.
+            </p>
+            <a
+              href={CHECKOUT.registryListing.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-primary text-primary font-bold text-sm h-11 hover:bg-primary/10 transition-colors"
+            >
+              List as a Verified Supplier <ArrowRight className="h-4 w-4" />
+            </a>
+          </motion.div>
+        </div>
+
         {/* Bottom reassurance */}
         <motion.p
           initial={{ opacity: 0 }}
@@ -212,8 +274,9 @@ const Pricing = () => {
           className="text-center text-xs text-muted-foreground mt-10 max-w-2xl mx-auto"
         >
           The PSI Protocol is a public-good standard. The math is free, the code is open-source, and the specification (<span className="font-mono">draft-singh-psi-00</span>) is submitted to the IETF.
-          Certification fees apply only to commercial entities requiring evidence-ratified, regulator-ready compliance filings.
+          Fees apply only to countersigned artefacts and registry listings — never to sealing or verifying.
         </motion.p>
+
       </div>
     </section>
   );

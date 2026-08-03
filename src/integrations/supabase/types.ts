@@ -1681,6 +1681,48 @@ export type Database = {
           },
         ]
       }
+      verified_suppliers: {
+        Row: {
+          contact_email: string | null
+          created_at: string
+          display_name: string
+          domain: string
+          expires_at: string | null
+          id: string
+          jurisdiction: string | null
+          notes: string | null
+          status: string
+          updated_at: string
+          verified_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          created_at?: string
+          display_name: string
+          domain: string
+          expires_at?: string | null
+          id?: string
+          jurisdiction?: string | null
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          verified_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          created_at?: string
+          display_name?: string
+          domain?: string
+          expires_at?: string | null
+          id?: string
+          jurisdiction?: string | null
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          verified_at?: string
+        }
+        Relationships: []
+      }
       visit_ledger: {
         Row: {
           created_at: string
