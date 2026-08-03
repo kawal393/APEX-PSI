@@ -432,7 +432,9 @@ const Verify = () => {
                           </div>
                         ))}
                       </div>
+                      <ProofReceipt data={result} />
                       <div className="border-t border-border px-6 py-3 flex items-center justify-between">
+
                         <span className="text-[10px] text-muted-foreground font-mono">{result.engine} — {result.algorithm}</span>
                         <button onClick={() => copyToClipboard(JSON.stringify(result, null, 2))}
                           className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 bg-transparent border-none cursor-pointer">
