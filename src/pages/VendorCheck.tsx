@@ -31,11 +31,34 @@ interface CheckResult {
   error?: string;
 }
 
-const GRADE_COPY: Record<CheckResult["grade"], { label: string; tone: string; icon: typeof ShieldCheck }> = {
-  VERIFIED_SUPPLIER: { label: "Verified Supplier", tone: "compliant", icon: ShieldCheck },
-  CONFORMANT_SIGNALS: { label: "Conformity signals present", tone: "compliant", icon: ShieldCheck },
-  PARTIAL_SIGNALS: { label: "Partial signals", tone: "warning", icon: ShieldAlert },
-  NO_SIGNALS: { label: "No transparency signals", tone: "destructive", icon: ShieldX },
+const GRADE_COPY: Record<
+  CheckResult["grade"],
+  { label: string; card: string; icon: typeof ShieldCheck; iconClass: string }
+> = {
+  VERIFIED_SUPPLIER: {
+    label: "Verified Supplier",
+    card: "border-compliant/40 bg-compliant/[0.04]",
+    icon: ShieldCheck,
+    iconClass: "text-compliant",
+  },
+  CONFORMANT_SIGNALS: {
+    label: "Conformity signals present",
+    card: "border-compliant/40 bg-compliant/[0.04]",
+    icon: ShieldCheck,
+    iconClass: "text-compliant",
+  },
+  PARTIAL_SIGNALS: {
+    label: "Partial signals",
+    card: "border-warning/40 bg-warning/[0.04]",
+    icon: ShieldAlert,
+    iconClass: "text-warning",
+  },
+  NO_SIGNALS: {
+    label: "No transparency signals",
+    card: "border-destructive/40 bg-destructive/[0.04]",
+    icon: ShieldX,
+    iconClass: "text-destructive",
+  },
 };
 
 /**
@@ -123,10 +146,10 @@ const VendorCheck = () => {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`rounded-xl border p-6 md:p-8 mb-10 border-${grade.tone}/40 bg-${grade.tone}/[0.04]`}
+            className={`rounded-xl border p-6 md:p-8 mb-10 ${grade.card}`}
           >
             <div className="flex items-start gap-4 mb-6">
-              <GradeIcon className={`h-10 w-10 text-${grade.tone} flex-shrink-0`} />
+              <GradeIcon className={`h-10 w-10 ${grade.iconClass} flex-shrink-0`} />
               <div>
                 <h2 className="text-2xl font-bold text-foreground">{grade.label}</h2>
                 <p className="text-sm text-muted-foreground font-mono">
