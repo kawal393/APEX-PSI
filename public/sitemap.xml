@@ -236,6 +236,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/ed25519-signatures-for-ai-audit-trails-enhanced-security-eu1kdh</loc>
+    <lastmod>2026-08-03T12:05:47.404Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-insurance-underwriting-with-cryptographic-proofs-c4ygoc</loc>
+    <lastmod>2026-08-03T12:05:47.404Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-guide-gbnuc3</loc>
+    <lastmod>2026-08-03T12:05:47.404Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-trustworthy-transparent-solutions-k496xq</loc>
     <lastmod>2026-08-03T09:07:19.106Z</lastmod>
     <changefreq>weekly</changefreq>
