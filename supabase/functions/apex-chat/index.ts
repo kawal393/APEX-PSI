@@ -327,14 +327,14 @@ serve(async (req) => {
     const SYSTEM_PROMPT = await buildSystemPrompt(supabase);
 
     // Call Gemini API directly
-    const aiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
+    const aiResponse = await fetch(AI_URL, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${GEMINI_API_KEY}`,
+        Authorization: `Bearer ${AI_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gemini-2.5-flash",
+        model: AI_MODEL,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           ...cleanMessages,
@@ -421,14 +421,14 @@ serve(async (req) => {
       }
 
       // Second AI call with tool results — collect fully so we can store assistant message
-      const followUp = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
+      const followUp = await fetch(AI_URL, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${GEMINI_API_KEY}`,
+          Authorization: `Bearer ${AI_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gemini-2.5-flash",
+          model: AI_MODEL,
           messages: [
             { role: "system", content: SYSTEM_PROMPT },
             ...cleanMessages,
