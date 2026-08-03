@@ -41,7 +41,7 @@ const Hero = () => {
             APEX PSI proves what <span className="text-chrome-gradient font-bold">AI</span> did.
             APEX PRAMAAN proves what <span className="text-gold-gradient font-bold">humans</span> saw.{" "}
             <Link
-              to="/verify?hash=32af510b09317c1aeaff5aeb70ca09fa6e8878ffbfc41b3d45ef99cfd1256ffe"
+              to="/verify?hash=4606e9eee90b89d2fcf9d47c21fb00e558f60bb3c6ddf5955c2d005ae0e3ca7f"
               className="font-bold text-foreground underline decoration-gold/60 decoration-2 underline-offset-4 hover:text-gold transition-colors"
             >
               Mathematically

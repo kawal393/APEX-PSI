@@ -145,6 +145,67 @@ Deno.serve(async (req) => {
       });
     }
 
+    // ── ANCHOR-COMMIT: timestamp one ledger entry's own Merkle root ──────
+    // The batch anchor above aggregates roots, so an individual receipt can't
+    // resolve to it. This gives a single commit its own real .ots proof, keyed
+    // on its merkle_root so verify-hash can find it.
+    if (action === "anchor-commit") {
+      const commitId: string = body.commit_id ?? new URL(req.url).searchParams.get("commit_id") ?? "";
+      if (!commitId) return json({ error: "commit_id is required" }, 400);
+
+      const { data: entry } = await supabase
+        .from("gallows_ledger")
+        .select("commit_id, merkle_root")
+        .eq("commit_id", commitId)
+        .maybeSingle();
+
+      if (!entry) return json({ error: "Commit not found in the ledger" }, 404);
+      if (!entry.merkle_root) return json({ error: "Commit has no Merkle root to anchor" }, 400);
+
+      const target = String(entry.merkle_root).replace(/^sha256:/, "");
+
+      const { data: existing } = await supabase
+        .from("ots_proofs")
+        .select("id, status, calendar_url, bitcoin_block_height, bitcoin_txid")
+        .eq("target_hash", target)
+        .maybeSingle();
+      if (existing) {
+        return json({ success: true, already_anchored: true, proof: existing });
+      }
+
+      const ots = await submitDigestToCalendars(target);
+      if (!ots.ok) {
+        return json({ error: "OpenTimestamps calendar submission failed", details: ots.error }, 502);
+      }
+
+      const { data: proofRow, error: proofErr } = await supabase
+        .from("ots_proofs")
+        .insert({
+          commit_id: entry.commit_id,
+          target_hash: target,
+          ots_base64: ots.ots_base64!,
+          calendar_url: ots.calendar_url!,
+          status: "pending",
+        })
+        .select("id, status, calendar_url")
+        .single();
+      if (proofErr) throw new Error(`Failed to store .ots proof: ${proofErr.message}`);
+
+      return json({
+        success: true,
+        commit_id: entry.commit_id,
+        target_hash: target,
+        ots_proof_id: proofRow.id,
+        ots_bytes: ots.ots_bytes_length,
+        calendar_url: ots.calendar_url,
+        status: "pending",
+        note:
+          "Accepted by the OpenTimestamps Bitcoin calendars. It stays pending until a real Bitcoin block includes it.",
+      });
+    }
+
+
+
     // ── REFRESH: pending → confirmed only on a real block ──────────────
     if (action === "refresh") {
       const { data: pending } = await supabase

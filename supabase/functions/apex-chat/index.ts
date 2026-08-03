@@ -292,8 +292,13 @@ serve(async (req) => {
       });
     }
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
+    // Route through the managed AI gateway. The previously used direct Gemini
+    // key was rejected upstream (502 auth error), so the gateway key is primary.
+    const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+    const AI_MODEL = "google/gemini-2.5-flash";
+    const AI_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!AI_KEY) throw new Error("LOVABLE_API_KEY not configured");
+
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -322,14 +327,14 @@ serve(async (req) => {
     const SYSTEM_PROMPT = await buildSystemPrompt(supabase);
 
     // Call Gemini API directly
-    const aiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
+    const aiResponse = await fetch(AI_URL, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${GEMINI_API_KEY}`,
+        Authorization: `Bearer ${AI_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gemini-2.5-flash",
+        model: AI_MODEL,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           ...cleanMessages,
@@ -416,14 +421,14 @@ serve(async (req) => {
       }
 
       // Second AI call with tool results — collect fully so we can store assistant message
-      const followUp = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
+      const followUp = await fetch(AI_URL, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${GEMINI_API_KEY}`,
+          Authorization: `Bearer ${AI_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gemini-2.5-flash",
+          model: AI_MODEL,
           messages: [
             { role: "system", content: SYSTEM_PROMPT },
             ...cleanMessages,
