@@ -6,6 +6,8 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD } from "../_shared/pq_lms.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -111,6 +113,40 @@ Deno.serve(async (req) => {
     const entry = data[0];
     const hasMerkleProof = entry.merkle_proof && entry.merkle_root;
 
+    // ── REAL post-quantum verification (no silent SHA-256 degradation) ──
+    // The LMS-W4-SHA256 signature is recomputed here against the stored
+    // Merkle root. If it does not verify, the response says so loudly.
+    let pqVerified: boolean | null = null;
+    let pqError: string | null = null;
+    if (entry.pq_signature && entry.merkle_leaf_hash) {
+      try {
+        const message = new TextEncoder().encode(`sha256:${entry.merkle_leaf_hash}`);
+        pqVerified = await lmsVerify(
+          message,
+          entry.pq_signature as Parameters<typeof lmsVerify>[1],
+          entry.pq_public_key ?? undefined,
+        );
+        if (!pqVerified) pqError = "LMS-W4-SHA256 signature failed verification";
+      } catch (e) {
+        pqVerified = false;
+        pqError = `Post-quantum verification error: ${e instanceof Error ? e.message : String(e)}`;
+      }
+    }
+
+    // Attach the real OpenTimestamps / Bitcoin anchor state, if any
+    const { data: proof } = await supabase
+      .from("ots_proofs")
+      .select("id, status, calendar_url, bitcoin_block_height, bitcoin_txid, target_hash")
+      .or(`commit_id.eq.${entry.commit_id},target_hash.eq.${entry.merkle_root ?? ""}`)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const functionsBase = (Deno.env.get("SUPABASE_URL") ?? "").replace(
+      ".supabase.co",
+      ".functions.supabase.co",
+    );
+
     return new Response(
       JSON.stringify({
         verified: true,
@@ -121,12 +157,26 @@ Deno.serve(async (req) => {
         phase: entry.phase,
         status: entry.status,
         merkle_root: entry.merkle_root,
+        merkle_proof: entry.merkle_proof ?? null,
         ed25519_signature: entry.ed25519_signature,
         signed_payload: entry.merkle_leaf_hash ? `sha256:${entry.merkle_leaf_hash}` : null,
         post_quantum: !!entry.pq_signature,
+        pq_verified: pqVerified,
+        pq_error: pqError,
         pq_signature: entry.pq_signature ?? null,
         pq_public_key: entry.pq_public_key ?? null,
-        pq_algorithm: entry.pq_algorithm ?? null,
+        pq_algorithm: entry.pq_algorithm ?? (entry.pq_signature ? LMS_ALGORITHM : null),
+        pq_standard: entry.pq_signature ? LMS_STANDARD : null,
+        timestamp_anchor: proof
+          ? {
+              status: proof.status,
+              calendar_url: proof.calendar_url,
+              bitcoin_block_height: proof.bitcoin_block_height,
+              bitcoin_txid: proof.bitcoin_txid,
+              explorer_url: proof.bitcoin_txid ? `https://mempool.space/tx/${proof.bitcoin_txid}` : null,
+              ots_download_url: `${functionsBase}/ots-proof?id=${proof.id}`,
+            }
+          : null,
         action_summary: entry.action.length > 100 
           ? entry.action.substring(0, 97) + "..." 
           : entry.action,
@@ -143,6 +193,7 @@ Deno.serve(async (req) => {
           : "SHA-256 + Ed25519",
         eu_ai_act_compliance: entry.status === "APPROVED",
       }),
+
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

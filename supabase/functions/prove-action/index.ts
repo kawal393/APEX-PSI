@@ -5,6 +5,8 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { submitDigestToCalendars } from "../_shared/ots.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -146,29 +148,51 @@ function checkCompliance(action: string, predicateId: string): { compliant: bool
   return { compliant: true };
 }
 
-// Submit to OpenTimestamps for external anchoring
-async function anchorToOpenTimestamps(hash: string): Promise<{ success: boolean; ots_url?: string; error?: string }> {
-  try {
-    // OpenTimestamps public calendar servers
-    const response = await fetch("https://a.pool.opentimestamps.org/digest", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: hash,
-    });
-    
-    if (response.ok) {
-      return { 
-        success: true, 
-        ots_url: `https://opentimestamps.org/info/?digest=${hash}` 
-      };
-    }
-    return { success: false, error: "OpenTimestamps submission failed" };
-  } catch (e: any) {
-    // Non-blocking: anchoring is best-effort
-    console.warn("[Prove] OpenTimestamps anchoring failed:", e.message);
-    return { success: false, error: e.message };
+// Submit to OpenTimestamps and PERSIST the returned .ots proof bytes.
+// Earlier revisions discarded the calendar response, so proofs were lost.
+async function anchorToOpenTimestamps(
+  hash: string,
+  commitId: string,
+  supabase: ReturnType<typeof createClient>,
+): Promise<Record<string, unknown>> {
+  const result = await submitDigestToCalendars(hash);
+  if (!result.ok) {
+    console.warn("[Prove] OpenTimestamps submission failed:", result.error);
+    return { success: false, error: result.error, status: "unanchored" };
   }
+
+  const { data, error } = await supabase
+    .from("ots_proofs")
+    .insert({
+      commit_id: commitId,
+      target_hash: hash,
+      ots_base64: result.ots_base64!,
+      calendar_url: result.calendar_url!,
+      status: "pending",
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error("[Prove] Failed to persist .ots proof:", error.message);
+    return { success: false, error: error.message, status: "unanchored" };
+  }
+
+  const functionsBase = (Deno.env.get("SUPABASE_URL") ?? "").replace(".supabase.co", ".functions.supabase.co");
+
+  return {
+    success: true,
+    status: "pending",
+    calendar_url: result.calendar_url,
+    ots_proof_id: data.id,
+    ots_bytes: result.ots_bytes_length,
+    ots_download_url: `${functionsBase}/ots-proof?id=${data.id}`,
+    info_url: `https://opentimestamps.org/info/?digest=${hash}`,
+    note:
+      "Timestamp accepted by the Bitcoin calendars. It remains pending until a real Bitcoin block includes it.",
+  };
 }
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -259,8 +283,9 @@ Deno.serve(async (req) => {
 
     const verificationTimeMs = Math.round((performance.now() - t0) * 100) / 100;
 
-    // Anchor to OpenTimestamps (non-blocking, best-effort)
-    const anchoring = await anchorToOpenTimestamps(root);
+    // Anchor to OpenTimestamps and persist the returned .ots proof
+    const anchoring = await anchorToOpenTimestamps(root, commit_id, supabase);
+
 
     // Update the commit with all proof data
     const { error: updateError } = await supabase

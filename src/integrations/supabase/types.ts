@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      anchor_records: {
+        Row: {
+          anchor_hash: string
+          bitcoin_txid: string | null
+          block_height: number | null
+          chain: string
+          confirmed_at: string | null
+          created_at: string
+          entries_count: number
+          explorer_url: string | null
+          id: string
+          merkle_roots: Json
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          anchor_hash: string
+          bitcoin_txid?: string | null
+          block_height?: number | null
+          chain?: string
+          confirmed_at?: string | null
+          created_at?: string
+          entries_count?: number
+          explorer_url?: string | null
+          id?: string
+          merkle_roots?: Json
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          anchor_hash?: string
+          bitcoin_txid?: string | null
+          block_height?: number | null
+          chain?: string
+          confirmed_at?: string | null
+          created_at?: string
+          entries_count?: number
+          explorer_url?: string | null
+          id?: string
+          merkle_roots?: Json
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       apex_api_keys: {
         Row: {
           created_at: string
@@ -759,6 +804,45 @@ export type Database = {
           name?: string
           tier?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      ots_proofs: {
+        Row: {
+          bitcoin_block_height: number | null
+          bitcoin_txid: string | null
+          calendar_url: string
+          commit_id: string
+          created_at: string
+          id: string
+          ots_base64: string
+          status: string
+          target_hash: string
+          updated_at: string
+        }
+        Insert: {
+          bitcoin_block_height?: number | null
+          bitcoin_txid?: string | null
+          calendar_url: string
+          commit_id: string
+          created_at?: string
+          id?: string
+          ots_base64: string
+          status?: string
+          target_hash: string
+          updated_at?: string
+        }
+        Update: {
+          bitcoin_block_height?: number | null
+          bitcoin_txid?: string | null
+          calendar_url?: string
+          commit_id?: string
+          created_at?: string
+          id?: string
+          ots_base64?: string
+          status?: string
+          target_hash?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1731,6 +1815,17 @@ export type Database = {
           industry: string
           score: number
           status: string
+        }[]
+      }
+      get_seal_counts: {
+        Args: never
+        Returns: {
+          approved_seals: number
+          attestations: number
+          confirmed_anchors: number
+          ots_proofs: number
+          pq_signed_seals: number
+          total_seals: number
         }[]
       }
       has_role: {
