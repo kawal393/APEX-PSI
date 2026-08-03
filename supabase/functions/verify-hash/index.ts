@@ -6,6 +6,8 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD } from "../_shared/pq_lms.ts";
+
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
