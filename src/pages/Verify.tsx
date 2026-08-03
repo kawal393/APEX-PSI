@@ -18,7 +18,7 @@ import { verifyMerkleProof, hashSHA256 } from "@/lib/gallows-engine";
 import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD, type LMSSignature } from "@/lib/psi-lms";
 import { Helmet } from "react-helmet-async";
 
-interface VerificationResult {
+interface VerificationResult extends ProofReceiptData {
   verified: boolean;
   found: boolean;
   merkle_verified?: boolean;
@@ -41,6 +41,7 @@ interface VerificationResult {
   message?: string;
   sequence_number?: number;
 }
+
 
 const VERIFY_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/verify-hash`;
 
