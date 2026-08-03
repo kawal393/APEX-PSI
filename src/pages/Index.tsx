@@ -71,6 +71,8 @@ const Index = () => {
         <Navbar />
         <div id="top" />
         <Hero />
+        <Article50Banner />
+
         <TwoPillars />
         <LeadCaptureOffer />
 
