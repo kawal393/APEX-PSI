@@ -11,7 +11,7 @@ const corsHeaders = {
 };
 
 const INDEXNOW_KEY = "5a1fe5a9d86545db89162919e099461320f9e878ee424c1592145af783ddd96e";
-const SITE_HOST = "digital-gallows.apex-infrastructure.com";
+const SITE_HOST = "ai-governance-standard.com";
 const SITE_ORIGIN = `https://${SITE_HOST}`;
 
 const TOPICS = [

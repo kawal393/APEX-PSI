@@ -11,7 +11,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SITE = "https://digital-gallows.apex-infrastructure.com";
+const SITE = "https://ai-governance-standard.com";
 // Branded sender. Starts delivering to leads automatically the moment
 // apex-infrastructure.com is verified in Resend. Until then Resend rejects it
 // (403) and we fall back to the sandbox sender, which still reaches the operator.

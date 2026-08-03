@@ -295,7 +295,7 @@ Deno.serve(async (req) => {
       "GET /v1/pq-public-key": "Post-quantum LMS-W4-SHA256 public key (no auth)",
     },
     auth: "Authorization: Bearer apex_sk_…  OR  apex_ntry_…",
-    docs: "https://digital-gallows.apex-infrastructure.com/api",
+    docs: "https://ai-governance-standard.com/api",
   });
 
   const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
