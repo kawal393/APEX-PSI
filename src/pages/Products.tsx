@@ -388,7 +388,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
           </div>
         </section>
 
-        <Footer />
+        {!embedded && <Footer />}
       </div>
     </>
   );
