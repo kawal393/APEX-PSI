@@ -283,8 +283,9 @@ Deno.serve(async (req) => {
 
     const verificationTimeMs = Math.round((performance.now() - t0) * 100) / 100;
 
-    // Anchor to OpenTimestamps (non-blocking, best-effort)
-    const anchoring = await anchorToOpenTimestamps(root);
+    // Anchor to OpenTimestamps and persist the returned .ots proof
+    const anchoring = await anchorToOpenTimestamps(root, commit_id, supabase);
+
 
     // Update the commit with all proof data
     const { error: updateError } = await supabase
