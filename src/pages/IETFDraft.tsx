@@ -615,7 +615,7 @@ Authors' Addresses
    Melbourne, Victoria, Australia
 
    Email: contact@apex-infrastructure.com
-   URI:   https://digital-gallows.apex-infrastructure.com
+   URI:   https://ai-governance-standard.com
 `.trim();
 
 const IETFDraft = () => {
@@ -643,10 +643,10 @@ const IETFDraft = () => {
       <Helmet>
         <title>IETF Draft — draft-singh-psi-00 | APEX PSI</title>
         <meta name="description" content="Internet-Draft: Proof of Stateful Integrity for verifiable AI governance. Full protocol text." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/draft" />
+        <link rel="canonical" href="https://ai-governance-standard.com/draft" />
         <meta property="og:title" content="IETF Draft — draft-singh-psi-00 | APEX PSI" />
         <meta property="og:description" content="Internet-Draft: Proof of Stateful Integrity for verifiable AI governance. Full protocol text." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/draft" />
+        <meta property="og:url" content="https://ai-governance-standard.com/draft" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

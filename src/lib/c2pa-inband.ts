@@ -328,7 +328,7 @@ export interface EmbedResult {
 }
 
 
-const VERIFY_BASE = "https://digital-gallows.apex-infrastructure.com/verify";
+const VERIFY_BASE = "https://ai-governance-standard.com/verify";
 
 /**
  * Attach in-band, hybrid-signed, tamper-evident C2PA-compatible metadata

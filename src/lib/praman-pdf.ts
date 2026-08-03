@@ -262,7 +262,7 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
   doc.setFontSize(7);
   doc.text("VERIFY", qrBoxX + 12, anchorY + 18, { charSpace: 2 });
 
-  const verifyUrl = `https://digital-gallows.apex-infrastructure.com/verify?h=${r.sha256}`;
+  const verifyUrl = `https://ai-governance-standard.com/verify?h=${r.sha256}`;
   const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
     margin: 0,
     width: 400,

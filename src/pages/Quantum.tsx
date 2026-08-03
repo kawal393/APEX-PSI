@@ -68,7 +68,7 @@ export default function Quantum() {
       <Helmet>
         <title>Quantum-Safe Signatures | APEX PSI</title>
         <meta name="description" content="Hybrid Ed25519 + ML-DSA-65 (Dilithium3) signatures per NIST FIPS 204. Every APEX receipt survives a cryptographically-relevant quantum computer." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/quantum" />
+        <link rel="canonical" href="https://ai-governance-standard.com/quantum" />
       </Helmet>
       <Navbar />
       <main className="min-h-screen bg-background">

@@ -241,7 +241,7 @@ The reference implementation is open source (MIT License):
 
   Repository: github.com/apex-intelligence-empire
   SDK:        apex-psi-sdk (npm package)
-  Live:       digital-gallows.apex-infrastructure.com
+  Live:       ai-governance-standard.com
 
 Runtime: Deno (Edge Functions), React (Frontend)
 Database: PostgreSQL with Row-Level Security
@@ -328,10 +328,10 @@ const Paper = () => {
       <Helmet>
         <title>APEX PSI White Paper — Verifiable AI Governance</title>
         <meta name="description" content="Full white paper on Proof of Stateful Integrity: canonicalization, signature schemes, Merkle anchoring, and adversarial review." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/paper" />
+        <link rel="canonical" href="https://ai-governance-standard.com/paper" />
         <meta property="og:title" content="APEX PSI White Paper — Verifiable AI Governance" />
         <meta property="og:description" content="Full white paper on Proof of Stateful Integrity: canonicalization, signature schemes, Merkle anchoring, and adversarial review." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/paper" />
+        <meta property="og:url" content="https://ai-governance-standard.com/paper" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">
@@ -418,7 +418,7 @@ const Paper = () => {
   year         = {2026},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.PENDING},
-  url          = {https://digital-gallows.apex-infrastructure.com/paper},
+  url          = {https://ai-governance-standard.com/paper},
   note         = {Companion IETF draft: draft-singh-psi-http-01}
 }`}
               </pre>

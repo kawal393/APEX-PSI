@@ -89,10 +89,10 @@ const Regulations = () => {
       <Helmet>
         <title>Global AI Regulation Map — EU AI Act, NIST, Beyond</title>
         <meta name="description" content="Live tracker of AI regulations across 14+ jurisdictions with enforcement dates and penalty exposure." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/regulations" />
+        <link rel="canonical" href="https://ai-governance-standard.com/regulations" />
         <meta property="og:title" content="Global AI Regulation Map — EU AI Act, NIST, Beyond" />
         <meta property="og:description" content="Live tracker of AI regulations across 14+ jurisdictions with enforcement dates and penalty exposure." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/regulations" />
+        <meta property="og:url" content="https://ai-governance-standard.com/regulations" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

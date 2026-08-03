@@ -24,7 +24,7 @@ type AuditEntry = {
 };
 
 const WITNESS_COUNT_KEY = "praman.witness.count";
-const VERIFY_BASE = "https://digital-gallows.apex-infrastructure.com/verify";
+const VERIFY_BASE = "https://ai-governance-standard.com/verify";
 
 const STORAGE_KEY = "praman.audit.v1";
 
@@ -244,7 +244,7 @@ const Pramaan = () => {
       <Helmet>
         <title>Apex Pramaan — The Truth Protocol | Chapter II</title>
         <meta name="description" content="Apex Pramaan: client-side cryptographic proof for any photo, video, or file. Seal it, anchor it, verify it — in 30 seconds, on any phone." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/pramaan" />
+        <link rel="canonical" href="https://ai-governance-standard.com/pramaan" />
       </Helmet>
       <Navbar />
 

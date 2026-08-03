@@ -119,7 +119,7 @@ const Registry = () => {
   );
 
   const copyProofLink = (id: string) => {
-    navigator.clipboard.writeText(`https://digital-gallows.apex-infrastructure.com/verify?entity=${id}`);
+    navigator.clipboard.writeText(`https://ai-governance-standard.com/verify?entity=${id}`);
     toast.success("Verification link copied");
   };
 
@@ -128,10 +128,10 @@ const Registry = () => {
       <Helmet>
         <title>APEX PSI Registry — Verified Deployments</title>
         <meta name="description" content="Public registry of live APEX PSI deployments, their attestation feeds, and verifier trust anchors." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/registry" />
+        <link rel="canonical" href="https://ai-governance-standard.com/registry" />
         <meta property="og:title" content="APEX PSI Registry — Verified Deployments" />
         <meta property="og:description" content="Public registry of live APEX PSI deployments, their attestation feeds, and verifier trust anchors." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/registry" />
+        <meta property="og:url" content="https://ai-governance-standard.com/registry" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

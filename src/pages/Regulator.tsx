@@ -41,7 +41,7 @@ export default function Regulator() {
       <Helmet>
         <title>Regulator Portal — APEX PSI</title>
         <meta name="description" content="One-page briefing for regulators and government agencies. Bulk hash verification, official specification, jurisdiction alignment, and citation-ready references." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/regulator" />
+        <link rel="canonical" href="https://ai-governance-standard.com/regulator" />
       </Helmet>
       <div className="min-h-screen bg-background">
         <Navbar />

@@ -66,7 +66,7 @@ const Badge = () => {
 </svg>`;
 
   const embedCode = `<!-- APEX PSI Trust Badge -->
-<a href="https://digital-gallows.apex-infrastructure.com/verify" target="_blank" rel="noopener noreferrer" title="PSI Verified by APEX PSI">
+<a href="https://ai-governance-standard.com/verify" target="_blank" rel="noopener noreferrer" title="PSI Verified by APEX PSI">
   <img src="data:image/svg+xml,${encodeURIComponent(badgeSvg)}" alt="PSI Verified - ${companyName}" width="${s.w}" height="${s.h}" />
 </a>`;
 
@@ -80,10 +80,10 @@ const Badge = () => {
       <Helmet>
         <title>Trust Badge — Display Your APEX PSI Score</title>
         <meta name="description" content="Embed a verifiable trust badge on your site. Real-time score, tamper-proof link back to your public attestation." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/badge" />
+        <link rel="canonical" href="https://ai-governance-standard.com/badge" />
         <meta property="og:title" content="Trust Badge — Display Your APEX PSI Score" />
         <meta property="og:description" content="Embed a verifiable trust badge on your site. Real-time score, tamper-proof link back to your public attestation." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/badge" />
+        <meta property="og:url" content="https://ai-governance-standard.com/badge" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">
@@ -245,7 +245,7 @@ const Badge = () => {
               <EmbedCodeGenerator
                 title="EU AI Act Countdown Widget"
                 description="Embed a live in-force clock for the August 2, 2026 Article 50 enforcement on any website. Drives traffic back to APEX."
-                embedUrl="https://digital-gallows.apex-infrastructure.com/embed/countdown"
+                embedUrl="https://ai-governance-standard.com/embed/countdown"
                 defaultWidth={400}
                 defaultHeight={220}
               />
@@ -253,7 +253,7 @@ const Badge = () => {
                 <EmbedCodeGenerator
                   title="Live Compliance Pulse"
                   description="Show your real-time compliance status on your website. Auto-updates as your score changes."
-                  embedUrl={`https://digital-gallows.apex-infrastructure.com/embed/pulse/${user?.id || ""}`}
+                  embedUrl={`https://ai-governance-standard.com/embed/pulse/${user?.id || ""}`}
                   defaultWidth={320}
                   defaultHeight={160}
                 />

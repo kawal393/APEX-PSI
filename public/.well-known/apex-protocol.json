@@ -1,0 +1,51 @@
+{
+  "protocol": "APEX PSI — Proof of Stateful Integrity",
+  "version": "1.2",
+  "canonical_domain": "https://ai-governance-standard.com",
+  "legacy_domain": "https://digital-gallows.apex-infrastructure.com",
+  "ietf_drafts": [
+    {
+      "name": "draft-singh-psi-00",
+      "title": "Proof of Stateful Integrity (PSI) for Verifiable AI Governance",
+      "url": "https://datatracker.ietf.org/doc/draft-singh-psi/",
+      "expires": "2026-12-31"
+    },
+    {
+      "name": "draft-singh-psi-http-01",
+      "title": "The Compliance-Receipt HTTP Header Field",
+      "url": "https://datatracker.ietf.org/doc/draft-singh-psi-http/",
+      "expires": "2027-02-28"
+    },
+    {
+      "name": "draft-singh-apex-psi-04",
+      "title": "APEX PSI Predicate Registry and Proof Formats",
+      "url": "https://datatracker.ietf.org/doc/draft-singh-apex-psi/",
+      "expires": "2027-04-30"
+    }
+  ],
+  "verification_endpoints": [
+    "https://ai-governance-standard.com/verify",
+    "https://ai-governance-standard.com/verify-hash"
+  ],
+  "pq_signature_algs": ["LMS-W4-SHA256", "ML-DSA-65", "Ed25519"],
+  "canonicalization": "RFC 8785 (JCS)",
+  "hash": "SHA-256",
+  "anchor_method": "opentimestamps",
+  "anchor": {
+    "method": "opentimestamps",
+    "chain": "bitcoin",
+    "calendars": [
+      "https://a.pool.opentimestamps.org",
+      "https://b.pool.opentimestamps.org",
+      "https://alice.btc.calendar.opentimestamps.org"
+    ],
+    "example_proof": "https://ai-governance-standard.com/5a1fe5a9d86545db89162919e099461320f9e878ee424c1592145af783ddd96e.txt",
+    "explorer": "https://mempool.space/tx/",
+    "note": "A proof is reported as pending until a real Bitcoin block includes it. No anchor is ever reported as confirmed without a txid returned by a block explorer."
+  },
+  "trust_anchor": "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json",
+  "compliance_receipt": "https://ai-governance-standard.com/.well-known/compliance-receipt",
+  "security_txt": "https://ai-governance-standard.com/.well-known/security.txt",
+  "regulatory_scope": ["EU AI Act Article 50", "EU AI Act Articles 11-15", "C2PA 2.1", "NIST SP 800-208"],
+  "license": "MIT"
+}

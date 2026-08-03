@@ -46,10 +46,10 @@ const Compare = () => {
       <Helmet>
         <title>APEX PSI vs. Alternatives — Feature Comparison</title>
         <meta name="description" content="How APEX PSI compares to policy-only, self-attested, and closed compliance platforms. Verifiability, openness, and cost." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/compare" />
+        <link rel="canonical" href="https://ai-governance-standard.com/compare" />
         <meta property="og:title" content="APEX PSI vs. Alternatives — Feature Comparison" />
         <meta property="og:description" content="How APEX PSI compares to policy-only, self-attested, and closed compliance platforms. Verifiability, openness, and cost." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/compare" />
+        <meta property="og:url" content="https://ai-governance-standard.com/compare" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

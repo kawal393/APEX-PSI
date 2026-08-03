@@ -50,7 +50,7 @@ const EmbedPulse = () => {
       padding: 16,
     }}>
       <a
-        href="https://digital-gallows.apex-infrastructure.com/verify"
+        href="https://ai-governance-standard.com/verify"
         target="_blank"
         rel="noopener noreferrer"
         style={{

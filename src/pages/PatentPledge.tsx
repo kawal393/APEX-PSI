@@ -10,7 +10,7 @@ const PatentPledge = () => (
         name="description"
         content="APEX PSI Patent Non-Assertion Pledge — royalty-free commitment for conformant implementations of the PSI Protocol (draft-singh-psi)."
       />
-      <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/pledge" />
+      <link rel="canonical" href="https://ai-governance-standard.com/pledge" />
     </Helmet>
 
     <Navbar />

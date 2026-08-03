@@ -35,19 +35,19 @@ export default function Articles() {
       <Helmet>
         <title>AI Governance Articles — APEX PSI</title>
         <meta name="description" content="Deep-dive articles on verifiable AI compliance, EU AI Act, Ed25519 signatures, Bitcoin-anchored proofs, and the IETF PSI standard." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/articles" />
+        <link rel="canonical" href="https://ai-governance-standard.com/articles" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Feed" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Blog",
           name: "APEX PSI — AI Governance",
-          url: "https://digital-gallows.apex-infrastructure.com/articles",
+          url: "https://ai-governance-standard.com/articles",
           publisher: { "@type": "Organization", name: "APEX PSI" },
           blogPost: articles.slice(0, 20).map(a => ({
             "@type": "BlogPosting",
             headline: a.title,
             description: a.description,
-            url: `https://digital-gallows.apex-infrastructure.com/articles/${a.slug}`,
+            url: `https://ai-governance-standard.com/articles/${a.slug}`,
             datePublished: a.created_at,
           })),
         })}</script>
