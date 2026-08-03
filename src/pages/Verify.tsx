@@ -18,6 +18,7 @@ import { verifyMerkleProof, hashSHA256 } from "@/lib/gallows-engine";
 import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD, type LMSSignature } from "@/lib/psi-lms";
 import { Helmet } from "react-helmet-async";
 import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
+import CountersignUpsell from "@/components/CountersignUpsell";
 
 
 interface VerificationResult extends ProofReceiptData {
@@ -830,6 +831,12 @@ const Verify = () => {
               </TabsContent>
 
             </Tabs>
+
+            {/* Countersignature offer */}
+            <CountersignUpsell
+              reference={result?.queried_hash ?? receiptResult?.queried_hash}
+              className="mt-12"
+            />
 
             {/* API Access */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
