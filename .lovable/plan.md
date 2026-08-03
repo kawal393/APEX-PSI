@@ -1,75 +1,60 @@
-# Grand Report + Plan: Becoming the AI Governance Standard
+# ai-governance-standard.com — Status, Value, and the Compounding Search Engine
 
-## 1. Are we 100% technically inevitable? No — and here is exactly why
+## 1. Where we actually stand (verified now)
 
-The protocol is real. The distribution is not. Verified numbers from the live backend right now:
+| Check | Result |
+|---|---|
+| `https://ai-governance-standard.com` | Live — HTTP 302 to `www`, HSTS enabled. The DNS flip worked. |
+| Canonical / og:url / title in `index.html` | Already pointed at the new domain, with all three IETF drafts asserted |
+| Sitemap generator base URL | Already `https://ai-governance-standard.com` |
+| Legacy hostname still hardcoded | ~24 files in `src/` and `supabase/functions/` still emit `digital-gallows.apex-infrastructure.com` — including `dynamic-sitemap`, `rss-feed`, `broadcast-content` (so every new AI article links and pings the *old* host) |
+| Per-page head support | `react-helmet-async` is installed |
 
-| Signal | Actual | Verdict |
+## 2. Domain value — the honest number
+
+Semrush, US database:
+
+| Term | Volume | Difficulty |
 |---|---|---|
-| Ledger entries sealed | 1,649 | Real |
-| Entries carrying a post-quantum LMS signature | **1** | Claim outruns coverage |
-| OpenTimestamps proofs submitted | 2 | Thin |
-| Bitcoin anchors confirmed in a block | **0** | Nothing is chain-proven yet |
-| Public attestations | 2 | Thin |
-| Predicate proofs | 1 | Demo-grade |
-| Published SEO articles | 101 | Strong |
-| Site visits | 3,246 | Real traffic |
-| Leads captured from that traffic | **0** | Total conversion failure |
-| Paid subscriptions | 0 (2 free rows) | No revenue |
-| Active API keys | 2 | No ecosystem yet |
+| ai governance | 8,100/mo | 66 — hard |
+| ai governance framework | 2,900/mo | 50 |
+| ai governance platform | 1,600/mo | 35 |
+| ai compliance software | 880/mo | 41 |
+| ai governance standards | 590/mo | 54 |
+| eu ai act article 50 | 50/mo | 0 — wide open |
+| **ai governance standard** (exact match) | **10/mo** | 0 |
 
-Four honest blockers to inevitability:
+Read it straight: the exact phrase our domain matches is almost never typed. The domain's value is **not** its search volume — it is that an exact-match category name gives instant institutional credibility to a regulator or procurement officer who sees the URL, plus a strong topical signal that helps us rank for the 8,100/mo head term over time. The traffic prize is `ai governance` / `framework` / `platform`; the *fastest* wins are `eu ai act article 50` and `ai audit trail`, where difficulty is 0-16 and nobody has claimed the ground.
 
-1. **The quantum claim is 1-in-1,649.** The site says post-quantum. Only one record actually carries an LMS signature. A hostile auditor finds that in ten minutes.
-2. **Zero confirmed Bitcoin anchors.** Every anchor sits "pending". Until a real block includes one, the immutability story is a promise, not a proof.
-3. **Nobody is calling the API.** 2 keys. A standard is defined by integrations, not by documentation.
-4. **The primary domain is `digital-gallows.apex-infrastructure.com`.** For an EU regulator, "digital gallows" reads as a threat, not as infrastructure. This alone can kill an institutional evaluation.
+## 3. What I'll build: a search loop where every visit compounds
 
-## 2. EU AI Act — where we actually sit
+Not just SEO copy — a system where traffic feeds itself.
 
-Article 50 (transparency and machine-readable marking of AI output) is in force and has no designated verification mechanism. That is the hole. The Act says output must be marked and detectable; it does not say who checks the mark. We are the only party shipping a free, open, cryptographic checker for it.
+### A. Point the entire machine at the new domain
+Replace every remaining legacy hostname with the `SITE_URL` constant so the sitemap, RSS feed, and every generated article link and IndexNow ping strengthen `ai-governance-standard.com` instead of splitting authority with the old host. Legacy host keeps resolving; it just stops being cited.
 
-Position: not a vendor asking for approval — a **reference implementation** that regulators can cite. That means the win condition is a citation in guidance or a standards body work item, not a signed contract.
+### B. Own the three phrases, and the ones that are actually winnable
+- A dedicated, regulator-facing pillar page for **AI governance standard**, plus targeted pages for **EU AI Act Article 50** and **AI audit trail** (difficulty 0-16, real intent, currently unclaimed).
+- Per-route titles, descriptions, canonicals and JSON-LD via the already-installed Helmet, so every page competes on its own term instead of inheriting the homepage's.
+- `DefinedTerm` + `TechArticle` + `FAQPage` structured data so AI answer engines (which is where "what is the AI governance standard" is increasingly asked) can quote us as the definition.
 
-## 3. Domain valuation — what you own
+### C. Make each visit add power — the compounding part
+This is the actual ask. Four mechanisms:
 
-| Domain | Strategic value | Use |
-|---|---|---|
-| **ai-governance-standard.com** | **Highest. Exact-match for the category term.** Instant institutional credibility, keyword-authority, and it is the phrase regulators, auditors and procurement teams type. | **Promote to primary canonical domain.** Everything points here. |
-| sovereign-ai.services | Medium — commercial/consulting framing | Enterprise/paid-tier landing |
-| sovereign-ai.in / .co.in | Medium — India market + regional SEO | India regulatory landing page |
-| digital-gallows.apex-infrastructure.com | **Negative for institutions** | Demote to redirect only |
+1. **Every verification becomes a public, indexable page.** Each seal/verify produces a permanent receipt URL with its own metadata and sitemap entry. 1,649 sealed records become 1,649 indexed proof pages. Usage literally manufactures search surface.
+2. **Free badge that backlinks.** Anyone who seals anything gets an embeddable "APEX Verified" badge whose HTML links back to their receipt on our domain. Every user becomes a backlink — the one SEO input we cannot buy.
+3. **A query-intelligence loop.** Log what visitors search and land on, and feed the top unanswered queries into the existing `broadcast-content` article generator, so the content engine writes against real demand instead of a fixed topic list. Traffic decides what we publish next.
+4. **Capture, then convert.** Route every high-intent landing (Article 50 page, verify page) to a single offer — the Article 50 Readiness Report — with the capture path tested end to end. 3,246 visits and 0 leads is the most expensive defect on the site.
 
-Do not park these. An unused exact-match domain is worth nothing; a canonical one is worth the whole category.
+### D. Keep search engines permanently fed
+Auto-ping IndexNow and refresh the sitemap whenever a new article, receipt, or attestation is created, so new surface is indexed in hours rather than weeks.
 
-## 4. The plan
+## 4. Technical notes
+- Sweep `digital-gallows.apex-infrastructure.com` → `SITE_URL` across `src/` and `supabase/functions/`; `dynamic-sitemap`, `rss-feed`, and `broadcast-content` are the high-impact three.
+- New public receipt route reads existing ledger rows; sitemap generator gains a receipts section alongside its article query.
+- Badge embed extends the existing `/embed/seal` widget with a mandatory backlink to the receipt URL.
+- Query loop: a small table of landing-page/query pairs written by the existing `use-page-tracker` hook, read by `broadcast-content` to pick topics.
+- No claim on any new page goes beyond what the ledger can prove; anchors still read "pending" until a Bitcoin block confirms.
 
-### Phase 1 — Close the credibility gaps (highest priority)
-- **Backfill post-quantum signatures** across existing ledger rows via a batch function so the PQ claim matches reality; expose real coverage (`x of y sealed records`) instead of an absolute claim.
-- **Get a real Bitcoin anchor confirmed**: run the anchor + refresh cycle on a schedule until at least one proof reaches `confirmed`, then surface the block height and txid publicly on `/verify` and the homepage.
-- **Honest counters everywhere**: any statistic on the site reads from the ledger, never hardcoded, and pending is shown as pending.
-
-### Phase 2 — Make ai-governance-standard.com the front door
-- Set it as the canonical domain: canonical tags, `og:url`, sitemap, robots, JSON-LD, IndexNow, and all `/.well-known` trust-anchor URLs.
-- 301 the old host to it; keep the old host resolving so existing links and receipts never break.
-- Build a dedicated **Article 50 conformance landing page** at the root of that domain: what the Act requires, what a compliant marking looks like, a live checker, and a downloadable conformance statement. Written for a regulator, not a developer.
-- Regional doors: sovereign-ai.in points at an India / DPDP + AI governance page; sovereign-ai.services points at the commercial tier.
-
-### Phase 3 — Convert the traffic we already have
-3,246 visits and 0 leads is the single most expensive bug on the site. Diagnose the capture path end to end (component visibility, the capture function, and whether submissions ever reach the database), then rebuild the offer around one high-value asset: an **EU AI Act Article 50 Readiness Report** generated from a URL the visitor enters.
-
-### Phase 4 — Ecosystem lock-in (how we pass every competitor)
-- **Free forever verification API, no key required** for read/verify; keys only for sealing. Standards spread when checking is free.
-- Publish drop-in packages and a GitHub Action that fails a build when AI output ships unmarked — that puts us in CI pipelines, where standards actually live.
-- A public conformance registry: any product that emits a valid `Compliance-Receipt` header gets listed automatically. Being on the list becomes a procurement asset, which makes joining self-interested rather than charitable.
-- Submit the marking-verification profile to a standards work item and cite the running reference implementation.
-
-### Phase 5 — Brand synonymy with "AI governance"
-- Every article, page title, and structured-data entity anchors on the exact phrase and links back to the canonical domain.
-- One public, permanent, machine-readable trust anchor URL that never moves — that URL becomes the citation.
-
-## Technical notes
-- PQ backfill: new edge function iterating `gallows_ledger` rows where `pq_signature is null`, signing `merkle_leaf_hash` with the existing shared LMS module. The current leaf index is derived from a count of PQ-signed rows, so the backfill must allocate indices strictly monotonically and handle key rotation to avoid one-time-key reuse.
-- Anchor confirmation: scheduled invocation of `blockchain-anchor` `action=refresh`, promoting `ots_proofs` to `confirmed` only on a real block, plus the per-commit `anchor-commit` path for individual receipts.
-- Canonical domain: centralise the base URL in one constant used by the sitemap generator, head metadata, JSON-LD, and the trust-anchor document.
-- Lead capture: verify `capture-lead` end to end before redesigning the offer.
+## 5. Scope check
+Section A (hostname sweep) is pure correctness and should ship regardless. Sections B-D are new build. Approve and I start at A and work down in order.
