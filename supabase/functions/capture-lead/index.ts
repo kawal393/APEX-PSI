@@ -128,7 +128,19 @@ Deno.serve(async (req) => {
       const { subject, html } = packEmail(name);
       const res = await send({ from: FROM_ADDRESS, to: [email], subject, html });
       delivered = res.ok;
-      if (!res.ok) console.error(`Resend failed [${res.status}]: ${await res.text()}`);
+      if (!res.ok) {
+        console.error(`Resend branded sender failed [${res.status}]: ${await res.text()}`);
+        // The branded domain may not be verified yet. Retry once from the
+        // fallback sender so the pack still reaches the lead.
+        const retry = await send({ from: FALLBACK_FROM, to: [email], subject, html }).catch(
+          () => null,
+        );
+        delivered = Boolean(retry?.ok);
+        if (retry && !retry.ok) {
+          console.error(`Resend fallback sender failed [${retry.status}]: ${await retry.text()}`);
+        }
+      }
+
 
       // Always notify the operator so no lead is lost, even if delivery fails.
       const operatorPayload = {
