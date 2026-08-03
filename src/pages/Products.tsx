@@ -226,9 +226,10 @@ const steps = [
   },
 ];
 
-const Products = () => {
+const Products = ({ embedded = false }: { embedded?: boolean }) => {
   return (
     <>
+      {!embedded && (
       <Helmet>
         <title>APEX PSI Products &amp; Pricing — The AI Governance Standard</title>
         <meta
