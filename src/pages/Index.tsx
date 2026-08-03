@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Products from "@/pages/Products";
 import Article50Banner from "@/components/Article50Banner";
 
 import TwoPillars from "@/components/TwoPillars";
