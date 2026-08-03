@@ -177,7 +177,7 @@ const references = [
     category: "Market" as Category,
     title: "EU AI Act Compliance: €17 Billion Opportunity",
     source: "Medium / Prieditis — Nov 2025",
-    desc: "Analysis of the compliance market created by the EU AI Act. €17B+ across 27 member states — and APEX is the only cryptographic solution.",
+    desc: "Analysis of the compliance market created by the EU AI Act. €17B+ across 27 member states, most of it currently addressed by attestation and audit tooling rather than cryptographic proof.",
     url: "https://medium.com/@arturs.prieditis/the-eu-ai-acts-hidden-market-how-high-risk-ai-compliance-became-a-17-billion-opportunity-734cea9b41e2",
   },
   {

@@ -91,10 +91,12 @@ export default function LeadCaptureOffer({
             </p>
           ) : (
             <p>
-              Request logged for <span className="font-semibold">{email}</span> — the pack follows
-              shortly.
+              Logged for <span className="font-semibold">{email}</span>. Email delivery did not
+              confirm, so here is the entire pack right now — the links below <em>are</em> the pack,
+              and nothing in it was ever gated.
             </p>
           )}
+
           <p className="text-muted-foreground text-xs">
             You don&apos;t have to wait:{" "}
             <a href="/spec" className="text-primary underline">
