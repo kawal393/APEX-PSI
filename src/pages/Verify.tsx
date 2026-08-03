@@ -124,8 +124,9 @@ const Verify = () => {
   } | null>(null);
   const [bundleVerifying, setBundleVerifying] = useState(false);
 
-  const handleVerify = async () => {
-    if (!hash.trim()) {
+  const runVerify = useCallback(async (raw: string) => {
+    const target = raw.trim();
+    if (!target) {
       toast.error("Please enter a hash to verify");
       return;
     }
@@ -136,7 +137,7 @@ const Verify = () => {
       const res = await fetch(VERIFY_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hash: hash.trim() }),
+        body: JSON.stringify({ hash: target }),
       });
       const data = await res.json();
       setResult(data);
@@ -145,7 +146,20 @@ const Verify = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const handleVerify = () => runVerify(hash);
+
+  // Deep link support: /verify?hash=<sha256|commit_id> auto-runs the lookup so
+  // the homepage demo link lands on a real, already-sealed ledger entry.
+  useEffect(() => {
+    const param = new URLSearchParams(window.location.search).get("hash");
+    if (param) {
+      setHash(param);
+      void runVerify(param);
+    }
+  }, [runVerify]);
+
 
   const handleReceiptVerify = async () => {
     const id = receiptId.trim();
