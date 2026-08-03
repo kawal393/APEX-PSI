@@ -269,9 +269,11 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
           })}
         </script>
       </Helmet>
+      )}
 
-      <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-        <Navbar />
+      <div className={embedded ? "" : "min-h-screen bg-background text-foreground overflow-x-hidden"}>
+        {!embedded && <Navbar />}
+
 
         {/* Hero */}
         <header className="pt-28 md:pt-36 pb-12 px-4">
