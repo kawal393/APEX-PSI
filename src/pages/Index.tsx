@@ -12,7 +12,6 @@ import ComplianceClock from "@/components/ComplianceClock";
 import RegulatoryAlignment from "@/components/RegulatoryAlignment";
 import OpenSourceGateway from "@/components/OpenSourceGateway";
 import TechSpecs from "@/components/TechSpecs";
-import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
