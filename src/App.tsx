@@ -99,7 +99,10 @@ const App = () => (
             <ScrollToTop />
             <PageTracker />
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<Products />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/home" element={<Index />} />
+
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route
