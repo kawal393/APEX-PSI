@@ -71,6 +71,7 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
+        <Products embedded />
         <Hero />
         <Article50Banner />
 
@@ -83,7 +84,7 @@ const Index = () => {
         <RegulatoryAlignment />
         <OpenSourceGateway />
         <TechSpecs />
-        <Pricing />
+
         <FAQ />
         <ContactSection />
         <Footer />
