@@ -6,7 +6,7 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 
-const BASE_URL = "https://digital-gallows.apex-infrastructure.com";
+const BASE_URL = "https://ai-governance-standard.com";
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || "https://qhtntebpcribjiwrdtdd.supabase.co";
 const SUPABASE_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "";

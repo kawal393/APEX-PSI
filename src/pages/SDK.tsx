@@ -183,10 +183,10 @@ async function generateAIResponse(prompt: string) {
       <Helmet>
         <title>SDKs & Integrations — APEX PSI</title>
         <meta name="description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/gallows-sdk runtime pattern cache." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/sdk" />
+        <link rel="canonical" href="https://ai-governance-standard.com/sdk" />
         <meta property="og:title" content="SDKs & Integrations — APEX PSI" />
         <meta property="og:description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/gallows-sdk runtime pattern cache." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/sdk" />
+        <meta property="og:url" content="https://ai-governance-standard.com/sdk" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-gallows-bg text-gallows-text">

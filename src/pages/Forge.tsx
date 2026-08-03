@@ -204,7 +204,7 @@ const Forge = () => {
       <Helmet>
         <title>APEX Forge — AI Image Generator with Cryptographic Truth Stamp</title>
         <meta name="description" content="Generate any image with AI and stamp it with the APEX VERIFIED™ seal. Anchored to the APEX PSI ledger. Free, open, shareable." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/forge" />
+        <link rel="canonical" href="https://ai-governance-standard.com/forge" />
       </Helmet>
       <Navbar />
 

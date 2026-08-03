@@ -32,7 +32,7 @@ const MANIFEST_EXAMPLE = `APEXPSI-C2PA-V1 | uint32be(length) | UTF-8 JSON
           "payload": "sync16+sha256" } }
     ],
     "hard_binding": { "alg": "sha256", "pre_embed_sha256": "…", "size_bytes": 0 },
-    "verify_url": "https://digital-gallows.apex-infrastructure.com/verify?h=…"
+    "verify_url": "https://ai-governance-standard.com/verify?h=…"
   },
   "signature": {
     "suite": "Ed25519+ML-DSA-65",
@@ -69,7 +69,7 @@ const InBand = () => (
         name="description"
         content="PSI-INBAND-v1: C2PA-compatible in-band signed tamperproof metadata and invisible watermarking for AI-generated content. EU AI Act Code of Practice, Section 1."
       />
-      <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/inband" />
+      <link rel="canonical" href="https://ai-governance-standard.com/inband" />
       <meta property="og:title" content="In-Band Signed Metadata & Watermarking Spec | APEX PSI" />
       <meta
         property="og:description"

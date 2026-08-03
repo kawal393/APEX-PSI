@@ -83,10 +83,10 @@ const Standards = () => {
       <Helmet>
         <title>Standards Cross-Walk — APEX PSI</title>
         <meta name="description" content="How APEX PSI maps to ISO/IEC 42001, NIST AI RMF, EU AI Act, and SEC 17a-4 obligations." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/standards" />
+        <link rel="canonical" href="https://ai-governance-standard.com/standards" />
         <meta property="og:title" content="Standards Cross-Walk — APEX PSI" />
         <meta property="og:description" content="How APEX PSI maps to ISO/IEC 42001, NIST AI RMF, EU AI Act, and SEC 17a-4 obligations." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/standards" />
+        <meta property="og:url" content="https://ai-governance-standard.com/standards" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

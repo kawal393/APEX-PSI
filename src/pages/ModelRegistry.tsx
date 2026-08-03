@@ -87,7 +87,7 @@ export default function ModelRegistry() {
       <Helmet>
         <title>Public AI Model Registry — APEX PSI</title>
         <meta name="description" content="Open, cryptographically-signed registry of AI models. Register any model card with a hybrid Ed25519 + ML-DSA-65 signature. Regulator- and developer-friendly." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/models" />
+        <link rel="canonical" href="https://ai-governance-standard.com/models" />
       </Helmet>
       <div className="min-h-screen bg-background">
         <Navbar />

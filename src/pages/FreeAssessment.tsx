@@ -156,8 +156,8 @@ const FreeAssessment = () => {
   };
 
   const scorePageUrl = shareId
-    ? `https://digital-gallows.apex-infrastructure.com/score/${shareId}`
-    : "https://digital-gallows.apex-infrastructure.com/assess";
+    ? `https://ai-governance-standard.com/score/${shareId}`
+    : "https://ai-governance-standard.com/assess";
   const shareText = `I just scored ${result.score}% on the APEX AI Compliance Assessment! Check yours at`;
   const shareUrl = scorePageUrl;
 
@@ -174,10 +174,10 @@ const FreeAssessment = () => {
       <Helmet>
         <title>Free AI Compliance Score — APEX PSI</title>
         <meta name="description" content="Free, instant AI-governance score across EU AI Act, NIST AI RMF, and ISO 42001. Shareable results." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/assess" />
+        <link rel="canonical" href="https://ai-governance-standard.com/assess" />
         <meta property="og:title" content="Free AI Compliance Score — APEX PSI" />
         <meta property="og:description" content="Free, instant AI-governance score across EU AI Act, NIST AI RMF, and ISO 42001. Shareable results." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/assess" />
+        <meta property="og:url" content="https://ai-governance-standard.com/assess" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

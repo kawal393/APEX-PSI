@@ -52,7 +52,7 @@ export async function hybridVerify(
 // offline, forever, without contacting APEX.
 export const ISSUER_ID = "urn:apex-psi:issuer:root-1";
 export const TRUST_ANCHOR_URL =
-  "https://digital-gallows.apex-infrastructure.com/.well-known/apex-psi-trust-anchor.json";
+  "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json";
 
 export interface TrustAnchor {
   spec: string;

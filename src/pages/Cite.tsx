@@ -16,7 +16,7 @@ const bibtex = `@techreport{singh${YEAR}apexpsi,
   type        = {Internet-Draft},
   number      = {draft-singh-psi-http-01},
   year        = {${YEAR}},
-  url         = {https://digital-gallows.apex-infrastructure.com/standard},
+  url         = {https://ai-governance-standard.com/standard},
   note        = {Hybrid Ed25519 + ML-DSA-65 signatures; SHA-256 evidence}
 }`;
 
@@ -27,15 +27,15 @@ IN  - APEX PSI Foundation (in formation)
 M3  - Internet-Draft
 M1  - draft-singh-psi-http-01
 PY  - ${YEAR}
-UR  - https://digital-gallows.apex-infrastructure.com/standard
+UR  - https://ai-governance-standard.com/standard
 ER  -`;
 
 const ietf = `[APEX-PSI]  Singh, K., "APEX PSI: Proof of Stateful Integrity",
             Work in Progress, Internet-Draft,
             draft-singh-psi-http-01, ${YEAR},
-            <https://digital-gallows.apex-infrastructure.com/standard>.`;
+            <https://ai-governance-standard.com/standard>.`;
 
-const apa = `Singh, K. (${YEAR}). APEX PSI: Proof of stateful integrity for verifiable AI governance (Internet-Draft draft-singh-psi-http-01). APEX PSI Foundation. https://digital-gallows.apex-infrastructure.com/standard`;
+const apa = `Singh, K. (${YEAR}). APEX PSI: Proof of stateful integrity for verifiable AI governance (Internet-Draft draft-singh-psi-http-01). APEX PSI Foundation. https://ai-governance-standard.com/standard`;
 
 function Block({ title, body }: { title: string; body: string }) {
   return (
@@ -57,7 +57,7 @@ export default function Cite() {
       <Helmet>
         <title>Cite APEX PSI — BibTeX · IETF · APA · RIS</title>
         <meta name="description" content="Official citation formats for APEX PSI: BibTeX, IETF, APA, and RIS. For academics, regulators, journalists, and standards bodies." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/cite" />
+        <link rel="canonical" href="https://ai-governance-standard.com/cite" />
       </Helmet>
       <div className="min-h-screen bg-background">
         <Navbar />

@@ -12,7 +12,7 @@ Content-Type: application/json
 Compliance-Receipt: v=1; rid=psi_01HZX7QK4M; pred=eu-ai-act/art-6,nist-ai-rmf/govern-1.1;
                     status=compliant; sig=ed25519:MEUCIQD...base64...==;
                     anchor=ots:AAEAAB...base64...==;
-                    verify=https://digital-gallows.apex-infrastructure.com/verify/psi_01HZX7QK4M
+                    verify=https://ai-governance-standard.com/verify/psi_01HZX7QK4M
 Compliance-Receipt-Policy: v=1; mode=optimistic; challenge-window=86400; issuer=apex-psi`;
 
 const ABNF = `Compliance-Receipt   = "v=" version 1*( ";" SP param )
@@ -37,7 +37,7 @@ const CURL = `curl -i https://your-ai-endpoint.com/v1/chat \\
 # Compliance-Receipt: v=1; rid=psi_...; status=compliant; verify=https://...`;
 
 const WELL_KNOWN = `{
-  "issuer": "https://digital-gallows.apex-infrastructure.com",
+  "issuer": "https://ai-governance-standard.com",
   "spec": "draft-singh-psi-http-01",
   "version": 1,
   "public_keys": [
@@ -47,8 +47,8 @@ const WELL_KNOWN = `{
       "pem": "MCowBQYDK2VwAyEA..."
     }
   ],
-  "verify_endpoint": "https://digital-gallows.apex-infrastructure.com/verify",
-  "predicate_registry": "https://digital-gallows.apex-infrastructure.com/registry"
+  "verify_endpoint": "https://ai-governance-standard.com/verify",
+  "predicate_registry": "https://ai-governance-standard.com/registry"
 }`;
 
 const Standard = () => {
@@ -66,10 +66,10 @@ const Standard = () => {
       <Helmet>
         <title>Compliance-Receipt HTTP Header — draft-singh-psi-http-01</title>
         <meta name="description" content="The Compliance-Receipt HTTP response header specification for embedding cryptographic evidence in every API response." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/standard" />
+        <link rel="canonical" href="https://ai-governance-standard.com/standard" />
         <meta property="og:title" content="Compliance-Receipt HTTP Header — draft-singh-psi-http-01" />
         <meta property="og:description" content="The Compliance-Receipt HTTP response header specification for embedding cryptographic evidence in every API response." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/standard" />
+        <meta property="og:url" content="https://ai-governance-standard.com/standard" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

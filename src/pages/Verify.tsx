@@ -341,10 +341,10 @@ const Verify = () => {
       <Helmet>
         <title>Verify a Hash — APEX PSI Public Portal</title>
         <meta name="description" content="Verify any evidence hash against the APEX PSI ledger. Permissionless, public, cryptographically enforced." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/verify" />
+        <link rel="canonical" href="https://ai-governance-standard.com/verify" />
         <meta property="og:title" content="Verify a Hash — APEX PSI Public Portal" />
         <meta property="og:description" content="Verify any evidence hash against the APEX PSI ledger. Permissionless, public, cryptographically enforced." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/verify" />
+        <meta property="og:url" content="https://ai-governance-standard.com/verify" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

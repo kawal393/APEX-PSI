@@ -32,7 +32,7 @@ const PROJECT_ID = "qhtntebpcribjiwrdtdd";
 const INSPECT_URL = `https://${PROJECT_ID}.supabase.co/functions/v1/inspect-header`;
 
 const Header = () => {
-  const [url, setUrl] = useState("https://digital-gallows.apex-infrastructure.com/api/echo");
+  const [url, setUrl] = useState("https://ai-governance-standard.com/api/echo");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<InspectResult | null>(null);
 
@@ -68,10 +68,10 @@ const Header = () => {
       <Helmet>
         <title>Header Inspector — Compliance-Receipt Live Check</title>
         <meta name="description" content="Inspect any URL for a valid Compliance-Receipt header and verify its embedded signature and hash chain." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/header" />
+        <link rel="canonical" href="https://ai-governance-standard.com/header" />
         <meta property="og:title" content="Header Inspector — Compliance-Receipt Live Check" />
         <meta property="og:description" content="Inspect any URL for a valid Compliance-Receipt header and verify its embedded signature and hash chain." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/header" />
+        <meta property="og:url" content="https://ai-governance-standard.com/header" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

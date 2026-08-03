@@ -49,7 +49,7 @@ export default function WitnessWall() {
   };
 
   const share = async (w: Witness) => {
-    const url = `https://digital-gallows.apex-infrastructure.com/verify?h=${w.hash}`;
+    const url = `https://ai-governance-standard.com/verify?h=${w.hash}`;
     const text = `🧿 I WITNESS THIS — ${w.caption}\n${url}`;
     try {
       if (navigator.share) await navigator.share({ title: "APEX PRAMAAN", text, url });
@@ -62,7 +62,7 @@ export default function WitnessWall() {
       <Helmet>
         <title>Global Witness Wall — APEX PRAMAAN</title>
         <meta name="description" content="A public wall of cryptographically sealed witness events. Journalists, citizens, and observers post SHA-256 hashes of what they saw — verifiable by anyone." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/witness-wall" />
+        <link rel="canonical" href="https://ai-governance-standard.com/witness-wall" />
       </Helmet>
       <div className="min-h-screen bg-background">
         <Navbar />

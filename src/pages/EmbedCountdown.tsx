@@ -56,7 +56,7 @@ const EmbedCountdown = () => {
           August 2, 2026 — Full enforcement is live
         </div>
         <a
-          href="https://digital-gallows.apex-infrastructure.com/assess"
+          href="https://ai-governance-standard.com/assess"
           target="_blank"
           rel="noopener noreferrer"
           style={{

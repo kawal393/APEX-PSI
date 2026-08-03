@@ -45,7 +45,7 @@ const Spec = () => (
         name="description"
         content="Full technical specification of the APEX PSI protocol: RFC 8785 canonicalization, Ed25519 + ML-DSA-65 hybrid signatures, C2PA-compatible APP11/JUMBF in-band manifests, Compliance-Receipt HTTP header, and EU AI Act Article 50 mapping."
       />
-      <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/spec" />
+      <link rel="canonical" href="https://ai-governance-standard.com/spec" />
       <meta property="og:title" content="APEX PSI — Full Technical Specification" />
       <meta property="og:description" content="Every algorithm, every endpoint, every limitation. Written for regulators and engineers." />
       <meta property="og:type" content="article" />

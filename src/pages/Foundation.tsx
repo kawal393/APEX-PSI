@@ -165,10 +165,10 @@ const Foundation = () => {
       <Helmet>
         <title>APEX PSI Foundation — Governance & Verifier Nodes</title>
         <meta name="description" content="Foundation charter, board composition, and verifier-node program governing the open PSI standard (in formation)." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/foundation" />
+        <link rel="canonical" href="https://ai-governance-standard.com/foundation" />
         <meta property="og:title" content="APEX PSI Foundation — Governance & Verifier Nodes" />
         <meta property="og:description" content="Foundation charter, board composition, and verifier-node program governing the open PSI standard (in formation)." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/foundation" />
+        <meta property="og:url" content="https://ai-governance-standard.com/foundation" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

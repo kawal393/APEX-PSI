@@ -154,7 +154,7 @@ const Section1Compliance = () => (
           <li>
             Verification portal:{" "}
             <Link to="/verify" className="text-gold hover:underline">
-              digital-gallows.apex-infrastructure.com/verify
+              ai-governance-standard.com/verify
             </Link>
           </li>
           <li className="break-all">

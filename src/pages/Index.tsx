@@ -25,11 +25,11 @@ const Index = () => {
       <Helmet>
         <title>APEX PSI — Verifiable AI. APEX PRAMAAN — Verifiable Humans.</title>
         <meta name="description" content="One open standard, two pillars. APEX PSI proves what AI did. APEX PRAMAAN proves what humans saw. IETF draft-singh-psi-00. Ed25519 + ML-DSA-65. MIT open source." />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/" />
+        <link rel="canonical" href="https://ai-governance-standard.com/" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Articles" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />
         <meta property="og:title" content="APEX PSI — Verifiable AI. APEX PRAMAAN — Verifiable Humans." />
         <meta property="og:description" content="One open standard, two pillars. Cryptographic truth for AI systems and human witnesses. IETF draft-singh-psi-00." />
-        <meta property="og:url" content="https://digital-gallows.apex-infrastructure.com/" />
+        <meta property="og:url" content="https://ai-governance-standard.com/" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <script type="application/ld+json">{JSON.stringify({
@@ -37,13 +37,13 @@ const Index = () => {
           "@type": "Organization",
           name: "APEX PSI",
           alternateName: "Proof of Stateful Integrity",
-          url: "https://digital-gallows.apex-infrastructure.com",
-          logo: "https://digital-gallows.apex-infrastructure.com/apex.svg",
+          url: "https://ai-governance-standard.com",
+          logo: "https://ai-governance-standard.com/apex.svg",
           description: "Verifiable AI compliance protocol. Ed25519-signed evidence, Bitcoin-anchored proofs, IETF draft-singh-psi-00.",
           sameAs: [
-            "https://digital-gallows.apex-infrastructure.com/articles",
-            "https://digital-gallows.apex-infrastructure.com/protocol",
-            "https://digital-gallows.apex-infrastructure.com/foundation",
+            "https://ai-governance-standard.com/articles",
+            "https://ai-governance-standard.com/protocol",
+            "https://ai-governance-standard.com/foundation",
           ],
         })}</script>
         <script type="application/ld+json">{JSON.stringify({

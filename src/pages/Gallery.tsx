@@ -137,7 +137,7 @@ export default function Gallery() {
           name="description"
           content="Proof of concept: 50 of the world's most important public documents cryptographically sealed with the APEX PSI protocol (SHA-256 + Merkle root)."
         />
-        <link rel="canonical" href="https://digital-gallows.apex-infrastructure.com/gallery" />
+        <link rel="canonical" href="https://ai-governance-standard.com/gallery" />
       </Helmet>
 
       {/* Header */}
