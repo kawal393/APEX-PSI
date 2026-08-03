@@ -17,6 +17,8 @@ import { jcsHash } from "@/lib/psi-canonicalize";
 import { verifyMerkleProof, hashSHA256 } from "@/lib/gallows-engine";
 import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD, type LMSSignature } from "@/lib/psi-lms";
 import { Helmet } from "react-helmet-async";
+import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
+
 
 interface VerificationResult extends ProofReceiptData {
   verified: boolean;
