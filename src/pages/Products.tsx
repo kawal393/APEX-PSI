@@ -131,7 +131,7 @@ const products: Product[] = [
       "Insurance underwriting eligibility",
       "SLA-backed support",
     ],
-    cta: { label: "Contact sales", href: "/#contact", route: true },
+    cta: { label: "Contact sales", href: "/home#contact", route: true },
   },
 ];
 
@@ -379,7 +379,7 @@ const Products = () => {
                 <Link to="/spec">Read the technical spec</Link>
               </Button>
               <Button variant="heroOutline" size="lg" asChild>
-                <Link to="/#contact">Contact sales</Link>
+                <Link to="/home#contact">Contact sales</Link>
               </Button>
             </div>
           </div>

@@ -8,6 +8,7 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
+import Products from "./pages/Products";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -98,7 +99,10 @@ const App = () => (
             <ScrollToTop />
             <PageTracker />
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<Products />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/home" element={<Index />} />
+
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route
