@@ -120,18 +120,33 @@ Deno.serve(async (req) => {
     let pqError: string | null = null;
     if (entry.pq_signature && entry.merkle_leaf_hash) {
       try {
-        const message = new TextEncoder().encode(`sha256:${entry.merkle_leaf_hash}`);
-        pqVerified = await lmsVerify(
-          message,
-          entry.pq_signature as Parameters<typeof lmsVerify>[1],
-          entry.pq_public_key ?? undefined,
-        );
-        if (!pqVerified) pqError = "LMS-W4-SHA256 signature failed verification";
+        // notarize signs the bare hex leaf. Older rows may have been signed over
+        // the "sha256:"-prefixed form, so both encodings are accepted.
+        const bare = String(entry.merkle_leaf_hash).replace(/^sha256:/, "");
+        const candidates = [bare, `sha256:${bare}`];
+        const enc = new TextEncoder();
+        for (const candidate of candidates) {
+          if (
+            await lmsVerify(
+              enc.encode(candidate),
+              entry.pq_signature as Parameters<typeof lmsVerify>[1],
+              entry.pq_public_key ?? undefined,
+            )
+          ) {
+            pqVerified = true;
+            break;
+          }
+        }
+        if (!pqVerified) {
+          pqVerified = false;
+          pqError = "LMS-W4-SHA256 signature failed verification";
+        }
       } catch (e) {
         pqVerified = false;
         pqError = `Post-quantum verification error: ${e instanceof Error ? e.message : String(e)}`;
       }
     }
+
 
     // Attach the real OpenTimestamps / Bitcoin anchor state, if any
     const { data: proof } = await supabase
