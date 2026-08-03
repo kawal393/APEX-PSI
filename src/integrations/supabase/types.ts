@@ -1681,6 +1681,36 @@ export type Database = {
           },
         ]
       }
+      visit_ledger: {
+        Row: {
+          created_at: string
+          entry_hash: string
+          id: string
+          page_path: string
+          prev_hash: string
+          sequence_number: number
+          visitor_hash: string
+        }
+        Insert: {
+          created_at?: string
+          entry_hash: string
+          id?: string
+          page_path: string
+          prev_hash: string
+          sequence_number: number
+          visitor_hash: string
+        }
+        Update: {
+          created_at?: string
+          entry_hash?: string
+          id?: string
+          page_path?: string
+          prev_hash?: string
+          sequence_number?: number
+          visitor_hash?: string
+        }
+        Relationships: []
+      }
       webhook_endpoints: {
         Row: {
           created_at: string
@@ -1834,6 +1864,25 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      visit_ledger_head: {
+        Args: never
+        Returns: {
+          first_entry_at: string
+          head_hash: string
+          head_sequence: number
+          total_visits: number
+        }[]
+      }
+      witness_visit: {
+        Args: { p_page_path: string; p_visitor_id: string }
+        Returns: {
+          created_at: string
+          entry_hash: string
+          prev_hash: string
+          sequence_number: number
+          visitor_hash: string
+        }[]
       }
     }
     Enums: {
