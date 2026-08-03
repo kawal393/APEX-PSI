@@ -292,8 +292,13 @@ serve(async (req) => {
       });
     }
 
-    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
+    // Route through the managed AI gateway. The previously used direct Gemini
+    // key was rejected upstream (502 auth error), so the gateway key is primary.
+    const AI_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+    const AI_MODEL = "google/gemini-2.5-flash";
+    const AI_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!AI_KEY) throw new Error("LOVABLE_API_KEY not configured");
+
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
