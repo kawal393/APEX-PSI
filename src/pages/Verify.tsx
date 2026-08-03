@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Shield, ShieldCheck, ShieldX, Hash, Clock, AlertTriangle, Copy, CheckCircle2, ExternalLink, Upload, FileJson, ArrowRight, Zap, Lock, FileCheck, Globe, Eye } from "lucide-react";
 import SovereignShield from "@/components/verify/SovereignShield";
@@ -17,8 +17,10 @@ import { jcsHash } from "@/lib/psi-canonicalize";
 import { verifyMerkleProof, hashSHA256 } from "@/lib/gallows-engine";
 import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD, type LMSSignature } from "@/lib/psi-lms";
 import { Helmet } from "react-helmet-async";
+import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
 
-interface VerificationResult {
+
+interface VerificationResult extends ProofReceiptData {
   verified: boolean;
   found: boolean;
   merkle_verified?: boolean;
@@ -41,6 +43,7 @@ interface VerificationResult {
   message?: string;
   sequence_number?: number;
 }
+
 
 const VERIFY_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/verify-hash`;
 
@@ -121,8 +124,9 @@ const Verify = () => {
   } | null>(null);
   const [bundleVerifying, setBundleVerifying] = useState(false);
 
-  const handleVerify = async () => {
-    if (!hash.trim()) {
+  const runVerify = useCallback(async (raw: string) => {
+    const target = raw.trim();
+    if (!target) {
       toast.error("Please enter a hash to verify");
       return;
     }
@@ -133,7 +137,7 @@ const Verify = () => {
       const res = await fetch(VERIFY_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hash: hash.trim() }),
+        body: JSON.stringify({ hash: target }),
       });
       const data = await res.json();
       setResult(data);
@@ -142,7 +146,20 @@ const Verify = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const handleVerify = () => runVerify(hash);
+
+  // Deep link support: /verify?hash=<sha256|commit_id> auto-runs the lookup so
+  // the homepage demo link lands on a real, already-sealed ledger entry.
+  useEffect(() => {
+    const param = new URLSearchParams(window.location.search).get("hash");
+    if (param) {
+      setHash(param);
+      void runVerify(param);
+    }
+  }, [runVerify]);
+
 
   const handleReceiptVerify = async () => {
     const id = receiptId.trim();
@@ -429,7 +446,9 @@ const Verify = () => {
                           </div>
                         ))}
                       </div>
+                      <ProofReceipt data={result} />
                       <div className="border-t border-border px-6 py-3 flex items-center justify-between">
+
                         <span className="text-[10px] text-muted-foreground font-mono">{result.engine} — {result.algorithm}</span>
                         <button onClick={() => copyToClipboard(JSON.stringify(result, null, 2))}
                           className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 bg-transparent border-none cursor-pointer">

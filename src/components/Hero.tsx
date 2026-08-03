@@ -39,9 +39,16 @@ const Hero = () => {
           </p>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-10">
             APEX PSI proves what <span className="text-chrome-gradient font-bold">AI</span> did.
-            APEX PRAMAAN proves what <span className="text-gold-gradient font-bold">humans</span> saw.
-            Mathematically. Permanently. On any phone.
+            APEX PRAMAAN proves what <span className="text-gold-gradient font-bold">humans</span> saw.{" "}
+            <Link
+              to="/verify?hash=32af510b09317c1aeaff5aeb70ca09fa6e8878ffbfc41b3d45ef99cfd1256ffe"
+              className="font-bold text-foreground underline decoration-gold/60 decoration-2 underline-offset-4 hover:text-gold transition-colors"
+            >
+              Mathematically
+            </Link>
+            {" "}— see a real sealed record verify live. Permanently. On any phone.
           </p>
+
 
           {/* Status chips */}
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-10">

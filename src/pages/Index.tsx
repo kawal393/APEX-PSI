@@ -1,5 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Article50Banner from "@/components/Article50Banner";
+
 import TwoPillars from "@/components/TwoPillars";
 import LeadCaptureOffer from "@/components/LeadCaptureOffer";
 import HowToUse from "@/components/HowToUse";
@@ -69,6 +71,8 @@ const Index = () => {
         <Navbar />
         <div id="top" />
         <Hero />
+        <Article50Banner />
+
         <TwoPillars />
         <LeadCaptureOffer />
 
