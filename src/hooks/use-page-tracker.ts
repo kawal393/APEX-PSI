@@ -45,5 +45,14 @@ export function usePageTracker() {
     supabase.from("site_visits").insert(record).then(({ error }) => {
       if (error) console.error("Visit tracking error:", error.message);
     });
+
+    // Append this visit to the public, tamper-evident hash chain (/live).
+    (supabase.rpc as any)("witness_visit", {
+      p_page_path: path,
+      p_visitor_id: visitorId,
+    }).then(({ error }: { error: { message: string } | null }) => {
+      if (error) console.error("Visit ledger error:", error.message);
+    });
   }, [location.pathname]);
 }
+

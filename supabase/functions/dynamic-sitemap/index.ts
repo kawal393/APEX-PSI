@@ -2,11 +2,12 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SITE = "https://digital-gallows.apex-infrastructure.com";
+const SITE = "https://ai-governance-standard.com";
 
 const STATIC = [
   { loc: "/", priority: "1.0", changefreq: "daily" },
   { loc: "/pramaan", priority: "0.9", changefreq: "weekly" },
+  { loc: "/live", priority: "0.8", changefreq: "always" },
   { loc: "/quantum", priority: "0.9", changefreq: "weekly" },
   { loc: "/standard", priority: "0.9", changefreq: "weekly" },
   { loc: "/api", priority: "0.9", changefreq: "weekly" },

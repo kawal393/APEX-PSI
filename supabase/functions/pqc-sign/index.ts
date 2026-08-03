@@ -26,7 +26,7 @@ const hex = (b: Uint8Array) => Array.from(b).map((x) => x.toString(16).padStart(
 
 export const ISSUER_ID = "urn:apex-psi:issuer:root-1";
 export const ISSUER_NAME = "APEX PSI — Proof of Stateful Integrity";
-const SITE = "https://digital-gallows.apex-infrastructure.com";
+const SITE = "https://ai-governance-standard.com";
 const ANCHOR_URL = `${SITE}/.well-known/apex-psi-trust-anchor.json`;
 const VALID_FROM = "2026-01-01T00:00:00Z";
 

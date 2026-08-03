@@ -44,5 +44,4 @@ User-agent: facebookexternalhit
 Allow: /
 
 Sitemap: https://ai-governance-standard.com/sitemap.xml
-Sitemap: https://digital-gallows.apex-infrastructure.com/sitemap.xml
 

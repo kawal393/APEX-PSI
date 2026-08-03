@@ -39,6 +39,7 @@ import IETFDraft from "./pages/IETFDraft";
 import Paper from "./pages/Paper";
 import Notary from "./pages/Notary";
 import Explorer from "./pages/Explorer";
+import LiveLedger from "./pages/LiveLedger";
 import Tribunal from "./pages/Tribunal";
 import Governance from "./pages/Governance";
 import Research from "./pages/Research";
@@ -110,6 +111,7 @@ const App = () => (
               <Route path="/gallows" element={<Gallows />} />
               <Route path="/notary" element={<Notary />} />
               <Route path="/explorer" element={<Explorer />} />
+              <Route path="/live" element={<LiveLedger />} />
               <Route path="/architecture" element={<Architecture />} />
               <Route path="/sdk" element={<SDK />} />
               <Route path="/compare" element={<Compare />} />
