@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Products from "@/pages/Products";
 import Article50Banner from "@/components/Article50Banner";
 
 import TwoPillars from "@/components/TwoPillars";
@@ -11,7 +12,6 @@ import ComplianceClock from "@/components/ComplianceClock";
 import RegulatoryAlignment from "@/components/RegulatoryAlignment";
 import OpenSourceGateway from "@/components/OpenSourceGateway";
 import TechSpecs from "@/components/TechSpecs";
-import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
@@ -70,6 +70,7 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
+        <Products embedded />
         <Hero />
         <Article50Banner />
 
@@ -82,7 +83,7 @@ const Index = () => {
         <RegulatoryAlignment />
         <OpenSourceGateway />
         <TechSpecs />
-        <Pricing />
+
         <FAQ />
         <ContactSection />
         <Footer />

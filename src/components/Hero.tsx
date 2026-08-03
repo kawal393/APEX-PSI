@@ -28,11 +28,11 @@ const Hero = () => {
             </span>
           </div>
 
-          <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-6 tracking-tight leading-[0.9]">
+          <h2 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-6 tracking-tight leading-[0.9]">
             <span className="text-chrome-gradient">Verifiable AI.</span>
             <br />
             <span className="text-gold-gradient">Verifiable Humans.</span>
-          </h1>
+          </h2>
 
           <p className="text-lg sm:text-xl md:text-2xl text-foreground/90 max-w-3xl mx-auto mb-4 font-semibold">
             One open standard. Two pillars. Zero trust required.

@@ -226,9 +226,10 @@ const steps = [
   },
 ];
 
-const Products = () => {
+const Products = ({ embedded = false }: { embedded?: boolean }) => {
   return (
     <>
+      {!embedded && (
       <Helmet>
         <title>APEX PSI Products &amp; Pricing — The AI Governance Standard</title>
         <meta
@@ -268,12 +269,14 @@ const Products = () => {
           })}
         </script>
       </Helmet>
+      )}
 
-      <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-        <Navbar />
+      <div className={embedded ? "" : "min-h-screen bg-background text-foreground overflow-x-hidden"}>
+        {!embedded && <Navbar />}
+
 
         {/* Hero */}
-        <header className="pt-28 md:pt-36 pb-12 px-4">
+        <header className={embedded ? "pt-24 md:pt-28 pb-12 px-4" : "pt-28 md:pt-36 pb-12 px-4"}>
           <div className="container mx-auto max-w-7xl text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -385,7 +388,7 @@ const Products = () => {
           </div>
         </section>
 
-        <Footer />
+        {!embedded && <Footer />}
       </div>
     </>
   );
