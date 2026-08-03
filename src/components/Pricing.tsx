@@ -2,6 +2,8 @@ import { Shield, FileText, Globe, Zap, ArrowRight, CheckCircle2 } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { CHECKOUT } from "@/lib/commerce";
+
 
 const openAccessFeatures = [
   "Full PSI Protocol verification engine",
