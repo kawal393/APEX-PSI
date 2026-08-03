@@ -26,6 +26,8 @@ const STATIC = [
   { loc: "/challenge", priority: "0.7", changefreq: "monthly" },
   { loc: "/compare", priority: "0.6", changefreq: "monthly" },
   { loc: "/eu-ai-act", priority: "0.8", changefreq: "monthly" },
+  { loc: "/registry/check", priority: "0.9", changefreq: "weekly" },
+  { loc: "/registry", priority: "0.7", changefreq: "weekly" },
 ];
 
 Deno.serve(async () => {
@@ -42,6 +44,17 @@ Deno.serve(async () => {
     .order("created_at", { ascending: false })
     .limit(1000);
 
+  const { data: seals } = await supabase
+    .from("gallows_ledger")
+    .select("commit_hash,created_at")
+    .not("commit_hash", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(5000);
+
+  const receiptEntries = (seals || []).map(s =>
+    `  <url><loc>${SITE}/r/${s.commit_hash}</loc><lastmod>${new Date(s.created_at).toISOString()}</lastmod><priority>0.5</priority><changefreq>monthly</changefreq></url>`
+  ).join("\n");
+
   const staticEntries = STATIC.map(u =>
     `  <url><loc>${SITE}${u.loc}</loc><priority>${u.priority}</priority><changefreq>${u.changefreq}</changefreq></url>`
   ).join("\n");
@@ -54,6 +67,7 @@ Deno.serve(async () => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticEntries}
 ${articleEntries}
+${receiptEntries}
 </urlset>`;
 
   return new Response(xml, {

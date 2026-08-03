@@ -39,6 +39,8 @@ import IETFDraft from "./pages/IETFDraft";
 import Paper from "./pages/Paper";
 import Notary from "./pages/Notary";
 import Explorer from "./pages/Explorer";
+import Receipt from "./pages/Receipt";
+import VendorCheck from "./pages/VendorCheck";
 import LiveLedger from "./pages/LiveLedger";
 import Tribunal from "./pages/Tribunal";
 import Governance from "./pages/Governance";
@@ -148,6 +150,8 @@ const App = () => (
                 }
               />
               <Route path="/registry" element={<Registry />} />
+              <Route path="/registry/check" element={<VendorCheck />} />
+              <Route path="/r/:hash" element={<Receipt />} />
               <Route path="/submission-kit" element={<SubmissionKit />} />
               <Route path="/draft" element={<IETFDraft />} />
               <Route path="/paper" element={<Paper />} />
