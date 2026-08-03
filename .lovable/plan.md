@@ -1,31 +1,75 @@
-## Part 1 — Why your logo isn't showing in search
+# Grand Report + Plan: Becoming the AI Governance Standard
 
-I inspected the live files. There are four real defects, all fixable:
+## 1. Are we 100% technically inevitable? No — and here is exactly why
 
-1. **The icon files are broken as icons.** `public/favicon.ico`, `favicon.png` and `apple-touch-icon.png` are all the *same* 2.1 MB, 1024×1331 **non-square** PNG. `favicon.ico` isn't an ICO at all — it's a PNG with an `.ico` extension. Google/Bing require a **square** icon, at least 48×48, in a real supported format, under a sane file size. A non-square 2 MB file gets silently dropped — which is exactly the grey globe you saw on the `apex-infrastructure.com` result.
-2. **`og-image.png` is actually a JPEG** with a `.png` name. Same class of mismatch — crawlers that trust the extension can reject it.
-3. **Every canonical/OG/JSON-LD URL points at `https://apex-psi.apex-infrastructure.com`**, which is not the live domain. The live domain is `https://digital-gallows.apex-infrastructure.com`. The favicon and logo Google fetches are resolved *relative to the canonical URL*, so it's looking for the icon on the wrong host. This alone breaks logo attribution.
-4. **`public/apex.svg` is a plain gold triangle**, not the actual APEX brand mark that exists at `src/assets/apex-logo.png`. That's the SVG referenced first in the head and in the Organization JSON-LD `logo` field.
+The protocol is real. The distribution is not. Verified numbers from the live backend right now:
 
-Also: `robots.txt` advertises `Sitemap: https://apex-psi.lovable.app/sitemap.xml` while the sitemap itself lists `digital-gallows.apex-infrastructure.com` URLs — mixed signals to crawlers.
+| Signal | Actual | Verdict |
+|---|---|---|
+| Ledger entries sealed | 1,649 | Real |
+| Entries carrying a post-quantum LMS signature | **1** | Claim outruns coverage |
+| OpenTimestamps proofs submitted | 2 | Thin |
+| Bitcoin anchors confirmed in a block | **0** | Nothing is chain-proven yet |
+| Public attestations | 2 | Thin |
+| Predicate proofs | 1 | Demo-grade |
+| Published SEO articles | 101 | Strong |
+| Site visits | 3,246 | Real traffic |
+| Leads captured from that traffic | **0** | Total conversion failure |
+| Paid subscriptions | 0 (2 free rows) | No revenue |
+| Active API keys | 2 | No ecosystem yet |
 
-### The fix
+Four honest blockers to inevitability:
 
-- Generate a proper icon set from the real APEX brand mark (`src/assets/apex-logo.png`), square, padded not stretched: `favicon-32.png`, `favicon-192.png`, `favicon-512.png`, `apple-touch-icon.png` (180×180), and a genuine multi-size `favicon.ico`.
-- Replace `public/apex.svg` with the actual brand mark (or drop the SVG link and lead with the PNG set) so the gold APEX mark is what's served.
-- Re-save `og-image` as a true PNG at 1200×630 with the logo present, and correct the `og:image` / `twitter:image` MIME + dimensions.
-- Point **canonical, `og:url`, `twitter:*`, and both JSON-LD blocks** at `https://digital-gallows.apex-infrastructure.com`, and add `"logo"` + `"image"` to the Organization schema using the absolute 512px logo URL (this is the field Google reads for the knowledge-panel logo).
-- Rewrite `public/manifest.json` icon entries to the new square files with correct `sizes` and add `purpose: "any maskable"`.
-- Fix the `Sitemap:` line in `robots.txt` to the custom domain.
-- Add `<meta name="msapplication-TileImage">` so Bing (your screenshot is Bing) picks the tile up.
+1. **The quantum claim is 1-in-1,649.** The site says post-quantum. Only one record actually carries an LMS signature. A hostile auditor finds that in ten minutes.
+2. **Zero confirmed Bitcoin anchors.** Every anchor sits "pending". Until a real block includes one, the immutability story is a promise, not a proof.
+3. **Nobody is calling the API.** 2 keys. A standard is defined by integrations, not by documentation.
+4. **The primary domain is `digital-gallows.apex-infrastructure.com`.** For an EU regulator, "digital gallows" reads as a threat, not as infrastructure. This alone can kill an institutional evaluation.
 
-**Honest expectation:** the code fix is immediate, but Google/Bing re-crawl on their own schedule — the icon typically appears within days to a few weeks, not instantly. After publishing I'll tell you exactly which URL to submit in Search Console / Bing Webmaster Tools to force a re-crawl. Note also that the first result in your screenshot (`apex-infrastructure.com`, "Open Reconciliation Infrastructure") is a **different site**, not this project — I can only fix this project's subdomain from here.
+## 2. EU AI Act — where we actually sit
 
-## Part 2 — Email sender (as you approved)
+Article 50 (transparency and machine-readable marking of AI output) is in force and has no designated verification mechanism. That is the hole. The Act says output must be marked and detectable; it does not say who checks the mark. We are the only party shipping a free, open, cryptographic checker for it.
 
-- Once `apex-infrastructure.com` is verified in Resend (you add the SPF/DKIM/DMARC records at your registrar and click verify), I switch the sender in `capture-lead` and the other email functions from `onboarding@resend.dev` to `noreply@apex-infrastructure.com`, then run one end-to-end lead capture so we confirm the EU AI Act pack lands in a visitor's inbox rather than only your operator address.
-- If you'd rather not wait, I can flip the sender now and it will start working the moment verification completes — it just fails closed to operator-only until then.
+Position: not a vendor asking for approval — a **reference implementation** that regulators can cite. That means the win condition is a citation in guidance or a standards body work item, not a signed contract.
 
-## Technical detail
+## 3. Domain valuation — what you own
 
-Icon generation via ImageMagick from `src/assets/apex-logo.png` with `-background none -gravity center -extent`, so a non-square mark is padded rather than distorted. All head/meta edits are in `index.html`; manifest and robots are static files under `public/`. No app logic changes.
+| Domain | Strategic value | Use |
+|---|---|---|
+| **ai-governance-standard.com** | **Highest. Exact-match for the category term.** Instant institutional credibility, keyword-authority, and it is the phrase regulators, auditors and procurement teams type. | **Promote to primary canonical domain.** Everything points here. |
+| sovereign-ai.services | Medium — commercial/consulting framing | Enterprise/paid-tier landing |
+| sovereign-ai.in / .co.in | Medium — India market + regional SEO | India regulatory landing page |
+| digital-gallows.apex-infrastructure.com | **Negative for institutions** | Demote to redirect only |
+
+Do not park these. An unused exact-match domain is worth nothing; a canonical one is worth the whole category.
+
+## 4. The plan
+
+### Phase 1 — Close the credibility gaps (highest priority)
+- **Backfill post-quantum signatures** across existing ledger rows via a batch function so the PQ claim matches reality; expose real coverage (`x of y sealed records`) instead of an absolute claim.
+- **Get a real Bitcoin anchor confirmed**: run the anchor + refresh cycle on a schedule until at least one proof reaches `confirmed`, then surface the block height and txid publicly on `/verify` and the homepage.
+- **Honest counters everywhere**: any statistic on the site reads from the ledger, never hardcoded, and pending is shown as pending.
+
+### Phase 2 — Make ai-governance-standard.com the front door
+- Set it as the canonical domain: canonical tags, `og:url`, sitemap, robots, JSON-LD, IndexNow, and all `/.well-known` trust-anchor URLs.
+- 301 the old host to it; keep the old host resolving so existing links and receipts never break.
+- Build a dedicated **Article 50 conformance landing page** at the root of that domain: what the Act requires, what a compliant marking looks like, a live checker, and a downloadable conformance statement. Written for a regulator, not a developer.
+- Regional doors: sovereign-ai.in points at an India / DPDP + AI governance page; sovereign-ai.services points at the commercial tier.
+
+### Phase 3 — Convert the traffic we already have
+3,246 visits and 0 leads is the single most expensive bug on the site. Diagnose the capture path end to end (component visibility, the capture function, and whether submissions ever reach the database), then rebuild the offer around one high-value asset: an **EU AI Act Article 50 Readiness Report** generated from a URL the visitor enters.
+
+### Phase 4 — Ecosystem lock-in (how we pass every competitor)
+- **Free forever verification API, no key required** for read/verify; keys only for sealing. Standards spread when checking is free.
+- Publish drop-in packages and a GitHub Action that fails a build when AI output ships unmarked — that puts us in CI pipelines, where standards actually live.
+- A public conformance registry: any product that emits a valid `Compliance-Receipt` header gets listed automatically. Being on the list becomes a procurement asset, which makes joining self-interested rather than charitable.
+- Submit the marking-verification profile to a standards work item and cite the running reference implementation.
+
+### Phase 5 — Brand synonymy with "AI governance"
+- Every article, page title, and structured-data entity anchors on the exact phrase and links back to the canonical domain.
+- One public, permanent, machine-readable trust anchor URL that never moves — that URL becomes the citation.
+
+## Technical notes
+- PQ backfill: new edge function iterating `gallows_ledger` rows where `pq_signature is null`, signing `merkle_leaf_hash` with the existing shared LMS module. The current leaf index is derived from a count of PQ-signed rows, so the backfill must allocate indices strictly monotonically and handle key rotation to avoid one-time-key reuse.
+- Anchor confirmation: scheduled invocation of `blockchain-anchor` `action=refresh`, promoting `ots_proofs` to `confirmed` only on a real block, plus the per-commit `anchor-commit` path for individual receipts.
+- Canonical domain: centralise the base URL in one constant used by the sitemap generator, head metadata, JSON-LD, and the trust-anchor document.
+- Lead capture: verify `capture-lead` end to end before redesigning the offer.
