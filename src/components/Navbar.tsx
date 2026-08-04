@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import LanguageSelector from "@/components/LanguageSelector";
 import ThemeToggle from "@/components/ThemeToggle";
+import PWAInstallButton from "@/components/PWAInstallButton";
 import apexLogo from "@/assets/apex-logo.png";
 
 const infraLinks = [
@@ -180,6 +181,7 @@ const navLinks = [
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <PWAInstallButton />
             <ThemeToggle />
             <LanguageSelector />
             {isAdmin && (
@@ -215,6 +217,7 @@ const navLinks = [
             <span className="text-sm font-bold text-gold-gradient">APEX PSI</span>
           </button>
           <div className="flex items-center gap-2">
+            <PWAInstallButton />
             <ThemeToggle />
             <LanguageSelector />
             {user ? (
@@ -249,6 +252,7 @@ const navLinks = [
             <span className="text-sm font-bold text-gold-gradient">APEX PSI</span>
           </button>
           <div className="flex items-center gap-2">
+            <PWAInstallButton />
             <ThemeToggle />
             <LanguageSelector />
             <button

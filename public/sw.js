@@ -1,42 +1,23 @@
-// Service worker for APEX PWA — offline caching
-const CACHE_NAME = "apex-v1";
-const STATIC_ASSETS = ["/", "/favicon.png", "/apple-touch-icon.png"];
+// Kill-switch service worker: evicts the old cache-first APEX worker.
+// Returning browsers need a same-path replacement worker to drop the old registration.
+function isOwnAppCache(name) {
+  return /^apex-v\d+$/.test(name);
+}
 
-self.addEventListener("install", (event) => {
+self.addEventListener("install", () => self.skipWaiting());
+
+self.addEventListener("activate", (event) =>
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
-  );
-  self.skipWaiting();
-});
-
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
-});
-
-self.addEventListener("fetch", (event) => {
-  // Network-first strategy for API calls
-  if (event.request.url.includes("/functions/") || event.request.url.includes("/rest/")) {
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fetchPromise = fetch(event.request)
-        .then((response) => {
-          if (response.ok && event.request.method === "GET") {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          }
-          return response;
-        })
-        .catch(() => cached);
-
-      return cached || fetchPromise;
-    })
-  );
-});
+    (async () => {
+      try {
+        const names = await caches.keys();
+        await Promise.allSettled(names.filter(isOwnAppCache).map((n) => caches.delete(n)));
+        await self.clients.claim();
+        const windowClients = await self.clients.matchAll({ type: "window" });
+        await Promise.allSettled(windowClients.map((c) => c.navigate(c.url)));
+      } finally {
+        await self.registration.unregister();
+      }
+    })(),
+  ),
+);

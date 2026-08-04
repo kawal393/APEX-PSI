@@ -94,11 +94,16 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
+      // One release cycle: load the replacement worker so it can clear stale
+      // caches and unregister itself. No new offline caching is registered.
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(() => {});
+          navigator.serviceWorker.getRegistrations().then((regs) => {
+            if (regs.length) navigator.serviceWorker.register('/sw.js').catch(() => {});
+          });
         });
       }
     </script>
+
   </body>
 </html>
