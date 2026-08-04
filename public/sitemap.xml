@@ -236,6 +236,54 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/ed25519-signatures-for-secure-ai-audit-trails-vht2sk</loc>
+    <lastmod>2026-08-03T21:06:05.217Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/nist-ai-rmf-vs-eu-ai-act-key-differences-comparison-1cvsrk</loc>
+    <lastmod>2026-08-03T21:06:05.217Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/post-quantum-signatures-for-ai-ml-dsa-lms-explained-8m8stu</loc>
+    <lastmod>2026-08-03T21:06:05.217Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-compliance-automation-what-can-cannot-be-automated-73s6mh</loc>
+    <lastmod>2026-08-03T18:06:11.281Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-compliance-automation-what-can-cannot-be-automated-weej1u</loc>
+    <lastmod>2026-08-03T18:06:11.281Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-transparency-what-regulators-actually-want-wpa6gy</loc>
+    <lastmod>2026-08-03T18:06:11.281Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-insurance-underwriting-with-cryptographic-proofs-fxbrq4</loc>
+    <lastmod>2026-08-03T15:06:31.924Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-guide-ey4tej</loc>
+    <lastmod>2026-08-03T15:06:31.924Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/ed25519-signatures-for-ai-audit-trails-enhanced-security-eu1kdh</loc>
     <lastmod>2026-08-03T12:05:47.404Z</lastmod>
     <changefreq>weekly</changefreq>
