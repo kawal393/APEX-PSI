@@ -217,6 +217,7 @@ const navLinks = [
             <span className="text-sm font-bold text-gold-gradient">APEX PSI</span>
           </button>
           <div className="flex items-center gap-2">
+            <PWAInstallButton />
             <ThemeToggle />
             <LanguageSelector />
             {user ? (
