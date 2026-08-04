@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import LanguageSelector from "@/components/LanguageSelector";
 import ThemeToggle from "@/components/ThemeToggle";
+import PWAInstallButton from "@/components/PWAInstallButton";
 import apexLogo from "@/assets/apex-logo.png";
 
 const infraLinks = [
