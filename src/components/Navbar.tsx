@@ -180,6 +180,7 @@ const navLinks = [
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <PWAInstallButton />
             <ThemeToggle />
             <LanguageSelector />
             {isAdmin && (
