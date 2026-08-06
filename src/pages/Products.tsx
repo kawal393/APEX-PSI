@@ -82,7 +82,7 @@ const products: Product[] = [
     cadence: CHECKOUT.prover.cadence,
     who: "Teams shipping AI features that must produce evidence continuously.",
     summary:
-      "Managed notary API with scoped keys, priority anchoring and an ongoing signed compliance certificate for your system.",
+      "Managed notary API with scoped keys, priority anchoring and an ongoing signed technical evidence certificate for your system.",
     features: [
       "Managed Notary API + scoped API keys",
       "Batch notarization up to 100 decisions per call",
