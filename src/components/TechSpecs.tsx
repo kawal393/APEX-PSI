@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import { Link2, ClipboardList, FileText, ShieldCheck, BookOpen } from "lucide-react";
 
 const specs = [
-  { icon: Link2, title: "Immutable Ledger", desc: "SHA-256 hash chaining for tamper-proof AI output logging across 55+ predicates" },
-  { icon: ClipboardList, title: "Annex III Risk Classifier", desc: "Automated risk categorization covering EU AI Act, Colorado SB 24-205, California SB 1047" },
-  { icon: FileText, title: "NIST / ISO Control Mapping", desc: "Full NIST AI RMF 100-1 + ISO 42001 + CISA control mapping for enterprise compliance" },
-  { icon: ShieldCheck, title: "Optimistic ZK Fraud Proof", desc: "Groth16-compatible ZK proofs on BN128 curve — prove compliance without revealing AI logic" },
-  { icon: BookOpen, title: "6-Jurisdiction Coverage", desc: "EU, USA (CO, CA), Australia, India, Canada, UK" },
+  { icon: Link2, title: "Tamper-Evident Ledger", desc: "SHA-256 hash chaining makes later modification detectable; it does not prevent deletion or source deception" },
+  { icon: ClipboardList, title: "Risk-Screening Aid", desc: "Rule-based triage for selected regulatory frameworks; qualified review is still required" },
+  { icon: FileText, title: "Control Mapping", desc: "Informational cross-references to NIST AI RMF and ISO/IEC 42001 controls, without certification claims" },
+  { icon: ShieldCheck, title: "Experimental ZK Components", desc: "Groth16-compatible BN128 demonstrations; not presented as production compliance proofs" },
+  { icon: BookOpen, title: "Multi-Jurisdiction Research", desc: "Technical evidence patterns mapped to selected frameworks; not jurisdiction-specific legal advice" },
 ];
 
 const TechSpecs = () => (

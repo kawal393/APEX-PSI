@@ -66,8 +66,8 @@ export default function Quantum() {
   return (
     <>
       <Helmet>
-        <title>Quantum-Safe Signatures | APEX PSI</title>
-        <meta name="description" content="Hybrid Ed25519 + ML-DSA-65 (Dilithium3) signatures per NIST FIPS 204. Every APEX receipt survives a cryptographically-relevant quantum computer." />
+        <title>Post-Quantum Signature Experiment | APEX PSI</title>
+        <meta name="description" content="Test hybrid Ed25519 and ML-DSA-65 signatures. Post-quantum cryptography reduces a class of future risk but does not guarantee indefinite security." />
         <link rel="canonical" href="https://ai-governance-standard.com/quantum" />
       </Helmet>
       <Navbar />
@@ -76,12 +76,12 @@ export default function Quantum() {
           <div className="container mx-auto px-4 py-16 max-w-5xl">
             <Badge variant="outline" className="mb-4 border-primary/30 text-primary">NIST FIPS 204 · Aug 2024</Badge>
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-4">
-              Quantum-Safe by <span className="text-primary">Default</span>
+              Hybrid Signatures for <span className="text-primary">Crypto Agility</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl">
               Every APEX receipt can now carry a <strong>hybrid signature</strong>: classical Ed25519 <em>and</em> post-quantum
-              ML-DSA-65 (Dilithium3). A receipt is valid only if <strong>both</strong> verify. If a quantum computer breaks
-              one, the other holds. The truth survives the transition.
+              ML-DSA-65. In this demonstration, a receipt passes only when <strong>both</strong> signatures verify.
+              This is defense in depth, not a guarantee against every implementation, key-management or future cryptanalytic failure.
             </p>
           </div>
         </section>
@@ -163,14 +163,14 @@ export default function Quantum() {
           <div className="mt-8 prose prose-invert max-w-none">
             <h2>Why hybrid, why now</h2>
             <p>
-              NIST finalized ML-DSA in FIPS 204 in August 2024. Regulators (BSI, ANSSI, NSA CNSA 2.0) now recommend
-              hybrid classical + post-quantum signatures for any signature meant to survive past ~2030. APEX receipts
-              are designed to be permanent legal evidence — they must outlive the classical era.
+              NIST finalized ML-DSA in FIPS 204 in August 2024. Migration guidance varies by authority and use case.
+              APEX PSI uses a hybrid design to preserve classical interoperability while testing a standardized
+              post-quantum primitive.
             </p>
             <p>
               A hybrid failure model: if <strong>either</strong> primitive is broken in the future, the other still
-              proves the receipt is authentic. An attacker must break <em>both</em> mathematics — a lattice problem
-              and an elliptic-curve problem — to forge a single APEX receipt.
+              can preserve cryptographic assurance, assuming independent security, correct implementation and secure
+              key custody. Those assumptions are explicit and require ongoing review.
             </p>
           </div>
         </section>

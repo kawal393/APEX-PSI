@@ -45,7 +45,7 @@ const products: Product[] = [
     features: [
       "Full verification engine + MIT-licensed SDK",
       "Client-side SHA-256 sealing of any file (/seal, /pramaan)",
-      "Ed25519 + LMS-W4-SHA256 post-quantum signatures",
+      "Ed25519 plus documented post-quantum signature options",
       "Public hash verification portal and REST API",
       "Compliance-Receipt HTTP header (draft-singh-psi-http-01)",
       "Free vendor transparency console (/registry/check)",
@@ -59,15 +59,15 @@ const products: Product[] = [
     name: CHECKOUT.conformityReceipt.label,
     price: CHECKOUT.conformityReceipt.price,
     cadence: CHECKOUT.conformityReceipt.cadence,
-    who: "Anyone who needs one proof to survive a regulator, a court or a client.",
+    who: "Anyone who needs a signed technical receipt for an audit, client or internal record.",
     summary:
       "Sealing is free. What you buy is the countersignature: your hash additionally signed by the APEX PSI institutional trust anchor, Bitcoin-anchored, issued as a regulator-ready PDF.",
     features: [
       "Countersigned by the APEX PSI trust anchor",
       "Ed25519 + LMS-W4-SHA256 hybrid signature",
       "Bitcoin anchoring via OpenTimestamps (.ots included)",
-      "PDF receipt referencing EU AI Act Article 50",
-      "Permanent public receipt page at /r/<hash>",
+      "PDF technical receipt with an Article 50 control reference",
+      "Public receipt page at /r/<hash>, subject to service availability",
       "No subscription, no account required",
     ],
     cta: { label: `Get a receipt — ${CHECKOUT.conformityReceipt.price}`, href: CHECKOUT.conformityReceipt.url, external: true },
@@ -82,12 +82,12 @@ const products: Product[] = [
     cadence: CHECKOUT.prover.cadence,
     who: "Teams shipping AI features that must produce evidence continuously.",
     summary:
-      "Managed notary API with scoped keys, priority anchoring and an ongoing signed compliance certificate for your system.",
+      "Managed notary API with scoped keys, priority anchoring and an ongoing signed technical evidence certificate for your system.",
     features: [
       "Managed Notary API + scoped API keys",
       "Batch notarization up to 100 decisions per call",
       "Priority anchoring queue",
-      "Signed EU AI Act compliance certificate",
+      "Signed technical evidence certificate — not legal certification",
       "Webhook delivery of receipts (HMAC signed)",
       "Usage dashboard and audit export",
     ],
@@ -117,7 +117,7 @@ const products: Product[] = [
     id: "institutional",
     icon: Building2,
     eyebrow: "For institutions",
-    name: "Institutional Certification",
+    name: "Institutional Evidence Service",
     price: "From $2,000",
     cadence: "per month",
     who: "Enterprises, governments and regulated operators filing evidence.",
@@ -128,7 +128,7 @@ const products: Product[] = [
       "Dedicated MPC consensus nodes",
       "Continuous automated monitoring and alerting",
       "White-label deployment and custom domains",
-      "Insurance underwriting eligibility",
+      "Evidence exports for underwriting review",
       "SLA-backed support",
     ],
     cta: { label: "Contact sales", href: "/home#contact", route: true },
@@ -220,7 +220,7 @@ const steps = [
   {
     n: "03",
     title: "Buy the countersignature",
-    body: "When the proof has to stand in front of a regulator, buy the institutional countersignature and Bitcoin anchor.",
+    body: "For higher-assurance technical evidence, add an institutional countersignature and timestamp proof. This does not guarantee legal acceptance.",
     href: CHECKOUT.conformityReceipt.url,
     linkLabel: `Countersign — ${CHECKOUT.conformityReceipt.price}`,
   },
@@ -234,7 +234,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
         <title>APEX PSI Products &amp; Pricing — The AI Governance Standard</title>
         <meta
           name="description"
-          content="APEX PSI is the open AI governance standard. The protocol is free forever. Priced services: $29 Article 50 Conformity Receipt, $49/mo PSI Prover API, $199/mo Verified Supplier Registry, institutional certification from $2,000/mo."
+          content="APEX PSI is an open AI governance evidence protocol. Review free tools and priced receipt, API, registry and institutional evidence services."
         />
         <link rel="canonical" href={`${SITE_URL}/products`} />
         <meta property="og:title" content="APEX PSI Products & Pricing — The AI Governance Standard" />
@@ -284,14 +284,14 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
             >
               <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-[10px] font-bold tracking-[0.2em] text-primary uppercase mb-6">
                 <FileText className="h-3 w-3" />
-                IETF draft-singh-psi-00 · Article 50 in force
+                 IETF individual submission · Article 50 applicable
               </span>
               <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[0.95] mb-5">
                 <span className="text-gold-gradient">APEX PSI</span>
-                <span className="block text-chrome-gradient">The AI Governance Standard</span>
+                <span className="block text-chrome-gradient">Open AI Governance Evidence Protocol</span>
               </h1>
               <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
-                One open standard for proving what an AI system did and what a human witnessed.
+                One open protocol for recording declared AI actions and human observations as verifiable evidence.
                 The protocol is <span className="text-foreground font-bold">free forever</span>.
                 Below is everything we sell — every product, every price, in the open.
               </p>

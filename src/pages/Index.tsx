@@ -24,11 +24,11 @@ const Index = () => {
     <>
       <Helmet>
         <title>APEX PSI — Verifiable AI. APEX PRAMAAN — Verifiable Humans.</title>
-        <meta name="description" content="One open standard, two pillars. APEX PSI proves what AI did. APEX PRAMAAN proves what humans saw. IETF draft-singh-psi-00. Ed25519 + ML-DSA-65. MIT open source." />
+        <meta name="description" content="Open provenance and integrity tools for recording declared AI actions and human observations with signed, independently verifiable evidence." />
         <link rel="canonical" href="https://ai-governance-standard.com/" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Articles" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />
         <meta property="og:title" content="APEX PSI — Verifiable AI. APEX PRAMAAN — Verifiable Humans." />
-        <meta property="og:description" content="One open standard, two pillars. Cryptographic truth for AI systems and human witnesses. IETF draft-singh-psi-00." />
+        <meta property="og:description" content="Open provenance and integrity tools for signed, independently verifiable AI governance evidence." />
         <meta property="og:url" content="https://ai-governance-standard.com/" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -39,7 +39,7 @@ const Index = () => {
           alternateName: "Proof of Stateful Integrity",
           url: "https://ai-governance-standard.com",
           logo: "https://ai-governance-standard.com/apex.svg",
-          description: "Verifiable AI compliance protocol. Ed25519-signed evidence, Bitcoin-anchored proofs, IETF draft-singh-psi-00.",
+          description: "Open-source provenance and integrity protocol for signed AI governance evidence. Not a legal certification or conformity assessment.",
           sameAs: [
             "https://ai-governance-standard.com/articles",
             "https://ai-governance-standard.com/protocol",

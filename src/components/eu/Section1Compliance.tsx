@@ -96,15 +96,15 @@ const Section1Compliance = () => (
     <div className="text-center mb-8">
       <Badge variant="outline" className="border-gold/40 text-gold mb-4 py-1.5 px-3 text-[10px] sm:text-xs tracking-widest">
         <ShieldCheck className="h-3.5 w-3.5 mr-1.5" />
-        EU CODE OF PRACTICE ON TRANSPARENCY OF AI-GENERATED CONTENT — SECTION 1 COMPLIANT
+        EU AI ACT ARTICLE 50 — TECHNICAL CONTROL MAPPING
       </Badge>
       <h2 className="text-2xl sm:text-4xl font-black">
         <span className="text-chrome-gradient">EU AI Act Code of Practice</span>{" "}
-        <span className="text-gold-gradient">— Section 1 Compliance</span>
+        <span className="text-gold-gradient">— Evidence &amp; Limitations</span>
       </h2>
       <p className="text-sm text-muted-foreground mt-3 max-w-2xl mx-auto">
-        Public technical documentation of the mandatory marking and detection measures under Section 1:
-        in-band signed tamperproof metadata and watermarking of artificially generated or manipulated content.
+        Public technical documentation of marking, signature and verification controls that may support an
+        implementation. This is not certification, conformity assessment or legal advice.
       </p>
     </div>
 
@@ -148,7 +148,8 @@ const Section1Compliance = () => (
 
       <SectionShell letter="C" title="Public Verification" icon={Globe}>
         <p className="text-sm text-foreground/80 mb-4">
-          Anyone can verify any signed file without an account and without contacting APEX.
+          Supported receipts can be verified without an account. Offline verification requires the receipt,
+          supported verifier code and the relevant public key.
         </p>
         <ul className="space-y-2 text-sm text-foreground/80">
           <li>
@@ -160,7 +161,7 @@ const Section1Compliance = () => (
           <li className="break-all">
             Public Ed25519 key (hex): <code className="text-xs font-mono text-gold">{PUBLIC_KEY_HEX}</code>
           </li>
-          <li>Offline verification supported.</li>
+          <li>Offline cryptographic verification is supported for documented receipt formats.</li>
           <li>Zero-knowledge proof option (Groth16-compatible / BN128) for privacy-preserving compliance checks.</li>
         </ul>
       </SectionShell>
@@ -243,8 +244,8 @@ const Section1Compliance = () => (
 
       <SectionShell letter="G" title="Code of Practice Signatory Status" icon={ShieldCheck}>
         <p className="text-sm text-foreground/80">
-          APEX PSI has applied to sign the EU Code of Practice on Transparency of AI-Generated Content. Technical
-          documentation is publicly available on this page. Source code is open-source on{" "}
+           APEX PSI publishes technical documentation relevant to Article 50 workflows. It does not claim signatory,
+           approved-vendor, regulator-endorsed or certified status. Source code is available on{" "}
           <a
             href="https://github.com/kawal393/digital-gallowsapex-infrastructurecom"
             target="_blank"

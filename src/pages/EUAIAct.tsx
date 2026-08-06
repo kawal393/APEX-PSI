@@ -29,7 +29,7 @@ const ARTICLES = [
     number: "Article 4",
     title: "AI Literacy",
     requirement: "Ensure AI systems are used by sufficiently trained personnel with adequate AI literacy.",
-    psiMapping: "PSI Seal embedded in every AI output — visual + cryptographic proof of origin.",
+    psiMapping: "Signed receipts can support provenance records; organisational training obligations require separate controls.",
     icon: Eye,
     cost: "$0.006/seal",
   },
@@ -37,7 +37,7 @@ const ARTICLES = [
     number: "Article 50",
     title: "Transparency of AI-Generated Content",
     requirement: "Mark AI-generated content with machine-readable metadata. Disclose deepfakes. Label synthetic text.",
-    psiMapping: "3-Layer Standard: visible watermark + steganographic signature + metadata header. Cryptographically tamper-proof.",
+    psiMapping: "Machine-readable metadata, signatures and optional watermarking can support marking workflows; legal applicability remains context-specific.",
     icon: FileText,
     cost: "$0.006/seal",
     critical: true,
@@ -46,7 +46,7 @@ const ARTICLES = [
     number: "Article 12",
     title: "Record-Keeping & Audit Trail",
     requirement: "Maintain automatic logging of AI system operations for traceability.",
-    psiMapping: "Merkle tree anchored to Bitcoin — immutable audit trail. Every verification creates a permanent record.",
+    psiMapping: "Hash chaining and confirmed timestamp proofs can make later alteration detectable; retention and logging duties remain with the operator.",
     icon: Hash,
     cost: "$0.006/record",
   },
@@ -54,7 +54,7 @@ const ARTICLES = [
     number: "Article 13",
     title: "Transparency to Deployers",
     requirement: "Provide deployers with clear instructions on AI system capabilities and limitations.",
-    psiMapping: "PSI header in every document — machine-readable capability disclosure embedded at creation.",
+    psiMapping: "Receipt fields can carry machine-readable declarations; provider instructions and system documentation remain separate obligations.",
     icon: Eye,
     cost: "$0.006/header",
   },
@@ -62,7 +62,7 @@ const ARTICLES = [
     number: "Article 14",
     title: "Human Oversight",
     requirement: "Enable effective human oversight during AI system use.",
-    psiMapping: "Verification portal allows any human to verify document integrity in real-time. No blockchain wallet needed.",
+    psiMapping: "The portal can help a reviewer check receipt integrity; it does not itself implement human oversight.",
     icon: ShieldCheck,
     cost: "$0.006/verify",
   },
@@ -70,25 +70,25 @@ const ARTICLES = [
     number: "Article 15",
     title: "Accuracy, Robustness & Cybersecurity",
     requirement: "Ensure AI systems are accurate, resilient against errors, faults, and adversarial attacks.",
-    psiMapping: "SHA-256 + Ed25519 signatures. Fraud proof system. Any tampering detected instantly.",
+    psiMapping: "SHA-256 and signatures detect changes to supported signed artefacts; they do not establish model accuracy, robustness or cybersecurity.",
     icon: Lock,
     cost: "$0.006/check",
   },
 ];
 
 const COST_COMPARISON = [
-  { method: "Apex PSI", cost: "$0.006", per: "verification", time: "< 200ms", features: "Merkle proof, Bitcoin anchor, 3-layer watermark, machine-readable", recommended: true },
+  { method: "Apex PSI", cost: "Plan-dependent", per: "receipt or service", time: "Varies", features: "Signed receipt, optional timestamp proof, machine-readable evidence", recommended: true },
   { method: "Blockchain (Ethereum)", cost: "$1–$20", per: "transaction", time: "12 sec – 10 min", features: "Immutable record, but slow, expensive, requires wallet" },
-  { method: "Zero-Knowledge Proofs", cost: "$1,000+", per: "proof generation", time: "Minutes", features: "Privacy-preserving, but computationally expensive, complex" },
+  { method: "Zero-Knowledge Proofs", cost: "Workload-dependent", per: "proof generation", time: "Workload-dependent", features: "Privacy-preserving; implementation cost and performance vary widely" },
   { method: "Manual Compliance", cost: "$50–$200", per: "hour (consultant)", time: "Weeks–Months", features: "Human review, error-prone, not scalable" },
 ];
 
 const CODE_OF_PRACTICE_BENEFITS = [
-  "Public listing on EU AI Office register as compliant signatory",
-  "Reduced administrative burden across all 27 EU member states",
-  "Legal predictability — one signature valid in every EU jurisdiction",
-  "Trust signal for enterprises searching for compliance solutions",
-  "Direct alignment with Article 50 transparency obligations",
+  "A voluntary framework for documenting transparency practices",
+  "A common reference point across EU jurisdictions",
+  "A structured basis for provider and deployer implementation work",
+  "A public signal of stated practices — not automatic conformity",
+  "Technical guidance relevant to Article 50 transparency obligations",
 ];
 
 const FAQ_ITEMS = [
@@ -98,23 +98,23 @@ const FAQ_ITEMS = [
   },
   {
     q: "When does Article 50 take effect?",
-    a: "August 2, 2026 — now in force. All AI systems that generate synthetic audio, image, video, or text content must comply with transparency obligations — including marking, watermarking, and metadata disclosure.",
+    a: "Article 50 became applicable on 2 August 2026. Its duties vary by actor and content type, and the Regulation includes scope conditions, technical-feasibility language and exceptions.",
   },
   {
     q: "Who must comply?",
-    a: "Any provider or deployer of generative AI systems that operate in the EU market, whether based in the EU or serving EU users. This includes US, UK, and Asia-Pacific companies with EU customers.",
+    a: "Specified providers and deployers within the Regulation's territorial and material scope. Applicability depends on role, system, output, market connection and statutory exceptions.",
   },
   {
     q: "What are the penalties?",
-    a: "Up to €35 million or 7% of global annual turnover (whichever is higher) for prohibited AI practices. Up to €15 million or 3% for other violations. Up to €7.5 million or 1% for incorrect information.",
+    a: "Article 99 contains multiple penalty tiers. The applicable maximum depends on the breached provision and entity, with special rules for undertakings and SMEs. Obtain case-specific legal advice.",
   },
   {
     q: "How does Apex PSI help?",
-    a: "Apex PSI provides a single verification architecture that satisfies Articles 4, 12, 13, 14, and 50 of the EU AI Act — at $0.006 per verification. No blockchain wallet required. No infrastructure to maintain.",
+    a: "APEX PSI provides provenance, integrity and evidence controls that may support parts of a compliance programme. It does not by itself satisfy an Article, confer conformity or replace organisational and legal controls.",
   },
   {
     q: "What is the Code of Practice?",
-    a: "The Code of Practice on Transparency of AI-Generated Content was published June 2026. Providers and deployers can sign to demonstrate compliance with Article 50. Apex PSI is eligible to sign as a technology provider of marking and detection solutions.",
+    a: "The European Commission's transparency materials should be read directly for current status, eligibility and legal effect. APEX PSI does not claim signatory, approved-vendor or regulator-endorsed status.",
   },
 ];
 
@@ -171,7 +171,8 @@ export default function EUAIAct() {
                   <span className="text-gold-gradient">Compliance</span>
                 </h1>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Map every EU AI Act article to Apex PSI. One protocol. One verification. Every obligation satisfied.
+                  Review how APEX PSI controls may support selected obligations — and where separate legal,
+                  organisational and technical controls are required.
                 </p>
               </motion.div>
 
@@ -184,7 +185,7 @@ export default function EUAIAct() {
               >
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <ShieldCheck className="h-5 w-5 text-gold" />
-                  <span className="text-sm font-bold text-gold tracking-wider">ARTICLE 50 IS NOW IN FORCE</span>
+                  <span className="text-sm font-bold text-gold tracking-wider">ARTICLE 50 APPLICABLE SINCE 2 AUGUST 2026</span>
                 </div>
                 <div className="flex justify-center gap-4 sm:gap-6 mb-4">
                   {[
@@ -200,7 +201,7 @@ export default function EUAIAct() {
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Live since August 2, 2026 — all AI-generated content must be marked, watermarked, and metadata-labeled.
+                  Duties vary by actor, content type, technical feasibility and statutory exceptions.
                 </p>
               </motion.div>
 
@@ -274,7 +275,7 @@ export default function EUAIAct() {
                     <span className="text-gold-gradient">→ Apex PSI</span>
                   </h2>
                   <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">
-                    One protocol satisfies every transparency and audit obligation in the EU AI Act.
+                    Technical mappings are informational and do not establish compliance or conformity.
                   </p>
                 </div>
 
@@ -336,8 +337,8 @@ export default function EUAIAct() {
                 <div className="text-center mb-8">
                   <Badge variant="outline" className="border-gold/30 text-gold mb-4">COST ANALYSIS</Badge>
                   <h2 className="text-2xl sm:text-3xl font-black">
-                    <span className="text-chrome-gradient">$0.006</span>{" "}
-                    <span className="text-gold-gradient">vs The World</span>
+                    <span className="text-chrome-gradient">Evidence Options</span>{" "}
+                    <span className="text-gold-gradient">Compared Carefully</span>
                   </h2>
                 </div>
 
@@ -387,14 +388,14 @@ export default function EUAIAct() {
                   <div className="flex items-center gap-3 mb-4">
                     <ShieldCheck className="h-6 w-6 text-gold" />
                     <div>
-                      <h3 className="text-lg font-bold text-foreground">Code of Practice Signatory</h3>
+                      <h3 className="text-lg font-bold text-foreground">Code of Practice Reference</h3>
                       <p className="text-xs text-muted-foreground">EU AI Office — Transparency of AI-Generated Content</p>
                     </div>
                   </div>
                   <p className="text-sm text-foreground/80 mb-4 leading-relaxed">
-                    Apex PSI is eligible to sign the EU Code of Practice on Transparency of AI-Generated Content as a
-                    <strong className="text-gold"> technology provider of marking and detection solutions</strong>.
-                    Our protocol provides the marking, provenance, watermarking, and detection infrastructure that Article 50 requires.
+                    The EU transparency materials are a useful reference for implementation. APEX PSI does not claim
+                    signatory, approved-vendor, certification or regulator-endorsed status. Its controls must be assessed
+                    within each provider or deployer&apos;s actual legal and technical context.
                   </p>
                   <div className="grid sm:grid-cols-2 gap-2 mb-6">
                     {CODE_OF_PRACTICE_BENEFITS.map((b, i) => (
@@ -407,7 +408,7 @@ export default function EUAIAct() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Button variant="hero" asChild>
                       <a href="https://digital-strategy.ec.europa.eu/en/faqs/signing-code-practice-transparency-ai-generated-content" target="_blank" rel="noopener noreferrer">
-                        Sign the Code <ExternalLink className="h-4 w-4 ml-1" />
+                        Read the EU source <ExternalLink className="h-4 w-4 ml-1" />
                       </a>
                     </Button>
                     <Button variant="heroOutline" asChild>
@@ -466,11 +467,11 @@ export default function EUAIAct() {
                 className="rounded-xl border border-gold/20 bg-gold/5 p-6 sm:p-8 text-center"
               >
                 <h3 className="text-lg font-bold text-foreground mb-2">
-                  Article 50 Is In Force — <span className="text-gold-gradient">Since August 2, 2026</span>
+                  Article 50 Applies — <span className="text-gold-gradient">Technical Evidence Available</span>
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
-                  Every AI-generated content piece must be marked, watermarked, and metadata-labeled.
-                  Apex PSI does it all — at $0.006 per verification.
+                  Use APEX PSI to create and check technical provenance evidence. Legal compliance depends on your role,
+                  content, system, controls and applicable exceptions.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Button variant="hero" asChild>
@@ -485,7 +486,7 @@ export default function EUAIAct() {
               <p className="text-xs text-center text-muted-foreground/50 mt-6 italic">
                 This page provides general information about EU AI Act compliance obligations.
                 It does not constitute legal advice. Consult qualified legal counsel for jurisdiction-specific guidance.
-                Last updated July 2026.
+                Last updated 6 August 2026.
               </p>
             </div>
           </section>

@@ -1,7 +1,8 @@
 {
   "name": "APEX PSI — Verifiable AI Governance",
   "short_name": "APEX PSI",
-  "description": "EU AI Act Compliance Platform — Provable Stateful Integrity",
+  "description": "Open provenance and integrity tools for AI governance evidence",
+  "id": "/?source=apex-psi-app",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -79,6 +79,7 @@ import Gallery from "./pages/Gallery";
 import ChatWidget from "@/components/chat/ChatWidget";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import FeedbackWidget from "@/components/FeedbackWidget";
+import CanonicalDomainRedirect from "@/components/CanonicalDomainRedirect";
 import { usePageTracker } from "@/hooks/use-page-tracker";
 
 const queryClient = new QueryClient();
@@ -96,6 +97,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
+            <CanonicalDomainRedirect />
             <ScrollToTop />
             <PageTracker />
             <Routes>
