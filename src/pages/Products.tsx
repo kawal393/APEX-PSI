@@ -276,7 +276,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
 
 
         {/* Hero */}
-        <header className={embedded ? "pt-24 md:pt-28 pb-12 px-4" : "pt-28 md:pt-36 pb-12 px-4"}>
+        <header className={embedded ? "pt-10 md:pt-14 pb-12 px-4" : "pt-12 md:pt-16 pb-12 px-4"}>
           <div className="container mx-auto max-w-7xl text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -288,7 +288,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
               </span>
               <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[0.95] mb-5">
                 <span className="text-gold-gradient">APEX PSI</span>
-                <span className="block text-chrome-gradient">Open AI Governance Evidence Protocol</span>
+                <span className="block text-chrome-gradient">The Cryptographic Open-Standard Evidence Protocol for AI Governance</span>
               </h1>
               <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
                 One open protocol for recording declared AI actions and human observations as verifiable evidence.
