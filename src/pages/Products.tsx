@@ -288,7 +288,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
               </span>
               <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[0.95] mb-5">
                 <span className="text-gold-gradient">APEX PSI</span>
-                <span className="block text-chrome-gradient">The Cryptographic Open-Standard Evidence Protocol for AI Governance</span>
+                <span className="block text-chrome-gradient">World’s First Cryptographic Open-Standard Evidence Protocol for AI Governance</span>
               </h1>
               <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
                 One open protocol for recording declared AI actions and human observations as verifiable evidence.
