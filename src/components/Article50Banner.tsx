@@ -50,15 +50,15 @@ const Article50Banner = () => {
           <div className="flex flex-col lg:flex-row lg:items-center gap-5">
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-gold mb-2 inline-flex items-center gap-2">
-                <Scale className="h-3.5 w-3.5" /> EU AI Act Article 50 · In force
+                <Scale className="h-3.5 w-3.5" /> EU AI Act Article 50 · Applicable since 2 August 2026
               </p>
               <h2 className="text-xl sm:text-2xl font-black text-foreground leading-tight mb-2">
-                Article 50 is law. Get a machine-verifiable compliance receipt.
+                Produce machine-verifiable evidence for Article 50 workflows.
               </h2>
               <p className="text-sm text-muted-foreground max-w-xl">
-                Transparency obligations for AI-generated content took effect on 2 August 2026.
-                APEX PSI issues a signed, independently checkable receipt for every marked
-                artefact — no trust in us required.
+                Article 50 transparency duties apply to specified providers and deployers, subject to the
+                Regulation&apos;s scope and exceptions. APEX PSI can issue a signed, independently checkable
+                technical receipt; it does not determine legal compliance.
               </p>
             </div>
 
