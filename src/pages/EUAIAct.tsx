@@ -171,7 +171,8 @@ export default function EUAIAct() {
                   <span className="text-gold-gradient">Compliance</span>
                 </h1>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Map every EU AI Act article to Apex PSI. One protocol. One verification. Every obligation satisfied.
+                  Review how APEX PSI controls may support selected obligations — and where separate legal,
+                  organisational and technical controls are required.
                 </p>
               </motion.div>
 
@@ -184,7 +185,7 @@ export default function EUAIAct() {
               >
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <ShieldCheck className="h-5 w-5 text-gold" />
-                  <span className="text-sm font-bold text-gold tracking-wider">ARTICLE 50 IS NOW IN FORCE</span>
+                  <span className="text-sm font-bold text-gold tracking-wider">ARTICLE 50 APPLICABLE SINCE 2 AUGUST 2026</span>
                 </div>
                 <div className="flex justify-center gap-4 sm:gap-6 mb-4">
                   {[
@@ -200,7 +201,7 @@ export default function EUAIAct() {
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Live since August 2, 2026 — all AI-generated content must be marked, watermarked, and metadata-labeled.
+                  Duties vary by actor, content type, technical feasibility and statutory exceptions.
                 </p>
               </motion.div>
 
@@ -274,7 +275,7 @@ export default function EUAIAct() {
                     <span className="text-gold-gradient">→ Apex PSI</span>
                   </h2>
                   <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">
-                    One protocol satisfies every transparency and audit obligation in the EU AI Act.
+                    Technical mappings are informational and do not establish compliance or conformity.
                   </p>
                 </div>
 
@@ -336,8 +337,8 @@ export default function EUAIAct() {
                 <div className="text-center mb-8">
                   <Badge variant="outline" className="border-gold/30 text-gold mb-4">COST ANALYSIS</Badge>
                   <h2 className="text-2xl sm:text-3xl font-black">
-                    <span className="text-chrome-gradient">$0.006</span>{" "}
-                    <span className="text-gold-gradient">vs The World</span>
+                    <span className="text-chrome-gradient">Evidence Options</span>{" "}
+                    <span className="text-gold-gradient">Compared Carefully</span>
                   </h2>
                 </div>
 
@@ -387,14 +388,14 @@ export default function EUAIAct() {
                   <div className="flex items-center gap-3 mb-4">
                     <ShieldCheck className="h-6 w-6 text-gold" />
                     <div>
-                      <h3 className="text-lg font-bold text-foreground">Code of Practice Signatory</h3>
+                      <h3 className="text-lg font-bold text-foreground">Code of Practice Reference</h3>
                       <p className="text-xs text-muted-foreground">EU AI Office — Transparency of AI-Generated Content</p>
                     </div>
                   </div>
                   <p className="text-sm text-foreground/80 mb-4 leading-relaxed">
-                    Apex PSI is eligible to sign the EU Code of Practice on Transparency of AI-Generated Content as a
-                    <strong className="text-gold"> technology provider of marking and detection solutions</strong>.
-                    Our protocol provides the marking, provenance, watermarking, and detection infrastructure that Article 50 requires.
+                    The EU transparency materials are a useful reference for implementation. APEX PSI does not claim
+                    signatory, approved-vendor, certification or regulator-endorsed status. Its controls must be assessed
+                    within each provider or deployer&apos;s actual legal and technical context.
                   </p>
                   <div className="grid sm:grid-cols-2 gap-2 mb-6">
                     {CODE_OF_PRACTICE_BENEFITS.map((b, i) => (
@@ -407,7 +408,7 @@ export default function EUAIAct() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Button variant="hero" asChild>
                       <a href="https://digital-strategy.ec.europa.eu/en/faqs/signing-code-practice-transparency-ai-generated-content" target="_blank" rel="noopener noreferrer">
-                        Sign the Code <ExternalLink className="h-4 w-4 ml-1" />
+                        Read the EU source <ExternalLink className="h-4 w-4 ml-1" />
                       </a>
                     </Button>
                     <Button variant="heroOutline" asChild>
@@ -466,11 +467,11 @@ export default function EUAIAct() {
                 className="rounded-xl border border-gold/20 bg-gold/5 p-6 sm:p-8 text-center"
               >
                 <h3 className="text-lg font-bold text-foreground mb-2">
-                  Article 50 Is In Force — <span className="text-gold-gradient">Since August 2, 2026</span>
+                  Article 50 Applies — <span className="text-gold-gradient">Technical Evidence Available</span>
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
-                  Every AI-generated content piece must be marked, watermarked, and metadata-labeled.
-                  Apex PSI does it all — at $0.006 per verification.
+                  Use APEX PSI to create and check technical provenance evidence. Legal compliance depends on your role,
+                  content, system, controls and applicable exceptions.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Button variant="hero" asChild>
@@ -485,7 +486,7 @@ export default function EUAIAct() {
               <p className="text-xs text-center text-muted-foreground/50 mt-6 italic">
                 This page provides general information about EU AI Act compliance obligations.
                 It does not constitute legal advice. Consult qualified legal counsel for jurisdiction-specific guidance.
-                Last updated July 2026.
+                Last updated 6 August 2026.
               </p>
             </div>
           </section>
