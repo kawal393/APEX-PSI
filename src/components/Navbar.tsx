@@ -86,7 +86,7 @@ const navLinks = [
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/90 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur-xl">
       <div className="container mx-auto max-w-7xl px-4">
         {/* Desktop */}
         <div className="hidden lg:flex items-center justify-between h-16 gap-6">
