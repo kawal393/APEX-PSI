@@ -236,8 +236,38 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-trustworthy-vendor-agnostic-duzck4</loc>
+    <lastmod>2026-08-06T03:06:05.736Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-http-header-for-transparency-flg2yu</loc>
+    <lastmod>2026-08-06T03:06:05.736Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/opentimestamps-for-permanent-ai-decision-records-tnzkq6</loc>
+    <lastmod>2026-08-06T03:06:05.736Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-policy-to-cryptographic-evidence-8hglyp</loc>
+    <lastmod>2026-08-06T00:06:02.395Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/eu-ai-act-ai-audit-trail-requirements-for-compliance-cl78sj</loc>
+    <lastmod>2026-08-06T00:06:02.395Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/ai-governance-technical-definition-for-2026-qq2ukq</loc>
-    <lastmod>2026-08-06T00:05:21.741Z</lastmod>
+    <lastmod>2026-08-06T00:06:02.395Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
