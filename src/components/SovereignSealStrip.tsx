@@ -5,9 +5,9 @@ import ApexVerifiedStamp from "./ApexVerifiedStamp";
 const TRUTHS = [
   "We do not judge content. We anchor its existence at a point in time.",
   "A seal proves the file existed — not that the file is true.",
-  "Once anchored, it cannot be quietly rewritten later.",
-  "Three nodes. One ledger. Zero permission.",
-  "Bitcoin secures the timestamp. Mathematics secures the record.",
+  "Hash chaining makes later rewriting detectable; it does not prevent deletion.",
+  "A signed receipt identifies a key, not the truth of a claim.",
+  "A confirmed OpenTimestamps proof can establish that a digest existed by a Bitcoin block.",
 ];
 
 // Approx live Bitcoin block height (auto-advances ~1 per 10 min from a known anchor).
@@ -50,10 +50,10 @@ const SovereignSealStrip = () => {
           {/* Left: the inevitable truth */}
           <div>
             <p className="text-[10px] md:text-xs font-mono uppercase tracking-[0.35em] text-gold/80 mb-4">
-              The Sovereign Seal · Operational
+               Integrity Seal · Operational
             </p>
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-black leading-[0.95] tracking-tight mb-6">
-              <span className="text-chrome-gradient">A permanent record of</span>
+               <span className="text-chrome-gradient">A verifiable record of</span>
               <br />
               <span className="text-gold-gradient">what existed, and when.</span>
             </h2>
