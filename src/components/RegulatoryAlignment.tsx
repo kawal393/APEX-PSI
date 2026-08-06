@@ -5,10 +5,10 @@ const regulations = [
   {
     name: "EU AI Act",
     jurisdiction: "European Union",
-    status: "enforcing",
+    status: "tracking",
     date: "Aug 2, 2026",
     flag: "🇪🇺",
-    detail: "High-risk AI obligations effective",
+    detail: "Article 50 applies; other obligations follow the Act's phased timeline",
   },
   {
     name: "NIST AI RMF",
@@ -35,20 +35,20 @@ const regulations = [
     detail: "Digital personal data protection",
   },
   {
-    name: "C-27 (AIDA)",
+    name: "Federal AI policy",
     jurisdiction: "Canada",
     status: "tracking",
     date: "2026",
     flag: "🇨🇦",
-    detail: "Artificial Intelligence & Data Act",
+    detail: "Policy landscape tracked; Bill C-27 did not become law",
   },
   {
-    name: "AI Safety Bill",
+    name: "AI regulation framework",
     jurisdiction: "United Kingdom",
     status: "tracking",
     date: "Active",
     flag: "🇬🇧",
-    detail: "Pro-innovation regulation framework",
+    detail: "Sector-led framework and developing legislation",
   },
 ];
 
@@ -75,10 +75,10 @@ const RegulatoryAlignment = () => {
             </p>
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-            One Protocol. Every Jurisdiction.
+            One Evidence Layer. Jurisdiction-Specific Assessment.
           </h2>
           <p className="text-muted-foreground text-sm max-w-xl mx-auto">
-            PSI Protocol maps to regulatory frameworks across six major jurisdictions
+            Informational mappings only; they are not legal opinions or certifications
           </p>
         </motion.div>
 

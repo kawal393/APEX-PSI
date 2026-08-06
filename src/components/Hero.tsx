@@ -35,18 +35,18 @@ const Hero = () => {
           </h2>
 
           <p className="text-lg sm:text-xl md:text-2xl text-foreground/90 max-w-3xl mx-auto mb-4 font-semibold">
-            One open standard. Two pillars. Zero trust required.
+            One open protocol. Two evidence workflows. Independent verification.
           </p>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-10">
-            APEX PSI proves what <span className="text-chrome-gradient font-bold">AI</span> did.
-            APEX PRAMAAN proves what <span className="text-gold-gradient font-bold">humans</span> saw.{" "}
+            APEX PSI records declared <span className="text-chrome-gradient font-bold">AI</span> actions.
+            APEX PRAMAAN records what <span className="text-gold-gradient font-bold">humans</span> report witnessing.{" "}
             <Link
               to="/verify?hash=4606e9eee90b89d2fcf9d47c21fb00e558f60bb3c6ddf5955c2d005ae0e3ca7f"
               className="font-bold text-foreground underline decoration-gold/60 decoration-2 underline-offset-4 hover:text-gold transition-colors"
             >
               Mathematically
             </Link>
-            {" "}— see a real sealed record verify live. Permanently. On any phone.
+            {" "}— see a sealed record verify live. The seal proves integrity, not the truth of its claims.
           </p>
 
 

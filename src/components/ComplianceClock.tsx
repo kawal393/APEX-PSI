@@ -35,7 +35,7 @@ const ComplianceClock = () => {
         <div className="flex flex-col items-center gap-4">
           <div className="flex items-center gap-2 text-[10px] sm:text-xs font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-gold text-center">
             <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-pulse shrink-0" />
-            <span>EU AI Act Article 50 — In Force · Compliance Clock</span>
+            <span>EU AI Act Article 50 — Applicable · Timeline</span>
             <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-pulse shrink-0" />
           </div>
 
@@ -58,22 +58,20 @@ const ComplianceClock = () => {
           </div>
 
           <p className="font-mono text-xs sm:text-sm text-gold/80 tabular-nums">
-            {totalSeconds.toLocaleString()} seconds since obligations took effect
+             {totalSeconds.toLocaleString()} seconds since the 2 August 2026 application date
           </p>
 
           <div className="text-center space-y-1">
             <p className="text-xs sm:text-sm text-foreground font-semibold">
-              August 2, 2026 — Article 50 — Transparency obligations for synthetic content are live
+               2 August 2026 — Article 50 transparency obligations became applicable
             </p>
             <p className="text-[10px] sm:text-xs text-muted-foreground">
-              Maximum penalties: <span className="text-destructive font-bold">€35,000,000</span> or{" "}
-              <span className="text-destructive font-bold">7% of global annual turnover</span>
-              <span className="text-muted-foreground/60"> — EU AI Act Art. 99</span>
+               Penalties depend on the breached provision. Article 99 sets multiple tiers and SME-specific limits.
             </p>
             <p className="text-[10px] sm:text-xs text-foreground/70 max-w-2xl mx-auto pt-2">
-              APEX PSI is compliant with Section 1 of the EU Code of Practice on Transparency of AI-Generated Content.
-              In-band signed metadata via C2PA Content Credentials.{" "}
-              <Link to="/eu-ai-act" className="text-gold hover:underline font-semibold">See /eu-ai-act for technical proof.</Link>
+              APEX PSI documents technical controls that may support Article 50 workflows. This is not a regulator
+              endorsement, conformity assessment, or legal opinion.{" "}
+              <Link to="/eu-ai-act" className="text-gold hover:underline font-semibold">Review the control mapping and limitations.</Link>
             </p>
           </div>
 
