@@ -214,9 +214,9 @@ root        = fold(parent, leaves)   // odd tail promoted unchanged`}
 
         <Section id="inband" n="05" title="In-band embedding (C2PA-compatible)">
           <p className="text-muted-foreground mb-5">
-            Article 50 requires marking to be machine-readable and to survive normal handling. APEX PSI writes the
-            receipt into the file itself, using the same container conventions as C2PA, so existing C2PA-aware tooling
-            can locate the segment.
+            Article 50 describes machine-readable marking subject to technical feasibility. APEX PSI can write a
+            receipt into supported files using selected container conventions associated with C2PA. This does not claim
+            C2PA certification or interoperability with every C2PA-aware product.
           </p>
           <div className="rounded-lg border border-border bg-card/40 px-5 py-3">
             <Row k="JPEG / PNG" v="APP11 / JUMBF box — C2PA-compatible container placement" />
@@ -264,9 +264,9 @@ Compliance-Receipt: v=1; id=psi_01J...; alg=Ed25519+ML-DSA-65;
           <div className="rounded-lg border border-border bg-card/40 px-5 py-3">
             <Row k="Machine-readable" v="JCS-canonical JSON in APP11/JUMBF box or Compliance-Receipt header" />
             <Row k="Detectable" v="deterministic digest match — no ML classifier, no probabilistic guess" />
-            <Row k="Interoperable" v="C2PA container conventions; open IETF drafts; MIT/Apache reference code" />
+            <Row k="Interoperability evidence" v="Documented container conventions, individual IETF submissions and open reference code; independent compatibility testing remains required" />
             <Row k="Robust" v="hybrid Ed25519 + FIPS 204 ML-DSA-65; optional perceptual watermark" />
-            <Row k="Reliable" v="verification is offline and stateless; zero dependency on APEX availability" />
+            <Row k="Reliability evidence" v="Documented receipts can be checked offline with the verifier and archived public key; availability and key-distribution risks remain" />
             <Row k="Art. 50(4) disclosure" v="deepfake / synthetic flag carried as a predicate in receipt context" />
             <Row k="Art. 12 record-keeping" v="append-only ledger, Merkle inclusion proof per entry" />
             <Row k="Art. 14 human oversight" v="predicate EU_ART_14 recorded at decision time, not reconstructed later" />
@@ -288,8 +288,8 @@ Compliance-Receipt: v=1; id=psi_01J...; alg=Ed25519+ML-DSA-65;
           <div className="rounded-lg border border-border bg-card/40 px-5 py-3">
             <Row k="Ledger" v="append-only rows, each carrying prior digest — tamper-evident chain" />
             <Row k="Batching" v="periodic Merkle root over all receipts in the window" />
-            <Row k="Bitcoin" v="OpenTimestamps commitment of the Merkle root; block height recorded" />
-            <Row k="Polygon" v="periodic root write for low-latency public readback" />
+            <Row k="Bitcoin" v="OpenTimestamps proof remains pending until a Bitcoin attestation is independently verified" />
+            <Row k="Other chains" v="No chain is treated as confirmed without independently verifiable transaction evidence" />
             <Row k="Mirror" v="audit-mirror JSONL export — anyone may replicate the full ledger" />
             <Row k="Liveness" v="lattice heartbeat across independent nodes" />
           </div>
@@ -329,7 +329,7 @@ Compliance-Receipt: v=1; id=psi_01J...; alg=Ed25519+ML-DSA-65;
               <strong>Receipt forgery.</strong> Requires forging both Ed25519 and ML-DSA-65 over the same message.
             </Status>
             <Status state="live">
-              <strong>Ledger rewriting.</strong> Broken by hash chaining plus external Bitcoin/Polygon commitments.
+              <strong>Ledger rewriting.</strong> Hash chaining makes modification detectable when a trusted checkpoint or confirmed external timestamp is available.
             </Status>
             <Status state="live">
               <strong>Registrar disappearance.</strong> Verification is offline. If APEX ceases to exist, every issued
@@ -340,8 +340,8 @@ Compliance-Receipt: v=1; id=psi_01J...; alg=Ed25519+ML-DSA-65;
               windows in the anchor. Not eliminated. This is the single highest-value target in the system and we say so.
             </Status>
             <Status state="no">
-              <strong>Lying at the source.</strong> If a caller declares false context, the seal faithfully records the
-              lie. Garbage in, cryptographically permanent garbage out.
+               <strong>Lying at the source.</strong> If a caller declares false context, the seal faithfully records the
+               false claim. Cryptography does not validate source assertions.
             </Status>
             <Status state="no">
               <strong>Analogue re-capture.</strong> Photographing a screen produces genuinely new bytes with a genuinely
