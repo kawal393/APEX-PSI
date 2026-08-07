@@ -236,6 +236,66 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/ai-output-provenance-content-credentials-c2pa-63tvii</loc>
+    <lastmod>2026-08-06T21:06:09.258Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-http-header-lk811f</loc>
+    <lastmod>2026-08-06T21:06:09.258Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-trustworthy-ai-without-vendor-trust-a0o0j3</loc>
+    <lastmod>2026-08-06T21:06:09.258Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-policy-to-cryptographic-evidence-6lr5mf</loc>
+    <lastmod>2026-08-06T18:05:21.027Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/opentimestamps-permanent-ai-decision-records-iy3uds</loc>
+    <lastmod>2026-08-06T15:06:11.411Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/cryptographic-truth-verifying-ai-system-actions-uofo4o</loc>
+    <lastmod>2026-08-06T15:06:11.411Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-compliance-ietf-draft-singh-psi-00-gwoxou</loc>
+    <lastmod>2026-08-06T15:06:11.411Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-a-new-era-sjn8q0</loc>
+    <lastmod>2026-08-06T12:06:06.634Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-guide-ogzgh8</loc>
+    <lastmod>2026-08-06T12:06:06.634Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-policy-to-cryptographic-evidence-bxpktm</loc>
+    <lastmod>2026-08-06T12:06:06.634Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-trustworthy-vendor-agnostic-duzck4</loc>
     <lastmod>2026-08-06T03:06:05.736Z</lastmod>
     <changefreq>weekly</changefreq>
