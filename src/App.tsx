@@ -72,8 +72,6 @@ import Regulator from "./pages/Regulator";
 import Cite from "./pages/Cite";
 import WitnessWall from "./pages/WitnessWall";
 import Gallery from "./pages/Gallery";
-import Integrations from "./pages/Integrations";
-import MCP from "./pages/MCP";
 
 
 
@@ -199,8 +197,6 @@ const App = () => (
               <Route path="/cite" element={<Cite />} />
               <Route path="/witness-wall" element={<WitnessWall />} />
               <Route path="/gallery" element={<Gallery />} />
-              <Route path="/integrations" element={<Integrations />} />
-              <Route path="/mcp" element={<MCP />} />
               
               
               

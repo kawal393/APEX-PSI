@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Helmet } from "react-helmet-async";
-import OneClickInstall from "@/components/sdk/OneClickInstall";
 
 const SDK = () => {
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
@@ -243,8 +242,6 @@ async function generateAIResponse(prompt: string) {
             </Badge>
           </div>
         </motion.div>
-
-        <OneClickInstall />
 
         {/* Quick Start */}
         <Card className="bg-gallows-surface border-gallows-border mb-8">

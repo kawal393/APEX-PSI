@@ -4,7 +4,6 @@ import { ArrowRight, Shield, Globe, Clock, Zap, Camera, FileText } from "lucide-
 import { Link } from "react-router-dom";
 import apexLogo from "@/assets/apex-logo.png";
 import PWAInstallButton from "@/components/PWAInstallButton";
-import { HERO_INTEGRATIONS } from "@/components/integrations/integrationsData";
 
 const Hero = () => {
   return (
@@ -108,20 +107,6 @@ const Hero = () => {
             <Button variant="heroOutline" size="sm" asChild>
               <Link to="/verify"><Zap className="mr-1 h-3.5 w-3.5" /> Verify a Receipt</Link>
             </Button>
-          </div>
-
-          {/* Integrations row */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground">Integrates with:</span>
-            {HERO_INTEGRATIONS.map((i) => (
-              <Link
-                key={i.slug}
-                to={`/integrations#${i.slug}`}
-                className="text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-muted-foreground border border-border/60 rounded-full px-2.5 py-1 bg-background/60 hover:text-gold hover:border-gold/50 transition-colors"
-              >
-                {i.label}
-              </Link>
-            ))}
           </div>
 
           <p className="mt-8 text-[10px] sm:text-xs font-mono tracking-[0.25em] uppercase text-muted-foreground/70">

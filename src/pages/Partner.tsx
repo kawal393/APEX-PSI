@@ -6,7 +6,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PartnerHero from "@/components/partner/PartnerHero";
 import PartnerHowItWorks from "@/components/partner/PartnerHowItWorks";
-import FeaturedPartners from "@/components/partner/FeaturedPartners";
 
 const Partner = () => {
   const { user } = useAuth();
@@ -28,7 +27,6 @@ const Partner = () => {
       <Navbar />
       <PartnerHero isPartner={isPartner} />
       <PartnerHowItWorks />
-      <FeaturedPartners />
       <Footer />
     </div>
   );
