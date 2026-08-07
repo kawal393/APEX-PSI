@@ -8,6 +8,7 @@ import { Badge as UiBadge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EmbedCodeGenerator from "@/components/EmbedCodeGenerator";
+import BadgeEmbedSection from "@/components/badge/BadgeEmbedSection";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -239,6 +240,8 @@ const Badge = () => {
                 </div>
               </motion.div>
             </div>
+
+            <BadgeEmbedSection />
 
             {/* Embed Widgets Section */}
             <div className="grid lg:grid-cols-2 gap-8 mt-12">

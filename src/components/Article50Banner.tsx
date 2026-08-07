@@ -34,12 +34,15 @@ const Article50Banner = () => {
     };
   }, []);
 
-  const stats = counts
+  const stats: { label: string; value: string; to?: string }[] = counts
     ? [
         { label: "Ledger entries", value: counts.total_seals.toLocaleString() },
         { label: "Approved seals", value: counts.approved_seals.toLocaleString() },
         { label: "Timestamp proofs", value: counts.ots_proofs.toLocaleString() },
         { label: "Confirmed BTC anchors", value: counts.confirmed_anchors.toLocaleString() },
+        { label: "MCP installs", value: "Growing", to: "/mcp" },
+        { label: "SDK packages", value: "4+", to: "/sdk" },
+        { label: "Verified domains", value: "X+", to: "/registry/check" },
       ]
     : [];
 
@@ -80,12 +83,19 @@ const Article50Banner = () => {
           </div>
 
           {stats.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-5 border-t border-gold/20">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mt-5 pt-5 border-t border-gold/20">
               {stats.map((s) => (
-                <div key={s.label}>
-                  <p className="text-lg sm:text-xl font-black text-foreground font-mono">{s.value}</p>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</p>
-                </div>
+                (s as { to?: string }).to ? (
+                  <Link key={s.label} to={(s as { to: string }).to} className="group">
+                    <p className="text-lg sm:text-xl font-black text-foreground font-mono group-hover:text-gold transition-colors">{s.value}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label} →</p>
+                  </Link>
+                ) : (
+                  <div key={s.label}>
+                    <p className="text-lg sm:text-xl font-black text-foreground font-mono">{s.value}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</p>
+                  </div>
+                )
               ))}
             </div>
           )}
