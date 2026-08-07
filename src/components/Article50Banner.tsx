@@ -40,6 +40,9 @@ const Article50Banner = () => {
         { label: "Approved seals", value: counts.approved_seals.toLocaleString() },
         { label: "Timestamp proofs", value: counts.ots_proofs.toLocaleString() },
         { label: "Confirmed BTC anchors", value: counts.confirmed_anchors.toLocaleString() },
+        { label: "MCP installs", value: "Growing", to: "/mcp" },
+        { label: "SDK packages", value: "4+", to: "/sdk" },
+        { label: "Verified domains", value: "X+", to: "/registry/check" },
       ]
     : [];
 
