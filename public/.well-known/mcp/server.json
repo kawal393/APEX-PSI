@@ -1,0 +1,31 @@
+{
+  "schema_version": "2025-06-18",
+  "name": "apex-psi",
+  "title": "APEX PSI",
+  "version": "0.1.0",
+  "description": "Cryptographic open-standard evidence protocol for AI governance. Verify SHA-256 hashes, browse ledger attestations, read the protocol reference.",
+  "homepage": "https://ai-governance-standard.com",
+  "documentation": "https://ai-governance-standard.com/integrations",
+  "install": {
+    "command": "npx",
+    "args": ["-y", "apex-psi-mcp"]
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp"
+    }
+  ],
+  "authorization": {
+    "type": "oauth2",
+    "authorization_servers": ["https://qhtntebpcribjiwrdtdd.supabase.co/auth/v1"],
+    "dynamic_client_registration": true
+  },
+  "tools": [
+    { "name": "verify_hash", "description": "Look up a SHA-256 hash in the APEX PSI evidence ledger." },
+    { "name": "list_attestations", "description": "List recent ledger attestations, newest first." },
+    { "name": "ledger_stats", "description": "Counts of attestations, exceptions and public attestations." },
+    { "name": "protocol_info", "description": "Protocol reference: canonicalization, signatures, drafts, anchoring." }
+  ],
+  "license": "MIT"
+}
