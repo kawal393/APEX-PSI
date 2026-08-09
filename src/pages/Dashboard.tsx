@@ -60,6 +60,7 @@ const Dashboard = () => {
   const [showRetake, setShowRetake] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [entitlements, setEntitlements] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -74,24 +75,35 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (searchParams.get("checkout") === "success") {
-      toast.success("Payment successful! Refreshing your subscription...");
-      checkSubscription();
+      const sessionId = searchParams.get("session_id");
+      if (!sessionId) return;
+      void supabase.functions.invoke("finalize-checkout", { body: { session_id: sessionId } }).then(({ data, error }) => {
+        if (error) {
+          toast.error("Payment received, but activation is still processing. Use Refresh shortly.");
+          return;
+        }
+        toast.success(`${String(data?.service_key ?? "Service").replaceAll("_", " ")} activated.`);
+        void Promise.all([checkSubscription(), fetchData()]);
+        navigate("/dashboard", { replace: true });
+      });
     }
-  }, [searchParams]);
+  }, [searchParams, navigate]);
 
   const fetchData = async () => {
     if (!user) return;
-    const [crRes, vhRes, qRes, subRes] = await Promise.all([
+    const [crRes, vhRes, qRes, subRes, entitlementRes] = await Promise.all([
       supabase.from("compliance_results").select("*").eq("user_id", user.id).maybeSingle(),
       supabase.from("verification_history").select("*").eq("user_id", user.id).order("article_number"),
       supabase.from("questionnaire_responses").select("*").eq("user_id", user.id).maybeSingle(),
       supabase.from("subscriptions").select("verifications_used, verifications_limit").eq("user_id", user.id).maybeSingle(),
+      supabase.from("service_entitlements" as any).select("service_key,status,quantity,ends_at").eq("user_id", user.id),
     ]);
     setCompliance(crRes.data);
     setVerifications(vhRes.data || []);
     setQuestionnaire(qRes.data);
     setQLoaded(true);
     setShowRetake(false);
+    setEntitlements(entitlementRes.data || []);
     setUpgradeReason(null);
 
     if (subRes.data) {
@@ -235,6 +247,19 @@ const Dashboard = () => {
       <OnboardingTour />
       <main className="container mx-auto max-w-6xl px-4 py-8">
         <h1 className="text-xl font-bold text-gold-gradient mb-6">Compliance Dashboard</h1>
+
+        {entitlements.length > 0 && (
+          <section className="mb-6 border-y border-border py-4" aria-label="Active services">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground mb-3">Activated services</p>
+            <div className="flex flex-wrap gap-2">
+              {entitlements.map((item) => (
+                <span key={item.service_key} className="border border-compliant/30 bg-compliant/10 px-3 py-2 text-xs text-compliant">
+                  {String(item.service_key).replaceAll("_", " ")} · {item.status}{item.quantity > 1 ? ` · ${item.quantity} credits` : ""}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Subscription Card */}
         <div className={`rounded-xl border p-6 mb-6 ${isFree ? "border-gold/20 bg-card" : "border-border bg-card"}`}>

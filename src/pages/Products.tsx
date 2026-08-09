@@ -16,6 +16,8 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { CHECKOUT } from "@/lib/commerce";
 import { SITE_URL } from "@/lib/site";
+import ServiceCheckoutButton from "@/components/ServiceCheckoutButton";
+import type { CheckoutKey } from "@/lib/commerce";
 
 type Product = {
   id: string;
@@ -27,7 +29,7 @@ type Product = {
   who: string;
   summary: string;
   features: string[];
-  cta: { label: string; href: string; external?: boolean; route?: boolean };
+  cta: { label: string; href?: string; route?: boolean; checkout?: CheckoutKey };
   featured?: boolean;
 };
 
@@ -68,9 +70,9 @@ const products: Product[] = [
       "Bitcoin anchoring via OpenTimestamps (.ots included)",
       "PDF technical receipt with an Article 50 control reference",
       "Public receipt page at /r/<hash>, subject to service availability",
-      "No subscription, no account required",
+      "A free account binds the receipt credit securely to its buyer",
     ],
-    cta: { label: `Get a receipt — ${CHECKOUT.conformityReceipt.price}`, href: CHECKOUT.conformityReceipt.url, external: true },
+    cta: { label: `Get a receipt — ${CHECKOUT.conformityReceipt.price}`, checkout: "conformityReceipt" },
     featured: true,
   },
   {
@@ -91,7 +93,7 @@ const products: Product[] = [
       "Webhook delivery of receipts (HMAC signed)",
       "Usage dashboard and audit export",
     ],
-    cta: { label: `Start — ${CHECKOUT.prover.price}/mo`, href: CHECKOUT.prover.url, external: true },
+    cta: { label: `Start — ${CHECKOUT.prover.price}/mo`, checkout: "prover" },
   },
   {
     id: "registry",
@@ -111,7 +113,7 @@ const products: Product[] = [
       "Registry API entry for buyer due diligence",
       "Cancel any time",
     ],
-    cta: { label: `List as Verified — ${CHECKOUT.registryListing.price}/mo`, href: CHECKOUT.registryListing.url, external: true },
+    cta: { label: `List as Verified — ${CHECKOUT.registryListing.price}/mo`, checkout: "registryListing" },
   },
   {
     id: "institutional",
@@ -184,18 +186,11 @@ const ProductCard = ({ p, index }: { p: Product; index: number }) => {
         ))}
       </ul>
 
-      {p.cta.external ? (
-        <a
-          href={p.cta.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full inline-flex items-center justify-center rounded-md bg-gold text-background font-bold text-sm h-11 px-4 hover:bg-gold/90 transition-colors"
-        >
-          {inner}
-        </a>
+      {p.cta.checkout ? (
+        <ServiceCheckoutButton service={p.cta.checkout} label={p.cta.label} featured={p.featured} />
       ) : (
         <Button variant={p.featured ? "hero" : "heroOutline"} size="lg" className="w-full" asChild>
-          <Link to={p.cta.href}>{inner}</Link>
+          <Link to={p.cta.href ?? "/"}>{inner}</Link>
         </Button>
       )}
     </motion.article>
@@ -221,7 +216,7 @@ const steps = [
     n: "03",
     title: "Buy the countersignature",
     body: "For higher-assurance technical evidence, add an institutional countersignature and timestamp proof. This does not guarantee legal acceptance.",
-    href: CHECKOUT.conformityReceipt.url,
+    href: "/products?checkout=conformityReceipt",
     linkLabel: `Countersign — ${CHECKOUT.conformityReceipt.price}`,
   },
 ];
