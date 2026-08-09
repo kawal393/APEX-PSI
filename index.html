@@ -1,6 +1,22 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      // Legacy origins can be pinned to a stale cached shell by an old service
+      // worker. Drop that state and move the visitor to the canonical domain.
+      (function () {
+        if (location.hostname.indexOf('digital-gallows') !== 0) return;
+        try {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (rs) {
+              rs.forEach(function (r) { r.unregister(); });
+            });
+          }
+          if (window.caches) caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); });
+        } catch (e) { /* non-fatal */ }
+        location.replace('https://www.ai-governance-standard.com' + location.pathname + location.search + location.hash);
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>APEX PSI — Open AI Governance Evidence Protocol</title>
