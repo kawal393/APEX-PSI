@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,10 @@ const AuthForm = () => {
   const [loading, setLoading] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
   const { toast } = useToast();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const requestedNext = new URLSearchParams(location.search).get("next");
+  const next = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/dashboard";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,12 +44,14 @@ const AuthForm = () => {
       setLoading(false);
       if (error) {
         toast({ title: "Login failed", description: error.message, variant: "destructive" });
+      } else {
+        navigate(next, { replace: true });
       }
     } else {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: window.location.origin },
+        options: { emailRedirectTo: `${window.location.origin}${next}` },
       });
       setLoading(false);
       if (error) {
@@ -130,11 +137,14 @@ const AuthForm = () => {
         onClick={async () => {
           setLoading(true);
           try {
+            sessionStorage.setItem("apex_auth_next", next);
             const result = await lovable.auth.signInWithOAuth("google", {
               redirect_uri: window.location.origin,
             });
             if (result?.error) {
               toast({ title: "Google sign-in failed", description: String(result.error), variant: "destructive" });
+            } else if (!result?.redirected) {
+              navigate(next, { replace: true });
             }
           } catch (err: any) {
             toast({ title: "Google sign-in failed", description: err.message || "Unknown error", variant: "destructive" });

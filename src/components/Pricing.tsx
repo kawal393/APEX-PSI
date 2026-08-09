@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { CHECKOUT } from "@/lib/commerce";
+import ServiceCheckoutButton from "@/components/ServiceCheckoutButton";
 
 
 const openAccessFeatures = [
@@ -226,14 +227,7 @@ const Pricing = () => {
               anchor (Ed25519 + LMS-W4-SHA256), Bitcoin-anchored via OpenTimestamps, and issued as a
               regulator-ready PDF at a permanent public receipt URL. No subscription.
             </p>
-            <a
-              href={CHECKOUT.conformityReceipt.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-gold text-background font-bold text-sm h-11 hover:bg-gold/90 transition-colors"
-            >
-              Get a countersigned receipt <ArrowRight className="h-4 w-4" />
-            </a>
+            <ServiceCheckoutButton service="conformityReceipt" label="Get a countersigned receipt" featured />
           </motion.div>
 
           <motion.div
@@ -255,14 +249,7 @@ const Pricing = () => {
               <Link to="/registry/check" className="text-primary underline">procurement console</Link>.
               A listing shows your organisation as Verified, with continuous monitoring and lapse alerts.
             </p>
-            <a
-              href={CHECKOUT.registryListing.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-primary text-primary font-bold text-sm h-11 hover:bg-primary/10 transition-colors"
-            >
-              List as a Verified Supplier <ArrowRight className="h-4 w-4" />
-            </a>
+            <ServiceCheckoutButton service="registryListing" label="List as a Verified Supplier" />
           </motion.div>
         </div>
 

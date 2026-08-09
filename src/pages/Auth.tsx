@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthForm from "@/components/auth/AuthForm";
 import apexLogo from "@/assets/apex-logo.png";
@@ -6,9 +6,12 @@ import { Shield, Users, TrendingUp } from "lucide-react";
 
 const Auth = () => {
   const { user, loading } = useAuth();
+  const [searchParams] = useSearchParams();
+  const requestedNext = searchParams.get("next");
+  const next = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/dashboard";
 
   if (loading) return null;
-  if (user) return <Navigate to="/dashboard" replace />;
+  if (user) return <Navigate to={next} replace />;
 
   return (
     <div className="min-h-screen bg-background grid-bg flex items-center justify-center px-4">
@@ -16,9 +19,9 @@ const Auth = () => {
         {/* Logo */}
         <div className="text-center space-y-3">
           <img src={apexLogo} alt="APEX" className="h-16 w-16 mx-auto glow-gold" />
-          <h1 className="text-2xl font-bold text-gold-gradient">MEMBER ACCESS ONLY</h1>
+          <h1 className="text-2xl font-bold text-gold-gradient">CREATE OR ACCESS YOUR ACCOUNT</h1>
           <p className="text-muted-foreground text-sm">
-            EU AI Act Compliance Verification Platform
+            Secure service activation and AI governance evidence
           </p>
         </div>
 

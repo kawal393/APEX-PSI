@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { provisionCheckout } from "../_shared/commerceProvisioning.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,13 +11,6 @@ const corsHeaders = {
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[STRIPE-WEBHOOK] ${step}${detailsStr}`);
-};
-
-const tierConfig: Record<string, { limit: number }> = {
-  startup: { limit: 100 },
-  growth: { limit: 1000 },
-  enterprise: { limit: -1 },
-  goliath: { limit: -1 },
 };
 
 serve(async (req) => {
@@ -53,45 +47,14 @@ serve(async (req) => {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
       logStep("Webhook signature verified", { type: event.type });
     } else {
-      event = JSON.parse(body);
-      logStep("WARNING: No STRIPE_WEBHOOK_SECRET set, skipping signature verification", { type: event.type });
+      logStep("ERROR: STRIPE_WEBHOOK_SECRET not set");
+      return new Response(JSON.stringify({ error: "Webhook verification is not configured" }), { status: 503, headers: corsHeaders });
     }
 
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
-      const userId = session.metadata?.user_id;
-      const tier = session.metadata?.tier || "startup";
-      const customerEmail = session.customer_email || session.customer_details?.email;
-
-      logStep("Checkout completed", { userId, tier, customerEmail, sessionId: session.id });
-
-      if (!userId) {
-        logStep("ERROR: No user_id in session metadata");
-        return new Response(JSON.stringify({ error: "No user_id in metadata" }), { status: 400, headers: corsHeaders });
-      }
-
-      const config = tierConfig[tier] || tierConfig.startup;
-
-      const { error } = await supabase
-        .from("subscriptions")
-        .upsert({
-          user_id: userId,
-          tier,
-          status: "active",
-          stripe_customer_id: typeof session.customer === "string" ? session.customer : null,
-          stripe_session_id: session.id,
-          verifications_limit: config.limit,
-          verifications_used: 0,
-          current_period_start: new Date().toISOString(),
-          current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        }, { onConflict: "user_id" });
-
-      if (error) {
-        logStep("ERROR upserting subscription", { error: error.message });
-        return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: corsHeaders });
-      }
-
-      logStep("Subscription provisioned", { userId, tier });
+      await provisionCheckout(supabase, session);
+      logStep("Service provisioned", { userId: session.metadata?.user_id, service: session.metadata?.service_key, sessionId: session.id });
     }
 
     if (event.type === "customer.subscription.deleted") {
@@ -105,6 +68,11 @@ serve(async (req) => {
           .from("subscriptions")
           .update({ status: "cancelled" })
           .eq("stripe_customer_id", customerId);
+
+        await supabase
+          .from("service_entitlements")
+          .update({ status: "cancelled", ends_at: new Date().toISOString() })
+          .eq("stripe_subscription_id", subscription.id);
 
         if (error) {
           logStep("ERROR updating cancelled subscription", { error: error.message });

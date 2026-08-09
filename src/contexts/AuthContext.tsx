@@ -57,6 +57,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
       if (session) {
         setTimeout(() => checkSubscription(), 0);
+        const next = sessionStorage.getItem("apex_auth_next");
+        if (next?.startsWith("/") && !next.startsWith("//")) {
+          sessionStorage.removeItem("apex_auth_next");
+          window.location.assign(next);
+        }
       } else {
         setSubscription({ subscribed: false, tier: null, subscriptionEnd: null });
       }

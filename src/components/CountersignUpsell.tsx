@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Bitcoin, FileCheck, Stamp } from "lucide-react";
+import { Bitcoin, FileCheck, Stamp } from "lucide-react";
 import { CHECKOUT } from "@/lib/commerce";
+import ServiceCheckoutButton from "@/components/ServiceCheckoutButton";
 
 interface CountersignUpsellProps {
   /** Optional hash or receipt id this upsell is attached to. */
@@ -14,10 +15,6 @@ interface CountersignUpsellProps {
  * anchored to Bitcoin and issued as a regulator-ready PDF.
  */
 const CountersignUpsell = ({ reference, className = "" }: CountersignUpsellProps) => {
-  const href = reference
-    ? `${CHECKOUT.conformityReceipt.url}?client_reference_id=${encodeURIComponent(reference.slice(0, 200))}`
-    : CHECKOUT.conformityReceipt.url;
-
   return (
     <motion.aside
       initial={{ opacity: 0, y: 12 }}
@@ -54,17 +51,13 @@ const CountersignUpsell = ({ reference, className = "" }: CountersignUpsellProps
         </li>
       </ul>
 
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center justify-center gap-1.5 rounded-md bg-gold text-background font-bold text-sm h-11 px-6 hover:bg-gold/90 transition-colors"
-      >
-        Get the receipt — {CHECKOUT.conformityReceipt.price} {CHECKOUT.conformityReceipt.cadence}
-        <ArrowRight className="h-4 w-4" />
-      </a>
+      <ServiceCheckoutButton
+        service="conformityReceipt"
+        label={`Get the receipt — ${CHECKOUT.conformityReceipt.price} ${CHECKOUT.conformityReceipt.cadence}`}
+        featured
+      />
       <p className="text-[11px] text-muted-foreground mt-3">
-        Issued against the exact hash above. No subscription required.
+        {reference ? `Purchase will be attached to your account for proof ${reference.slice(0, 12)}…. ` : ""}No subscription required.
       </p>
     </motion.aside>
   );
