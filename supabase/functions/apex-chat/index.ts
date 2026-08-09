@@ -134,35 +134,42 @@ ${gapsList}`;
 const TOOLS = [
   {
     type: "function",
-    function: {
-      name: "capture_lead",
-      description: "Capture visitor contact information when they show buying intent or provide their details",
-      parameters: {
-        type: "object",
-        properties: {
-          name: { type: "string", description: "Visitor's name" },
-          email: { type: "string", description: "Visitor's email address" },
-          company: { type: "string", description: "Visitor's company name" },
-        },
-        required: ["email"],
+    name: "capture_lead",
+    description: "Capture visitor contact information when they show buying intent or provide their details",
+    parameters: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "Visitor's name" },
+        email: { type: "string", description: "Visitor's email address" },
+        company: { type: "string", description: "Visitor's company name" },
       },
+      required: ["email"],
+      additionalProperties: false,
     },
   },
   {
     type: "function",
-    function: {
-      name: "flag_knowledge_gap",
-      description: "Flag when you cannot confidently answer a question about APEX or its features",
-      parameters: {
-        type: "object",
-        properties: {
-          question: { type: "string", description: "The question you could not answer" },
-        },
-        required: ["question"],
+    name: "flag_knowledge_gap",
+    description: "Flag when you cannot confidently answer a question about APEX or its features",
+    parameters: {
+      type: "object",
+      properties: {
+        question: { type: "string", description: "The question you could not answer" },
       },
+      required: ["question"],
+      additionalProperties: false,
     },
   },
 ];
+
+function responseText(data: any): string {
+  if (typeof data?.output_text === "string") return data.output_text.trim();
+  return (data?.output ?? [])
+    .flatMap((item: any) => item?.content ?? [])
+    .map((part: any) => part?.text ?? "")
+    .join("")
+    .trim();
+}
 
 // Helper: collect full streamed response
 async function collectStream(response: Response): Promise<{ content: string; toolCalls: any[] }> {
@@ -332,7 +339,7 @@ serve(async (req) => {
         Authorization: `Bearer ${AI_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ model: AI_MODEL, input: [{ role: "system", content: SYSTEM_PROMPT }, ...cleanMessages], tools: TOOLS, stream: true }),
+      body: JSON.stringify({ model: AI_MODEL, input: [{ role: "system", content: SYSTEM_PROMPT }, ...cleanMessages], tools: TOOLS }),
     });
 
     if (!aiResponse.ok) {
@@ -353,8 +360,9 @@ serve(async (req) => {
       throw new Error("AI gateway error");
     }
 
-    // Collect stream to check for tool calls
-    const { content: fullContent, toolCalls } = await collectStream(aiResponse);
+    const firstResponse = await aiResponse.json();
+    const fullContent = responseText(firstResponse);
+    const toolCalls = (firstResponse.output ?? []).filter((item: any) => item?.type === "function_call");
 
     // Handle tool calls if present
     if (toolCalls.length > 0) {
@@ -362,8 +370,8 @@ serve(async (req) => {
 
       for (const tc of toolCalls) {
         try {
-          const args = JSON.parse(tc.function.arguments);
-          if (tc.function.name === "capture_lead") {
+          const args = JSON.parse(tc.arguments || "{}");
+          if (tc.name === "capture_lead") {
             const update: any = {};
             if (args.name) update.lead_name = args.name;
             if (args.email) update.lead_email = args.email;
@@ -389,8 +397,8 @@ serve(async (req) => {
               }).catch(e => console.error("Webhook notify failed:", e));
             }
 
-            toolResults.push({ tool_call_id: tc.id, role: "tool", content: "Lead captured successfully." });
-          } else if (tc.function.name === "flag_knowledge_gap") {
+            toolResults.push({ type: "function_call_output", call_id: tc.call_id, output: "Lead captured successfully." });
+          } else if (tc.name === "flag_knowledge_gap") {
             await supabase.from("chat_knowledge_gaps").insert({
               question: args.question,
               conversation_id,
@@ -404,10 +412,10 @@ serve(async (req) => {
               body: JSON.stringify({ event: "knowledge_gap", data: { question: args.question, conversation_id } }),
             }).catch(e => console.error("Webhook notify failed:", e));
 
-            toolResults.push({ tool_call_id: tc.id, role: "tool", content: "Knowledge gap flagged." });
+            toolResults.push({ type: "function_call_output", call_id: tc.call_id, output: "Knowledge gap flagged." });
           }
         } catch {
-          toolResults.push({ tool_call_id: tc.id, role: "tool", content: "Tool execution failed." });
+          toolResults.push({ type: "function_call_output", call_id: tc.call_id, output: "Tool execution failed." });
         }
       }
 
@@ -420,18 +428,13 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           model: AI_MODEL,
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            ...cleanMessages,
-            { role: "assistant", content: fullContent || null, tool_calls: toolCalls.map(tc => ({ id: tc.id, type: "function", function: tc.function })) },
-            ...toolResults,
-          ],
-          stream: true,
+          previous_response_id: firstResponse.id,
+          input: toolResults,
         }),
       });
 
       if (followUp.ok) {
-        const { content: followUpContent } = await collectStream(followUp);
+        const followUpContent = responseText(await followUp.json());
         // Store assistant message in DB
         await storeAssistantMessage(supabase, conversation_id, followUpContent);
 
