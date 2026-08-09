@@ -14,7 +14,7 @@ const PartnerCTA = () => (
           The protocol is free. Certification and insurance underwriting fees apply for commercial regulatory filings.
         </p>
         <p className="text-xs text-muted-foreground mb-6 max-w-sm mx-auto">
-          Tribunal-ratified · Regulator-ready · Orbital Registry anchored
+          Independently verifiable · Regulator-ready · Publicly anchored
         </p>
         <Button variant="hero" size="lg" asChild>
           <Link to="/#contact">
