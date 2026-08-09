@@ -17,6 +17,7 @@ import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import TrafficNoticeBanner from "@/components/TrafficNoticeBanner";
 import EUCodeBanner from "@/components/EUCodeBanner";
+import EcosystemStrip from "@/components/EcosystemStrip";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -81,6 +82,7 @@ const Index = () => {
         <SovereignSealStrip />
         <ComplianceClock />
         <RegulatoryAlignment />
+        <EcosystemStrip />
         <OpenSourceGateway />
         <TechSpecs />
 
