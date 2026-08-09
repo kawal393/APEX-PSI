@@ -50,18 +50,18 @@ function slugify(s: string): string {
 async function callAI(system: string, user: string, json: boolean): Promise<string> {
   const key = Deno.env.get("LOVABLE_API_KEY");
   if (!key) throw new Error("LOVABLE_API_KEY not configured");
-  const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const resp = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Lovable-API-Key": key, Authorization: `Bearer ${key}` },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
-      messages: [{ role: "system", content: system }, { role: "user", content: user }],
-      ...(json ? { response_format: { type: "json_object" } } : {}),
+      model: "openai/gpt-5.6-sol",
+      input: [{ role: "system", content: system }, { role: "user", content: user }],
+      ...(json ? { text: { format: { type: "json_object" } } } : {}),
     }),
   });
   if (!resp.ok) throw new Error(`AI gateway ${resp.status}: ${await resp.text()}`);
   const data = await resp.json();
-  return (data.choices?.[0]?.message?.content ?? "").trim();
+  return String(data.output_text ?? data.output?.flatMap((item: any) => item.content ?? []).map((part: any) => part.text ?? "").join("") ?? "").trim();
 }
 
 async function generateArticle(topic: string): Promise<{

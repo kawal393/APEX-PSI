@@ -1,4 +1,4 @@
-import { Shield, FileText, Globe, Zap, CheckCircle2 } from "lucide-react";
+import { Shield, FileText, Globe, Zap, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
