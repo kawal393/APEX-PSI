@@ -18,6 +18,8 @@ import Footer from "@/components/Footer";
 import TrafficNoticeBanner from "@/components/TrafficNoticeBanner";
 import EUCodeBanner from "@/components/EUCodeBanner";
 import EcosystemStrip from "@/components/EcosystemStrip";
+import ConnectAIPill from "@/components/ConnectAIPill";
+import VerifiedByApexSection from "@/components/VerifiedByApexSection";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -72,6 +74,7 @@ const Index = () => {
         <Navbar />
         <div id="top" />
         <Products embedded />
+        <ConnectAIPill />
         <Hero />
         <Article50Banner />
 
@@ -88,6 +91,7 @@ const Index = () => {
 
         <FAQ />
         <ContactSection />
+        <VerifiedByApexSection />
         <Footer />
       </div>
     </>
