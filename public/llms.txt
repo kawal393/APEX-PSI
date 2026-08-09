@@ -1,0 +1,33 @@
+# APEX PSI — Proof of Stateful Integrity
+
+> Open-standard cryptographic evidence protocol for AI governance. Records the
+> existence and integrity of a decision, document or artefact at a point in
+> time. It does not judge whether the contents are true.
+
+Canonical site: https://ai-governance-standard.com
+
+## Connect an AI agent (MCP)
+npx -y apex-psi-mcp
+- Server manifest: https://ai-governance-standard.com/.well-known/mcp/server.json
+- OAuth metadata: https://ai-governance-standard.com/.well-known/oauth-authorization-server
+- Tools: verify_hash, list_attestations, ledger_stats, protocol_info
+
+## Core pages
+- /protocol — protocol specification
+- /spec — EU AI Act Article 50 mapping
+- /standard — Compliance-Receipt HTTP header
+- /verify — public hash verification
+- /pramaan — human witness sealing
+- /api — REST API reference
+- /integrations — integration surfaces
+- /ledger — company recomputation ledger
+- /partners — verified, integrated and powered-by programmes
+
+## Standards
+RFC 8785 (JCS), SHA-256 (FIPS 180-4), Ed25519 (RFC 8032), ML-DSA-65 (FIPS 204),
+LMS-W4-SHA256 (NIST SP 800-208), draft-singh-psi-00, draft-singh-psi-http-01.
+
+## Trust anchor
+https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json
+
+License: MIT

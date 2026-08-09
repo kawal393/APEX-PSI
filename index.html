@@ -5,7 +5,7 @@
       // Legacy origins can be pinned to a stale cached shell by an old service
       // worker. Drop that state and move the visitor to the canonical domain.
       (function () {
-        if (location.hostname.indexOf('digital-gallows') !== 0) return;
+        if (location.hostname.indexOf('apex-infrastructure.com') < 0) return;
         try {
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function (rs) {
@@ -14,7 +14,8 @@
           }
           if (window.caches) caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); });
         } catch (e) { /* non-fatal */ }
-        location.replace('https://www.ai-governance-standard.com' + location.pathname + location.search + location.hash);
+        var q = location.search ? location.search + '&' : '?';
+        location.replace('https://www.ai-governance-standard.com' + location.pathname + q + 'v=' + Date.now() + location.hash);
       })();
     </script>
     <meta charset="UTF-8" />
