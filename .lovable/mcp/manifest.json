@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://qhtntebpcribjiwrdtdd.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "apex-psi",
+      "version": "0.1.0",
+      "title": "APEX PSI"
+    },
+    "tools": [
+      {
+        "name": "verify_hash",
+        "title": "Verify a hash against the APEX PSI ledger",
+        "description": "Look up a SHA-256 hash (commit hash or Merkle leaf hash) in the APEX PSI evidence ledger and report whether a matching attestation exists.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "hash": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{64}$",
+              "description": "SHA-256 hash to verify, lowercase hex."
+            }
+          },
+          "required": [
+            "hash"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_attestations",
+        "title": "List recent attestations",
+        "description": "List the most recent APEX PSI ledger attestations visible to the signed-in user, newest first.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "default": 10,
+              "description": "How many attestations to return.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "predicate_id": {
+              "description": "Optional predicate filter, e.g. EU_ART_50.",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "ledger_stats",
+        "title": "APEX PSI ledger statistics",
+        "description": "Return counts of ledger attestations, non-approved exceptions and public attestations for a quick integrity snapshot.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "protocol_info",
+        "title": "APEX PSI protocol reference",
+        "description": "Return the APEX PSI protocol reference: canonicalization, hashing, signature suites, IETF drafts, HTTP header and anchoring targets.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "section": {
+              "default": "all",
+              "description": "Which part of the reference to return.",
+              "type": "string",
+              "enum": [
+                "all",
+                "signatures",
+                "drafts",
+                "anchoring"
+              ]
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
