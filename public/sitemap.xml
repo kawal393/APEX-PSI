@@ -236,6 +236,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-v1uyn3</loc>
+    <lastmod>2026-08-09T09:06:49.074Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-ll5s6a</loc>
+    <lastmod>2026-08-09T09:06:49.074Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-without-vendor-trust-9c5gvn</loc>
+    <lastmod>2026-08-09T09:06:49.074Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/ai-transparency-cryptographic-proof-for-trust-accountability-xhr12x</loc>
     <lastmod>2026-08-09T06:06:01.504Z</lastmod>
     <changefreq>weekly</changefreq>
