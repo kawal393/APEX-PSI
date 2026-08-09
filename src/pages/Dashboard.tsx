@@ -82,7 +82,7 @@ const Dashboard = () => {
           toast.error("Payment received, but activation is still processing. Use Refresh shortly.");
           return;
         }
-        toast.success(`${String(data?.service_key ?? "Service").replaceAll("_", " ")} activated.`);
+        toast.success(`${String(data?.service_key ?? "Service").replace(/_/g, " ")} activated.`);
         void Promise.all([checkSubscription(), fetchData()]);
         navigate("/dashboard", { replace: true });
       });
@@ -254,7 +254,7 @@ const Dashboard = () => {
             <div className="flex flex-wrap gap-2">
               {entitlements.map((item) => (
                 <span key={item.service_key} className="border border-compliant/30 bg-compliant/10 px-3 py-2 text-xs text-compliant">
-                  {String(item.service_key).replaceAll("_", " ")} · {item.status}{item.quantity > 1 ? ` · ${item.quantity} credits` : ""}
+                  {String(item.service_key).replace(/_/g, " ")} · {item.status}{item.quantity > 1 ? ` · ${item.quantity} credits` : ""}
                 </span>
               ))}
             </div>

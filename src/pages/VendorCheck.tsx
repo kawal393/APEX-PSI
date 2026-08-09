@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CHECKOUT } from "@/lib/commerce";
+import ServiceCheckoutButton from "@/components/ServiceCheckoutButton";
 import { SITE_URL } from "@/lib/site";
 import { toast } from "sonner";
 
@@ -197,15 +198,11 @@ const VendorCheck = () => {
               Every check above is public and repeatable. Suppliers listed in the registry appear as
               Verified, with continuous monitoring and lapse alerts if their published signals break.
             </p>
-            <a
-              href={CHECKOUT.registryListing.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-1.5 rounded-md bg-gold text-background font-bold text-sm h-11 px-6 hover:bg-gold/90 transition-colors"
-            >
-              List as Verified — {CHECKOUT.registryListing.price} {CHECKOUT.registryListing.cadence}
-              <ArrowRight className="h-4 w-4" />
-            </a>
+            <ServiceCheckoutButton
+              service="registryListing"
+              label={`List as Verified — ${CHECKOUT.registryListing.price} ${CHECKOUT.registryListing.cadence}`}
+              featured
+            />
           </div>
 
           <div className="rounded-xl border border-border bg-card p-6">
