@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Bitcoin, FileCheck, Stamp } from "lucide-react";
+import { Bitcoin, FileCheck, Stamp } from "lucide-react";
 import { CHECKOUT } from "@/lib/commerce";
 import ServiceCheckoutButton from "@/components/ServiceCheckoutButton";
 

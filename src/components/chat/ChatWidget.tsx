@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageCircle, X, Send, RotateCcw, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send, RotateCcw, Sparkles, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useChat } from "@/hooks/use-chat";
 import ChatMessage from "./ChatMessage";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -15,6 +16,8 @@ const QUICK_ACTIONS = [
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [listening, setListening] = useState(false);
+  const [voiceReplies, setVoiceReplies] = useState(false);
   const { messages, isLoading, error, sendMessage, resetChat } = useChat();
 
   const openChat = useCallback(() => setIsOpen(true), []);
@@ -22,12 +25,32 @@ export default function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
+  const spokenMessageId = useRef<string | null>(null);
+  const recognitionRef = useRef<any>(null);
+  const supportsSpeechInput = typeof window !== "undefined" && Boolean((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
+  const supportsSpeechOutput = typeof window !== "undefined" && "speechSynthesis" in window;
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (!voiceReplies || isLoading || !supportsSpeechOutput) return;
+    const latest = messages[messages.length - 1];
+    if (!latest || latest.role !== "assistant" || latest.id === spokenMessageId.current) return;
+    spokenMessageId.current = latest.id;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(latest.content.replace(/[#*_`\[\]()]/g, " "));
+    utterance.rate = 1;
+    window.speechSynthesis.speak(utterance);
+  }, [isLoading, messages, supportsSpeechOutput, voiceReplies]);
+
+  useEffect(() => () => {
+    recognitionRef.current?.abort?.();
+    if (supportsSpeechOutput) window.speechSynthesis.cancel();
+  }, [supportsSpeechOutput]);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -43,6 +66,32 @@ export default function ChatWidget() {
 
   const handleQuickAction = (msg: string) => {
     sendMessage(msg);
+  };
+
+  const toggleListening = () => {
+    if (!supportsSpeechInput) return;
+    if (listening) {
+      recognitionRef.current?.stop?.();
+      setListening(false);
+      return;
+    }
+    const Recognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new Recognition();
+    recognition.lang = navigator.language || "en-US";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.onresult = (event: any) => {
+      const transcript = Array.from(event.results)
+        .map((result: any) => result[0]?.transcript ?? "")
+        .join("")
+        .slice(0, 500);
+      setInput(transcript);
+    };
+    recognition.onerror = () => setListening(false);
+    recognition.onend = () => setListening(false);
+    recognitionRef.current = recognition;
+    setListening(true);
+    recognition.start();
   };
 
   return (
@@ -148,6 +197,19 @@ export default function ChatWidget() {
           {/* Input */}
           <div className="border-t border-border px-3 py-2.5 shrink-0 bg-card">
             <div className="flex items-center gap-2">
+              {supportsSpeechInput && (
+                <Button
+                  type="button"
+                  size="icon"
+                  variant={listening ? "destructive" : "ghost"}
+                  onClick={toggleListening}
+                  aria-label={listening ? "Stop listening" : "Speak your question"}
+                  title={listening ? "Stop listening" : "Speak your question"}
+                  className="h-10 w-10 shrink-0"
+                >
+                  {listening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                </Button>
+              )}
               <input
                 ref={inputRef}
                 value={input}
@@ -164,6 +226,22 @@ export default function ChatWidget() {
               >
                 <Send className="h-4 w-4" />
               </button>
+              {supportsSpeechOutput && (
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => {
+                    if (voiceReplies) window.speechSynthesis.cancel();
+                    setVoiceReplies(!voiceReplies);
+                  }}
+                  aria-label={voiceReplies ? "Disable spoken replies" : "Enable spoken replies"}
+                  title={voiceReplies ? "Disable spoken replies" : "Enable spoken replies"}
+                  className="h-10 w-10 shrink-0"
+                >
+                  {voiceReplies ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                </Button>
+              )}
             </div>
             <p className="text-[9px] text-muted-foreground/50 text-center mt-1.5">
               Powered by APEX · {500 - input.length} characters remaining

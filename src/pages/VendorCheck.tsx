@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, ShieldCheck, ShieldAlert, ShieldX, Loader2, ArrowRight, Check, X } from "lucide-react";
+import { Search, ShieldCheck, ShieldAlert, ShieldX, Loader2, Check, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
