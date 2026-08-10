@@ -76,6 +76,10 @@ import Gallery from "./pages/Gallery";
 import Integrations from "./pages/Integrations";
 import Ledger from "./pages/Ledger";
 import Partners from "./pages/Partners";
+import ConnectAI from "./pages/ConnectAI";
+import LiveStream from "./pages/LiveStream";
+import StandardsPortfolio from "./pages/StandardsPortfolio";
+import PSI05 from "./pages/PSI05";
 import ConnectAIButton from "@/components/ConnectAIButton";
 
 
@@ -181,6 +185,10 @@ const App = () => (
               <Route path="/governance" element={<Governance />} />
               <Route path="/research" element={<Research />} />
               <Route path="/standards" element={<Standards />} />
+              <Route path="/standards/psi-05" element={<PSI05 />} />
+              <Route path="/portfolio" element={<StandardsPortfolio />} />
+              <Route path="/connect" element={<ConnectAI />} />
+              <Route path="/stream" element={<LiveStream />} />
               
               <Route path="/landscape" element={<Landscape />} />
               <Route path="/pledge" element={<PatentPledge />} />
