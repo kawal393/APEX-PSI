@@ -8,6 +8,9 @@
   "grant_types_supported": ["authorization_code", "refresh_token"],
   "code_challenge_methods_supported": ["S256"],
   "token_endpoint_auth_methods_supported": ["none", "client_secret_post"],
-  "scopes_supported": ["openid", "email", "profile"],
-  "consent_page": "https://ai-governance-standard.com/.lovable/oauth/consent"
+  "scopes_supported": ["openid", "email", "profile", "verify:read", "ledger:read", "protocol:read"],
+  "consent_page": "https://ai-governance-standard.com/.lovable/oauth/consent",
+  "authorization_consent_path": "/.lovable/oauth/consent",
+  "protected_resource": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp",
+  "service_documentation": "https://ai-governance-standard.com/connect"
 }
