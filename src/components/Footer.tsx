@@ -83,11 +83,25 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
         </div>
 
         <div className="border-t border-border pt-8 space-y-4">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] text-muted-foreground font-mono">
+            <Link to="/connect" className="hover:text-gold">MCP-native</Link>
+            <span className="text-border">·</span>
+            <a href="/llms.txt" className="hover:text-gold">llms.txt indexed</a>
+            <span className="text-border">·</span>
+            <Link to="/stream" className="hover:text-gold">Bitcoin-anchored</Link>
+            <span className="text-border">·</span>
+            <Link to="/quantum" className="hover:text-gold">Post-quantum (NIST FIPS 204)</Link>
+            <span className="text-border">·</span>
+            <a href="https://www.rfc-editor.org/rfc/rfc8785" target="_blank" rel="noopener noreferrer" className="hover:text-gold">RFC 8785</a>
+            <span className="text-border">·</span>
+            <Link to="/auth" className="hover:text-gold">Sign in with Google</Link>
+          </div>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] text-muted-foreground font-mono">
             <span>Australian Provisional Patent — Filed</span>
             <span className="hidden sm:inline text-border">|</span>
-            <span>IETF Internet-Draft draft-singh-psi-00 — Active</span>
+            <Link to="/portfolio" className="hover:text-gold">IETF portfolio — PSI 00-09</Link>
           </div>
+
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-muted-foreground">
               © 2026 Apex Intelligence Empire. All rights reserved.

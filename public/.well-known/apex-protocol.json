@@ -1,6 +1,6 @@
 {
   "protocol": "APEX PSI — Proof of Stateful Integrity",
-  "version": "1.2",
+  "version": "1.3",
   "canonical_domain": "https://ai-governance-standard.com",
   "legacy_domain": "https://digital-gallows.apex-infrastructure.com",
   "ietf_drafts": [
@@ -21,7 +21,27 @@
       "title": "APEX PSI Predicate Registry and Proof Formats",
       "url": "https://datatracker.ietf.org/doc/draft-singh-apex-psi/",
       "expires": "2027-04-30"
+    },
+    {
+      "name": "draft-singh-apex-psi-05",
+      "title": "Financial Disclosure Integrity",
+      "url": "https://datatracker.ietf.org/doc/draft-singh-apex-psi-05/",
+      "text_url": "https://www.ietf.org/archive/id/draft-singh-apex-psi-05-02.txt",
+      "expires": "2027-06-30",
+      "status": "filed"
     }
+  ],
+  "standards": [
+    { "id": "psi-00", "title": "Proof of Stateful Integrity Core", "status": "filed", "draft": "draft-singh-psi-00", "jurisdiction": "Global / IETF", "description": "Core protocol: canonicalisation, hash chain, signature suites and receipt formats." },
+    { "id": "psi-01", "title": "Compliance-Receipt HTTP Header Field", "status": "filed", "draft": "draft-singh-psi-http-01", "jurisdiction": "Global / IETF", "description": "In-band transport of a PSI receipt over HTTP responses." },
+    { "id": "psi-02", "title": "Predicate Registry Governance", "status": "ready", "jurisdiction": "Global / IETF", "description": "Registration procedures and versioning rules for compliance predicates." },
+    { "id": "psi-03", "title": "Post-Quantum Signature Profile", "status": "ready", "jurisdiction": "Global / NIST-aligned", "description": "Hybrid Ed25519 + ML-DSA-65 / LMS-W4-SHA256 profile for long-lived evidence." },
+    { "id": "psi-04", "title": "APEX PSI Predicate Registry and Proof Formats", "status": "filed", "draft": "draft-singh-apex-psi-04", "jurisdiction": "Global / IETF", "description": "Predicate identifiers, proof envelopes and verdict semantics." },
+    { "id": "psi-05", "title": "Financial Disclosure Integrity", "status": "filed", "draft": "draft-singh-apex-psi-05", "jurisdiction": "Global / IETF", "description": "Hybrid dual-signature framework for disclosure recomputation, ledger structure, API endpoints and royalty tiers." },
+    { "id": "psi-06", "title": "Bitcoin Anchoring Profile", "status": "ready", "jurisdiction": "Global", "description": "OpenTimestamps calendar usage, Merkle batching and anchor confirmation rules." },
+    { "id": "psi-07", "title": "Agent Attestation Profile", "status": "ready", "jurisdiction": "Global", "description": "MCP-native attestation and verification flows for autonomous agents." },
+    { "id": "psi-08", "title": "Human Witness Attestation", "status": "ready", "jurisdiction": "Global", "description": "WebAuthn-backed human witnessing of sealed evidence." },
+    { "id": "psi-09", "title": "Regulator Verification Interface", "status": "ready", "jurisdiction": "EU / AU / US", "description": "Read-only interface for supervisory authorities to replay and verify evidence." }
   ],
   "verification_endpoints": [
     "https://ai-governance-standard.com/verify",
@@ -43,9 +63,19 @@
     "explorer": "https://mempool.space/tx/",
     "note": "A proof is reported as pending until a real Bitcoin block includes it. No anchor is ever reported as confirmed without a txid returned by a block explorer."
   },
+  "mcp": {
+    "server_json": "https://ai-governance-standard.com/.well-known/mcp/server.json",
+    "endpoint": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp",
+    "tools": ["verify_hash", "list_attestations", "ledger_stats", "protocol_info"]
+  },
   "trust_anchor": "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json",
   "compliance_receipt": "https://ai-governance-standard.com/.well-known/compliance-receipt",
   "security_txt": "https://ai-governance-standard.com/.well-known/security.txt",
   "regulatory_scope": ["EU AI Act Article 50", "EU AI Act Articles 11-15", "C2PA 2.1", "NIST SP 800-208"],
+  "ecosystem": {
+    "business": "https://apex-infrastructure.com",
+    "proof_of_life": "https://apex-tat-va.store",
+    "standard": "https://ai-governance-standard.com"
+  },
   "license": "MIT"
 }
