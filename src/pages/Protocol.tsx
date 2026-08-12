@@ -165,6 +165,11 @@ const Protocol = () => {
                 for verifiable AI governance. It enables organizations to prove regulatory compliance
                 without disclosing proprietary model architectures, training data, or inference logic.
               </p>
+              <div className="mt-6">
+                <Link to="/mcp" className="inline-flex items-center gap-2 border border-primary/40 bg-primary/5 rounded px-4 py-2 text-sm font-semibold hover:border-primary transition-colors">
+                  Official MCP server — connect any AI agent → /mcp
+                </Link>
+              </div>
             </motion.div>
           </div>
         </section>

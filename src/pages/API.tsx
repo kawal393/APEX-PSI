@@ -52,6 +52,13 @@ const API = () => (
         </CardContent></Card>
       </section>
 
+      <div className="mb-12 border border-primary/40 rounded p-5 bg-primary/5">
+        <p className="text-sm">
+          Prefer agent-native integration? Use our MCP server{" "}
+          <Link to="/mcp" className="text-primary underline font-semibold">→ /mcp</Link>
+        </p>
+      </div>
+
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
           <KeyRound className="w-5 h-5 text-primary" /> 1 · Generate a sync key
