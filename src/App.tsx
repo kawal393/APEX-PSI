@@ -80,6 +80,7 @@ import ConnectAI from "./pages/ConnectAI";
 import LiveStream from "./pages/LiveStream";
 import StandardsPortfolio from "./pages/StandardsPortfolio";
 import PSI05 from "./pages/PSI05";
+import MCP from "./pages/MCP";
 import ConnectAIButton from "@/components/ConnectAIButton";
 
 
@@ -193,6 +194,7 @@ const App = () => (
               <Route path="/landscape" element={<Landscape />} />
               <Route path="/pledge" element={<PatentPledge />} />
               <Route path="/api" element={<API />} />
+              <Route path="/mcp" element={<MCP />} />
               <Route path="/challenge" element={<Challenge />} />
               <Route path="/pramaan" element={<Pramaan />} />
               <Route path="/seal" element={<UniversalSeal />} />
