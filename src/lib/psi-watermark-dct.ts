@@ -391,7 +391,7 @@ export async function detectDctWatermarkInBlob(blob: Blob, delta = DEFAULT_DELTA
 // ── distortion channel (used by the live demo and the benchmark) ────────
 export type DistortionId =
   | "none" | "jpeg75" | "jpeg50" | "resize50" | "resize200"
-  | "crop25" | "screenshot" | "social";
+  | "crop25" | "screenshot" | "social" | "chain";
 
 export const DISTORTIONS: Array<{ id: DistortionId; label: string; detail: string }> = [
   { id: "none", label: "No distortion", detail: "Lossless PNG round-trip" },
@@ -402,6 +402,7 @@ export const DISTORTIONS: Array<{ id: DistortionId; label: string; detail: strin
   { id: "crop25", label: "Crop 25%", detail: "Centre crop removing 25% of the area" },
   { id: "screenshot", label: "Screenshot", detail: "Resample at 1.25x device ratio then JPEG q80" },
   { id: "social", label: "Social repost", detail: "Downscale to 1080px wide then JPEG q65 twice" },
+  { id: "chain", label: "Chained attack", detail: "JPEG q50, then 0.5x downscale, then 25% centre crop" },
 ];
 
 async function encodeDecode(img: ImageData, type: string, quality: number): Promise<ImageData> {
@@ -441,6 +442,11 @@ export async function applyDistortion(img: ImageData, id: DistortionId): Promise
     case "screenshot": {
       const up = rescale(img, 1.25) ?? img;
       return encodeDecode(up, "image/jpeg", 0.8);
+    }
+    case "chain": {
+      const a = await encodeDecode(img, "image/jpeg", 0.5);
+      const b = rescale(a, 0.5) ?? a;
+      return cropCenter(b, 0.75);
     }
     case "social": {
       const factor = Math.min(1, 1080 / img.width);
