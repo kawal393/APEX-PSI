@@ -187,12 +187,14 @@ export interface Wm2Detection {
   blocks: number;
   rotation: number;
   scale: number;
+  offsetX?: number;
+  offsetY?: number;
   method: string;
 }
 
 const EMPTY: Wm2Detection = {
   present: false, digest: null, confidence: 0, syncScore: 0,
-  blocks: 0, rotation: 0, scale: 1, method: WM2_METHOD,
+  blocks: 0, rotation: 0, scale: 1, offsetX: 0, offsetY: 0, method: WM2_METHOD,
 };
 
 function softVotes(
