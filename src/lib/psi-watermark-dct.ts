@@ -195,19 +195,25 @@ const EMPTY: Wm2Detection = {
   blocks: 0, rotation: 0, scale: 1, method: WM2_METHOD,
 };
 
-function softVotes(img: ImageData, delta: number): { votes: Float64Array; weight: Float64Array; blocks: number } {
-  const { width: W, height: H } = img;
-  const luma = toLuma(img);
+function softVotes(
+  luma: Float64Array,
+  W: number,
+  H: number,
+  delta: number,
+  ox = 0,
+  oy = 0
+): { votes: Float64Array; weight: Float64Array; blocks: number } {
   const votes = new Float64Array(PAYLOAD_BITS); // signed: >0 → 1
   const weight = new Float64Array(PAYLOAD_BITS);
   const block = new Float64Array(64);
   const coef = new Float64Array(64);
   let blocks = 0;
 
-  for (let by = 0; by * 8 + 8 <= H; by++) {
-    for (let bx = 0; bx * 8 + 8 <= W; bx++) {
+  for (let by = 0; oy + by * 8 + 8 <= H; by++) {
+    for (let bx = 0; ox + bx * 8 + 8 <= W; bx++) {
       for (let y = 0; y < 8; y++)
-        for (let x = 0; x < 8; x++) block[y * 8 + x] = luma[(by * 8 + y) * W + bx * 8 + x] - 128;
+        for (let x = 0; x < 8; x++)
+          block[y * 8 + x] = luma[(oy + by * 8 + y) * W + ox + bx * 8 + x] - 128;
       dct8x8(block, coef);
       const idx = bitIndex(bx, by);
       for (const [u, v] of COEFFS) {
