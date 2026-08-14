@@ -467,14 +467,16 @@ export async function runRobustnessBench(
     const marked = new ImageData(new Uint8ClampedArray(base.data), base.width, base.height);
     const distorted = await applyDistortion(marked, d.id);
     const det = detectDctWatermarkInImageData(distorted, delta);
-    const got = det.digest ? buildBits(SYNC_WORD.map((b) => b.toString(16).padStart(2, "0")).join("") + det.digest) : null;
-    let acc = 0;
-    if (got) {
-      let same = 0;
-      for (let i = 0; i < PAYLOAD_BITS; i++) if (got[i] === expected[i]) same++;
-      acc = same / PAYLOAD_BITS;
-    }
     const expectedDigest = bytesToHex(bitsToBytes(expected).subarray(SYNC_WORD.length));
+    let acc = 0;
+    if (det.digest) {
+      const a = hexToBytes(expectedDigest);
+      const b = hexToBytes(det.digest);
+      let same = 0;
+      for (let i = 0; i < a.length; i++)
+        for (let k = 0; k < 8; k++) if (((a[i] >> k) & 1) === ((b[i] >> k) & 1)) same++;
+      acc = same / (a.length * 8);
+    }
     const row: BenchRow = {
       id: d.id,
       label: d.label,
