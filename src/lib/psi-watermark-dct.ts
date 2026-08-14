@@ -269,7 +269,7 @@ function decodeFromVotes(votes: Float64Array, weight: Float64Array, blocks: numb
 }
 
 /** Candidate rescale factors tried by the detector (resize / screenshot recovery). */
-export const SCALE_CANDIDATES = [1, 2, 0.5, 1.5, 1 / 1.5, 4, 0.25, 3, 1 / 3];
+export const SCALE_CANDIDATES = [1, 2, 0.5, 0.8, 1.25, 1.5, 1 / 1.5, 4, 0.25];
 
 function rescale(img: ImageData, factor: number): ImageData | null {
   const w = Math.round(img.width * factor);
@@ -289,17 +289,42 @@ function rescale(img: ImageData, factor: number): ImageData | null {
   return ctx.getImageData(0, 0, w, h);
 }
 
-/** Detect the robust mark, brute-forcing tile rotation and rescale candidates. */
+/**
+ * Detect the robust mark. Search is staged so the common case stays fast:
+ *   A) each rescale candidate at grid offset (0,0)
+ *   B) if no lock, the full 8x8 grid-offset search (recovers arbitrary crops)
+ *      at the most promising scales
+ */
 export function detectDctWatermarkInImageData(img: ImageData, delta = DEFAULT_DELTA): Wm2Detection {
   let best: Wm2Detection = { ...EMPTY };
-  for (const scale of SCALE_CANDIDATES) {
-    const candidate = scale === 1 ? img : rescale(img, scale);
-    if (!candidate) continue;
-    if (candidate.width < 8 || candidate.height < 8) continue;
-    const { votes, weight, blocks } = softVotes(candidate, delta);
+  const cache = new Map<number, ImageData | null>();
+  const at = (scale: number) => {
+    if (!cache.has(scale)) cache.set(scale, scale === 1 ? img : rescale(img, scale));
+    return cache.get(scale) ?? null;
+  };
+
+  const probe = (scale: number, ox: number, oy: number) => {
+    const cand = at(scale);
+    if (!cand || cand.width < 8 + ox || cand.height < 8 + oy) return;
+    const luma = toLuma(cand);
+    const { votes, weight, blocks } = softVotes(luma, cand.width, cand.height, delta, ox, oy);
     const d = decodeFromVotes(votes, weight, blocks, scale);
-    if (d.syncScore > best.syncScore) best = d;
-    if (best.syncScore === 1) break;
+    if (d.syncScore > best.syncScore) best = { ...d, offsetX: ox, offsetY: oy };
+  };
+
+  for (const scale of SCALE_CANDIDATES) {
+    probe(scale, 0, 0);
+    if (best.syncScore === 1) return best;
+  }
+
+  for (const scale of SCALE_CANDIDATES) {
+    for (let oy = 0; oy < 8; oy++) {
+      for (let ox = 0; ox < 8; ox++) {
+        if (ox === 0 && oy === 0) continue;
+        probe(scale, ox, oy);
+        if (best.syncScore === 1) return best;
+      }
+    }
   }
   return best;
 }
