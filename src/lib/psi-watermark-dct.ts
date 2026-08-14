@@ -232,39 +232,49 @@ function softVotes(
   return { votes, weight, blocks };
 }
 
+/**
+ * Decode the tile. A crop translates the block grid, which shifts the tile in
+ * BOTH axes, so the search is over the 16x10 two-dimensional shift group
+ * (160 candidates) — the sync word tells us which shift is the true origin.
+ */
 function decodeFromVotes(votes: Float64Array, weight: Float64Array, blocks: number, scale: number): Wm2Detection {
   const bits = new Uint8Array(PAYLOAD_BITS);
   for (let i = 0; i < PAYLOAD_BITS; i++) bits[i] = votes[i] > 0 ? 1 : 0;
 
   let best: Wm2Detection = { ...EMPTY, blocks, scale };
   const syncBits = buildBits("0".repeat(64)).subarray(0, SYNC_BITS);
+  const shifted = new Uint8Array(PAYLOAD_BITS);
+  const srcIdx = new Int32Array(PAYLOAD_BITS);
 
-  for (let rot = 0; rot < PAYLOAD_BITS; rot++) {
-    let agree = 0;
-    for (let i = 0; i < SYNC_BITS; i++) {
-      if (bits[(i + rot) % PAYLOAD_BITS] === syncBits[i]) agree++;
-    }
-    const syncScore = agree / SYNC_BITS;
-    if (syncScore > best.syncScore) {
-      const rotated = new Uint8Array(PAYLOAD_BITS);
-      let wsum = 0, csum = 0;
-      for (let i = 0; i < PAYLOAD_BITS; i++) {
-        const j = (i + rot) % PAYLOAD_BITS;
-        rotated[i] = bits[j];
-        wsum += weight[j];
-        csum += Math.abs(votes[j]);
+  for (let sy = 0; sy < TILE_H; sy++) {
+    for (let sx = 0; sx < TILE_W; sx++) {
+      for (let r = 0; r < TILE_H; r++)
+        for (let c = 0; c < TILE_W; c++) {
+          const j = ((r + sy) % TILE_H) * TILE_W + ((c + sx) % TILE_W);
+          srcIdx[r * TILE_W + c] = j;
+          shifted[r * TILE_W + c] = bits[j];
+        }
+      let agree = 0;
+      for (let i = 0; i < SYNC_BITS; i++) if (shifted[i] === syncBits[i]) agree++;
+      const syncScore = agree / SYNC_BITS;
+      if (syncScore > best.syncScore) {
+        let wsum = 0, csum = 0;
+        for (let i = 0; i < PAYLOAD_BITS; i++) {
+          wsum += weight[srcIdx[i]];
+          csum += Math.abs(votes[srcIdx[i]]);
+        }
+        const bytes = bitsToBytes(shifted);
+        best = {
+          present: syncScore >= 0.9,
+          digest: bytesToHex(bytes.subarray(SYNC_WORD.length)),
+          confidence: wsum ? csum / wsum : 0,
+          syncScore,
+          blocks,
+          rotation: sy * TILE_W + sx,
+          scale,
+          method: WM2_METHOD,
+        };
       }
-      const bytes = bitsToBytes(rotated);
-      best = {
-        present: syncScore >= 0.9,
-        digest: bytesToHex(bytes.subarray(SYNC_WORD.length)),
-        confidence: wsum ? csum / wsum : 0,
-        syncScore,
-        blocks,
-        rotation: rot,
-        scale,
-        method: WM2_METHOD,
-      };
     }
   }
   return best;
