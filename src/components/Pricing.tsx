@@ -224,7 +224,7 @@ const Pricing = () => {
             </div>
             <p className="text-sm text-muted-foreground mb-5 flex-1">
               Sealing is free. This is one proof countersigned by the APEX PSI institutional trust
-              anchor (Ed25519 + LMS-W4-SHA256), Bitcoin-anchored via OpenTimestamps, and issued as a
+              anchor (Ed25519 + LMS-W4-SHA256), submitted to OpenTimestamps for Bitcoin timestamping, and issued as a
               regulator-ready PDF at a permanent public receipt URL. No subscription.
             </p>
             <ServiceCheckoutButton service="conformityReceipt" label="Get a countersigned receipt" featured />

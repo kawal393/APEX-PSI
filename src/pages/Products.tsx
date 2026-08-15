@@ -63,7 +63,7 @@ const products: Product[] = [
     cadence: CHECKOUT.conformityReceipt.cadence,
     who: "Anyone who needs a signed technical receipt for an audit, client or internal record.",
     summary:
-      "Sealing is free. What you buy is the countersignature: your hash additionally signed by the APEX PSI institutional trust anchor, Bitcoin-anchored, issued as a regulator-ready PDF.",
+      "Sealing is free. What you buy is the countersignature: your hash additionally signed by the APEX PSI institutional trust anchor, timestamped through OpenTimestamps, issued as a regulator-ready PDF.",
     features: [
       "Countersigned by the APEX PSI trust anchor",
       "Ed25519 + LMS-W4-SHA256 hybrid signature",

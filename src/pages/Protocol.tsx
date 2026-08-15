@@ -264,7 +264,7 @@ const Protocol = () => {
                   tag: "Optional",
                   items: [
                     "Anyone verifies at /verify without accounts",
-                    "Bitcoin-anchored timestamps via OpenTimestamps",
+                    "Bitcoin timestamping via OpenTimestamps (confirmation state shown live)",
                     "Offline verification supported",
                   ],
                 },

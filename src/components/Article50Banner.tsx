@@ -39,7 +39,9 @@ const Article50Banner = () => {
         { label: "Ledger entries", value: counts.total_seals.toLocaleString() },
         { label: "Approved seals", value: counts.approved_seals.toLocaleString() },
         { label: "Timestamp proofs", value: counts.ots_proofs.toLocaleString() },
-        { label: "Confirmed BTC anchors", value: counts.confirmed_anchors.toLocaleString() },
+        counts.confirmed_anchors > 0
+          ? { label: "Confirmed BTC anchors", value: counts.confirmed_anchors.toLocaleString() }
+          : { label: "BTC anchors awaiting confirmation", value: "pending" },
       ]
     : [];
 

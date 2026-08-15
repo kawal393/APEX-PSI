@@ -43,7 +43,7 @@ const CountersignUpsell = ({ reference, className = "" }: CountersignUpsellProps
         </li>
         <li className="flex items-start gap-2">
           <Bitcoin className="h-4 w-4 text-gold flex-shrink-0 mt-0.5" />
-          Bitcoin-anchored via OpenTimestamps, with the .ots proof included
+          submitted to OpenTimestamps for Bitcoin timestamping, with the .ots proof included
         </li>
         <li className="flex items-start gap-2">
           <FileCheck className="h-4 w-4 text-gold flex-shrink-0 mt-0.5" />

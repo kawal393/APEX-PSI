@@ -91,7 +91,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <span className="text-border">·</span>
             <a href="/llms.txt" className="hover:text-gold">llms.txt indexed</a>
             <span className="text-border">·</span>
-            <Link to="/stream" className="hover:text-gold">Bitcoin-anchored</Link>
+            <Link to="/stream" className="hover:text-gold">Bitcoin timestamping (OpenTimestamps)</Link>
             <span className="text-border">·</span>
             <Link to="/quantum" className="hover:text-gold">Post-quantum (NIST FIPS 204)</Link>
             <span className="text-border">·</span>
