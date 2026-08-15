@@ -155,7 +155,7 @@ const Forge = () => {
       setImgUrl(stamped);
       setMeta({ hash, receiptId: nd.receipt_id, merkleRoot: nd.merkle_root });
 
-      setStage("Writing in-band C2PA-compatible credentials + watermark…");
+      setStage("Writing in-band PSI manifest + robust watermark…");
       const stampedBlob = await (await fetch(stamped)).blob();
       const embedded = await embedInBandCredentials(stampedBlob, {
         sourceType: "aiGenerated",

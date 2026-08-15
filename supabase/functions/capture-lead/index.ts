@@ -52,7 +52,7 @@ function packEmail(name: string | null): { subject: string; html: string } {
         <ul style="line-height:1.9">
           <li><strong>Full technical specification</strong> — canonicalization, hybrid Ed25519 + ML-DSA-65 signatures, receipt schema, threat model and stated limitations: <a href="${SITE}/spec">${SITE}/spec</a></li>
           <li><strong>EU AI Act Article 50 clause mapping</strong> — requirement by requirement: <a href="${SITE}/eu-ai-act">${SITE}/eu-ai-act</a></li>
-          <li><strong>In-band marking and detection</strong> — C2PA-compatible JUMBF/APP11 embedding you can test on your own file: <a href="${SITE}/inband">${SITE}/inband</a></li>
+          <li><strong>In-band marking and detection</strong> — JUMBF-framed in-band PSI manifest embedding you can test on your own file: <a href="${SITE}/inband">${SITE}/inband</a></li>
           <li><strong>Public trust anchor</strong> — verify our signatures offline: <a href="${SITE}/.well-known/apex-psi-trust-anchor.json">trust anchor JSON</a></li>
           <li><strong>Seal a file yourself</strong> (client-side, nothing uploaded): <a href="${SITE}/pramaan">${SITE}/pramaan</a></li>
         </ul>

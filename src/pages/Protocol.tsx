@@ -245,7 +245,7 @@ const Protocol = () => {
                     "C2PA Content Credentials embedded in JPEG, PNG, MP4, WAV, PDF",
                     "Ed25519 + ML-DSA-65 hybrid signatures (post-quantum ready)",
                     "Tamperproof: metadata cannot be removed without breaking the signature",
-                    "Machine-readable: any C2PA-compatible tool can read and verify",
+                    "Machine-readable: JCS-canonical JSON, verifiable with the open-source detector",
                   ],
                 },
                 {

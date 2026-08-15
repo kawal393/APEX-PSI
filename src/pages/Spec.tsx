@@ -43,7 +43,7 @@ const Spec = () => (
       <title>APEX PSI Technical Specification — EU AI Act Article 50 Provenance</title>
       <meta
         name="description"
-        content="Full technical specification of the APEX PSI protocol: RFC 8785 canonicalization, Ed25519 + ML-DSA-65 hybrid signatures, C2PA-compatible APP11/JUMBF in-band manifests, Compliance-Receipt HTTP header, and EU AI Act Article 50 mapping."
+        content="Full technical specification of the APEX PSI protocol: RFC 8785 canonicalization, Ed25519 + ML-DSA-65 hybrid signatures, JUMBF-framed in-band PSI manifests, Compliance-Receipt HTTP header, and EU AI Act Article 50 mapping."
       />
       <link rel="canonical" href="https://ai-governance-standard.com/spec" />
       <meta property="og:title" content="APEX PSI — Full Technical Specification" />
@@ -72,7 +72,7 @@ const Spec = () => (
             under five minutes.
           </p>
           <div className="mt-8 flex flex-wrap gap-2">
-            {["IETF draft-singh-psi-00", "draft-singh-psi-http-01", "RFC 8785 (JCS)", "NIST FIPS 204", "C2PA-compatible", "MIT / Apache-2.0"].map((c) => (
+            {["IETF draft-singh-psi-00", "draft-singh-psi-http-01", "RFC 8785 (JCS)", "NIST FIPS 204", "JUMBF-framed (ISO 19566-2)", "MIT / Apache-2.0"].map((c) => (
               <span key={c} className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground border border-border/60 rounded-full px-3 py-1">
                 {c}
               </span>
@@ -212,14 +212,14 @@ root        = fold(parent, leaves)   // odd tail promoted unchanged`}
           </p>
         </Section>
 
-        <Section id="inband" n="05" title="In-band embedding (C2PA-compatible)">
+        <Section id="inband" n="05" title="In-band embedding (PSI-INBAND-v1)">
           <p className="text-muted-foreground mb-5">
             Article 50 describes machine-readable marking subject to technical feasibility. APEX PSI can write a
             receipt into supported files using selected container conventions associated with C2PA. This does not claim
             C2PA certification or interoperability with every C2PA-aware product.
           </p>
           <div className="rounded-lg border border-border bg-card/40 px-5 py-3">
-            <Row k="JPEG / PNG" v="APP11 / JUMBF box — C2PA-compatible container placement" />
+            <Row k="JPEG / PNG" v="APP11 marker segment carrying a JUMBF-framed PSI manifest" />
             <Row k="MP4 / MOV" v="ISO BMFF 'uuid' box at top level" />
             <Row k="PDF" v="embedded file stream + /Metadata XMP reference" />
             <Row k="WAV / MP3" v="RIFF chunk / ID3v2 PRIV frame" />

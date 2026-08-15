@@ -1,5 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX PSI — In-Band Signed Tamperproof Metadata (C2PA-compatible)
+// APEX PSI — In-Band Signed Tamperproof Metadata (PSI-INBAND-v1, JUMBF-framed).
+// NOTE: this is NOT C2PA. It borrows JUMBF framing (ISO 19566-2) for container
+// placement only; claims are JCS-canonical JSON signed with Ed25519 + ML-DSA-65,
+// not CBOR/COSE_Sign1. Do not describe it as C2PA or C2PA-compatible anywhere.
 //
 // EU AI Act Code of Practice on Transparent Generative AI, Section 1:
 // mandatory marking via "in-band signed metadata attached to the content
@@ -331,7 +334,7 @@ export interface EmbedResult {
 const VERIFY_BASE = "https://ai-governance-standard.com/verify";
 
 /**
- * Attach in-band, hybrid-signed, tamper-evident C2PA-compatible metadata
+ * Attach in-band, hybrid-signed, tamper-evident PSI-INBAND-v1 metadata
  * (and, for rasters, an invisible watermark) to a file.
  */
 export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptions = {}): Promise<EmbedResult> {
