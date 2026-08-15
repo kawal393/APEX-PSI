@@ -564,4 +564,4 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
   };
 }
 
-export { detectWatermarkInBlob };
+export { detectDctWatermarkInBlob as detectWatermarkInBlob };
