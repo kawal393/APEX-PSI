@@ -1,5 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX PSI — In-Band Signed Tamperproof Metadata (C2PA-compatible)
+// APEX PSI — In-Band Signed Tamperproof Metadata (PSI-INBAND-v1, JUMBF-framed).
+// NOTE: this is NOT C2PA. It borrows JUMBF framing (ISO 19566-2) for container
+// placement only; claims are JCS-canonical JSON signed with Ed25519 + ML-DSA-65,
+// not CBOR/COSE_Sign1. Do not describe it as C2PA or C2PA-compatible anywhere.
 //
 // EU AI Act Code of Practice on Transparent Generative AI, Section 1:
 // mandatory marking via "in-band signed metadata attached to the content
@@ -30,7 +33,13 @@ import {
   HybridSignature, HYBRID_SUITE, ISSUER_ID, TRUST_ANCHOR_URL,
 } from "@/lib/psi-pqc";
 import { jcsCanonicalize } from "@/lib/psi-canonicalize";
-import { watermarkImageToPng, detectWatermarkInBlob, WM_METHOD, WatermarkDetection } from "@/lib/psi-watermark";
+import {
+  watermarkImageRobust,
+  detectDctWatermarkInBlob,
+  WM2_METHOD,
+  WM2_SPEC,
+  Wm2Detection,
+} from "@/lib/psi-watermark-dct";
 
 export const PSI_BOX_MAGIC = "APEXPSI-C2PA-V1";
 export const PSI_MANIFEST_SPEC = "PSI-INBAND-v1";
@@ -331,7 +340,7 @@ export interface EmbedResult {
 const VERIFY_BASE = "https://ai-governance-standard.com/verify";
 
 /**
- * Attach in-band, hybrid-signed, tamper-evident C2PA-compatible metadata
+ * Attach in-band, hybrid-signed, tamper-evident PSI-INBAND-v1 metadata
  * (and, for rasters, an invisible watermark) to a file.
  */
 export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptions = {}): Promise<EmbedResult> {
@@ -349,7 +358,11 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
   let outName = name;
   if (opts.watermark && (container === "png" || container === "jpeg")) {
     const claimSeed = await sha256Hex(bytes);
-    bytes = await watermarkImageToPng(new Blob([bytes.slice().buffer as ArrayBuffer], { type: mime }), claimSeed);
+    bytes = await watermarkImageRobust(
+      new Blob([bytes.slice().buffer as ArrayBuffer], { type: mime }),
+      claimSeed,
+      { type: "image/png" }
+    );
     container = "png";
     watermarked = true;
     outName = name.replace(/\.(jpe?g|png|webp|bmp)$/i, "") + ".png";
@@ -390,7 +403,7 @@ export async function embedInBandCredentials(file: File | Blob, opts: EmbedOptio
         data: { alg: "sha256", hash: preEmbedSha256, exclusions: [{ box: PSI_BOX_MAGIC }] },
       },
       ...(watermarked
-        ? [{ label: "psi.watermark", data: { method: WM_METHOD, channels: "RGB-LSB", payload: "sync16+sha256" } }]
+        ? [{ label: "psi.watermark", data: { method: WM2_METHOD, domain: WM2_SPEC, payload: "sync32+sha256-128" } }]
         : []),
       ...(opts.extraAssertions ?? []),
     ],
@@ -472,7 +485,7 @@ export interface InBandVerification {
   mldsaValid: boolean;
   bindingValid: boolean;
   computedSha256: string | null;
-  watermark: WatermarkDetection | null;
+  watermark: Wm2Detection | null;
   verdict: "VALID" | "TAMPERED" | "UNSIGNED";
   /** Issuer declared in the claim (or null when unsigned). */
   issuer: string | null;
@@ -495,7 +508,7 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
   if (!boxBytes) boxBytes = bytes; // trailer/uuid/RIFF: scan raw
 
   const found = unpackBox(boxBytes);
-  const watermark = container === "png" || container === "jpeg" ? await detectWatermarkInBlob(file) : null;
+  const watermark = container === "png" || container === "jpeg" ? await detectDctWatermarkInBlob(file) : null;
 
   if (!found) {
     return {
@@ -519,7 +532,7 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
   const bindingValid = computedSha256 === manifest.claim.hard_binding.pre_embed_sha256;
   if (!bindingValid) notes.push("Hard binding mismatch — the asset bytes changed after sealing.");
   if (watermark && manifest.claim.assertions.some((a) => a.label === "psi.watermark")) {
-    if (!watermark.present) notes.push("Declared watermark could not be recovered (asset was re-encoded or cropped).");
+    if (!watermark.present) notes.push("Declared watermark could not be recovered — the raster was heavily re-encoded, rescaled or re-rendered.");
   }
 
   // Attribution: do the signing keys actually match the published anchor?
@@ -551,4 +564,4 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
   };
 }
 
-export { detectWatermarkInBlob };
+export { detectDctWatermarkInBlob as detectWatermarkInBlob };

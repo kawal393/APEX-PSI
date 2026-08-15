@@ -48,6 +48,8 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/eu-ai-act" className="hover:text-gold transition-colors">EU AI Act Compliance</Link></li>
               <li><Link to="/inband" className="hover:text-gold transition-colors">In-Band Metadata &amp; Watermark</Link></li>
+              <li><Link to="/robustness" className="hover:text-gold transition-colors">Robustness Benchmark</Link></li>
+              <li><Link to="/eu-code" className="hover:text-gold transition-colors">EU Code Section 1 Mapping</Link></li>
               <li><Link to="/protocol" className="hover:text-gold transition-colors">PSI Protocol</Link></li>
               <li><Link to="/gallows" className="hover:text-gold transition-colors">Verification Portal</Link></li>
               <li><Link to="/verify" className="hover:text-gold transition-colors">Verify Hash</Link></li>
@@ -89,7 +91,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <span className="text-border">·</span>
             <a href="/llms.txt" className="hover:text-gold">llms.txt indexed</a>
             <span className="text-border">·</span>
-            <Link to="/stream" className="hover:text-gold">Bitcoin-anchored</Link>
+            <Link to="/stream" className="hover:text-gold">Bitcoin timestamping (OpenTimestamps)</Link>
             <span className="text-border">·</span>
             <Link to="/quantum" className="hover:text-gold">Post-quantum (NIST FIPS 204)</Link>
             <span className="text-border">·</span>

@@ -55,6 +55,7 @@ const navLinks = [
     { label: "Registry", href: "/registry", isRoute: true },
     { label: "Protocol", href: "/protocol", isRoute: true },
     { label: "MCP", href: "/mcp", isRoute: true },
+    { label: "ROBUSTNESS", href: "/robustness", isRoute: true },
   ];
 
   useEffect(() => {

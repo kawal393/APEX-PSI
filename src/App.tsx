@@ -63,6 +63,8 @@ import Header from "./pages/Header";
 import Foundation from "./pages/Foundation";
 import EUAIAct from "./pages/EUAIAct";
 import InBand from "./pages/InBand";
+import Robustness from "./pages/Robustness";
+import EUCode from "./pages/EUCode";
 import Hardening from "./pages/Hardening";
 import Quantum from "./pages/Quantum";
 import Articles from "./pages/Articles";
@@ -206,6 +208,8 @@ const App = () => (
               <Route path="/foundation" element={<Foundation />} />
               <Route path="/eu-ai-act" element={<EUAIAct />} />
               <Route path="/inband" element={<InBand />} />
+              <Route path="/robustness" element={<Robustness />} />
+              <Route path="/eu-code" element={<EUCode />} />
               <Route path="/hardening" element={<Hardening />} />
               <Route path="/quantum" element={<Quantum />} />
               <Route path="/articles" element={<Articles />} />

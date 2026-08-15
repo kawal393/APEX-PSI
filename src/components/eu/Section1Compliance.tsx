@@ -7,7 +7,7 @@ import InBandTool from "@/components/eu/InBandTool";
 const IN_BAND = [
   {
     format: "JPEG",
-    mech: "APP11 marker segment carrying a JUMBF superbox (C2PA UUID). Multi-segment for manifests over 64 KB. Ed25519 + ML-DSA-65 signed.",
+    mech: "APP11 marker segment carrying a JUMBF-framed PSI manifest. Multi-segment for manifests over 64 KB. Ed25519 + ML-DSA-65 signed.",
   },
   {
     format: "PNG",

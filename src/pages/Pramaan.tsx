@@ -452,7 +452,7 @@ const Pramaan = () => {
           </p>
           <ul className="text-sm space-y-1.5 text-foreground/80">
             <li>· The signature travels WITH the file, not as a separate receipt</li>
-            <li>· Any C2PA-compatible tool (Adobe Content Authenticity, Microsoft Azure Content Credentials, Truepic) can verify it</li>
+            <li>· Verifiable with the open-source APEX PSI detector, offline and without an account</li>
             <li>· The metadata is tamperproof — removing it breaks the file integrity</li>
             <li>· Article 50 of the EU AI Act requires this in-band metadata</li>
           </ul>
