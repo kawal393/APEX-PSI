@@ -107,7 +107,7 @@ const InBandTool = () => {
           <h4 className="text-sm font-black uppercase tracking-widest text-foreground">1 · Mark the content</h4>
         </div>
         <p className="text-xs text-muted-foreground mb-4">
-          Signed metadata is written inside the file bytes (JPEG APP11/JUMBF, PNG caBX, MP4 uuid box, WAV C2PA chunk,
+          Signed metadata is written inside the file bytes (JPEG APP11 with JUMBF framing, PNG ancillary chunk, MP4 uuid box, WAV chunk,
           PDF trailing block). Nothing is uploaded — sealing runs entirely in your browser.
         </p>
 
@@ -150,7 +150,7 @@ const InBandTool = () => {
 
         <label className="flex items-center gap-2 text-xs text-foreground/80 mb-4 cursor-pointer">
           <input type="checkbox" checked={watermark} onChange={(e) => setWatermark(e.target.checked)} className="accent-[hsl(var(--gold))]" />
-          Also embed invisible watermark (images → lossless PNG output)
+          Also embed the robust transform-domain watermark (images → lossless PNG output)
         </label>
 
         <input
@@ -174,7 +174,7 @@ const InBandTool = () => {
             <Row k="Issuer" v={sealed.issuer} />
             <Row k="Container" v={`${sealed.container.toUpperCase()} — ${sealed.mechanism}`} mono={false} />
             <Row k="Signature suite" v={sealed.manifest.claim.signature_suite} />
-            <Row k="Watermark" v={sealed.watermarked ? "psi.lsb-spread-v1 (RGB LSB)" : "not applied"} />
+            <Row k="Watermark" v={sealed.watermarked ? "psi.dct-qim-v2 (block-DCT QIM)" : "not applied"} />
             <Row k="Hard binding" v={sealed.preEmbedSha256} />
             <Row k="Sealed file SHA-256" v={sealed.finalSha256} />
             <Row k="Claim digest" v={sealed.claimDigest} />
@@ -254,7 +254,7 @@ const InBandTool = () => {
               v={
                 check.watermark
                   ? check.watermark.present
-                    ? `recovered · confidence ${(check.watermark.confidence * 100).toFixed(1)}% · ${check.watermark.repeats} repeats`
+                    ? `recovered · confidence ${(check.watermark.confidence * 100).toFixed(1)}% · sync lock ${(check.watermark.syncScore * 100).toFixed(0)}%`
                     : "not detected"
                   : "n/a for this format"
               }
