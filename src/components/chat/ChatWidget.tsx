@@ -42,7 +42,7 @@ export default function ChatWidget() {
     if (!latest || latest.role !== "assistant" || latest.id === spokenMessageId.current) return;
     spokenMessageId.current = latest.id;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(latest.content.replace(/[#*_`\[\]()]/g, " "));
+    const utterance = new SpeechSynthesisUtterance(latest.content.replace(/[#*_`[\]()]/g, " "));
     utterance.rate = 1;
     window.speechSynthesis.speak(utterance);
   }, [isLoading, messages, supportsSpeechOutput, voiceReplies]);

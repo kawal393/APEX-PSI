@@ -25,7 +25,7 @@ export default function WitnessWall() {
   const [caption, setCaption] = useState("");
 
   useEffect(() => {
-    try { setItems(JSON.parse(localStorage.getItem(LS) || "[]")); } catch {}
+    try { setItems(JSON.parse(localStorage.getItem(LS) || "[]")); } catch { /* ignore */ }
   }, []);
 
   const post = () => {
@@ -54,7 +54,7 @@ export default function WitnessWall() {
     try {
       if (navigator.share) await navigator.share({ title: "APEX PRAMAAN", text, url });
       else { await navigator.clipboard.writeText(text); toast.success("Copied"); }
-    } catch {}
+    } catch { /* ignore */ }
   };
 
   return (

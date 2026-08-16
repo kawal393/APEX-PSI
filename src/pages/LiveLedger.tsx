@@ -212,8 +212,8 @@ export default function LiveLedger() {
                 The chain is empty. The next page view opens it.
               </Card>
             )}
-            {entries.map((e) => (
-              <Card key={e.entry_hash} className="p-4 hover:border-primary/40 transition-colors">
+            {entries.map((e, i) => (
+              <Card key={`${e.sequence_number}-${e.entry_hash}-${i}`} className="p-4 hover:border-primary/40 transition-colors">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
                   <Badge variant="outline" className="font-mono">
                     #{e.sequence_number}

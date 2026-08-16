@@ -42,7 +42,7 @@ export default function ModelRegistry() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    try { setItems(JSON.parse(localStorage.getItem(LS) || "[]")); } catch {}
+    try { setItems(JSON.parse(localStorage.getItem(LS) || "[]")); } catch { /* ignore */ }
   }, []);
 
   const register = async () => {

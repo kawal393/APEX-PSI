@@ -1732,6 +1732,13 @@ export type Database = {
             foreignKeyName: "tribunal_reviews_auditor_id_fkey"
             columns: ["auditor_id"]
             isOneToOne: false
+            referencedRelation: "public_tribunal_auditors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tribunal_reviews_auditor_id_fkey"
+            columns: ["auditor_id"]
+            isOneToOne: false
             referencedRelation: "tribunal_auditors"
             referencedColumns: ["id"]
           },
@@ -2000,6 +2007,90 @@ export type Database = {
           status?: string | null
           verification_time_ms?: number | null
           violation_found?: string | null
+        }
+        Relationships: []
+      }
+      public_supplier_directory: {
+        Row: {
+          created_at: string | null
+          display_name: string | null
+          domain: string | null
+          id: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_name?: string | null
+          domain?: string | null
+          id?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_name?: string | null
+          domain?: string | null
+          id?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      public_tribunal_auditors: {
+        Row: {
+          auditor_name: string | null
+          created_at: string | null
+          id: string | null
+          jurisdiction: string | null
+          organization: string | null
+          status: string | null
+        }
+        Insert: {
+          auditor_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          jurisdiction?: string | null
+          organization?: string | null
+          status?: string | null
+        }
+        Update: {
+          auditor_name?: string | null
+          created_at?: string | null
+          id?: string | null
+          jurisdiction?: string | null
+          organization?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      public_witness_attestations: {
+        Row: {
+          action_type: string | null
+          created_at: string | null
+          credential_id: string | null
+          id: string | null
+          notes: string | null
+          public_key: string | null
+          signature: string | null
+          target_ref: string | null
+        }
+        Insert: {
+          action_type?: string | null
+          created_at?: string | null
+          credential_id?: string | null
+          id?: string | null
+          notes?: string | null
+          public_key?: string | null
+          signature?: string | null
+          target_ref?: string | null
+        }
+        Update: {
+          action_type?: string | null
+          created_at?: string | null
+          credential_id?: string | null
+          id?: string | null
+          notes?: string | null
+          public_key?: string | null
+          signature?: string | null
+          target_ref?: string | null
         }
         Relationships: []
       }
