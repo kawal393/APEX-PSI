@@ -47,7 +47,7 @@ function shortTxid(hash: string) {
 }
 
 const Pramaan = () => {
-  const mode: "VERIFY" = "VERIFY";
+  const mode = "VERIFY" as const;
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState<AuditEntry | null>(null);
   const [audit, setAudit] = useState<AuditEntry[]>([]);

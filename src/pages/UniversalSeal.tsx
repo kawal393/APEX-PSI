@@ -77,7 +77,7 @@ const UniversalSeal = () => {
     try {
       const raw = localStorage.getItem("apex.seal.history");
       if (raw) setHistory(JSON.parse(raw));
-    } catch {}
+    } catch { /* ignore */ }
   }, []);
 
   const handleFile = useCallback(async (file: File) => {
@@ -136,7 +136,7 @@ const UniversalSeal = () => {
       setResult(sealed);
       const next = [sealed, ...history].slice(0, 25);
       setHistory(next);
-      try { localStorage.setItem("apex.seal.history", JSON.stringify(next)); } catch {}
+      try { localStorage.setItem("apex.seal.history", JSON.stringify(next)); } catch { /* ignore */ }
       toast.success("Sealed. Truth anchored to APEX ledger.");
     } catch (e: any) {
       toast.error(e.message || "Could not seal file");
