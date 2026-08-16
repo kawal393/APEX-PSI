@@ -2003,6 +2003,30 @@ export type Database = {
         }
         Relationships: []
       }
+      public_supplier_directory: {
+        Row: {
+          created_at: string | null
+          display_name: string | null
+          domain: string | null
+          id: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          display_name?: string | null
+          domain?: string | null
+          id?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          display_name?: string | null
+          domain?: string | null
+          id?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_assessment_by_share_id: {
