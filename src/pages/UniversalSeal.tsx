@@ -25,6 +25,8 @@ import {
 import { toast } from "sonner";
 import ApexVerifiedStamp from "@/components/ApexVerifiedStamp";
 import { createSHA256 } from "hash-wasm";
+import EngineLicenseGate, { useEngineLicence, readAcceptance } from "@/components/psi/EngineLicenseGate";
+import { buildSealEnvelope, PSI_SCHEMA_ID } from "@/lib/psi-schema";
 
 const NOTARIZE_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize";
 const VERIFY_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/verify-hash";
@@ -72,6 +74,7 @@ const UniversalSeal = () => {
   const [history, setHistory] = useState<SealResult[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropRef = useRef<HTMLDivElement>(null);
+  const { accept, accepted } = useEngineLicence();
 
   useEffect(() => {
     try {
@@ -82,6 +85,10 @@ const UniversalSeal = () => {
 
   const handleFile = useCallback(async (file: File) => {
     if (!file) return;
+    if (!readAcceptance()) {
+      toast.error("Accept the sealing engine licence to generate a seal.");
+      return;
+    }
     setBusy(true);
     setResult(null);
     try {
@@ -168,25 +175,35 @@ const UniversalSeal = () => {
     toast.success(label);
   };
 
-  const downloadReceipt = () => {
+  const downloadReceipt = async () => {
     if (!result) return;
+    const licence = readAcceptance();
+    // Schema-conformant envelope (PSI-SEAL/1) produced by the licensed engine.
+    const envelope = await buildSealEnvelope({
+      name: result.fileName,
+      size_bytes: result.fileSize,
+      media_type: result.fileType,
+      hash: result.sha256,
+      tier: licence?.tier ?? "personal",
+      accepted_at: licence?.accepted_at,
+    });
+    if (result.ed25519_signature && envelope.signature) {
+      envelope.signature.value = result.ed25519_signature;
+    }
     const receipt = {
-      spec: "APEX-SEAL-v1",
-      sealed_at: result.timestamp,
-      file: { name: result.fileName, size_bytes: result.fileSize, mime: result.fileType },
-      sha256: result.sha256,
-      receipt_id: result.receipt_id,
+      ...envelope,
       anchor: {
         ledger: "apex-psi",
+        receipt_id: result.receipt_id,
         merkle_leaf: result.merkle_leaf,
         merkle_root: result.merkle_root,
-        ed25519_signature: result.ed25519_signature,
         predicate: result.predicate_applied,
       },
       verify_url: VERIFY_URL,
-      verify_instructions: "POST { sha256_hash: '<your file hash>' } to verify_url to confirm this seal.",
+      verify_instructions:
+        "Verify with the MIT-licensed @apex/psi-verifier, or POST { hash: '<your file hash>' } to verify_url.",
       issuer: "apex.psi.universal.seal",
-      version: result.receipt_version || "PSI-1.2",
+      conformance: `Only ${PSI_SCHEMA_ID}-conformant seals are considered PSI-compliant.`,
     };
     const blob = new Blob([JSON.stringify(receipt, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -272,10 +289,14 @@ async function apexSeal(file) {
               <h2 className="text-lg font-bold">Universal Seal — Any File, Any Size</h2>
             </div>
 
+            {!accepted && (
+              <EngineLicenseGate className="mb-5" onAccept={(tier) => accept(tier)} />
+            )}
+
             <div
               ref={dropRef}
-              onClick={() => !busy && inputRef.current?.click()}
-              className="border-2 border-dashed border-emerald-400/30 hover:border-emerald-400/70 transition-colors rounded-lg p-10 text-center cursor-pointer bg-background/40"
+              onClick={() => !busy && accepted && inputRef.current?.click()}
+              className={`border-2 border-dashed transition-colors rounded-lg p-10 text-center bg-background/40 ${accepted ? "border-emerald-400/30 hover:border-emerald-400/70 cursor-pointer" : "border-border opacity-50 cursor-not-allowed"}`}
             >
               {busy ? (
                 <>

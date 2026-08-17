@@ -59,6 +59,7 @@ import EmbedSeal from "./pages/EmbedSeal";
 import Forge from "./pages/Forge";
 import Standard from "./pages/Standard";
 import Spec from "./pages/Spec";
+import License from "./pages/License";
 import Header from "./pages/Header";
 import Foundation from "./pages/Foundation";
 import EUAIAct from "./pages/EUAIAct";
@@ -204,6 +205,7 @@ const App = () => (
               <Route path="/forge" element={<Forge />} />
               <Route path="/standard" element={<Standard />} />
               <Route path="/spec" element={<Spec />} />
+              <Route path="/license" element={<License />} />
               <Route path="/header" element={<Header />} />
               <Route path="/foundation" element={<Foundation />} />
               <Route path="/eu-ai-act" element={<EUAIAct />} />

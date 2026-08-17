@@ -1,0 +1,44 @@
+{
+  "schema": "PSI-SEAL/1.0.0",
+  "title": "APEX PSI Canonical Seal Schema",
+  "copyright": "© 2026 APEX Infrastructure — PSI-SEAL/1 canonical seal schema. All rights reserved.",
+  "status": "normative",
+  "canonicalization": "RFC 8785 (JCS)",
+  "hash": "SHA-256",
+  "signature_suite": ["Ed25519", "LMS-W4-SHA256 (NIST SP 800-208)"],
+  "licensing": {
+    "model": "dual",
+    "verifier": {
+      "license": "MIT",
+      "package": "@apex/psi-verifier",
+      "terms": "Free forever, for everyone, no permission required."
+    },
+    "generator": {
+      "license": "APEX PSI Sealing Engine Licence v1",
+      "url": "https://ai-governance-standard.com/license",
+      "personal_use": "free",
+      "commercial_use": "PSI-05 royalty terms",
+      "acceptance": "click-through at point of use"
+    },
+    "stewardship": "APEX PSI Foundation (in formation) — perpetual; verification remains MIT forever."
+  },
+  "field_order": ["schema", "schema_digest", "sealed_at", "subject", "hash", "merkle", "signature", "licence"],
+  "rules": [
+    "R1  Envelope serialisation: RFC 8785 JSON Canonicalization Scheme (JCS), UTF-8, no BOM.",
+    "R2  Field set is closed. Unknown top-level fields render a seal non-conformant.",
+    "R3  Field order in the emitted receipt: schema, schema_digest, sealed_at, subject, hash, merkle, signature, licence.",
+    "R4  Digests: lowercase hexadecimal, exactly 64 characters, no 'sha256:' prefix inside the envelope.",
+    "R5  Hash algorithm: SHA-256 over the raw octet stream of the subject; no transport encoding, no trailing padding.",
+    "R6  sealed_at: RFC 3339 UTC with exactly three fractional digits and a literal 'Z' (e.g. 2026-08-17T09:00:00.000Z).",
+    "R7  subject.size_bytes: non-negative integer, exact octet length. subject.name: NFC-normalised UTF-8 string.",
+    "R8  Merkle assembly: binary tree over leaf digests in submission order; each parent = SHA-256(left_bytes || right_bytes) over 32-byte raw digests; an odd node is promoted, never duplicated.",
+    "R9  merkle.leaf = SHA-256 of the ASCII string 'PSI1:' || hash. Domain separation is mandatory.",
+    "R10 seal_hash = SHA-256(JCS(envelope minus the signature and licence members)).",
+    "R11 Signature suite: Ed25519 over the ASCII seal_hash; optional hybrid post-quantum LMS-W4-SHA256 (NIST SP 800-208).",
+    "R12 Every seal MUST carry schema and schema_digest. Only schema-conformant seals are considered PSI-compliant."
+  ],
+  "conformance": "Only schema-conformant seals are considered PSI-compliant. Outputs that deviate from this specification fail verification even if functionally similar.",
+  "disclaimer": "Seals are deterministic mathematical statements about byte state and time. They are never a personal certification or a statement of fact about the sealed content.",
+  "spec_page": "https://ai-governance-standard.com/spec",
+  "license_page": "https://ai-governance-standard.com/license"
+}
