@@ -1,0 +1,85 @@
+APEX PSI SEALING ENGINE LICENCE v1
+(Generator / sealing engine — NOT the verifier)
+Copyright (c) 2026 APEX Infrastructure. All rights reserved.
+
+────────────────────────────────────────────────────────────────────────
+0. SCOPE
+────────────────────────────────────────────────────────────────────────
+This licence governs the APEX PSI Sealing Engine: any software, service,
+binary, endpoint or code path that PRODUCES a PSI seal, receipt, envelope
+or Compliance-Receipt conforming to the PSI-SEAL/1 canonical schema.
+
+It does NOT govern verification. Verification software is released under
+the MIT licence (see packages/psi-verifier/LICENSE) and is free forever,
+for everyone, without permission or payment.
+
+The PSI-SEAL/1 canonical schema — its field ordering, normalisation rules,
+data formatting, padding, hash construction, Merkle assembly, timestamp
+precision and receipt structure — is a copyrighted technical specification
+and an original work of authorship. It is licensed for READING, IMPLEMENTING
+A VERIFIER, and INTEROPERATING. It is not licensed for building a competing
+seal generator.
+
+────────────────────────────────────────────────────────────────────────
+1. GRANT — PERSONAL AND NON-COMMERCIAL
+────────────────────────────────────────────────────────────────────────
+Permission is granted, free of charge, to use the Sealing Engine to create
+seals for personal, educational, journalistic, research and other
+non-commercial purposes, in perpetuity.
+
+────────────────────────────────────────────────────────────────────────
+2. GRANT — COMMERCIAL AND INSTITUTIONAL (PSI-05 ROYALTY TERMS)
+────────────────────────────────────────────────────────────────────────
+Any sealing activity carried out by, for, or on behalf of a commercial
+entity, government body, regulator, exchange, insurer, or institution —
+including internal compliance use — requires a PSI-05 royalty licence.
+PSI-05 royalty tiers are published at
+https://ai-governance-standard.com/standards/psi-05
+
+────────────────────────────────────────────────────────────────────────
+3. CLICK-THROUGH ACCEPTANCE
+────────────────────────────────────────────────────────────────────────
+Activating any "Generate", "Seal", "Stamp" or equivalent control, or calling
+any generator API endpoint, constitutes explicit and informed acceptance of
+this licence and of the applicable royalty terms in Section 2. The accepted
+terms and acceptance timestamp are recorded inside each emitted seal in the
+`licence` member.
+
+────────────────────────────────────────────────────────────────────────
+4. CONFORMANCE
+────────────────────────────────────────────────────────────────────────
+Only seals produced in exact conformance with PSI-SEAL/1 — carrying the
+schema identifier and matching schema digest, and byte-exact under RFC 8785
+canonicalisation — are PSI-compliant. Outputs that deviate, even if
+functionally similar, WILL fail verification. Presenting non-conformant
+output as PSI-compliant is misrepresentation and infringement.
+
+────────────────────────────────────────────────────────────────────────
+5. NO WARRANTY — NATURE OF OUTPUT
+────────────────────────────────────────────────────────────────────────
+THE ENGINE AND ALL OUTPUTS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+KIND, EXPRESS OR IMPLIED. Outputs are deterministic mathematical statements
+computed per the specification. They evidence that specific bytes existed in
+a specific state at a specific time. They are NEVER a personal certification,
+an endorsement, a legal opinion, or a statement of fact about the truth of
+the sealed content. Where an assessment is expressed, it is a Modelled
+Opinion and is labelled as such. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM USE OF THE
+ENGINE OR ITS OUTPUTS.
+
+────────────────────────────────────────────────────────────────────────
+6. PERPETUITY AND STEWARDSHIP
+────────────────────────────────────────────────────────────────────────
+The copyright in the PSI-SEAL/1 specification and this licence are, upon its
+establishment, irrevocably assigned to the APEX PSI Foundation (in formation)
+as perpetual steward, on the binding condition that:
+  (a) verification remains MIT-licensed and free forever;
+  (b) the schema is never narrowed, forked or relicensed in a way that breaks
+      existing conformant seals;
+  (c) generator royalty terms remain published, non-discriminatory and
+      uniformly applied.
+These terms survive the author, any corporate reorganisation, and any change
+of steward. Should no steward exist, Sections 1, 4, 5 and the MIT verifier
+grant remain in force in perpetuity.
+
+Contact: contact@ai-governance-standard.com

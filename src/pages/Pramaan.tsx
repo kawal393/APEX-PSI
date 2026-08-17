@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Camera, Shield, Anchor, Download, CheckCircle2, FileCheck, Cpu, Eye, Copy, Sparkles, Share2, MapPin, Stamp } from "lucide-react";
 import { embedInBandCredentials } from "@/lib/c2pa-inband";
 import { toast } from "sonner";
+import { PSI_SCHEMA_ID, psiSchemaDigest, ENGINE_LICENCE_TERMS } from "@/lib/psi-schema";
 
 type AuditEntry = {
   id: string;
@@ -152,10 +153,17 @@ const Pramaan = () => {
     }
   };
 
-  const downloadPramanJSON = () => {
+  const downloadPramanJSON = async () => {
     if (!current) return;
     const receipt = {
       spec: "PRAMAN-SPEC-v1",
+      schema: PSI_SCHEMA_ID,
+      schema_digest: await psiSchemaDigest(),
+      licence: {
+        engine: "APEX PSI Sealing Engine v1",
+        terms: ENGINE_LICENCE_TERMS,
+        verifier: "MIT — @apex/psi-verifier",
+      },
       sealed_at: current.ts,
       file: { name: current.fileName, size_bytes: current.size },
       sha256: current.sha256,
