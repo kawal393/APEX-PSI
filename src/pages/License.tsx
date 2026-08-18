@@ -110,6 +110,43 @@ const License = () => {
         </section>
 
         <section className="max-w-7xl mx-auto px-4 mt-14">
+          <Card className="p-6 border-border">
+            <h2 className="text-sm font-bold tracking-[0.2em] uppercase mb-2">
+              Conformance enforcement — verifier v1.1.0
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-3xl">
+              From v1.1.0 the MIT verifier rejects non-conformant input by default rather than
+              merely reporting it, so no pipeline accepts a malformed seal by accident. The
+              rejection is deterministic and actionable: it states the canonical schema digest,
+              every failed normative rule, and where a conformant seal is produced. Verification
+              itself remains free forever, in both the TypeScript and Python distributions, which
+              compute an identical schema digest.
+            </p>
+            <pre className="mt-4 overflow-x-auto rounded-md border border-border bg-background/60 p-4 text-xs leading-relaxed text-muted-foreground">
+{`PSI SEAL INVALID — schema: PSI-SEAL/1.0.0
+Must match canonical schema digest: <sha-256 of the normative rule set>
+  - R12: schema_digest does not match the PSI-SEAL/1 rule set
+Generate a conformant seal → https://ai-governance-standard.com/seal
+Canonical schema → /.well-known/psi-schema.json
+Override for legacy data only: verify(seal, { enforce: false })`}
+            </pre>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Link to="/seal">
+                <Button size="sm" variant="hero">Generate a conformant seal</Button>
+              </Link>
+              <Link to="/verify">
+                <Button size="sm" variant="heroOutline">Verify free</Button>
+              </Link>
+              <a href="/.well-known/psi-schema.json" target="_blank" rel="noreferrer">
+                <Button size="sm" variant="ghost">Machine-readable schema</Button>
+              </a>
+            </div>
+          </Card>
+        </section>
+
+
+
+        <section className="max-w-7xl mx-auto px-4 mt-14">
           <Card className="p-6">
             <div className="flex items-center gap-2 mb-2">
               <FileCode className="h-5 w-5 text-gold" />
