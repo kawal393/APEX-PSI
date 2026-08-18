@@ -123,6 +123,74 @@ export async function verifySeal(input: unknown): Promise<ConformanceResult> {
   };
 }
 
+// ── v1.1.0 ENFORCEMENT LAYER ────────────────────────────────────────────
+// Verification stays MIT and free forever. What changed in 1.1.0 is the
+// DEFAULT: a non-conformant seal is REJECTED, not merely reported, and the
+// rejection tells the caller exactly where to obtain a conformant seal.
+
+/** Where a valid seal is produced. Printed in every rejection. */
+export const PSI_SEAL_URL = "https://ai-governance-standard.com/seal";
+
+/** Machine-readable schema + licence discovery document. */
+export const PSI_SCHEMA_URL = "https://ai-governance-standard.com/.well-known/psi-schema.json";
+
+/** Thrown by `verify()` when `enforce` is true (the default) and the seal fails. */
+export class PsiSealInvalidError extends Error {
+  readonly name = "PsiSealInvalidError";
+  readonly code = "PSI_SEAL_INVALID";
+  constructor(readonly result: ConformanceResult, readonly canonicalDigest: string) {
+    super(formatRejection(result, canonicalDigest));
+  }
+}
+
+/** Canonical rejection text. Stable, greppable, actionable. */
+export function formatRejection(result: ConformanceResult, canonicalDigest: string): string {
+  return [
+    `PSI SEAL INVALID — schema: ${PSI_SCHEMA_ID}`,
+    `Must match canonical schema digest: ${canonicalDigest}`,
+    `Received schema: ${result.schema_id ?? "(none)"}  digest match: ${result.schema_digest_match}`,
+    ...result.failures.map((f) => `  - ${f}`),
+    `Generate a conformant seal → ${PSI_SEAL_URL}`,
+    `Canonical schema → ${PSI_SCHEMA_URL}`,
+    `Override for legacy data only: verify(seal, { enforce: false })`,
+  ].join("\n");
+}
+
+export interface VerifyOptions {
+  /**
+   * Reject non-conformant seals by throwing `PsiSealInvalidError`.
+   * DEFAULT: true (changed in v1.1.0 — previously report-only).
+   * Set false only to inspect legacy data without failing the pipeline.
+   */
+  enforce?: boolean;
+}
+
+/**
+ * Primary entry point. Enforced by default.
+ *
+ * @throws PsiSealInvalidError when the seal is not PSI-SEAL/1 conformant
+ *         and `enforce` is left at its default (true).
+ */
+export async function verify(input: unknown, options: VerifyOptions = {}): Promise<ConformanceResult> {
+  const enforce = options.enforce !== false;
+  const result = await verifySeal(input);
+  if (!result.conformant && enforce) {
+    throw new PsiSealInvalidError(result, await psiSchemaDigest());
+  }
+  return result;
+}
+
+/** Boolean convenience form. Never throws. */
+export async function isConformant(input: unknown): Promise<boolean> {
+  return (await verifySeal(input)).conformant;
+}
+
+/** Throwing assertion, identical to `verify(input)`. */
+export async function assertSeal(input: unknown): Promise<ConformanceResult> {
+  return verify(input, { enforce: true });
+}
+
+
 /** Canonical Merkle root (R8) — promoted odd node, raw 32-byte concatenation. */
 export async function merkleRoot(leaves: string[]): Promise<string> {
   if (!leaves.length) throw new Error("R8: at least one leaf required");

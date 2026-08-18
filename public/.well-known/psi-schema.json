@@ -5,24 +5,44 @@
   "status": "normative",
   "canonicalization": "RFC 8785 (JCS)",
   "hash": "SHA-256",
-  "signature_suite": ["Ed25519", "LMS-W4-SHA256 (NIST SP 800-208)"],
+  "signature_suite": [
+    "Ed25519",
+    "LMS-W4-SHA256 (NIST SP 800-208)"
+  ],
   "licensing": {
     "model": "dual",
     "verifier": {
       "license": "MIT",
       "package": "@apex/psi-verifier",
-      "terms": "Free forever, for everyone, no permission required."
+      "terms": "Free forever, for everyone, no permission required.",
+      "version": "1.1.0",
+      "packages": [
+        "@apex/psi-verifier (npm)",
+        "psi-verifier (PyPI)"
+      ],
+      "enforcement": "Enforced by default from v1.1.0: non-conformant seals are rejected, not merely reported. Legacy override: enforce=false.",
+      "digest_parity": "TypeScript and Python distributions compute an identical schema digest."
     },
     "generator": {
       "license": "APEX PSI Sealing Engine Licence v1",
       "url": "https://ai-governance-standard.com/license",
       "personal_use": "free",
       "commercial_use": "PSI-05 royalty terms",
-      "acceptance": "click-through at point of use"
+      "acceptance": "click-through at point of use",
+      "seal_url": "https://ai-governance-standard.com/seal"
     },
     "stewardship": "APEX PSI Foundation (in formation) — perpetual; verification remains MIT forever."
   },
-  "field_order": ["schema", "schema_digest", "sealed_at", "subject", "hash", "merkle", "signature", "licence"],
+  "field_order": [
+    "schema",
+    "schema_digest",
+    "sealed_at",
+    "subject",
+    "hash",
+    "merkle",
+    "signature",
+    "licence"
+  ],
   "rules": [
     "R1  Envelope serialisation: RFC 8785 JSON Canonicalization Scheme (JCS), UTF-8, no BOM.",
     "R2  Field set is closed. Unknown top-level fields render a seal non-conformant.",
@@ -40,5 +60,11 @@
   "conformance": "Only schema-conformant seals are considered PSI-compliant. Outputs that deviate from this specification fail verification even if functionally similar.",
   "disclaimer": "Seals are deterministic mathematical statements about byte state and time. They are never a personal certification or a statement of fact about the sealed content.",
   "spec_page": "https://ai-governance-standard.com/spec",
-  "license_page": "https://ai-governance-standard.com/license"
+  "license_page": "https://ai-governance-standard.com/license",
+  "conformance_enforcement": {
+    "default": "reject",
+    "error_code": "PSI_SEAL_INVALID",
+    "remediation_url": "https://ai-governance-standard.com/seal",
+    "override": "verify(seal, { enforce: false }) / verify(seal, enforce=False) — legacy data only"
+  }
 }
