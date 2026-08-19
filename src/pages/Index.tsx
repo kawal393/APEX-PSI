@@ -74,14 +74,15 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
-        <Products embedded />
-        <ConnectAIPill />
         <Hero />
+        <ConnectAIPill />
         <Article50Banner />
 
         <Declaration />
         <TwoPillars />
+        <Products embedded />
         <LeadCaptureOffer />
+
 
         <HowToUse />
         <SovereignSealStrip />
