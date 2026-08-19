@@ -151,7 +151,9 @@ Deno.serve(async (req) => {
     // Attach the real OpenTimestamps / Bitcoin anchor state, if any
     const { data: proof } = await supabase
       .from("ots_proofs")
-      .select("id, status, calendar_url, bitcoin_block_height, bitcoin_txid, target_hash")
+      .select(
+        "id, status, calendar_url, bitcoin_block_height, bitcoin_txid, confirmations, submitted_at, created_at, target_hash",
+      )
       .or(`commit_id.eq.${entry.commit_id},target_hash.eq.${entry.merkle_root ?? ""}`)
       .order("created_at", { ascending: false })
       .limit(1)
@@ -188,6 +190,9 @@ Deno.serve(async (req) => {
               calendar_url: proof.calendar_url,
               bitcoin_block_height: proof.bitcoin_block_height,
               bitcoin_txid: proof.bitcoin_txid,
+              confirmations: proof.confirmations ?? null,
+              submitted_at: proof.submitted_at ?? proof.created_at ?? null,
+              created_at: proof.created_at ?? null,
               explorer_url: proof.bitcoin_txid ? `https://mempool.space/tx/${proof.bitcoin_txid}` : null,
               ots_download_url: `${functionsBase}/ots-proof?id=${proof.id}`,
             }

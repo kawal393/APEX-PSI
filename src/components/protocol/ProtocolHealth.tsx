@@ -40,9 +40,9 @@ export default function ProtocolHealth() {
     { label: "Approved seals", value: counts ? String(counts.approved_seals) : "—" },
     { label: "Post-quantum signed", value: counts ? String(counts.pq_signed_seals) : "—" },
     { label: "Public attestations", value: counts ? String(counts.attestations) : "—" },
-    { label: "Anchors confirmed", value: counts ? String(counts.confirmed_anchors) : "—" },
+    { label: "Anchors confirmed in a block", value: counts ? String(counts.confirmed_anchors) : "—" },
     {
-      label: "OTS proofs pending",
+      label: "Anchors submitted, not yet confirmed",
       value: counts ? String(Math.max(0, counts.ots_proofs - counts.confirmed_anchors)) : "—",
     },
   ];
@@ -66,6 +66,7 @@ export default function ProtocolHealth() {
         <span className="border border-border/60 rounded px-2 py-1">ML-DSA-65 (FIPS 204) · active</span>
         <span className="border border-border/60 rounded px-2 py-1">LMS-W4-SHA256 (SP 800-208) · active</span>
         <span className="border border-border/60 rounded px-2 py-1">RFC 8785 canonicalisation</span>
+        <span className="border border-gold/40 text-gold rounded px-2 py-1">Schema PSI-SEAL/1.0.0 · Verifier 1.1.1</span>
       </div>
       {error && <p className="mt-4 text-xs text-destructive font-mono">Health read failed: {error}</p>}
     </section>

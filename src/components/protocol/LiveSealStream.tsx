@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import AnchorState, { type AnchorInput } from "@/components/psi/AnchorState";
 
 interface Entry {
   commit_id: string;
@@ -13,11 +14,12 @@ interface Entry {
 
 /**
  * Live Seal Stream — real-time feed of the evidence ledger.
- * Rows arrive over Realtime; anchor status is read from ots_proofs.
+ * Rows arrive over Realtime; anchor state is read from ots_proofs and rendered
+ * in exactly three states: confirmed, submitted, or not anchored.
  */
 export default function LiveSealStream() {
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [anchors, setAnchors] = useState<Record<string, { status: string; txid: string | null }>>({});
+  const [anchors, setAnchors] = useState<Record<string, AnchorInput>>({});
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,13 +37,13 @@ export default function LiveSealStream() {
 
       const { data: proofs } = await supabase
         .from("ots_proofs")
-        .select("commit_id,status,bitcoin_txid")
+        .select("commit_id,status,bitcoin_txid,bitcoin_block_height,confirmations,submitted_at,created_at")
         .order("created_at", { ascending: false })
         .limit(100);
       if (!active || !proofs) return;
-      const map: Record<string, { status: string; txid: string | null }> = {};
+      const map: Record<string, AnchorInput> = {};
       for (const p of proofs) {
-        if (!map[p.commit_id]) map[p.commit_id] = { status: p.status, txid: p.bitcoin_txid };
+        if (!map[p.commit_id]) map[p.commit_id] = p as AnchorInput;
       }
       setAnchors(map);
     };
@@ -93,27 +95,14 @@ export default function LiveSealStream() {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono">
-                <span className="border border-border/60 rounded px-1.5 py-0.5">{e.status ?? "PENDING"}</span>
+                <span className="border border-border/60 rounded px-1.5 py-0.5">{e.status ?? "UNRECORDED"}</span>
                 {e.ed25519_signature && <span className="border border-border/60 rounded px-1.5 py-0.5">Ed25519</span>}
                 {e.pq_signature ? (
                   <span className="border border-gold/40 text-gold rounded px-1.5 py-0.5">PQ signed</span>
                 ) : (
-                  <span className="border border-border/60 rounded px-1.5 py-0.5 text-muted-foreground">PQ pending</span>
+                  <span className="border border-border/60 rounded px-1.5 py-0.5 text-muted-foreground">PQ absent</span>
                 )}
-                {anchor?.txid ? (
-                  <a
-                    href={`https://mempool.space/tx/${anchor.txid}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="border border-gold/40 text-gold rounded px-1.5 py-0.5 hover:bg-gold/10"
-                  >
-                    anchor confirmed ↗
-                  </a>
-                ) : (
-                  <span className="border border-border/60 rounded px-1.5 py-0.5 text-muted-foreground">
-                    anchor {anchor?.status ?? "unbatched"}
-                  </span>
-                )}
+                <AnchorState anchor={anchor} variant="inline" />
               </div>
             </div>
           );

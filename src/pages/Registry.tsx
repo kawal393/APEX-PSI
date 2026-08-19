@@ -27,49 +27,8 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
   non_compliant: { label: "UNVERIFIED", color: "text-destructive border-destructive/30 bg-destructive/10", icon: Shield },
 };
 
-// Simulated growth entities — these represent real-world engagement signals
-// seeded deterministically from date math so the list grows organically
-const SEED_DATE = new Date("2026-02-15").getTime();
-const INDUSTRIES = ["FinTech", "HealthTech", "InsurTech", "LegalTech", "EdTech", "GovTech", "RetailAI", "MfgAI", "LogisticsAI", "MediaAI"];
-const REGIONS = ["EU", "DACH", "Nordics", "UK", "APAC", "MENA"];
-const MODES: ("SHIELD" | "SWORD" | "JUDGE")[] = ["SHIELD", "SHIELD", "SHIELD", "SWORD", "SWORD", "JUDGE"];
-const STATUSES = ["compliant", "mostly_compliant", "partially_compliant", "compliant", "mostly_compliant"];
-
-function generateSimulatedEntries(): RegistryEntry[] {
-  const now = Date.now();
-  const daysSinceSeed = Math.floor((now - SEED_DATE) / 86400000);
-  // Grow by ~2-3 entities per day, cap at 120
-  const count = Math.min(120, Math.floor(daysSinceSeed * 2.3) + 8);
-  const entries: RegistryEntry[] = [];
-
-  for (let i = 0; i < count; i++) {
-    // Deterministic pseudo-random from index
-    const seed = (i * 2654435761) >>> 0;
-    const industry = INDUSTRIES[seed % INDUSTRIES.length];
-    const region = REGIONS[(seed >> 4) % REGIONS.length];
-    const mode = MODES[(seed >> 8) % MODES.length];
-    const status = STATUSES[(seed >> 12) % STATUSES.length];
-    const score = status === "compliant" ? 90 + (seed % 11) : status === "mostly_compliant" ? 70 + (seed % 20) : 50 + (seed % 20);
-    const daysAgo = Math.floor((seed % Math.max(1, daysSinceSeed)));
-    const verifiedDate = new Date(now - daysAgo * 86400000);
-
-    // Generate realistic company-style names
-    const prefixes = ["Nordic", "Alpine", "Meridian", "Apex", "Sovereign", "Lattice", "Sentinel", "Vanguard", "Citadel", "Horizon", "Arbor", "Catalyst", "Pinnacle", "Quantum", "Stratos"];
-    const suffixes = ["Systems", "Intelligence", "Analytics", "Labs", "Group", "Technologies", "Solutions", "Corp", "Networks", "Partners"];
-    const name = `${prefixes[seed % prefixes.length]} ${industry} ${suffixes[(seed >> 6) % suffixes.length]}`;
-
-    entries.push({
-      id: `sim-${seed.toString(16).padStart(8, "0")}-${i.toString(16).padStart(4, "0")}`,
-      company_name: name,
-      status,
-      overall_score: Math.min(100, score),
-      trio_mode: mode,
-      updated_at: verifiedDate.toISOString(),
-      region,
-    });
-  }
-  return entries;
-}
+// No synthetic entities. The registry lists only rows that exist in the
+// database. An empty registry renders as empty — nothing may pretend.
 
 const Registry = () => {
   const [entries, setEntries] = useState<RegistryEntry[]>([]);
@@ -96,9 +55,7 @@ const Registry = () => {
           updated_at: d.updated_at || new Date().toISOString(),
         }));
 
-      // Merge with simulated growth entries
-      const simulated = generateSimulatedEntries();
-      const all = [...realEntries, ...simulated].sort(
+      const all = [...realEntries].sort(
         (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
       );
 
@@ -217,7 +174,6 @@ const Registry = () => {
                   filtered.map((entry, i) => {
                     const cfg = statusConfig[entry.status] || statusConfig.non_compliant;
                     const StatusIcon = cfg.icon;
-                    const isSimulated = entry.id.startsWith("sim-");
                     return (
                       <motion.div
                         key={entry.id}
@@ -229,17 +185,8 @@ const Registry = () => {
                         <div className="col-span-4 flex items-center gap-3">
                           <StatusIcon className={`h-5 w-5 shrink-0 ${entry.status === "compliant" ? "text-compliant" : "text-muted-foreground"}`} />
                           <div>
-                            {isSimulated ? (
-                              <>
-                                <p className="font-bold text-sm text-foreground select-none blur-[5px]">{entry.company_name}</p>
-                                <p className="text-[10px] text-muted-foreground/50 italic">NDA-protected entity</p>
-                              </>
-                            ) : (
-                              <>
-                                <p className="font-bold text-sm text-foreground">{entry.company_name}</p>
-                                <p className="text-[10px] text-muted-foreground font-mono">{entry.id.slice(0, 8)}...</p>
-                              </>
-                            )}
+                            <p className="font-bold text-sm text-foreground">{entry.company_name}</p>
+                            <p className="text-[10px] text-muted-foreground font-mono">{entry.id.slice(0, 8)}...</p>
                           </div>
                         </div>
                         <div className="col-span-2 flex items-center justify-center">
@@ -261,15 +208,13 @@ const Registry = () => {
                           <span className="text-xs text-muted-foreground">
                             {new Date(entry.updated_at).toLocaleDateString()}
                           </span>
-                          {!isSimulated && (
-                            <button
-                              onClick={() => copyProofLink(entry.id)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer p-1"
-                              title="Copy verification link"
-                            >
-                              <Copy className="h-3 w-3 text-muted-foreground hover:text-primary" />
-                            </button>
-                          )}
+                          <button
+                            onClick={() => copyProofLink(entry.id)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer p-1"
+                            title="Copy verification link"
+                          >
+                            <Copy className="h-3 w-3 text-muted-foreground hover:text-primary" />
+                          </button>
                         </div>
                       </motion.div>
                     );

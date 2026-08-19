@@ -124,9 +124,9 @@ const Ledger = () => {
               </Link>
               {!company ? (
                 <div className="mt-6 rounded-md border border-border p-8">
-                  <h1 className="text-2xl font-bold uppercase">Entry pending</h1>
+                  <h1 className="text-2xl font-bold uppercase">Entry unavailable</h1>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    No recomputation record has been published for “{slug}” yet.
+                    No recomputation record exists for “{slug}”. Nothing is pending — nothing was submitted.
                   </p>
                 </div>
               ) : (

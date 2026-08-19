@@ -813,10 +813,13 @@ export type Database = {
           bitcoin_txid: string | null
           calendar_url: string
           commit_id: string
+          confirmations: number | null
           created_at: string
           id: string
+          last_polled_at: string | null
           ots_base64: string
           status: string
+          submitted_at: string | null
           target_hash: string
           updated_at: string
         }
@@ -825,10 +828,13 @@ export type Database = {
           bitcoin_txid?: string | null
           calendar_url: string
           commit_id: string
+          confirmations?: number | null
           created_at?: string
           id?: string
+          last_polled_at?: string | null
           ots_base64: string
           status?: string
+          submitted_at?: string | null
           target_hash: string
           updated_at?: string
         }
@@ -837,10 +843,13 @@ export type Database = {
           bitcoin_txid?: string | null
           calendar_url?: string
           commit_id?: string
+          confirmations?: number | null
           created_at?: string
           id?: string
+          last_polled_at?: string | null
           ots_base64?: string
           status?: string
+          submitted_at?: string | null
           target_hash?: string
           updated_at?: string
         }

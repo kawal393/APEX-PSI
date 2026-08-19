@@ -6,7 +6,8 @@ import {
   verifySeal,
   formatRejection,
   formatAcceptance,
-  psiSchemaDigest,
+  psiSchemaDigestFromDocument,
+  PSI_SCHEMA_ID,
   PSI_VERIFIER_VERSION,
 } from "../../../packages/psi-verifier/src/index";
 
@@ -17,6 +18,11 @@ import {
  * The Python column is the byte-string emitted by `psi-verifier=={version}` for
  * the same input, committed from an actual run of the Python distribution.
  * A green result means the two byte-strings are identical.
+ *
+ * The schema digest shown is NOT hardcoded: the widget fetches the published
+ * /.well-known/psi-schema.json and runs the verifier's own canonicalisation
+ * over it at runtime, so any visitor can compare the 64-hex value against the
+ * npm or PyPI package output.
  */
 
 type Fixture = { id: string; label: string; input: unknown; python: string };
@@ -88,17 +94,30 @@ const ParityWidget = () => {
   const [active, setActive] = useState(FIXTURES[0].id);
   const [tsOutput, setTsOutput] = useState("");
   const [digest, setDigest] = useState("");
+  const [digestSource, setDigestSource] = useState<"document" | "unavailable">("unavailable");
 
   const fixture = useMemo(() => FIXTURES.find((f) => f.id === active) ?? FIXTURES[0], [active]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const canonical = await psiSchemaDigest();
+      // Digest truth: fetch the published schema and canonicalise it here.
+      let canonical = "";
+      let source: "document" | "unavailable" = "unavailable";
+      try {
+        const res = await fetch("/.well-known/psi-schema.json", { cache: "no-store" });
+        if (res.ok) {
+          canonical = await psiSchemaDigestFromDocument(await res.json());
+          source = "document";
+        }
+      } catch {
+        source = "unavailable";
+      }
       const result = await verifySeal(fixture.input);
-      const text = result.conformant ? formatAcceptance() : formatRejection(result, canonical);
+      const text = result.conformant ? formatAcceptance() : formatRejection(result, canonical || DIGEST);
       if (!cancelled) {
         setDigest(canonical);
+        setDigestSource(source);
         setTsOutput(text);
       }
     })();
@@ -114,20 +133,33 @@ const ParityWidget = () => {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-sm font-bold tracking-[0.2em] uppercase">
-            Cross-language parity — verifier v{PSI_VERIFIER_VERSION}
+            Cross-language parity — Schema {PSI_SCHEMA_ID} · Verifier {PSI_VERIFIER_VERSION}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-2xl">
             The same input is run through the TypeScript verifier live in your browser and compared,
             byte for byte, against the output committed from the Python distribution.
           </p>
         </div>
-        <div
-          className={`inline-flex items-center justify-center gap-2 rounded-md border px-4 py-2 text-xs font-mono font-bold uppercase tracking-[0.15em] ${
-            parity ? "border-success/40 text-success bg-success/10" : "border-destructive/40 text-destructive bg-destructive/10"
-          }`}
-        >
-          {parity ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
-          {parity ? "Parity confirmed" : "Parity mismatch"}
+        <div className="flex flex-col items-stretch gap-2 sm:items-end">
+          <div
+            className={`inline-flex items-center justify-center gap-2 rounded-md border px-4 py-2 text-xs font-mono font-bold uppercase tracking-[0.15em] ${
+              parity ? "border-success/40 text-success bg-success/10" : "border-destructive/40 text-destructive bg-destructive/10"
+            }`}
+          >
+            {parity ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+            {parity ? "Parity confirmed" : "Parity mismatch"}
+          </div>
+          <p className="font-mono text-[10px] leading-relaxed text-muted-foreground break-all sm:max-w-[22rem] sm:text-right">
+            {digestSource === "document" ? (
+              <>
+                schema digest (computed live from /.well-known/psi-schema.json):
+                <br />
+                <span className="text-gold">{digest}</span>
+              </>
+            ) : (
+              <span className="text-warning">schema digest: UNAVAILABLE — schema document could not be fetched</span>
+            )}
+          </p>
         </div>
       </div>
 
@@ -161,7 +193,8 @@ const ParityWidget = () => {
       </div>
 
       <p className="mt-4 font-mono text-[11px] text-muted-foreground break-all">
-        canonical schema digest: {digest || "…"}
+        Compare this digest against the package output: <code>node -e "require('@apex/psi-verifier')"</code> or{" "}
+        <code>python -c "import psi_verifier"</code>. Verified, not asserted.
       </p>
     </Card>
   );
