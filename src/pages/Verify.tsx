@@ -378,6 +378,7 @@ const Verify = () => {
         {/* Cross-language parity + free packages */}
         <section className="px-4 -mt-8">
           <div className="container mx-auto max-w-5xl space-y-4">
+            <VerifyTheVerifier />
             <ParityWidget />
             <div className="grid gap-3 sm:grid-cols-2">
               <a
