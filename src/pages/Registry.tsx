@@ -83,7 +83,7 @@ const Registry = () => {
   return (
     <>
       <Helmet>
-        <title>APEX PSI Registry — Verified Deployments — Apex PSI — Universal Verification Layer</title>
+        <title>Apex PSI Registry — Verified Deployments — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Public registry of live APEX PSI deployments, their attestation feeds, and verifier trust anchors." />
         <link rel="canonical" href="https://ai-governance-standard.com/registry" />
         <meta property="og:title" content="APEX PSI Registry — Verified Deployments" />

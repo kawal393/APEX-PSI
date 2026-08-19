@@ -27,7 +27,7 @@ const Architecture = () => {
   return (
     <>
       <Helmet>
-        <title>Architecture — APEX PSI Verification Infrastructure — Apex PSI — Universal Verification Layer</title>
+        <title>Architecture Verification Infrastructure — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Three-node lattice, tri-verified attestations, Bitcoin anchoring, and zero-knowledge predicates powering APEX PSI." />
         <link rel="canonical" href="https://ai-governance-standard.com/architecture" />
         <meta property="og:title" content="Architecture — APEX PSI Verification Infrastructure" />

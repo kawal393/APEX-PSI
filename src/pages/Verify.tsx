@@ -341,7 +341,7 @@ const Verify = () => {
   return (
     <>
       <Helmet>
-        <title>Verify a Hash — APEX PSI Public Portal — Apex PSI — Universal Verification Layer</title>
+        <title>Verify a Hash Public Portal — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Verify any evidence hash against the APEX PSI ledger. Permissionless, public, cryptographically enforced." />
         <link rel="canonical" href="https://ai-governance-standard.com/verify" />
         <meta property="og:title" content="Verify a Hash — APEX PSI Public Portal" />

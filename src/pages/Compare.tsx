@@ -44,7 +44,7 @@ const Compare = () => {
   return (
     <>
       <Helmet>
-        <title>APEX PSI vs. Alternatives — Feature Comparison — Apex PSI — Universal Verification Layer</title>
+        <title>Apex PSI vs. Alternatives — Feature Comparison — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="How APEX PSI compares to policy-only, self-attested, and closed compliance platforms. Verifiability, openness, and cost." />
         <link rel="canonical" href="https://ai-governance-standard.com/compare" />
         <meta property="og:title" content="APEX PSI vs. Alternatives — Feature Comparison" />

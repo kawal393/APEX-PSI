@@ -58,7 +58,7 @@ const Hardening = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>APEX PSI v3 — Hardening Layer (Predicate Proofs, Quarantine, Challenges) — Apex PSI — Universal Verification Layer</title>
+        <title>Apex PSI v3 — Hardening Layer (Predicate Proofs, Quarantine, Challenges) — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Live public ledger of verifiable logic proofs, decentralized model quarantines under t-of-n lattice consensus, and open challenges against notarized AI decisions." />
       </Helmet>
       <Navbar />

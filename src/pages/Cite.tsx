@@ -55,7 +55,7 @@ export default function Cite() {
   return (
     <>
       <Helmet>
-        <title>Cite APEX PSI — BibTeX · IETF · APA · RIS — Apex PSI — Universal Verification Layer</title>
+        <title>Cite Apex PSI — BibTeX · IETF · APA · RIS — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Official citation formats for APEX PSI: BibTeX, IETF, APA, and RIS. For academics, regulators, journalists, and standards bodies." />
         <link rel="canonical" href="https://ai-governance-standard.com/cite" />
       </Helmet>

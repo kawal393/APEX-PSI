@@ -31,7 +31,7 @@ const rules = [
 const Challenge = () => (
   <div className="min-h-screen bg-background text-foreground">
     <Helmet>
-      <title>Break APEX PSI — Public Bounty | The Open Challenge — Apex PSI — Universal Verification Layer</title>
+      <title>Break Apex PSI — Public Bounty | The Open Challenge — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="Break the protocol or build on it. APEX PSI is open-source, signed, anchored, and public. We dare the world to crack it."

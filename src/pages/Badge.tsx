@@ -78,7 +78,7 @@ const Badge = () => {
   return (
     <>
       <Helmet>
-        <title>Trust Badge — Display Your APEX PSI Score — Apex PSI — Universal Verification Layer</title>
+        <title>Trust Badge — Display Your Apex PSI Score — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Embed a verifiable trust badge on your site. Real-time score, tamper-proof link back to your public attestation." />
         <link rel="canonical" href="https://ai-governance-standard.com/badge" />
         <meta property="og:title" content="Trust Badge — Display Your APEX PSI Score" />
