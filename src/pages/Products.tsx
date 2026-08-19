@@ -226,7 +226,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
     <>
       {!embedded && (
       <Helmet>
-        <title>Apex PSI Products &amp; Pricing — The AI Governance Standard — Apex PSI — Universal Verification Layer</title>
+        <title>Products &amp; Pricing — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="APEX PSI is an open AI governance evidence protocol. Review free tools and priced receipt, API, registry and institutional evidence services."
