@@ -95,6 +95,7 @@ export async function buildHelloPsiSeal(opts: {
 /** Envelope rendered in the normative display order — rule R3. */
 export function renderEnvelope(envelope: HelloPsiEnvelope): string {
   const ordered: Record<string, unknown> = {};
-  for (const key of HELLO_PSI_FIELD_ORDER) ordered[key] = (envelope as Record<string, unknown>)[key];
+  const src = envelope as unknown as Record<string, unknown>;
+  for (const key of HELLO_PSI_FIELD_ORDER) ordered[key] = src[key];
   return JSON.stringify(ordered, null, 2);
 }
