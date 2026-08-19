@@ -10,7 +10,7 @@ const useProtocolMetrics = () => {
     const fetchCount = async () => {
       try {
         const { count: ledgerCount } = await supabase
-          .from("gallows_ledger")
+          .from("gallows_public_ledger")
           .select("*", { count: "exact", head: true });
         setCount(ledgerCount ?? 0);
       } catch {
