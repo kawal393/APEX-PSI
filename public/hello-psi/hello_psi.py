@@ -27,7 +27,7 @@ SCHEMA_ID = "PSI-SEAL/1.0.0"
 VECTOR_SEALED_AT = "2026-01-01T00:00:00.000Z"
 SUBJECT_NAME = "hello-psi-input"
 # SHA-256 over the JCS form of the live /.well-known/psi-schema.json.
-SCHEMA_DIGEST = "__SCHEMA_DIGEST__"
+SCHEMA_DIGEST = "454743698e1b23d5eddb7fc4a97ae1c8c33047921ef360d8e6c86d61f2fe9e77"
 
 _ESCAPES = {
     '"': '\\"',
