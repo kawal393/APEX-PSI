@@ -375,7 +375,7 @@ const Verify = () => {
         </section>
 
         {/* Cross-language parity + free packages */}
-        <section className="px-4 mt-4">
+        <section className="px-4 -mt-8">
           <div className="container mx-auto max-w-5xl space-y-4">
             <ParityWidget />
             <div className="grid gap-3 sm:grid-cols-2">
@@ -402,7 +402,7 @@ const Verify = () => {
         </section>
 
         {/* Verification Tabs */}
-        <section className="px-4 -mt-8">
+        <section className="px-4 mt-10">
           <div className="container mx-auto max-w-3xl">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 mb-6">
