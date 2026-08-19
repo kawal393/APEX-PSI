@@ -1967,11 +1967,17 @@ export type Database = {
           merkle_proof: Json | null
           merkle_root: string | null
           phase: string | null
+          pq_algorithm: string | null
+          pq_signature: Json | null
           predicate_id: string | null
           proof_hash: string | null
           proven_at: string | null
+          ratification_hash: string | null
+          ratified_at: string | null
           sequence_number: number | null
           status: string | null
+          tribunal_votes_approve: number | null
+          tribunal_votes_reject: number | null
           verification_time_ms: number | null
           violation_found: string | null
         }
@@ -1988,11 +1994,17 @@ export type Database = {
           merkle_proof?: Json | null
           merkle_root?: string | null
           phase?: string | null
+          pq_algorithm?: string | null
+          pq_signature?: Json | null
           predicate_id?: string | null
           proof_hash?: string | null
           proven_at?: string | null
+          ratification_hash?: string | null
+          ratified_at?: string | null
           sequence_number?: number | null
           status?: string | null
+          tribunal_votes_approve?: number | null
+          tribunal_votes_reject?: number | null
           verification_time_ms?: number | null
           violation_found?: string | null
         }
@@ -2009,11 +2021,17 @@ export type Database = {
           merkle_proof?: Json | null
           merkle_root?: string | null
           phase?: string | null
+          pq_algorithm?: string | null
+          pq_signature?: Json | null
           predicate_id?: string | null
           proof_hash?: string | null
           proven_at?: string | null
+          ratification_hash?: string | null
+          ratified_at?: string | null
           sequence_number?: number | null
           status?: string | null
+          tribunal_votes_approve?: number | null
+          tribunal_votes_reject?: number | null
           verification_time_ms?: number | null
           violation_found?: string | null
         }
