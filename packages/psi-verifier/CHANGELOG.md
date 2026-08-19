@@ -3,6 +3,19 @@
 All notable changes to the MIT-licensed PSI verifier. Verification is, and
 remains, free forever.
 
+## 1.1.1 — Parity release
+
+- Strict cross-language parity: the TypeScript and Python distributions emit
+  **byte-identical** rejection text for the same input, with identical casing
+  and punctuation.
+- Every finding carries a readable rule citation, e.g.
+  `PSI-SEAL v1.1.1 REJECT: schema_digest mismatch — rule 4.2`.
+- Added `PSI_VERIFIER_VERSION`, `PSI_RULE_CITATIONS`, `rejectLine()` /
+  `reject_line()` and `formatAcceptance()` / `format_acceptance()`.
+- Schema digest and Merkle root are unchanged and identical across both
+  distributions: `6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9`.
+- Every rejection closes with: *verified, not asserted; trust the math, not the maker.*
+
 ## 1.1.0 — Enforcement release
 
 **Intentional breaking change: enforcement is now the default.**

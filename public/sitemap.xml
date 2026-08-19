@@ -246,6 +246,42 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/how-to-prove-an-ai-decision-existed-at-a-specific-time-ul9ndc</loc>
+    <lastmod>2026-08-19T06:07:53.498Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-requirements-2sfule</loc>
+    <lastmod>2026-08-19T06:07:53.498Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ietf-draft-singh-psi-00-verifiable-ai-compliance-84cijy</loc>
+    <lastmod>2026-08-19T06:07:53.498Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ed25519-signatures-for-secure-ai-audit-trails-iwzzlg</loc>
+    <lastmod>2026-08-19T03:07:31.441Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/post-quantum-signatures-for-ai-ml-dsa-and-lms-t7h64v</loc>
+    <lastmod>2026-08-19T03:07:31.441Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/prove-an-ai-decision-existed-at-a-specific-time-nfdzjq</loc>
+    <lastmod>2026-08-19T03:07:31.441Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/how-to-prove-an-ai-decision-existed-at-a-specific-time-wg8u9v</loc>
     <lastmod>2026-08-19T00:07:18.624Z</lastmod>
     <changefreq>weekly</changefreq>

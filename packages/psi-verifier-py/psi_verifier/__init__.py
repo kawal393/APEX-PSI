@@ -6,9 +6,9 @@ conformant seals requires the licensed APEX PSI Sealing Engine.
 
 Zero dependencies. Python 3.8+.
 
-v1.1.0 — ENFORCEMENT RELEASE: ``verify()`` now rejects non-conformant seals
-by default (``enforce=True``) and the rejection states where to obtain a
-conformant seal.
+v1.1.1 — PARITY RELEASE: ``verify()`` rejects non-conformant seals by default
+(``enforce=True``) and every rejection line is byte-identical to the
+TypeScript distribution, carrying a readable rule citation.
 """
 
 from __future__ import annotations
@@ -19,7 +19,8 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
+PSI_VERIFIER_VERSION = __version__
 
 PSI_SCHEMA_ID = "PSI-SEAL/1.0.0"
 PSI_SEAL_URL = "https://ai-governance-standard.com/seal"
@@ -39,6 +40,25 @@ PSI_SCHEMA_RULES: Sequence[str] = (
     "R11 Signature suite: Ed25519 over the ASCII seal_hash; optional hybrid post-quantum LMS-W4-SHA256 (NIST SP 800-208).",
     "R12 Every seal MUST carry schema and schema_digest. Only schema-conformant seals are considered PSI-compliant.",
 )
+
+PSI_RULE_CITATIONS = {
+    "not_object": "1.1",
+    "closed_field_set": "2.1",
+    "schema_identifier": "4.1",
+    "schema_digest": "4.2",
+    "hash_encoding": "5.1",
+    "sealed_at": "6.1",
+    "size_bytes": "7.1",
+    "leaf_missing": "8.1",
+    "leaf_mismatch": "9.1",
+    "seal_hash": "10.1",
+}
+
+
+def reject_line(detail: str, rule: str) -> str:
+    """Canonical single-line rejection. Byte-identical to the TypeScript build."""
+    return f"PSI-SEAL v{PSI_VERIFIER_VERSION} REJECT: {detail} \u2014 rule {rule}"
+
 
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
 _RFC3339_MS = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
@@ -108,59 +128,85 @@ class PsiSealInvalidError(Exception):
 
 def format_rejection(result: ConformanceResult, canonical_digest: str) -> str:
     lines = [
-        f"PSI SEAL INVALID — schema: {PSI_SCHEMA_ID}",
-        f"Must match canonical schema digest: {canonical_digest}",
-        f"Received schema: {result.schema_id or '(none)'}  digest match: {result.schema_digest_match}",
+        reject_line(f"seal is not conformant to {PSI_SCHEMA_ID}", PSI_RULE_CITATIONS["not_object"]),
+        f"canonical schema digest: {canonical_digest}",
+        f"received schema: {result.schema_id or '(none)'} (digest match: {'true' if result.schema_digest_match else 'false'})",
+        "findings:",
     ]
-    lines += [f"  - {f}" for f in result.failures]
+    lines += [f"  {f}" for f in result.failures]
     lines += [
-        f"Generate a conformant seal → {PSI_SEAL_URL}",
-        f"Canonical schema → {PSI_SCHEMA_URL}",
-        "Override for legacy data only: verify(seal, enforce=False)",
+        f"generate a conformant seal: {PSI_SEAL_URL}",
+        f"canonical schema: {PSI_SCHEMA_URL}",
+        "legacy escape hatch (report-only): enforce=false",
+        "verified, not asserted; trust the math, not the maker.",
     ]
     return "\n".join(lines)
+
+
+def format_acceptance() -> str:
+    """Canonical acceptance line. Byte-identical to the TypeScript distribution."""
+    return f"PSI-SEAL v{PSI_VERIFIER_VERSION} ACCEPT: conformant seal"
 
 
 def verify_seal(seal: Any) -> ConformanceResult:
     """Report-only conformance check. Never raises."""
     if not isinstance(seal, dict):
-        return ConformanceResult(False, None, False, False, ["Not a JSON object"])
+        return ConformanceResult(
+            False, None, False, False,
+            [reject_line("input is not a JSON object", PSI_RULE_CITATIONS["not_object"])],
+        )
 
     failures: List[str] = []
     expected = psi_schema_digest()
 
     if seal.get("schema") != PSI_SCHEMA_ID:
-        failures.append(f'R12: schema must be "{PSI_SCHEMA_ID}"')
+        failures.append(
+            reject_line(
+                f"schema identifier mismatch, expected {PSI_SCHEMA_ID}",
+                PSI_RULE_CITATIONS["schema_identifier"],
+            )
+        )
     digest_match = seal.get("schema_digest") == expected
     if not digest_match:
-        failures.append("R12: schema_digest does not match the PSI-SEAL/1 rule set")
+        failures.append(reject_line("schema_digest mismatch", PSI_RULE_CITATIONS["schema_digest"]))
 
     extra = [k for k in seal if k not in _ALLOWED]
     if extra:
-        failures.append("R2: unknown top-level fields: " + ", ".join(extra))
+        failures.append(
+            reject_line("unknown top-level fields: " + ", ".join(extra), PSI_RULE_CITATIONS["closed_field_set"])
+        )
     if not _RFC3339_MS.match(str(seal.get("sealed_at") or "")):
-        failures.append("R6: sealed_at precision/format invalid")
+        failures.append(
+            reject_line(
+                "sealed_at is not RFC 3339 UTC with three fractional digits",
+                PSI_RULE_CITATIONS["sealed_at"],
+            )
+        )
     hash_hex = str(seal.get("hash") or "")
     if not _HEX64.match(hash_hex):
-        failures.append("R4/R5: hash must be 64 lowercase hex characters")
+        failures.append(
+            reject_line("hash is not 64 lowercase hexadecimal characters", PSI_RULE_CITATIONS["hash_encoding"])
+        )
 
     subject = seal.get("subject")
     size = subject.get("size_bytes") if isinstance(subject, dict) else None
     if not isinstance(size, int) or isinstance(size, bool) or size < 0:
-        failures.append("R7: subject.size_bytes invalid")
+        failures.append(
+            reject_line("subject.size_bytes is not a non-negative integer", PSI_RULE_CITATIONS["size_bytes"])
+        )
 
     seal_hash_match = False
     merkle = seal.get("merkle") if isinstance(seal.get("merkle"), dict) else None
     if _HEX64.match(hash_hex) and merkle and merkle.get("leaf"):
         if psi_leaf(hash_hex) != merkle["leaf"]:
-            failures.append("R9: merkle.leaf mismatch")
+            failures.append(reject_line("merkle.leaf mismatch", PSI_RULE_CITATIONS["leaf_mismatch"]))
         signature = seal.get("signature") if isinstance(seal.get("signature"), dict) else None
         if signature and signature.get("seal_hash"):
             seal_hash_match = psi_seal_hash(seal) == signature["seal_hash"]
             if not seal_hash_match:
-                failures.append("R10: seal_hash mismatch")
+                failures.append(reject_line("seal_hash mismatch", PSI_RULE_CITATIONS["seal_hash"]))
     else:
-        failures.append("R9: merkle.leaf missing")
+        failures.append(reject_line("merkle.leaf missing", PSI_RULE_CITATIONS["leaf_missing"]))
 
     schema_id = seal.get("schema")
     return ConformanceResult(
@@ -173,7 +219,7 @@ def verify_seal(seal: Any) -> ConformanceResult:
 
 
 def verify(seal: Any, enforce: bool = True) -> ConformanceResult:
-    """Primary entry point. Enforced by default (changed in v1.1.0).
+    """Primary entry point. Enforced by default (since v1.1.0).
 
     Raises ``PsiSealInvalidError`` when the seal is not PSI-SEAL/1 conformant.
     """
@@ -205,11 +251,15 @@ def merkle_root(leaves: Sequence[str]) -> str:
 
 __all__ = [
     "PSI_SCHEMA_ID",
+    "PSI_RULE_CITATIONS",
+    "PSI_VERIFIER_VERSION",
+    "reject_line",
     "PSI_SCHEMA_RULES",
     "PSI_SEAL_URL",
     "PSI_SCHEMA_URL",
     "ConformanceResult",
     "PsiSealInvalidError",
+    "format_acceptance",
     "format_rejection",
     "is_conformant",
     "jcs",

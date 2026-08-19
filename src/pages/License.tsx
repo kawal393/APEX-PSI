@@ -112,7 +112,7 @@ const License = () => {
         <section className="max-w-7xl mx-auto px-4 mt-14">
           <Card className="p-6 border-border">
             <h2 className="text-sm font-bold tracking-[0.2em] uppercase mb-2">
-              Conformance enforcement — verifier v1.1.0
+              Conformance enforcement — verifier v1.1.1
             </h2>
             <p className="text-sm text-muted-foreground max-w-3xl">
               From v1.1.0 the MIT verifier rejects non-conformant input by default rather than
@@ -120,15 +120,19 @@ const License = () => {
               rejection is deterministic and actionable: it states the canonical schema digest,
               every failed normative rule, and where a conformant seal is produced. Verification
               itself remains free forever, in both the TypeScript and Python distributions, which
-              compute an identical schema digest.
+              compute an identical schema digest. Since v1.1.1 the rejection text itself is byte-identical
+              across both distributions, and every line carries a readable rule citation.
             </p>
             <pre className="mt-4 overflow-x-auto rounded-md border border-border bg-background/60 p-4 text-xs leading-relaxed text-muted-foreground">
-{`PSI SEAL INVALID — schema: PSI-SEAL/1.0.0
-Must match canonical schema digest: <sha-256 of the normative rule set>
-  - R12: schema_digest does not match the PSI-SEAL/1 rule set
-Generate a conformant seal → https://ai-governance-standard.com/seal
-Canonical schema → /.well-known/psi-schema.json
-Override for legacy data only: verify(seal, { enforce: false })`}
+{`PSI-SEAL v1.1.1 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+canonical schema digest: <sha-256 of the normative rule set>
+received schema: PSI-SEAL/1.0.0 (digest match: false)
+findings:
+  PSI-SEAL v1.1.1 REJECT: schema_digest mismatch — rule 4.2
+generate a conformant seal: https://ai-governance-standard.com/seal
+canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
+legacy escape hatch (report-only): enforce=false
+verified, not asserted; trust the math, not the maker.`}
             </pre>
             <div className="mt-5 flex flex-wrap gap-2">
               <Link to="/seal">

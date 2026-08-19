@@ -199,6 +199,11 @@ export function formatRejection(result: ConformanceResult, canonicalDigest: stri
 }
 
 
+/** Canonical acceptance line. Byte-identical in the Python distribution. */
+export function formatAcceptance(): string {
+  return `PSI-SEAL v${PSI_VERIFIER_VERSION} ACCEPT: conformant seal`;
+}
+
 export interface VerifyOptions {
   /**
    * Reject non-conformant seals by throwing `PsiSealInvalidError`.
@@ -239,16 +244,16 @@ export async function merkleRoot(leaves: string[]): Promise<string> {
   if (!leaves.length) throw new Error("R8: at least one leaf required");
   const toBytes = (h: string) => {
     const c = h.toLowerCase();
-    const out = new Uint8Array(32);
+    const out = new Uint8Array(new ArrayBuffer(32));
     for (let i = 0; i < 32; i++) out[i] = parseInt(c.slice(i * 2, i * 2 + 2), 16);
     return out;
   };
   let level = leaves.map(toBytes);
   while (level.length > 1) {
-    const next: Uint8Array[] = [];
+    const next: Uint8Array<ArrayBuffer>[] = [];
     for (let i = 0; i < level.length; i += 2) {
       if (i + 1 === level.length) { next.push(level[i]); continue; }
-      const merged = new Uint8Array(64);
+      const merged = new Uint8Array(new ArrayBuffer(64));
       merged.set(level[i], 0);
       merged.set(level[i + 1], 32);
       next.push(toBytes(await sha256Hex(merged)));

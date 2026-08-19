@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import { Link2, ClipboardList, FileText, ShieldCheck, BookOpen } from "lucide-react";
+import { Link2, ClipboardList, FileText, ShieldCheck, BookOpen, ScanLine } from "lucide-react";
 
 const specs = [
   { icon: Link2, title: "Tamper-Evident Ledger", desc: "SHA-256 hash chaining makes later modification detectable; it does not prevent deletion or source deception" },
   { icon: ClipboardList, title: "Risk-Screening Aid", desc: "Rule-based triage for selected regulatory frameworks; qualified review is still required" },
   { icon: FileText, title: "Control Mapping", desc: "Informational cross-references to NIST AI RMF and ISO/IEC 42001 controls, without certification claims" },
   { icon: ShieldCheck, title: "Experimental ZK Components", desc: "Groth16-compatible BN128 demonstrations; not presented as production compliance proofs" },
+  { icon: ScanLine, title: "MIT Verifier v1.1.1 — TS + Python Parity", desc: "Both distributions share one schema digest and emit byte-identical rejection text with readable rule citations; verified, not asserted" },
   { icon: BookOpen, title: "Multi-Jurisdiction Research", desc: "Technical evidence patterns mapped to selected frameworks; not jurisdiction-specific legal advice" },
 ];
 

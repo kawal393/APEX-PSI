@@ -95,6 +95,8 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <span className="text-border">·</span>
             <Link to="/quantum" className="hover:text-gold">Post-quantum (NIST FIPS 204)</Link>
             <span className="text-border">·</span>
+            <Link to="/verify" className="hover:text-gold">Verifier v1.1.1 — TS/Python parity</Link>
+            <span className="text-border">·</span>
             <a href="https://www.rfc-editor.org/rfc/rfc8785" target="_blank" rel="noopener noreferrer" className="hover:text-gold">RFC 8785</a>
             <span className="text-border">·</span>
             <Link to="/auth" className="hover:text-gold">Sign in with Google</Link>

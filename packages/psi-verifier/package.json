@@ -1,6 +1,6 @@
 {
   "name": "@apex/psi-verifier",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MIT-licensed verifier for the PSI-SEAL/1 canonical seal schema. Verification is free forever; non-conformant seals are rejected by default.",
 
   "license": "MIT",
