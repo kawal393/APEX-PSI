@@ -33,7 +33,7 @@ Anything that deviates — even if functionally similar — fails. **Only schema
 
 Schema: © 2026 APEX Infrastructure. Specification: <https://ai-governance-standard.com/spec>
 
-## v1.1.0 — enforcement by default
+## v1.1.1 — enforcement by default, byte-identical across languages
 
 `verify()` **rejects** non-conformant seals instead of merely reporting them, so
 no pipeline accepts malformed evidence by accident:
@@ -53,6 +53,10 @@ await verify(seal, { enforce: false });  // legacy data only
 The rejection prints the canonical schema digest, every failed normative rule,
 the canonical schema URL, and where a conformant seal is produced. Report-only
 APIs remain: `verifySeal()` (never throws), `isConformant()`.
+
+Rejection text is byte-identical in TypeScript and Python, and every line cites a
+rule: `PSI-SEAL v1.1.1 REJECT: schema_digest mismatch — rule 4.2`. Free forever.
+MIT. No permission required.
 
 A byte-identical Python distribution ships as `psi-verifier`
 (`packages/psi-verifier-py`) and computes the same schema digest.
