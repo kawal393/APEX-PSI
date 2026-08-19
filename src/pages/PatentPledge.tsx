@@ -5,7 +5,7 @@ import { ShieldCheck, FileText, Scale, GitBranch } from "lucide-react";
 const PatentPledge = () => (
   <>
     <Helmet>
-      <title>Patent Non-Assertion Pledge | APEX PSI</title>
+      <title>Patent Non-Assertion Pledge — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="APEX PSI Patent Non-Assertion Pledge — royalty-free commitment for conformant implementations of the PSI Protocol (draft-singh-psi)."

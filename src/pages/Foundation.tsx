@@ -163,7 +163,7 @@ const Foundation = () => {
   return (
     <>
       <Helmet>
-        <title>APEX PSI Foundation — Governance & Verifier Nodes</title>
+        <title>APEX PSI Foundation — Governance & Verifier Nodes — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Foundation charter, board composition, and verifier-node program governing the open PSI standard (in formation)." />
         <link rel="canonical" href="https://ai-governance-standard.com/foundation" />
         <meta property="og:title" content="APEX PSI Foundation — Governance & Verifier Nodes" />

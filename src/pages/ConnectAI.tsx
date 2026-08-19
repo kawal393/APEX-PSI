@@ -75,7 +75,7 @@ export default function ConnectAI() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Connect Your AI to APEX PSI — MCP Server</title>
+        <title>Connect Your AI to APEX PSI — MCP Server — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="One-click MCP connection for ChatGPT, Claude and Cursor. Four OAuth-protected tools: verify_hash, list_attestations, ledger_stats, protocol_info."

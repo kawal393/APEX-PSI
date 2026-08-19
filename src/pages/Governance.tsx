@@ -83,7 +83,7 @@ const Governance = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Open Evidence Protocol — Decentralized Compliance Verification</title>
+        <title>Open Evidence Protocol — Decentralized Compliance Verification — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="The APEX Open Evidence Protocol replaces human bottlenecks with mathematical consensus. Anyone can verify. The math is the authority." />
       </Helmet>
       <Navbar />

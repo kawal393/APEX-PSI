@@ -132,7 +132,7 @@ export default function Gallery() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Sealed Gallery — 50 Canonical Documents | APEX PSI</title>
+        <title>Sealed Gallery — 50 Canonical Documents — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="Proof of concept: 50 of the world's most important public documents cryptographically sealed with the APEX PSI protocol (SHA-256 + Merkle root)."

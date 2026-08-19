@@ -40,7 +40,7 @@ const Status = ({ state, children }: { state: "live" | "partial" | "no"; childre
 const Spec = () => (
   <>
     <Helmet>
-      <title>APEX PSI Technical Specification — EU AI Act Article 50 Provenance</title>
+      <title>APEX PSI Technical Specification — EU AI Act Article 50 Provenance — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="Full technical specification of the APEX PSI protocol: RFC 8785 canonicalization, Ed25519 + ML-DSA-65 hybrid signatures, JUMBF-framed in-band PSI manifests, Compliance-Receipt HTTP header, and EU AI Act Article 50 mapping."

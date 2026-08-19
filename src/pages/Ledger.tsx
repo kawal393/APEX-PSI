@@ -57,7 +57,7 @@ const Ledger = () => {
   return (
     <>
       <Helmet>
-        <title>{company ? `${company.name} — Apex Ledger` : "Apex Ledger — Company Recomputation Index"}</title>
+        <title>{company ? `${company.name} — Apex Ledger` : "Apex Ledger — Company Recomputation Index"} — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="Public recomputation ledger: filing-derived figures independently recomputed and hash-anchored, with source citations."

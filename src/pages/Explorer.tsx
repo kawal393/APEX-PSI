@@ -99,7 +99,7 @@ const Explorer = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>APEX Ledger Explorer — Live Notarization Feed</title>
+        <title>APEX Ledger Explorer — Live Notarization Feed — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Real-time view of the APEX PSI immutable ledger. Watch cryptographic attestations being anchored in real-time." />
       </Helmet>
       <Navbar />

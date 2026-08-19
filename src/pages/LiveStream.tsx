@@ -10,7 +10,7 @@ export default function LiveStream() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Live Seal Stream & Protocol Health | APEX PSI</title>
+        <title>Live Seal Stream & Protocol Health — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="Real-time feed of every APEX PSI attestation: hash, timestamp, Ed25519 and ML-DSA-65 signatures, and Bitcoin anchor status."

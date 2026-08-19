@@ -30,7 +30,7 @@ const CHANNELS = [
 const Robustness = () => (
   <div className="min-h-screen bg-background">
     <Helmet>
-      <title>Watermark Robustness Benchmark | APEX PSI</title>
+      <title>Watermark Robustness Benchmark — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="Reproducible, in-browser benchmark of the APEX PSI transform-domain watermark (psi.dct-qim-v2) against JPEG recompression, resizing, cropping, screenshots and social repost chains."

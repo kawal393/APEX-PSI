@@ -80,7 +80,7 @@ const Badge = ({ status }: { status: Row["status"] }) => (
 const EUCode = () => (
   <div className="min-h-screen bg-background">
     <Helmet>
-      <title>EU Code of Practice Section 1 — Requirement Mapping | APEX PSI</title>
+      <title>EU Code of Practice Section 1 — Requirement Mapping — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="Requirement-by-requirement mapping of the EU Code of Practice on Transparency of AI-Generated Content, Section 1: in-band signed metadata, watermarking and detection, each linked to a publicly verifiable artifact."

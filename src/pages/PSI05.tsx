@@ -25,7 +25,7 @@ export default function PSI05() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>PSI-05 — Financial Disclosure Integrity | APEX PSI</title>
+        <title>PSI-05 — Financial Disclosure Integrity — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="draft-singh-apex-psi-05: Financial Disclosure Integrity. Hybrid dual-signature framework, ledger structure, API endpoints and royalty tiers."

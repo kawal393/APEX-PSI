@@ -94,7 +94,7 @@ const Receipt = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>{title.slice(0, 60)}</title>
+        <title>{title.slice(0, 60)} — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content={description.slice(0, 158)} />
         <link rel="canonical" href={canonical} />
         <meta property="og:title" content={title} />

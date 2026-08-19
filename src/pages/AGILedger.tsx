@@ -81,7 +81,7 @@ export default function AGILedger() {
   return (
     <>
       <Helmet>
-        <title>AGI Capability Pre-Commitment Ledger — APEX PSI</title>
+        <title>AGI Capability Pre-Commitment Ledger — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Cryptographically pre-commit AI capability evaluation results before model release. Hybrid Ed25519 + ML-DSA-65 signatures. Quantum-resistant pre-registration for the AGI era." />
         <link rel="canonical" href="https://ai-governance-standard.com/agi-ledger" />
       </Helmet>

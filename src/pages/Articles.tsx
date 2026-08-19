@@ -33,7 +33,7 @@ export default function Articles() {
   return (
     <>
       <Helmet>
-        <title>AI Governance Articles — APEX PSI</title>
+        <title>AI Governance Articles — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Deep-dive articles on verifiable AI compliance, EU AI Act, Ed25519 signatures, Bitcoin-anchored proofs, and the IETF PSI standard." />
         <link rel="canonical" href="https://ai-governance-standard.com/articles" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Feed" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />

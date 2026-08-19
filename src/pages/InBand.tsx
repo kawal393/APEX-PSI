@@ -64,7 +64,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 const InBand = () => (
   <div className="min-h-screen bg-background">
     <Helmet>
-      <title>In-Band Signed Metadata & Watermarking Spec | APEX PSI</title>
+      <title>In-Band Signed Metadata & Watermarking Spec — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="PSI-INBAND-v1: JUMBF-framed in-band signed tamperproof metadata plus a transform-domain robust watermark for AI-generated content. EU AI Act Code of Practice, Section 1."

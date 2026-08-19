@@ -21,7 +21,7 @@ export default function StandardsPortfolio() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Standards Portfolio — PSI 00-09 | APEX PSI</title>
+        <title>Standards Portfolio — PSI 00-09 — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="The full APEX PSI standards portfolio: filed IETF Internet-Drafts with datatracker status, drafts ready to file, jurisdictions and scope."

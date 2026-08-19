@@ -64,7 +64,7 @@ const Standard = () => {
   return (
     <>
       <Helmet>
-        <title>Compliance-Receipt HTTP Header — draft-singh-psi-http-01</title>
+        <title>Compliance-Receipt HTTP Header — draft-singh-psi-http-01 — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="The Compliance-Receipt HTTP response header specification for embedding cryptographic evidence in every API response." />
         <link rel="canonical" href="https://ai-governance-standard.com/standard" />
         <meta property="og:title" content="Compliance-Receipt HTTP Header — draft-singh-psi-http-01" />

@@ -65,7 +65,7 @@ const DEEPER = [
 const MCP = () => (
   <div className="min-h-screen bg-background text-foreground">
     <Helmet>
-      <title>APEX PSI MCP Server — Official Model Context Protocol integration</title>
+      <title>APEX PSI MCP Server — Official Model Context Protocol integration — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="Install APEX PSI as an MCP server: seal, verify, anchor, cite, audit. Published on npm and the official MCP Registry."
