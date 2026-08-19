@@ -3,6 +3,7 @@ import { Github, ExternalLink, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import apexLogo from "@/assets/apex-logo.png";
 import { useTranslation } from "react-i18next";
+import { DECLARATION_TEXT } from "@/components/Declaration";
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { t } = useTranslation();
@@ -32,9 +33,13 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
                 <span className="text-gold-gradient">APEX</span>{" "}
                 <span className="text-chrome-gradient">PSI</span>
               </h3>
+              <span className="text-[9px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                Universal Verification Layer
+              </span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mb-4">
-              Proof of Stateful Integrity — The Open Standard for Verifiable AI Governance. By Apex Intelligence Empire.
+              Universal Verification Layer — open, neutral, deterministic proof for AI outputs and
+              records. Verification free forever (MIT). By APEX Infrastructure.
             </p>
             <div className="text-xs text-muted-foreground space-y-1">
               <p>A division of <span className="text-foreground/80">APEX INTELLIGENCE EMPIRE</span></p>
@@ -53,6 +58,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               <li><Link to="/protocol" className="hover:text-gold transition-colors">PSI Protocol</Link></li>
               <li><Link to="/gallows" className="hover:text-gold transition-colors">Verification Portal</Link></li>
               <li><Link to="/verify" className="hover:text-gold transition-colors">Verify Hash</Link></li>
+              <li><Link to="/hello-psi" className="hover:text-gold transition-colors">Hello PSI — prove it in 60 seconds</Link></li>
               <li><Link to="/regulations" className="hover:text-gold transition-colors">Regulation Map</Link></li>
               <li><Link to="/landscape" className="hover:text-gold transition-colors">Competitive Landscape</Link></li>
               <li><Link to="/assess" className="hover:text-gold transition-colors">Free Score</Link></li>
@@ -95,7 +101,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <span className="text-border">·</span>
             <Link to="/quantum" className="hover:text-gold">Post-quantum (NIST FIPS 204)</Link>
             <span className="text-border">·</span>
-            <Link to="/verify" className="hover:text-gold">Verifier v1.1.1 — TS/Python parity</Link>
+            <Link to="/verify" className="hover:text-gold">Verifier v1.2.0 — TS/Python parity</Link>
             <span className="text-border">·</span>
             <a href="https://www.rfc-editor.org/rfc/rfc8785" target="_blank" rel="noopener noreferrer" className="hover:text-gold">RFC 8785</a>
             <span className="text-border">·</span>
@@ -115,6 +121,10 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               Proof of Stateful Integrity™
             </p>
           </div>
+
+          <p className="text-[10px] leading-relaxed text-muted-foreground/70 text-center pt-2">
+            {DECLARATION_TEXT}
+          </p>
         </div>
       </div>
     </footer>

@@ -24,6 +24,7 @@ import Architecture from "./pages/Architecture";
 import SDK from "./pages/SDK";
 import Compare from "./pages/Compare";
 import Verify from "./pages/Verify";
+import HelloPsi from "./pages/HelloPsi";
 import BadgePage from "./pages/Badge";
 import FreeAssessment from "./pages/FreeAssessment";
 import Regulations from "./pages/Regulations";
@@ -141,6 +142,7 @@ const App = () => (
               <Route path="/sdk" element={<SDK />} />
               <Route path="/compare" element={<Compare />} />
               <Route path="/verify" element={<Verify />} />
+              <Route path="/hello-psi" element={<HelloPsi />} />
               <Route path="/badge" element={<BadgePage />} />
               <Route path="/assess" element={<FreeAssessment />} />
               <Route path="/regulations" element={<Regulations />} />
