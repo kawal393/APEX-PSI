@@ -100,10 +100,10 @@ const RFC3339_MS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const ALLOWED = ["schema", "schema_digest", "sealed_at", "subject", "hash", "merkle", "signature", "licence"];
 
 /** Verifier distribution version. Identical in the Python distribution. */
-export const PSI_VERIFIER_VERSION = "1.1.1";
+export const PSI_VERIFIER_VERSION = "1.2.0";
 
 /**
- * Human-readable rule citations (v1.1.1). Every rejection line carries one:
+ * Human-readable rule citations (v1.2.0). Every rejection line carries one:
  * verified, not asserted — trust the math, not the maker.
  */
 export const PSI_RULE_CITATIONS = {
@@ -173,9 +173,9 @@ export async function verifySeal(input: unknown): Promise<ConformanceResult> {
   };
 }
 
-// ── v1.1.1 ENFORCEMENT LAYER ────────────────────────────────────────────
+// ── v1.2.0 ENFORCEMENT LAYER ────────────────────────────────────────────
 // Verification stays MIT and free forever. Since 1.1.0 the DEFAULT is that a
-// non-conformant seal is REJECTED, not merely reported. v1.1.1 makes the
+// non-conformant seal is REJECTED, not merely reported. v1.2.0 makes the
 // rejection text byte-identical across the TypeScript and Python
 // distributions and gives every line a readable rule citation.
 

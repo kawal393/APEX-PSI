@@ -6,7 +6,7 @@ conformant seals requires the licensed APEX PSI Sealing Engine.
 
 Zero dependencies. Python 3.8+.
 
-v1.1.1 — PARITY RELEASE: ``verify()`` rejects non-conformant seals by default
+v1.2.0 — PARITY RELEASE: ``verify()`` rejects non-conformant seals by default
 (``enforce=True``) and every rejection line is byte-identical to the
 TypeScript distribution, carrying a readable rule citation.
 """
@@ -19,7 +19,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence
 
-__version__ = "1.1.1"
+__version__ = "1.2.0"
 PSI_VERIFIER_VERSION = __version__
 
 PSI_SCHEMA_ID = "PSI-SEAL/1.0.0"

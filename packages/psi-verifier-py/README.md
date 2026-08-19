@@ -6,12 +6,12 @@
 from psi_verifier import verify, PsiSealInvalidError
 
 try:
-    result = verify(seal)          # enforce=True by default (v1.1.1)
+    result = verify(seal)          # enforce=True by default (v1.2.0)
 except PsiSealInvalidError as e:
     print(e)                       # tells you exactly where to get a valid seal
 ```
 
-## v1.1.1 — enforcement release with cross-language parity
+## v1.2.0 — enforcement release with cross-language parity
 
 `verify()` now **rejects** non-conformant seals instead of merely reporting them.
 Invalid input raises `PsiSealInvalidError` with the canonical schema digest and a
