@@ -114,7 +114,7 @@ export default function LiveLedger() {
   return (
     <>
       <Helmet>
-        <title>Live Visit Ledger — Every Visit Cryptographically Witnessed | APEX PSI</title>
+        <title>Live Visit Ledger — Every Visit Cryptographically Witnessed — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="Every page view on the AI governance standard is appended to a public SHA-256 hash chain. Recompute the entire chain in your browser — no trust required."

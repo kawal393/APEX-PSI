@@ -85,7 +85,7 @@ const renderCell = (c: Cell) => {
 const Landscape = () => (
   <>
     <Helmet>
-      <title>Competitive Landscape — PSI vs SCITT, DAAP, ZKMLOps, Longfellow | APEX PSI</title>
+      <title>Competitive Landscape — PSI vs SCITT, DAAP, ZKMLOps, Longfellow — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="The toll booth where law, cryptography, and compliance meet. APEX PSI versus ZKMLOps, SCITT VeritasChain (draft-ietf-scitt-vcp), Google Longfellow, and DAAP (draft-aylward-daap-v2-00)."

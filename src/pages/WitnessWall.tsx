@@ -60,7 +60,7 @@ export default function WitnessWall() {
   return (
     <>
       <Helmet>
-        <title>Global Witness Wall — APEX PRAMAAN</title>
+        <title>Global Witness Wall — APEX PRAMAAN — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="A public wall of cryptographically sealed witness events. Journalists, citizens, and observers post SHA-256 hashes of what they saw — verifiable by anyone." />
         <link rel="canonical" href="https://ai-governance-standard.com/witness-wall" />
       </Helmet>

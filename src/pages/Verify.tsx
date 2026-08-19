@@ -20,6 +20,7 @@ import { Helmet } from "react-helmet-async";
 import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
 import CountersignUpsell from "@/components/CountersignUpsell";
 import ParityWidget from "@/components/psi/ParityWidget";
+import VerifyTheVerifier from "@/components/psi/VerifyTheVerifier";
 
 
 interface VerificationResult extends ProofReceiptData {
@@ -341,7 +342,7 @@ const Verify = () => {
   return (
     <>
       <Helmet>
-        <title>Verify a Hash — APEX PSI Public Portal</title>
+        <title>Verify a Hash Public Portal — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Verify any evidence hash against the APEX PSI ledger. Permissionless, public, cryptographically enforced." />
         <link rel="canonical" href="https://ai-governance-standard.com/verify" />
         <meta property="og:title" content="Verify a Hash — APEX PSI Public Portal" />
@@ -377,6 +378,7 @@ const Verify = () => {
         {/* Cross-language parity + free packages */}
         <section className="px-4 -mt-8">
           <div className="container mx-auto max-w-5xl space-y-4">
+            <VerifyTheVerifier />
             <ParityWidget />
             <div className="grid gap-3 sm:grid-cols-2">
               <a

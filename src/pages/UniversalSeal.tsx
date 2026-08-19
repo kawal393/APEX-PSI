@@ -247,7 +247,7 @@ async function apexSeal(file) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>APEX Seal — Post-Quantum Integrity Seal for Any File</title>
+        <title>APEX Seal — Post-Quantum Integrity Seal for Any File — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="Stamp any photo, video, audio, document, or file with APEX PSI · APEX Pramaan. Client-side SHA-256, anchored receipt, verifiable forever. Free, open, no login."

@@ -10,7 +10,7 @@ import NotaryPricing from "@/components/notary/NotaryPricing";
 const Notary = () => (
   <div className="min-h-screen bg-background text-foreground">
     <Helmet>
-      <title>APEX NOTARY — Cryptographic Attestation API for AI Decisions</title>
+      <title>APEX NOTARY — Cryptographic Attestation API for AI Decisions — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="Notarize every AI decision with SHA-256 hashing, Ed25519 signatures, and Merkle-anchored receipts. One API call. EU AI Act compliant. Free tier available."

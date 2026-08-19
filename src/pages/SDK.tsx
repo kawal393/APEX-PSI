@@ -181,7 +181,7 @@ async function generateAIResponse(prompt: string) {
   return (
     <>
       <Helmet>
-        <title>SDKs & Integrations — APEX PSI</title>
+        <title>SDKs & Integrations — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/gallows-sdk runtime pattern cache." />
         <link rel="canonical" href="https://ai-governance-standard.com/sdk" />
         <meta property="og:title" content="SDKs & Integrations — APEX PSI" />
@@ -701,8 +701,8 @@ GET /verify-status?action=stats
           <CardContent>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
-                { name: "@apex/psi-verifier", target: "MIT verifier v1.1.1 — free forever. MIT. No permission required.", status: "shipped", install: "npm i @apex/psi-verifier" },
-                { name: "psi-verifier", target: "Python verifier v1.1.1 — free forever. MIT. No permission required.", status: "shipped", install: "pip install psi-verifier" },
+                { name: "@apex/psi-verifier", target: "MIT verifier v1.2.0 — free forever. MIT. No permission required.", status: "shipped", install: "npm i @apex/psi-verifier" },
+                { name: "psi-verifier", target: "Python verifier v1.2.0 — free forever. MIT. No permission required.", status: "shipped", install: "pip install psi-verifier" },
                 { name: "@apex/psi-openai", target: "OpenAI Node SDK", status: "shipped", install: "npm i @apex/psi-openai" },
                 { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "shipped", install: "npm i @apex/psi-anthropic" },
                 { name: "@apex/psi-vercel-ai", target: "Vercel AI SDK", status: "shipped", install: "npm i @apex/psi-vercel-ai" },

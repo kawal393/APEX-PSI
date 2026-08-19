@@ -250,7 +250,7 @@ const Pramaan = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Apex Pramaan — The Truth Protocol | Chapter II</title>
+        <title>Apex Pramaan — The Truth Protocol — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Apex Pramaan: client-side cryptographic proof for any photo, video, or file. Seal it, anchor it, verify it — in 30 seconds, on any phone." />
         <link rel="canonical" href="https://ai-governance-standard.com/pramaan" />
       </Helmet>

@@ -66,7 +66,7 @@ const Header = () => {
   return (
     <>
       <Helmet>
-        <title>Header Inspector — Compliance-Receipt Live Check</title>
+        <title>Header Inspector — Compliance-Receipt Live Check — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Inspect any URL for a valid Compliance-Receipt header and verify its embedded signature and hash chain." />
         <link rel="canonical" href="https://ai-governance-standard.com/header" />
         <meta property="og:title" content="Header Inspector — Compliance-Receipt Live Check" />

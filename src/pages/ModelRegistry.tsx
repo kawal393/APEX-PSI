@@ -85,7 +85,7 @@ export default function ModelRegistry() {
   return (
     <>
       <Helmet>
-        <title>Public AI Model Registry — APEX PSI</title>
+        <title>Public AI Model Registry — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Open, cryptographically-signed registry of AI models. Register any model card with a hybrid Ed25519 + ML-DSA-65 signature. Regulator- and developer-friendly." />
         <link rel="canonical" href="https://ai-governance-standard.com/models" />
       </Helmet>

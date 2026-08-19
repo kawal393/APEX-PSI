@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import HonestyLine from "@/components/psi/HonestyLine";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
 
@@ -641,7 +642,7 @@ const IETFDraft = () => {
   return (
     <>
       <Helmet>
-        <title>IETF Draft — draft-singh-psi-00 | APEX PSI</title>
+        <title>IETF Draft — draft-singh-psi-00 — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Internet-Draft: Proof of Stateful Integrity for verifiable AI governance. Full protocol text." />
         <link rel="canonical" href="https://ai-governance-standard.com/draft" />
         <meta property="og:title" content="IETF Draft — draft-singh-psi-00 | APEX PSI" />
@@ -748,6 +749,9 @@ const IETFDraft = () => {
             </div>
           </div>
         </section>
+      </div>
+      <div className="container mx-auto max-w-4xl px-4 pb-10">
+        <HonestyLine />
       </div>
       <Footer />
     </div>

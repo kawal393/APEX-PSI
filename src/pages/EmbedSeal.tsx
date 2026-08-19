@@ -48,7 +48,7 @@ const EmbedSeal = () => {
   return (
     <div className="min-h-screen bg-background text-foreground p-4 font-sans">
       <Helmet>
-        <title>APEX Seal Widget</title>
+        <title>APEX Seal Widget — Apex PSI — Universal Verification Layer</title>
         <meta name="robots" content="noindex" />
       </Helmet>
       <div className="max-w-md mx-auto">

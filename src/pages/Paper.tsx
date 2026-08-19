@@ -326,7 +326,7 @@ const Paper = () => {
   return (
     <>
       <Helmet>
-        <title>APEX PSI White Paper — Verifiable AI Governance</title>
+        <title>Apex PSI White Paper — Verifiable AI Governance — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="Full white paper on Proof of Stateful Integrity: canonicalization, signature schemes, Merkle anchoring, and adversarial review." />
         <link rel="canonical" href="https://ai-governance-standard.com/paper" />
         <meta property="og:title" content="APEX PSI White Paper — Verifiable AI Governance" />

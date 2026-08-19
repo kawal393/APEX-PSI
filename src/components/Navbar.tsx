@@ -51,6 +51,7 @@ const navLinks = [
     { label: "Explorer", href: "/explorer", isRoute: true },
     { label: "Live", href: "/live", isRoute: true },
     { label: "Verify", href: "/verify", isRoute: true },
+    { label: "Hello PSI", href: "/hello-psi", isRoute: true },
     { label: "Evidence", href: "/governance", isRoute: true },
     { label: "Registry", href: "/registry", isRoute: true },
     { label: "Protocol", href: "/protocol", isRoute: true },
@@ -96,9 +97,14 @@ const navLinks = [
             onClick={() => handleNavClick("#top")}
             className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer shrink-0"
           >
-            <span className="text-sm font-black tracking-tight">
-              <span className="text-gold-gradient">APEX</span>{" "}
-              <span className="text-chrome-gradient">PSI</span>
+            <span className="flex flex-col items-start leading-none">
+              <span className="text-sm font-black tracking-tight">
+                <span className="text-gold-gradient">APEX</span>{" "}
+                <span className="text-chrome-gradient">PSI</span>
+              </span>
+              <span className="text-[8px] font-mono uppercase tracking-[0.18em] text-muted-foreground mt-0.5">
+                Universal Verification Layer
+              </span>
             </span>
           </button>
 

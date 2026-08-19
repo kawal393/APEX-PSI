@@ -81,7 +81,7 @@ const Standards = () => {
   return (
     <>
       <Helmet>
-        <title>Standards Cross-Walk — APEX PSI</title>
+        <title>Standards Cross-Walk — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="How APEX PSI maps to ISO/IEC 42001, NIST AI RMF, EU AI Act, and SEC 17a-4 obligations." />
         <link rel="canonical" href="https://ai-governance-standard.com/standards" />
         <meta property="og:title" content="Standards Cross-Walk — APEX PSI" />

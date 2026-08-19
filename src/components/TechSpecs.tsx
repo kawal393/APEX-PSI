@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import HonestyLine from "@/components/psi/HonestyLine";
 import { Link2, ClipboardList, FileText, ShieldCheck, BookOpen, ScanLine } from "lucide-react";
 
 const specs = [
@@ -6,7 +7,7 @@ const specs = [
   { icon: ClipboardList, title: "Risk-Screening Aid", desc: "Rule-based triage for selected regulatory frameworks; qualified review is still required" },
   { icon: FileText, title: "Control Mapping", desc: "Informational cross-references to NIST AI RMF and ISO/IEC 42001 controls, without certification claims" },
   { icon: ShieldCheck, title: "Experimental ZK Components", desc: "Groth16-compatible BN128 demonstrations; not presented as production compliance proofs" },
-  { icon: ScanLine, title: "MIT Verifier v1.1.1 — TS + Python Parity", desc: "Both distributions share one schema digest and emit byte-identical rejection text with readable rule citations; verified, not asserted" },
+  { icon: ScanLine, title: "MIT Verifier v1.2.0 — TS + Python Parity", desc: "Both distributions share one schema digest and emit byte-identical rejection text with readable rule citations; verified, not asserted" },
   { icon: BookOpen, title: "Multi-Jurisdiction Research", desc: "Technical evidence patterns mapped to selected frameworks; not jurisdiction-specific legal advice" },
 ];
 
@@ -24,6 +25,17 @@ const TechSpecs = () => (
           Built for <span className="text-gold-gradient">Institutional Compliance</span>
         </h2>
       </motion.div>
+
+      <div className="text-center mb-8">
+        <a
+          href="/.well-known/psi-schema.json"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs font-mono text-gold hover:underline"
+        >
+          Normative rules R1–R12 · Schema PSI-SEAL/1.0.0 · Verifier 1.2.0 → /.well-known/psi-schema.json
+        </a>
+      </div>
 
       <div className="space-y-4">
         {specs.map((s, i) => (
@@ -44,6 +56,9 @@ const TechSpecs = () => (
             </div>
           </motion.div>
         ))}
+      </div>
+      <div className="mt-8">
+        <HonestyLine className="text-center" />
       </div>
     </div>
   </section>

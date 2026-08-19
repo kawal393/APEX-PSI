@@ -4,6 +4,7 @@ import Products from "@/pages/Products";
 import Article50Banner from "@/components/Article50Banner";
 
 import TwoPillars from "@/components/TwoPillars";
+import Declaration from "@/components/Declaration";
 import LeadCaptureOffer from "@/components/LeadCaptureOffer";
 import HowToUse from "@/components/HowToUse";
 
@@ -26,12 +27,12 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>APEX PSI — Verifiable AI. APEX PRAMAAN — Verifiable Humans.</title>
-        <meta name="description" content="Open provenance and integrity tools for recording declared AI actions and human observations with signed, independently verifiable evidence." />
+        <title>Apex PSI — Universal Verification Layer</title>
+        <meta name="description" content="Apex PSI — Universal Verification Layer. Open, neutral, deterministic proof for AI outputs and records. Verification free forever (MIT). Proposed open standard under active development." />
         <link rel="canonical" href="https://ai-governance-standard.com/" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Articles" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />
-        <meta property="og:title" content="APEX PSI — Verifiable AI. APEX PRAMAAN — Verifiable Humans." />
-        <meta property="og:description" content="Open provenance and integrity tools for signed, independently verifiable AI governance evidence." />
+        <meta property="og:title" content="Apex PSI — Universal Verification Layer" />
+        <meta property="og:description" content="Open, neutral, deterministic proof for AI outputs and records. Verification free forever (MIT)." />
         <meta property="og:url" content="https://ai-governance-standard.com/" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -78,6 +79,7 @@ const Index = () => {
         <Hero />
         <Article50Banner />
 
+        <Declaration />
         <TwoPillars />
         <LeadCaptureOffer />
 

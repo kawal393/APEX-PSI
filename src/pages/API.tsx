@@ -18,7 +18,7 @@ const Code = ({ children }: { children: React.ReactNode }) => (
 const API = () => (
   <div className="min-h-screen bg-background text-foreground">
     <Helmet>
-      <title>APEX PSI Unified API — Sync any system to the ledger</title>
+      <title>Apex PSI Unified API — Sync any system to the ledger — Apex PSI — Universal Verification Layer</title>
       <meta name="description" content="Connect any app to APEX PSI via a single /v1 REST API. Notarize decisions and verify hashes with scoped apex_sk_ keys." />
     </Helmet>
     <Navbar />

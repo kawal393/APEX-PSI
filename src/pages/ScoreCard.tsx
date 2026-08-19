@@ -62,7 +62,7 @@ const ScoreCard = () => {
   return (
     <>
       <Helmet>
-        <title>{data.company_name} — {score}% AI Compliance Score | APEX</title>
+        <title>{data.company_name} — {score}% AI Compliance Score — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content={`${data.company_name} scored ${score}% on the APEX EU AI Act Compliance Assessment.`} />
         <meta property="og:title" content={`${data.company_name} — ${score}% AI Compliance`} />
         <meta property="og:description" content={`Scored ${score}% on the APEX EU AI Act Compliance Assessment. Check yours!`} />

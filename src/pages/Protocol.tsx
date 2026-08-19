@@ -136,7 +136,7 @@ const Protocol = () => {
   return (
     <>
       <Helmet>
-        <title>PSI Protocol — Proof of Stateful Integrity | APEX</title>
+        <title>PSI Protocol — Proof of Stateful Integrity — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="PSI Protocol spec: canonicalization (RFC 8785), Ed25519 signatures, monotonic sequence counters, and Merkle-anchored evidence chains." />
         <link rel="canonical" href="https://ai-governance-standard.com/protocol" />
         <meta property="og:title" content="PSI Protocol — Proof of Stateful Integrity | APEX" />

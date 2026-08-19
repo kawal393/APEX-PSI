@@ -39,7 +39,7 @@ export default function Regulator() {
   return (
     <>
       <Helmet>
-        <title>Regulator Portal — APEX PSI</title>
+        <title>Regulator Portal — Apex PSI — Universal Verification Layer</title>
         <meta name="description" content="One-page briefing for regulators and government agencies. Bulk hash verification, official specification, jurisdiction alignment, and citation-ready references." />
         <link rel="canonical" href="https://ai-governance-standard.com/regulator" />
       </Helmet>

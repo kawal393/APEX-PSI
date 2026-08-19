@@ -87,7 +87,7 @@ const ROADMAP = [
 const Integrations = () => (
   <div className="min-h-screen bg-background text-foreground">
     <Helmet>
-      <title>Integrations & Partner Program — APEX PSI</title>
+      <title>Integrations & Partner Program — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
         content="Every way to wire APEX PSI into your stack: REST API, model SDK adapters, the Compliance-Receipt HTTP header, MCP agent access, embeddable widgets, CI/CD gates and the procurement registry."
