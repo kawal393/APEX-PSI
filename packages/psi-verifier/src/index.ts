@@ -85,33 +85,69 @@ const HEX64 = /^[0-9a-f]{64}$/;
 const RFC3339_MS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const ALLOWED = ["schema", "schema_digest", "sealed_at", "subject", "hash", "merkle", "signature", "licence"];
 
+/** Verifier distribution version. Identical in the Python distribution. */
+export const PSI_VERIFIER_VERSION = "1.1.1";
+
+/**
+ * Human-readable rule citations (v1.1.1). Every rejection line carries one:
+ * verified, not asserted — trust the math, not the maker.
+ */
+export const PSI_RULE_CITATIONS = {
+  not_object: "1.1",
+  closed_field_set: "2.1",
+  schema_identifier: "4.1",
+  schema_digest: "4.2",
+  hash_encoding: "5.1",
+  sealed_at: "6.1",
+  size_bytes: "7.1",
+  leaf_missing: "8.1",
+  leaf_mismatch: "9.1",
+  seal_hash: "10.1",
+} as const;
+
+/** Canonical single-line rejection. Byte-identical in TypeScript and Python. */
+export function rejectLine(detail: string, rule: string): string {
+  return `PSI-SEAL v${PSI_VERIFIER_VERSION} REJECT: ${detail} — rule ${rule}`;
+}
+
 export async function verifySeal(input: unknown): Promise<ConformanceResult> {
   const failures: string[] = [];
   const env = input as PsiSealEnvelope;
-  if (!env || typeof env !== "object") {
-    return { conformant: false, schema_id: null, schema_digest_match: false, seal_hash_match: false, failures: ["Not a JSON object"] };
+  if (!env || typeof env !== "object" || Array.isArray(env)) {
+    return {
+      conformant: false,
+      schema_id: null,
+      schema_digest_match: false,
+      seal_hash_match: false,
+      failures: [rejectLine("input is not a JSON object", PSI_RULE_CITATIONS.not_object)],
+    };
   }
   const expected = await psiSchemaDigest();
-  if (env.schema !== PSI_SCHEMA_ID) failures.push(`R12: schema must be "${PSI_SCHEMA_ID}"`);
+  if (env.schema !== PSI_SCHEMA_ID)
+    failures.push(rejectLine(`schema identifier mismatch, expected ${PSI_SCHEMA_ID}`, PSI_RULE_CITATIONS.schema_identifier));
   const digestMatch = env.schema_digest === expected;
-  if (!digestMatch) failures.push("R12: schema_digest does not match the PSI-SEAL/1 rule set");
+  if (!digestMatch) failures.push(rejectLine("schema_digest mismatch", PSI_RULE_CITATIONS.schema_digest));
 
   const extra = Object.keys(env).filter((k) => !ALLOWED.includes(k));
-  if (extra.length) failures.push(`R2: unknown top-level fields: ${extra.join(", ")}`);
-  if (!RFC3339_MS.test(env.sealed_at ?? "")) failures.push("R6: sealed_at precision/format invalid");
-  if (!HEX64.test(env.hash ?? "")) failures.push("R4/R5: hash must be 64 lowercase hex characters");
+  if (extra.length)
+    failures.push(rejectLine(`unknown top-level fields: ${extra.join(", ")}`, PSI_RULE_CITATIONS.closed_field_set));
+  if (!RFC3339_MS.test(env.sealed_at ?? ""))
+    failures.push(rejectLine("sealed_at is not RFC 3339 UTC with three fractional digits", PSI_RULE_CITATIONS.sealed_at));
+  if (!HEX64.test(env.hash ?? ""))
+    failures.push(rejectLine("hash is not 64 lowercase hexadecimal characters", PSI_RULE_CITATIONS.hash_encoding));
   if (!env.subject || !Number.isInteger(env.subject.size_bytes) || env.subject.size_bytes < 0)
-    failures.push("R7: subject.size_bytes invalid");
+    failures.push(rejectLine("subject.size_bytes is not a non-negative integer", PSI_RULE_CITATIONS.size_bytes));
 
   let sealHashMatch = false;
   if (HEX64.test(env.hash ?? "") && env.merkle?.leaf) {
-    if ((await psiLeaf(env.hash)) !== env.merkle.leaf) failures.push("R9: merkle.leaf mismatch");
+    if ((await psiLeaf(env.hash)) !== env.merkle.leaf)
+      failures.push(rejectLine("merkle.leaf mismatch", PSI_RULE_CITATIONS.leaf_mismatch));
     if (env.signature?.seal_hash) {
       sealHashMatch = (await psiSealHash(env)) === env.signature.seal_hash;
-      if (!sealHashMatch) failures.push("R10: seal_hash mismatch");
+      if (!sealHashMatch) failures.push(rejectLine("seal_hash mismatch", PSI_RULE_CITATIONS.seal_hash));
     }
   } else {
-    failures.push("R9: merkle.leaf missing");
+    failures.push(rejectLine("merkle.leaf missing", PSI_RULE_CITATIONS.leaf_missing));
   }
 
   return {
@@ -123,10 +159,11 @@ export async function verifySeal(input: unknown): Promise<ConformanceResult> {
   };
 }
 
-// ── v1.1.0 ENFORCEMENT LAYER ────────────────────────────────────────────
-// Verification stays MIT and free forever. What changed in 1.1.0 is the
-// DEFAULT: a non-conformant seal is REJECTED, not merely reported, and the
-// rejection tells the caller exactly where to obtain a conformant seal.
+// ── v1.1.1 ENFORCEMENT LAYER ────────────────────────────────────────────
+// Verification stays MIT and free forever. Since 1.1.0 the DEFAULT is that a
+// non-conformant seal is REJECTED, not merely reported. v1.1.1 makes the
+// rejection text byte-identical across the TypeScript and Python
+// distributions and gives every line a readable rule citation.
 
 /** Where a valid seal is produced. Printed in every rejection. */
 export const PSI_SEAL_URL = "https://ai-governance-standard.com/seal";
@@ -143,18 +180,24 @@ export class PsiSealInvalidError extends Error {
   }
 }
 
-/** Canonical rejection text. Stable, greppable, actionable. */
+/**
+ * Canonical rejection text. Stable, greppable, actionable, and byte-identical
+ * to the Python distribution for the same input.
+ */
 export function formatRejection(result: ConformanceResult, canonicalDigest: string): string {
   return [
-    `PSI SEAL INVALID — schema: ${PSI_SCHEMA_ID}`,
-    `Must match canonical schema digest: ${canonicalDigest}`,
-    `Received schema: ${result.schema_id ?? "(none)"}  digest match: ${result.schema_digest_match}`,
-    ...result.failures.map((f) => `  - ${f}`),
-    `Generate a conformant seal → ${PSI_SEAL_URL}`,
-    `Canonical schema → ${PSI_SCHEMA_URL}`,
-    `Override for legacy data only: verify(seal, { enforce: false })`,
+    rejectLine(`seal is not conformant to ${PSI_SCHEMA_ID}`, PSI_RULE_CITATIONS.not_object),
+    `canonical schema digest: ${canonicalDigest}`,
+    `received schema: ${result.schema_id ?? "(none)"} (digest match: ${result.schema_digest_match ? "true" : "false"})`,
+    "findings:",
+    ...result.failures.map((f) => `  ${f}`),
+    `generate a conformant seal: ${PSI_SEAL_URL}`,
+    `canonical schema: ${PSI_SCHEMA_URL}`,
+    "legacy escape hatch (report-only): enforce=false",
+    "verified, not asserted; trust the math, not the maker.",
   ].join("\n");
 }
+
 
 export interface VerifyOptions {
   /**
