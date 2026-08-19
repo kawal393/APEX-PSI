@@ -72,6 +72,20 @@ export async function psiSchemaDigest(): Promise<string> {
   return cachedDigest;
 }
 
+/**
+ * Compute the schema digest from a published schema document (for example the
+ * one served at /.well-known/psi-schema.json) using this verifier's own
+ * canonicalisation. Anyone can run this against the npm or PyPI package output
+ * and compare the 64-hex result: verified, not asserted.
+ */
+export async function psiSchemaDigestFromDocument(doc: unknown): Promise<string> {
+  const d = doc as { schema?: unknown; rules?: unknown };
+  if (typeof d?.schema !== "string" || !Array.isArray(d?.rules)) {
+    throw new Error("PSI schema document must carry a string `schema` and an array of `rules`");
+  }
+  return sha256Hex(jcs({ id: d.schema, rules: d.rules }));
+}
+
 export function psiLeaf(hash: string): Promise<string> {
   return sha256Hex(`PSI1:${hash.replace(/^sha256:/i, "").toLowerCase()}`);
 }

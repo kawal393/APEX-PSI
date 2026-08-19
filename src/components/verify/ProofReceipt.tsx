@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link2, Download, Bitcoin, ShieldCheck, ShieldAlert, Clock, ExternalLink, GitBranch } from "lucide-react";
+import { Link2, Download, ShieldCheck, ShieldAlert, ExternalLink, GitBranch } from "lucide-react";
+import AnchorState from "@/components/psi/AnchorState";
 
 export interface MerkleProofStep {
   hash: string;
@@ -11,6 +12,9 @@ export interface TimestampAnchor {
   calendar_url?: string | null;
   bitcoin_block_height?: number | null;
   bitcoin_txid?: string | null;
+  confirmations?: number | null;
+  submitted_at?: string | null;
+  created_at?: string | null;
   explorer_url?: string | null;
   ots_download_url?: string | null;
 }
@@ -131,71 +135,32 @@ const ProofReceipt = ({ data }: { data: ProofReceiptData }) => {
         </div>
       )}
 
-      {/* Bitcoin / OpenTimestamps anchor — real state only */}
-      <div className="rounded-lg border border-border bg-background/50 p-3">
-        <div className="flex items-center gap-2 mb-2">
-          <Bitcoin className="h-4 w-4 text-gold" />
-          <p className="text-xs font-bold text-foreground">Bitcoin timestamp anchor</p>
-        </div>
-
-        {!anchor ? (
-          <p className="text-[11px] text-muted-foreground">
-            No OpenTimestamps proof has been submitted for this entry yet.
-          </p>
-        ) : anchor.bitcoin_txid ? (
-          <div className="space-y-1.5">
-            <p className="text-[11px] text-compliant font-bold">
-              Confirmed in Bitcoin block {anchor.bitcoin_block_height}
-            </p>
-            <p className="text-[10px] font-mono text-muted-foreground break-all">
-              txid {anchor.bitcoin_txid}
-            </p>
-            <div className="flex flex-wrap gap-3 pt-1">
-              <a
-                href={anchor.explorer_url ?? `https://mempool.space/tx/${anchor.bitcoin_txid}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[11px] text-primary hover:underline inline-flex items-center gap-1"
-              >
-                <ExternalLink className="h-3 w-3" /> View on mempool.space
-              </a>
-              {anchor.ots_download_url && (
-                <a
-                  href={anchor.ots_download_url}
-                  className="text-[11px] text-primary hover:underline inline-flex items-center gap-1"
-                >
-                  <Download className="h-3 w-3" /> Download .ots proof
-                </a>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-1.5">
-            <p className="text-[11px] text-warning font-bold inline-flex items-center gap-1">
-              <Clock className="h-3 w-3" /> Pending — awaiting a Bitcoin block
-            </p>
-            <p className="text-[11px] text-muted-foreground">
-              The digest is accepted by the OpenTimestamps calendars. It is reported as
-              confirmed only once a real block includes it, which usually takes a few hours.
-            </p>
-            <div className="flex flex-wrap gap-3 pt-1">
-              {anchor.ots_download_url && (
-                <a
-                  href={anchor.ots_download_url}
-                  className="text-[11px] text-primary hover:underline inline-flex items-center gap-1"
-                >
-                  <Download className="h-3 w-3" /> Download .ots proof
-                </a>
-              )}
-              {anchor.calendar_url && (
-                <span className="text-[11px] text-muted-foreground font-mono inline-flex items-center gap-1">
-                  <Link2 className="h-3 w-3" /> {anchor.calendar_url}
-                </span>
-              )}
-            </div>
-          </div>
+      {/* Bitcoin / OpenTimestamps anchor — exactly three states, never a fourth */}
+      <AnchorState anchor={anchor}>
+        {anchor?.bitcoin_txid && (
+          <a
+            href={anchor.explorer_url ?? `https://mempool.space/tx/${anchor.bitcoin_txid}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[11px] text-primary hover:underline inline-flex items-center gap-1"
+          >
+            <ExternalLink className="h-3 w-3" /> View on mempool.space
+          </a>
         )}
-      </div>
+        {anchor?.ots_download_url && (
+          <a
+            href={anchor.ots_download_url}
+            className="text-[11px] text-primary hover:underline inline-flex items-center gap-1"
+          >
+            <Download className="h-3 w-3" /> Download .ots proof
+          </a>
+        )}
+        {anchor?.calendar_url && (
+          <span className="text-[11px] text-muted-foreground font-mono inline-flex items-center gap-1">
+            <Link2 className="h-3 w-3" /> {anchor.calendar_url}
+          </span>
+        )}
+      </AnchorState>
     </div>
   );
 };

@@ -96,6 +96,15 @@ def psi_schema_digest() -> str:
     return _sha256_hex(jcs({"id": PSI_SCHEMA_ID, "rules": list(PSI_SCHEMA_RULES)}))
 
 
+def psi_schema_digest_from_document(doc: Any) -> str:
+    """Digest a published schema document (e.g. /.well-known/psi-schema.json)
+    using this verifier's own canonicalisation. Byte-identical to the
+    TypeScript distribution's psiSchemaDigestFromDocument()."""
+    if not isinstance(doc, dict) or not isinstance(doc.get("schema"), str) or not isinstance(doc.get("rules"), list):
+        raise ValueError("PSI schema document must carry a string `schema` and a list of `rules`")
+    return _sha256_hex(jcs({"id": doc["schema"], "rules": list(doc["rules"])}))
+
+
 def psi_leaf(hash_hex: str) -> str:
     clean = re.sub(r"^sha256:", "", hash_hex, flags=re.I).lower()
     return _sha256_hex("PSI1:" + clean)
@@ -266,6 +275,7 @@ __all__ = [
     "merkle_root",
     "psi_leaf",
     "psi_schema_digest",
+    "psi_schema_digest_from_document",
     "psi_seal_hash",
     "verify",
     "verify_seal",

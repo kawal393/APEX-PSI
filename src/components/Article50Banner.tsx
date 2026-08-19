@@ -41,7 +41,7 @@ const Article50Banner = () => {
         { label: "Timestamp proofs", value: counts.ots_proofs.toLocaleString() },
         counts.confirmed_anchors > 0
           ? { label: "Confirmed BTC anchors", value: counts.confirmed_anchors.toLocaleString() }
-          : { label: "BTC anchors awaiting confirmation", value: "pending" },
+          : { label: "Confirmed BTC anchors", value: "0" },
       ]
     : [];
 
