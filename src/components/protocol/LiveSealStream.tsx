@@ -27,7 +27,7 @@ export default function LiveSealStream() {
 
     const load = async () => {
       const { data, error } = await supabase
-        .from("gallows_ledger")
+        .from("gallows_public_ledger")
         .select("commit_id,commit_hash,status,created_at,ed25519_signature,pq_signature,merkle_root")
         .order("created_at", { ascending: false })
         .limit(25);
