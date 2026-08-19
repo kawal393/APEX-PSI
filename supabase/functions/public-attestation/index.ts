@@ -36,8 +36,14 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { commit_id, verification_result } = body;
 
-    if (!commit_id || typeof commit_id !== "string") {
-      return new Response(JSON.stringify({ error: "commit_id is required" }), {
+    if (
+      !commit_id ||
+      typeof commit_id !== "string" ||
+      commit_id.length < 4 ||
+      commit_id.length > 128 ||
+      !/^[A-Za-z0-9_:.-]+$/.test(commit_id)
+    ) {
+      return new Response(JSON.stringify({ error: "commit_id is required and must be a valid identifier" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -71,6 +77,35 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    // Only allow attestations for commits that actually exist in the ledger
+    const { data: ledgerEntry } = await supabase
+      .from("gallows_ledger")
+      .select("commit_id")
+      .eq("commit_id", commit_id)
+      .maybeSingle();
+
+    if (!ledgerEntry) {
+      return new Response(JSON.stringify({ error: "Unknown commit_id — no such ledger entry" }), {
+        status: 404,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // One attestation per attestor per commit
+    const { data: existing } = await supabase
+      .from("public_attestations")
+      .select("id")
+      .eq("commit_id", commit_id)
+      .eq("attestor_hash", attestor_hash)
+      .maybeSingle();
+
+    if (existing) {
+      return new Response(JSON.stringify({ error: "You have already attested this commit" }), {
+        status: 409,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { data, error } = await supabase.from("public_attestations").insert({
       commit_id,
       attestor_hash,
@@ -79,7 +114,8 @@ Deno.serve(async (req) => {
     }).select().single();
 
     if (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
+      console.error("Attestation insert failed:", error);
+      return new Response(JSON.stringify({ error: "Failed to record attestation" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

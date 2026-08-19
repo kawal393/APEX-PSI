@@ -2121,6 +2121,24 @@ export type Database = {
         }
         Relationships: []
       }
+      tribunal_public_verdicts: {
+        Row: {
+          commit_id: string | null
+          created_at: string | null
+          verdict: string | null
+        }
+        Insert: {
+          commit_id?: string | null
+          created_at?: string | null
+          verdict?: string | null
+        }
+        Update: {
+          commit_id?: string | null
+          created_at?: string | null
+          verdict?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_assessment_by_share_id: {
