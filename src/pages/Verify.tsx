@@ -19,6 +19,7 @@ import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD, type LMSSignature } from "@/lib
 import { Helmet } from "react-helmet-async";
 import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
 import CountersignUpsell from "@/components/CountersignUpsell";
+import ParityWidget from "@/components/psi/ParityWidget";
 
 
 interface VerificationResult extends ProofReceiptData {
@@ -370,6 +371,33 @@ const Verify = () => {
                 Full mathematical verification of Merkle inclusion, hash integrity, and Ed25519 signatures.
               </p>
             </motion.div>
+          </div>
+        </section>
+
+        {/* Cross-language parity + free packages */}
+        <section className="px-4 mt-4">
+          <div className="container mx-auto max-w-5xl space-y-4">
+            <ParityWidget />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <a
+                href="https://www.npmjs.com/package/@apex/psi-verifier"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-col justify-center rounded-md border border-border bg-card/40 px-5 py-4 transition-colors hover:border-primary/40"
+              >
+                <span className="font-mono text-sm font-bold text-foreground">@apex/psi-verifier (npm)</span>
+                <span className="mt-1 text-xs text-muted-foreground">Free forever. MIT. No permission required.</span>
+              </a>
+              <a
+                href="https://pypi.org/project/psi-verifier/"
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-col justify-center rounded-md border border-border bg-card/40 px-5 py-4 transition-colors hover:border-primary/40"
+              >
+                <span className="font-mono text-sm font-bold text-foreground">psi-verifier (PyPI)</span>
+                <span className="mt-1 text-xs text-muted-foreground">Free forever. MIT. No permission required.</span>
+              </a>
+            </div>
           </div>
         </section>
 

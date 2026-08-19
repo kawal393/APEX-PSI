@@ -701,6 +701,8 @@ GET /verify-status?action=stats
           <CardContent>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
+                { name: "@apex/psi-verifier", target: "MIT verifier v1.1.1 — free forever. MIT. No permission required.", status: "shipped", install: "npm i @apex/psi-verifier" },
+                { name: "psi-verifier", target: "Python verifier v1.1.1 — free forever. MIT. No permission required.", status: "shipped", install: "pip install psi-verifier" },
                 { name: "@apex/psi-openai", target: "OpenAI Node SDK", status: "shipped", install: "npm i @apex/psi-openai" },
                 { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "shipped", install: "npm i @apex/psi-anthropic" },
                 { name: "@apex/psi-vercel-ai", target: "Vercel AI SDK", status: "shipped", install: "npm i @apex/psi-vercel-ai" },
