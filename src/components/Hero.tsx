@@ -28,14 +28,18 @@ const Hero = () => {
             </span>
           </div>
 
-          <h2 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black mb-6 tracking-tight leading-[0.9]">
-            <span className="text-chrome-gradient">Verifiable AI.</span>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight leading-[0.9]">
+            <span className="text-chrome-gradient">The Universal</span>
             <br />
-            <span className="text-gold-gradient">Verifiable Humans.</span>
-          </h2>
+            <span className="text-gold-gradient">Verification Layer</span>
+          </h1>
 
-          <p className="text-lg sm:text-xl md:text-2xl text-foreground/90 max-w-3xl mx-auto mb-4 font-semibold">
-            One open protocol. Two evidence workflows. Independent verification.
+          <p className="text-base sm:text-lg md:text-xl text-foreground/90 max-w-3xl mx-auto mb-4 font-semibold">
+            Anyone, anywhere, verifies any AI output for free — forever. No permission. No account.
+            The math is open. The issuance is ours.
+          </p>
+          <p className="text-xs sm:text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground mb-4">
+            Not a product. A missing layer of the digital world.
           </p>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-10">
             APEX PSI records declared <span className="text-chrome-gradient font-bold">AI</span> actions.
@@ -63,6 +67,26 @@ const Hero = () => {
               </span>
             ))}
           </div>
+
+          {/* Prove-it-yourself entry point */}
+          <Link
+            to="/hello-psi"
+            className="group block max-w-2xl mx-auto mb-4 rounded-lg border border-border hover:border-gold/60 bg-card/40 hover:bg-card/70 transition-all px-5 py-4 text-left"
+          >
+            <div className="flex items-center gap-4">
+              <Zap className="h-5 w-5 text-gold shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold mb-1">
+                  Hello PSI — prove it in 60 seconds
+                </p>
+                <p className="text-sm text-foreground/90 leading-snug">
+                  Seal any bytes in your browser, then recompute the identical digest with the
+                  zero-dependency Python or Node reference implementation.
+                </p>
+              </div>
+              <ArrowRight className="h-4 w-4 text-gold shrink-0 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </Link>
 
           {/* Regulator entry point — full technical specification */}
           <Link

@@ -20,6 +20,7 @@ import { Helmet } from "react-helmet-async";
 import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
 import CountersignUpsell from "@/components/CountersignUpsell";
 import ParityWidget from "@/components/psi/ParityWidget";
+import VerifyTheVerifier from "@/components/psi/VerifyTheVerifier";
 
 
 interface VerificationResult extends ProofReceiptData {

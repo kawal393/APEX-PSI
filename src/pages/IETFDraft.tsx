@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import HonestyLine from "@/components/psi/HonestyLine";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
 
@@ -748,6 +749,9 @@ const IETFDraft = () => {
             </div>
           </div>
         </section>
+      </div>
+      <div className="container mx-auto max-w-4xl px-4 pb-10">
+        <HonestyLine />
       </div>
       <Footer />
     </div>
