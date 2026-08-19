@@ -232,7 +232,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
           content="APEX PSI is an open AI governance evidence protocol. Review free tools and priced receipt, API, registry and institutional evidence services."
         />
         <link rel="canonical" href={`${SITE_URL}/products`} />
-        <meta property="og:title" content="APEX PSI Products & Pricing — The AI Governance Standard" />
+        <meta property="og:title" content="Products & Pricing — Apex PSI — Universal Verification Layer" />
         <meta
           property="og:description"
           content="The protocol is free. The countersignature is paid. Every APEX PSI product and price on one page."
