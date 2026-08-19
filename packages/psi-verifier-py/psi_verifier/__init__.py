@@ -143,6 +143,11 @@ def format_rejection(result: ConformanceResult, canonical_digest: str) -> str:
     return "\n".join(lines)
 
 
+def format_acceptance() -> str:
+    """Canonical acceptance line. Byte-identical to the TypeScript distribution."""
+    return f"PSI-SEAL v{PSI_VERIFIER_VERSION} ACCEPT: conformant seal"
+
+
 def verify_seal(seal: Any) -> ConformanceResult:
     """Report-only conformance check. Never raises."""
     if not isinstance(seal, dict):
@@ -254,6 +259,7 @@ __all__ = [
     "PSI_SCHEMA_URL",
     "ConformanceResult",
     "PsiSealInvalidError",
+    "format_acceptance",
     "format_rejection",
     "is_conformant",
     "jcs",

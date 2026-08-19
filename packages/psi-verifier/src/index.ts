@@ -199,6 +199,11 @@ export function formatRejection(result: ConformanceResult, canonicalDigest: stri
 }
 
 
+/** Canonical acceptance line. Byte-identical in the Python distribution. */
+export function formatAcceptance(): string {
+  return `PSI-SEAL v${PSI_VERIFIER_VERSION} ACCEPT: conformant seal`;
+}
+
 export interface VerifyOptions {
   /**
    * Reject non-conformant seals by throwing `PsiSealInvalidError`.
