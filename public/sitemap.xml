@@ -251,6 +251,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-5pqe7w</loc>
+    <lastmod>2026-08-19T21:07:11.651Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/eu-ai-act-audit-trail-requirements-lulj0v</loc>
+    <lastmod>2026-08-19T21:07:11.651Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ed25519-signatures-for-secure-ai-audit-trails-yq8ujc</loc>
+    <lastmod>2026-08-19T21:07:11.651Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/how-to-prove-an-ai-decision-existed-at-a-specific-time-66unw7</loc>
     <lastmod>2026-08-19T18:07:10.522Z</lastmod>
     <changefreq>weekly</changefreq>
