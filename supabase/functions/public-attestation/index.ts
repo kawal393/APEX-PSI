@@ -36,8 +36,14 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { commit_id, verification_result } = body;
 
-    if (!commit_id || typeof commit_id !== "string") {
-      return new Response(JSON.stringify({ error: "commit_id is required" }), {
+    if (
+      !commit_id ||
+      typeof commit_id !== "string" ||
+      commit_id.length < 4 ||
+      commit_id.length > 128 ||
+      !/^[A-Za-z0-9_:.-]+$/.test(commit_id)
+    ) {
+      return new Response(JSON.stringify({ error: "commit_id is required and must be a valid identifier" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
