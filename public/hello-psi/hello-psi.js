@@ -14,8 +14,10 @@
 //
 // Spec: https://ai-governance-standard.com/.well-known/psi-schema.json
 // Verify it yourself:  node hello-psi.js "Hello, PSI."
+// ES module, Node 18+.
 
-const { createHash } = require("node:crypto");
+import { createHash } from "node:crypto";
+import { fileURLToPath } from "node:url";
 
 const SCHEMA_ID = "PSI-SEAL/1.0.0";
 const VECTOR_SEALED_AT = "2026-01-01T00:00:00.000Z";
@@ -23,13 +25,13 @@ const SUBJECT_NAME = "hello-psi-input";
 // SHA-256 over the JCS form of the live /.well-known/psi-schema.json.
 const SCHEMA_DIGEST = "__SCHEMA_DIGEST__";
 
-function sha256Hex(input) {
+export function sha256Hex(input) {
   return createHash("sha256").update(input, typeof input === "string" ? "utf8" : undefined).digest("hex");
 }
 
 // RFC 8785 JSON Canonicalization Scheme (subset sufficient for PSI envelopes:
 // objects, strings, integers, arrays, booleans, null).
-function jcs(value) {
+export function jcs(value) {
   if (value === null) return "null";
   const t = typeof value;
   if (t === "boolean") return value ? "true" : "false";
@@ -66,7 +68,7 @@ function jcsString(s) {
   return out + '"';
 }
 
-function seal(text, sealedAt = VECTOR_SEALED_AT, subjectName = SUBJECT_NAME) {
+export function seal(text, sealedAt = VECTOR_SEALED_AT, subjectName = SUBJECT_NAME) {
   const bytes = Buffer.from(text, "utf8");
   const hash = sha256Hex(bytes);
   const leaf = sha256Hex("PSI1:" + hash);
@@ -81,9 +83,9 @@ function seal(text, sealedAt = VECTOR_SEALED_AT, subjectName = SUBJECT_NAME) {
   return { envelope, seal_hash: sha256Hex(jcs(envelope)) };
 }
 
-module.exports = { seal, jcs, sha256Hex, SCHEMA_ID, SCHEMA_DIGEST, VECTOR_SEALED_AT };
+export { SCHEMA_ID, SCHEMA_DIGEST, VECTOR_SEALED_AT };
 
-if (require.main === module) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const input = process.argv[2] ?? "";
   const result = seal(input);
   console.log(JSON.stringify(result.envelope, null, 2));
