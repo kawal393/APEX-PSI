@@ -73,7 +73,7 @@ var verify_hash_default = defineTool({
     }
     const needle = hash.toLowerCase();
     const supabase = supabaseForUser(ctx);
-    const { data, error } = await supabase.from("gallows_ledger").select(
+    const { data, error } = await supabase.from("gallows_public_ledger").select(
       "commit_id,commit_hash,merkle_leaf_hash,merkle_root,predicate_id,status,phase,pq_algorithm,sequence_number,created_at"
     ).or(`commit_hash.eq.${needle},merkle_leaf_hash.eq.${needle}`).limit(1).maybeSingle();
     if (error) {
@@ -109,7 +109,7 @@ var list_attestations_default = defineTool2({
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
     const supabase = supabaseForUser(ctx);
-    let query = supabase.from("gallows_ledger").select("commit_id,action,predicate_id,status,phase,commit_hash,created_at").order("created_at", { ascending: false }).limit(limit ?? 10);
+    let query = supabase.from("gallows_public_ledger").select("commit_id,action,predicate_id,status,phase,commit_hash,created_at").order("created_at", { ascending: false }).limit(limit ?? 10);
     if (predicate_id) query = query.eq("predicate_id", predicate_id);
     const { data, error } = await query;
     if (error) {
@@ -136,10 +136,10 @@ var ledger_stats_default = defineTool3({
     }
     const supabase = supabaseForUser(ctx);
     const [total, exceptions, publicAttestations, latest] = await Promise.all([
-      supabase.from("gallows_ledger").select("id", { count: "exact", head: true }),
-      supabase.from("gallows_ledger").select("id", { count: "exact", head: true }).neq("status", "APPROVED"),
+      supabase.from("gallows_public_ledger").select("id", { count: "exact", head: true }),
+      supabase.from("gallows_public_ledger").select("id", { count: "exact", head: true }).neq("status", "APPROVED"),
       supabase.from("public_attestations").select("id", { count: "exact", head: true }),
-      supabase.from("gallows_ledger").select("commit_id,created_at,merkle_root").order("created_at", { ascending: false }).limit(1).maybeSingle()
+      supabase.from("gallows_public_ledger").select("commit_id,created_at,merkle_root").order("created_at", { ascending: false }).limit(1).maybeSingle()
     ]);
     const firstError = total.error ?? exceptions.error ?? publicAttestations.error ?? latest.error;
     if (firstError) {

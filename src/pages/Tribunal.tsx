@@ -66,7 +66,7 @@ const Tribunal = () => {
 
       // Load verified commits from public ledger
       const { data: commits } = await supabase
-        .from("gallows_ledger")
+        .from("gallows_public_ledger")
         .select("commit_id, action, predicate_id, phase, status, commit_hash, merkle_root, created_at, tribunal_votes_approve, tribunal_votes_reject, ratification_hash, ratified_at")
         .in("phase", ["VERIFIED", "RATIFIED"])
         .order("created_at", { ascending: false })

@@ -22,7 +22,7 @@ export default defineTool({
     const needle = hash.toLowerCase();
     const supabase = supabaseForUser(ctx);
     const { data, error } = await supabase
-      .from("gallows_ledger")
+      .from("gallows_public_ledger")
       .select(
         "commit_id,commit_hash,merkle_leaf_hash,merkle_root,predicate_id,status,phase,pq_algorithm,sequence_number,created_at",
       )

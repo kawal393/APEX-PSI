@@ -30,7 +30,7 @@ const AgentMonitor = () => {
       supabase.from("seo_articles").select("id", { count: "exact", head: true }).eq("published", true),
       supabase.from("seo_articles").select("title,created_at,indexnow_submitted_at").order("created_at", { ascending: false }).limit(1).maybeSingle(),
       supabase.from("monitoring_schedules").select("enabled,last_run,next_run").eq("enabled", true),
-      supabase.from("gallows_ledger").select("status").order("created_at", { ascending: false }).limit(100),
+      supabase.from("gallows_public_ledger").select("status").order("created_at", { ascending: false }).limit(100),
     ]);
     const failed = (recentLedger.data || []).filter((row) => row.status && row.status !== "APPROVED").length;
     const scheduleRows = schedules.data || [];

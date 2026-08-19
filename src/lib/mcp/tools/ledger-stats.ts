@@ -14,14 +14,14 @@ export default defineTool({
     }
     const supabase = supabaseForUser(ctx);
     const [total, exceptions, publicAttestations, latest] = await Promise.all([
-      supabase.from("gallows_ledger").select("id", { count: "exact", head: true }),
+      supabase.from("gallows_public_ledger").select("id", { count: "exact", head: true }),
       supabase
-        .from("gallows_ledger")
+        .from("gallows_public_ledger")
         .select("id", { count: "exact", head: true })
         .neq("status", "APPROVED"),
       supabase.from("public_attestations").select("id", { count: "exact", head: true }),
       supabase
-        .from("gallows_ledger")
+        .from("gallows_public_ledger")
         .select("commit_id,created_at,merkle_root")
         .order("created_at", { ascending: false })
         .limit(1)

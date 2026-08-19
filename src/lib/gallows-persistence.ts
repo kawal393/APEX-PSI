@@ -184,7 +184,7 @@ export async function proveCommitServer(commitId: string): Promise<ServerProveRe
  * Sorted by created_at ascending for tree reconstruction
  */
 export async function fetchLedger(limit = 500): Promise<LedgerEntry[]> {
-  const { data, error } = await (supabase.from('gallows_ledger' as any) as any)
+  const { data, error } = await (supabase.from('gallows_public_ledger' as any) as any)
     .select('*')
     .order('created_at', { ascending: true })
     .limit(limit);
@@ -201,7 +201,7 @@ export async function fetchLedger(limit = 500): Promise<LedgerEntry[]> {
  * Fetch ledger entries sorted descending for display
  */
 export async function fetchLedgerDescending(limit = 100): Promise<LedgerEntry[]> {
-  const { data, error } = await (supabase.from('gallows_ledger' as any) as any)
+  const { data, error } = await (supabase.from('gallows_public_ledger' as any) as any)
     .select('*')
     .order('created_at', { ascending: false })
     .limit(limit);
@@ -221,7 +221,7 @@ export async function verifyHashInLedger(hash: string): Promise<{
   found: boolean;
   entry?: LedgerEntry;
 }> {
-  const { data, error } = await (supabase.from('gallows_ledger' as any) as any)
+  const { data, error } = await (supabase.from('gallows_public_ledger' as any) as any)
     .select('*')
     .or(`commit_hash.eq.${hash},merkle_leaf_hash.eq.${hash},proof_hash.eq.${hash},challenge_hash.eq.${hash}`)
     .limit(1);
@@ -237,7 +237,7 @@ export async function verifyHashInLedger(hash: string): Promise<{
  * Get current Merkle root from the latest verified entry
  */
 export async function getLatestMerkleRoot(): Promise<string | null> {
-  const { data, error } = await (supabase.from('gallows_ledger' as any) as any)
+  const { data, error } = await (supabase.from('gallows_public_ledger' as any) as any)
     .select('merkle_root')
     .not('merkle_root', 'is', null)
     .order('created_at', { ascending: false })

@@ -22,7 +22,7 @@ export default defineTool({
     }
     const supabase = supabaseForUser(ctx);
     let query = supabase
-      .from("gallows_ledger")
+      .from("gallows_public_ledger")
       .select("commit_id,action,predicate_id,status,phase,commit_hash,created_at")
       .order("created_at", { ascending: false })
       .limit(limit ?? 10);
