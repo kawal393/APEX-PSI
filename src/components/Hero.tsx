@@ -29,9 +29,9 @@ const Hero = () => {
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight leading-[0.9]">
-            <span className="text-chrome-gradient">The Universal</span>
+            <span className="text-gold-gradient">APEX PSI</span>
             <br />
-            <span className="text-gold-gradient">Verification Layer</span>
+            <span className="text-chrome-gradient">The Universal Verification Layer</span>
           </h1>
 
           <p className="text-base sm:text-lg md:text-xl text-foreground/90 max-w-3xl mx-auto mb-4 font-semibold">

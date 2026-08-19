@@ -226,13 +226,13 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
     <>
       {!embedded && (
       <Helmet>
-        <title>Apex PSI Products &amp; Pricing — The AI Governance Standard — Apex PSI — Universal Verification Layer</title>
+        <title>Products &amp; Pricing — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
           content="APEX PSI is an open AI governance evidence protocol. Review free tools and priced receipt, API, registry and institutional evidence services."
         />
         <link rel="canonical" href={`${SITE_URL}/products`} />
-        <meta property="og:title" content="APEX PSI Products & Pricing — The AI Governance Standard" />
+        <meta property="og:title" content="Products & Pricing — Apex PSI — Universal Verification Layer" />
         <meta
           property="og:description"
           content="The protocol is free. The countersignature is paid. Every APEX PSI product and price on one page."
@@ -270,8 +270,8 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
         {!embedded && <Navbar />}
 
 
-        {/* Hero */}
-        <header className={embedded ? "pt-10 md:pt-14 pb-12 px-4" : "pt-12 md:pt-16 pb-12 px-4"}>
+        {/* Header — h1 only on the standalone /products page; embedded it is a subsection */}
+        <header className={embedded ? "pt-20 md:pt-24 pb-12 px-4" : "pt-12 md:pt-16 pb-12 px-4"}>
           <div className="container mx-auto max-w-7xl text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -281,10 +281,16 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
                 <FileText className="h-3 w-3" />
                  IETF individual submission · Article 50 applicable
               </span>
-              <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[0.95] mb-5">
-                <span className="text-gold-gradient">APEX PSI</span>
-                <span className="block text-chrome-gradient">World’s First Cryptographic Open-Standard Evidence Protocol for AI Governance</span>
-              </h1>
+              {embedded ? (
+                <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-[0.95] mb-5">
+                  <span className="text-chrome-gradient">Products &amp; Pricing</span>
+                </h2>
+              ) : (
+                <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[0.95] mb-5">
+                  <span className="text-gold-gradient">APEX PSI</span>
+                  <span className="block text-chrome-gradient">The Universal Verification Layer</span>
+                </h1>
+              )}
               <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
                 One open protocol for recording declared AI actions and human observations as verifiable evidence.
                 The protocol is <span className="text-foreground font-bold">free forever</span>.
