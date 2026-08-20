@@ -251,6 +251,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-without-vendor-trust-b5aet6</loc>
+    <lastmod>2026-08-20T00:07:12.032Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-insurance-underwriting-with-cryptographic-proofs-iqm293</loc>
+    <lastmod>2026-08-20T00:07:12.032Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-compliance-automation-what-can-be-automated-nzht37</loc>
+    <lastmod>2026-08-20T00:07:12.032Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-5pqe7w</loc>
     <lastmod>2026-08-19T21:07:11.651Z</lastmod>
     <changefreq>weekly</changefreq>
