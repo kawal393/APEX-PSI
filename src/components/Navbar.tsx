@@ -52,6 +52,8 @@ const navLinks = [
     { label: "Live", href: "/live", isRoute: true },
     { label: "Verify", href: "/verify", isRoute: true },
     { label: "Hello PSI", href: "/hello-psi", isRoute: true },
+    { label: "Enforcement Watch", href: "/enforcement-watch", isRoute: true },
+    { label: "Sealed Memory", href: "/sealed-memory", isRoute: true },
     { label: "Evidence", href: "/governance", isRoute: true },
     { label: "Registry", href: "/registry", isRoute: true },
     { label: "Protocol", href: "/protocol", isRoute: true },
