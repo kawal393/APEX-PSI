@@ -203,6 +203,8 @@ const App = () => (
               <Route path="/api" element={<API />} />
               <Route path="/mcp" element={<MCP />} />
               <Route path="/challenge" element={<Challenge />} />
+              <Route path="/enforcement-watch" element={<EnforcementWatch />} />
+              <Route path="/sealed-memory" element={<SealedMemory />} />
               <Route path="/pramaan" element={<Pramaan />} />
               <Route path="/seal" element={<UniversalSeal />} />
               <Route path="/embed/seal" element={<EmbedSeal />} />
