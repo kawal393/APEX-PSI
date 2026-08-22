@@ -251,6 +251,60 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/sha-256-merkle-trees-for-tamper-evident-ai-logs-3obhu6</loc>
+    <lastmod>2026-08-22T09:06:56.949Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-cryptographic-evidence-p9oq50</loc>
+    <lastmod>2026-08-22T09:06:56.949Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/sha-256-merkle-trees-for-tamper-evident-ai-logs-iwykrv</loc>
+    <lastmod>2026-08-22T09:06:56.949Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/prove-an-ai-decision-existed-at-a-specific-time-fhkjs8</loc>
+    <lastmod>2026-08-22T06:06:48.530Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ed25519-signatures-for-secure-ai-audit-trails-e3fsfh</loc>
+    <lastmod>2026-08-22T06:06:48.530Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-k96x4x</loc>
+    <lastmod>2026-08-22T06:06:48.530Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-insurance-underwriting-with-cryptographic-proofs-tepc36</loc>
+    <lastmod>2026-08-22T03:06:56.236Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ietf-draft-singh-psi-00-verifiable-ai-compliance-w9wqfm</loc>
+    <lastmod>2026-08-22T03:06:56.236Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-accountability-why-logs-are-not-evidence-a5ima0</loc>
+    <lastmod>2026-08-22T03:06:56.236Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/ai-accountability-why-logs-are-not-evidence-2zm2r6</loc>
     <lastmod>2026-08-22T00:06:58.925Z</lastmod>
     <changefreq>weekly</changefreq>
