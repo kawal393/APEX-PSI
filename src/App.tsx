@@ -9,6 +9,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
+import CryptoCheckout from "./pages/CryptoCheckout";
+
 import NotFound from "./pages/NotFound";
 import OAuthConsent from "./pages/OAuthConsent";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
