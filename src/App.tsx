@@ -85,6 +85,8 @@ import LiveStream from "./pages/LiveStream";
 import StandardsPortfolio from "./pages/StandardsPortfolio";
 import PSI05 from "./pages/PSI05";
 import MCP from "./pages/MCP";
+import EnforcementWatch from "./pages/EnforcementWatch";
+import SealedMemory from "./pages/SealedMemory";
 import ConnectAIButton from "@/components/ConnectAIButton";
 
 
