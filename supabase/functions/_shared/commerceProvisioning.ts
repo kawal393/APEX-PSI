@@ -92,3 +92,44 @@ export async function provisionCheckout(
     if (error) throw error;
   }
 }
+
+/**
+ * Grants an entitlement for a purchase that did not come through Stripe (today:
+ * confirmed on-chain crypto payments). Crypto and card purchases converge here so
+ * both deliver byte-identical credits.
+ */
+export async function grantEntitlement(
+  backend: BackendClient,
+  params: {
+    userId: string;
+    serviceKey: string;
+    quantity: number;
+    months?: number;
+    metadata?: Record<string, unknown>;
+  },
+): Promise<void> {
+  const { data: existing, error: readError } = await backend
+    .from("service_entitlements")
+    .select("quantity, ends_at")
+    .eq("user_id", params.userId)
+    .eq("service_key", params.serviceKey)
+    .maybeSingle();
+  if (readError) throw readError;
+
+  let endsAt: string | null = existing?.ends_at ?? null;
+  if (params.months) {
+    const from = endsAt && Date.parse(endsAt) > Date.now() ? new Date(endsAt) : new Date();
+    from.setMonth(from.getMonth() + params.months);
+    endsAt = from.toISOString();
+  }
+
+  const { error } = await backend.from("service_entitlements").upsert({
+    user_id: params.userId,
+    service_key: params.serviceKey,
+    status: "active",
+    quantity: (existing?.quantity ?? 0) + params.quantity,
+    ends_at: endsAt,
+    metadata: params.metadata ?? {},
+  }, { onConflict: "user_id,service_key" });
+  if (error) throw error;
+}
