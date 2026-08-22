@@ -25,3 +25,45 @@ export const CHECKOUT = {
 } as const;
 
 export type CheckoutKey = keyof typeof CHECKOUT;
+
+// ── Self-custody crypto payments ────────────────────────────────────────────
+// One-off purchases and prepaid packs only. On-chain recurring billing cannot be
+// enforced honestly, so subscriptions stay on cards.
+
+export const CRYPTO_ASSETS = [
+  { id: "BTC", label: "Bitcoin", note: "3 confirmations", chain: "Bitcoin L1" },
+  { id: "ETH", label: "Ethereum", note: "12 confirmations", chain: "Ethereum mainnet" },
+  { id: "USDC", label: "USDC", note: "12 confirmations", chain: "Ethereum mainnet" },
+] as const;
+
+export type CryptoAssetId = (typeof CRYPTO_ASSETS)[number]["id"];
+
+export const CRYPTO_ITEMS = [
+  {
+    key: "receipt_1",
+    label: "Article 50 Conformity Receipt",
+    price: "$29",
+    delivers: "1 countersigned receipt credit",
+  },
+  {
+    key: "receipt_10",
+    label: "Receipt pack — 10",
+    price: "$249",
+    delivers: "10 countersigned receipt credits",
+  },
+  {
+    key: "api_credits_10k",
+    label: "API credits — 10,000 calls",
+    price: "$199",
+    delivers: "10,000 API calls of quota",
+  },
+  {
+    key: "registry_12mo",
+    label: "Registry listing — 12 months",
+    price: "$1,990",
+    delivers: "Verified Supplier Registry listing for 12 months",
+  },
+] as const;
+
+export type CryptoItemKey = (typeof CRYPTO_ITEMS)[number]["key"];
+
