@@ -2,6 +2,10 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import ApexVerifiedStamp from "./ApexVerifiedStamp";
 
+const ANCHOR_HISTORY_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/blockchain-anchor?action=history`;
+
+type ConfirmedAnchor = { block_height: number; explorer_url?: string | null };
+
 const TRUTHS = [
   "We do not judge content. We anchor its existence at a point in time.",
   "A seal proves the file existed — not that the file is true.",
@@ -23,6 +27,32 @@ const SovereignSealStrip = () => {
   const [truthIdx, setTruthIdx] = useState(0);
   const [block, setBlock] = useState(liveBlockHeight());
   const [seal, setSeal] = useState<string>("");
+  const [anchor, setAnchor] = useState<ConfirmedAnchor | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(ANCHOR_HISTORY_URL, {
+          headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const rows: any[] = Array.isArray(data?.anchors) ? data.anchors : Array.isArray(data) ? data : [];
+        const confirmed = rows
+          .filter((r) => r?.status === "confirmed" && Number(r?.block_height) > 0)
+          .sort((a, b) => Number(b.block_height) - Number(a.block_height))[0];
+        if (!cancelled && confirmed) {
+          setAnchor({ block_height: Number(confirmed.block_height), explorer_url: confirmed.explorer_url });
+        }
+      } catch {
+        /* offline or unavailable — keep the honest estimate */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const i = setInterval(() => setTruthIdx((n) => (n + 1) % TRUTHS.length), 4500);
@@ -105,11 +135,34 @@ const SovereignSealStrip = () => {
           <div className="flex flex-col items-center gap-4">
             <ApexVerifiedStamp hash={seal} btcBlock={block.toLocaleString()} size="lg" />
             <div className="text-center">
-              <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold">Bitcoin Network - Est. Height</p>
-              <p className="text-2xl font-black text-foreground tabular-nums">#{block.toLocaleString()}</p>
-              <p className="text-[10px] font-mono text-muted-foreground mt-1">
-                Live Bitcoin anchoring via OpenTimestamps is in development.
-              </p>
+              {anchor ? (
+                <>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold">
+                    Bitcoin anchor confirmed
+                  </p>
+                  <p className="text-2xl font-black text-foreground tabular-nums">
+                    #{anchor.block_height.toLocaleString()}
+                  </p>
+                  {anchor.explorer_url && (
+                    <a
+                      href={anchor.explorer_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] font-mono text-gold underline underline-offset-2 mt-1 inline-block"
+                    >
+                      View on block explorer →
+                    </a>
+                  )}
+                </>
+              ) : (
+                <>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold">Bitcoin Network - Est. Height</p>
+                  <p className="text-2xl font-black text-foreground tabular-nums">#{block.toLocaleString()}</p>
+                  <p className="text-[10px] font-mono text-muted-foreground mt-1">
+                    Live Bitcoin anchoring via OpenTimestamps is in development.
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

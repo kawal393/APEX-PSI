@@ -179,8 +179,30 @@ export async function getTransactionStatus(txid: string): Promise<TxStatus> {
  */
 const BITCOIN_ATTESTATION_TAG = [0x05, 0x88, 0x96, 0x0d, 0x73, 0xd7, 0x19, 0x01];
 
+const MIN_PLAUSIBLE_HEIGHT = 100000;
+const MAX_PLAUSIBLE_HEIGHT = 1500000;
+
+function readVarint(bytes: Uint8Array, offset: number): { value: number; next: number } | null {
+  let value = 0;
+  let shift = 0;
+  let p = offset;
+  while (p < bytes.length) {
+    const b = bytes[p++];
+    value += (b & 0x7f) * Math.pow(2, shift);
+    if ((b & 0x80) === 0) return { value, next: p };
+    shift += 7;
+    if (shift > 42) return null;
+  }
+  return null;
+}
+
+/**
+ * Scan the raw .ots serialization for a Bitcoin attestation. The block height is
+ * the single LEB128 varint DIRECTLY after the 8-byte attestation tag (optionally
+ * preceded by a 0xFF separator byte). No payload-length varint is consumed.
+ */
 export function extractBitcoinBlockHeight(otsBytes: Uint8Array): number | null {
-  for (let i = 0; i + BITCOIN_ATTESTATION_TAG.length + 2 < otsBytes.length; i++) {
+  for (let i = 0; i + BITCOIN_ATTESTATION_TAG.length + 1 < otsBytes.length; i++) {
     let match = true;
     for (let j = 0; j < BITCOIN_ATTESTATION_TAG.length; j++) {
       if (otsBytes[i + j] !== BITCOIN_ATTESTATION_TAG[j]) {
@@ -190,24 +212,193 @@ export function extractBitcoinBlockHeight(otsBytes: Uint8Array): number | null {
     }
     if (!match) continue;
 
-    // Skip the attestation payload length varint, then read the height varint.
     let p = i + BITCOIN_ATTESTATION_TAG.length;
-    // payload length
-    while (p < otsBytes.length && (otsBytes[p] & 0x80) !== 0) p++;
-    p++;
-    let height = 0;
-    let shift = 0;
-    while (p < otsBytes.length) {
-      const b = otsBytes[p++];
-      height |= (b & 0x7f) << shift;
-      if ((b & 0x80) === 0) break;
-      shift += 7;
-      if (shift > 42) return null;
-    }
-    return height > 0 ? height : null;
+    if (otsBytes[p] === 0xff) p++;
+    const read = readVarint(otsBytes, p);
+    if (!read) continue;
+    const height = read.value;
+    if (height >= MIN_PLAUSIBLE_HEIGHT && height <= MAX_PLAUSIBLE_HEIGHT) return height;
   }
   return null;
 }
+
+/**
+ * Build a detached OpenTimestamps proof:
+ *   \x00OpenTimestamps\x00 | version 0x00 | hash-alg 0x08 | 32-byte digest | calendar bytes
+ */
+export function buildDetachedProof(digestHex: string, tsBytes: Uint8Array): string {
+  const digest = hexToBytes(digestHex);
+  if (digest.length !== 32) throw new Error(`Digest must be 32 bytes, got ${digest.length}`);
+
+  const header = new TextEncoder().encode("\u0000OpenTimestamps\u0000");
+  const out = new Uint8Array(header.length + 2 + digest.length + tsBytes.length);
+  let o = 0;
+  out.set(header, o);
+  o += header.length;
+  out[o++] = 0x00; // version
+  out[o++] = 0x08; // SHA-256
+  out.set(digest, o);
+  o += digest.length;
+  out.set(tsBytes, o);
+  return bytesToBase64(out);
+}
+
+export interface OtsUpgrade {
+  ok: boolean;
+  ots_base64?: string;
+  bytes?: Uint8Array;
+  error?: string;
+}
+
+const PENDING_ATTESTATION_TAG = "83dfe30d2ef90c8e";
+
+async function sha256Bytes(data: Uint8Array): Promise<Uint8Array> {
+  return new Uint8Array(await crypto.subtle.digest("SHA-256", data));
+}
+
+function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
+  const out = new Uint8Array(a.length + b.length);
+  out.set(a, 0);
+  out.set(b, a.length);
+  return out;
+}
+
+function toHex(b: Uint8Array): string {
+  return Array.from(b).map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+export interface PendingCommitment {
+  calendar: string;
+  commitment: string;
+}
+
+/**
+ * Walk an OTS timestamp serialization from its initial digest and collect every
+ * pending calendar attestation with the commitment the calendar knows about.
+ * Only SHA-256 / append / prepend / fork opcodes are handled — the ops the
+ * public calendars actually emit.
+ */
+export async function collectPendingCommitments(
+  digestHex: string,
+  tsBytes: Uint8Array,
+): Promise<PendingCommitment[]> {
+  const found: PendingCommitment[] = [];
+  const decoder = new TextDecoder();
+
+  const walk = async (msg: Uint8Array, start: number): Promise<number> => {
+    let i = start;
+    let current = msg;
+    while (i < tsBytes.length) {
+      const tag = tsBytes[i++];
+      if (tag === 0xff) {
+        i = await walk(current, i);
+        continue;
+      }
+      if (tag === 0x00) {
+        const attTag = toHex(tsBytes.slice(i, i + 8));
+        i += 8;
+        const len = readVarint(tsBytes, i);
+        if (!len) return tsBytes.length;
+        i = len.next;
+        const payload = tsBytes.slice(i, i + len.value);
+        i += len.value;
+        if (attTag === PENDING_ATTESTATION_TAG) {
+          const url = readVarint(payload, 0);
+          if (url) {
+            found.push({
+              calendar: decoder.decode(payload.slice(url.next, url.next + url.value)),
+              commitment: toHex(current),
+            });
+          }
+        }
+        continue;
+      }
+      if (tag === 0xf0 || tag === 0xf1) {
+        const len = readVarint(tsBytes, i);
+        if (!len) return tsBytes.length;
+        const arg = tsBytes.slice(len.next, len.next + len.value);
+        i = len.next + len.value;
+        current = tag === 0xf0 ? concat(current, arg) : concat(arg, current);
+        continue;
+      }
+      if (tag === 0x08) {
+        current = await sha256Bytes(current);
+        continue;
+      }
+      // Unknown / unsupported opcode — stop this branch honestly.
+      return tsBytes.length;
+    }
+    return i;
+  };
+
+  try {
+    await walk(hexToBytes(digestHex), 0);
+  } catch {
+    return found;
+  }
+  return found;
+}
+
+/**
+ * Ask a calendar to upgrade an existing timestamp to its Bitcoin attestation.
+ * First tries the calendar upgrade endpoint with the raw bytes; if that is not
+ * available it walks the stored timestamp and requests the upgraded timestamp
+ * for each pending commitment the calendar issued.
+ */
+export async function upgradeTimestamp(
+  calendarUrl: string,
+  tsBytes: Uint8Array,
+  digestHex?: string,
+): Promise<OtsUpgrade> {
+  const base = calendarUrl.replace(/\/$/, "");
+  const errors: string[] = [];
+  try {
+    const res = await fetch(`${base}/upgrade`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/octet-stream",
+        Accept: "application/octet-stream",
+      },
+      body: tsBytes,
+    });
+    if (res.ok) {
+      const bytes = new Uint8Array(await res.arrayBuffer());
+      if (bytes.length > 0) return { ok: true, bytes, ots_base64: bytesToBase64(bytes) };
+      errors.push(`${base}/upgrade -> empty body`);
+    } else {
+      errors.push(`${base}/upgrade -> ${res.status} ${(await res.text()).slice(0, 120)}`);
+    }
+  } catch (e) {
+    errors.push(`${base}/upgrade -> ${e instanceof Error ? e.message : String(e)}`);
+  }
+
+  if (digestHex) {
+    const pending = await collectPendingCommitments(digestHex, tsBytes);
+    for (const p of pending) {
+      const target = (p.calendar || base).replace(/\/$/, "");
+      try {
+        const res = await fetch(`${target}/timestamp/${p.commitment}`, {
+          headers: { Accept: "application/octet-stream" },
+        });
+        if (!res.ok) {
+          errors.push(`${target}/timestamp -> ${res.status} ${(await res.text()).slice(0, 120)}`);
+          continue;
+        }
+        const bytes = new Uint8Array(await res.arrayBuffer());
+        if (bytes.length === 0) {
+          errors.push(`${target}/timestamp -> empty body`);
+          continue;
+        }
+        return { ok: true, bytes, ots_base64: bytesToBase64(bytes) };
+      } catch (e) {
+        errors.push(`${target}/timestamp -> ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
+  }
+
+  return { ok: false, error: errors.join(" | ") };
+}
+
 
 export function base64ToBytes(b64: string): Uint8Array {
   const raw = atob(b64);

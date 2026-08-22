@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 
 const DEMOS = [
-  { name: "Northgate Capital", hash: "3f9c1a7d5be24c08a1f6d3b920e7c45188aa02de6f31b7c4905ed2a17b6f3c81" },
-  { name: "Helios Robotics", hash: "b71e04c9d5a8236f0c94ae17d3f6520b8e4c1a97ff02d6b3517ea9c840d2b6f5" },
-  { name: "Meridian Health AI", hash: "d24a86f0b3c517e9ad0f24b7c6851390fe27b4d5a91c60e8f3b7d215ca94e076" },
+  { name: "Northgate Capital", hash: "1e9e62eda2ada5242542594b457f21a2429d5943065a82b97067f2d91637bcfb" },
+  { name: "Helios Robotics", hash: "9e5c7ed98491e6f0dd9347433cc32796208370f80c4c15a068aae471ff6c8fb0" },
+  { name: "Meridian Health AI", hash: "5a6c6328cf32512bb0963628ff34e93dd8ddb2b0ca85ffc110e7e5f2f44c2471" },
 ];
 
 const snippetFor = (name: string, hash: string) =>
@@ -58,7 +58,7 @@ const VerifiedByApexSection = () => {
 
                 <div className="mt-3 flex items-center justify-between gap-2">
                   <a
-                    href={`https://apex-infrastructure.com/verify/${hash}`}
+                    href={`https://www.ai-governance-standard.com/r/${hash}`}
                     className="font-mono text-[10px] uppercase tracking-wider text-primary underline underline-offset-2"
                   >
                     View record →
