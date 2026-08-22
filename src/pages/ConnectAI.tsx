@@ -15,7 +15,7 @@ const TOOLS = [
   {
     name: "verify_hash",
     desc: "Look up a SHA-256 hash in the evidence ledger and return the signed attestation bundle.",
-    example: `{ "hash": "5a1fe5a9d865...ddd96e" }`,
+    example: `{ "hash": "4606e9eee90b...e3ca7f" }`,
   },
   {
     name: "list_attestations",

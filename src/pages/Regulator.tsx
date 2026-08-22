@@ -84,7 +84,7 @@ export default function Regulator() {
               Paste SHA-256 hashes (one per line or space-separated). Each is checked against the APEX PSI notary ledger.
             </p>
             <Textarea className="mb-3 min-h-32 font-mono text-xs"
-              placeholder="e.g. 5a1fe5a9d86545db89162919e099461320f9e878ee424c1592145af783ddd96e"
+              placeholder="e.g. 4606e9eee90b89d2fcf9d47c21fb00e558f60bb3c6ddf5955c2d005ae0e3ca7f"
               value={batch} onChange={(e) => setBatch(e.target.value)} />
             <Button onClick={runBulk} disabled={busy} className="w-full">
               {busy ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Verifying…</> : "Run bulk verification"}
