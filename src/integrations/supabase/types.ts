@@ -344,6 +344,99 @@ export type Database = {
         }
         Relationships: []
       }
+      crypto_invoices: {
+        Row: {
+          address: string
+          amount_asset: number
+          amount_atomic: string
+          asset: string
+          confirmations: number
+          created_at: string
+          derivation_index: number | null
+          expires_at: string
+          fiat_amount_cents: number
+          id: string
+          invoice_ref: string
+          item_key: string
+          paid_at: string | null
+          provisioned: boolean
+          rate_source: string
+          rate_usd: number
+          seen_at: string | null
+          status: string
+          txid: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          amount_asset: number
+          amount_atomic: string
+          asset: string
+          confirmations?: number
+          created_at?: string
+          derivation_index?: number | null
+          expires_at: string
+          fiat_amount_cents: number
+          id?: string
+          invoice_ref: string
+          item_key: string
+          paid_at?: string | null
+          provisioned?: boolean
+          rate_source: string
+          rate_usd: number
+          seen_at?: string | null
+          status?: string
+          txid?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          amount_asset?: number
+          amount_atomic?: string
+          asset?: string
+          confirmations?: number
+          created_at?: string
+          derivation_index?: number | null
+          expires_at?: string
+          fiat_amount_cents?: number
+          id?: string
+          invoice_ref?: string
+          item_key?: string
+          paid_at?: string | null
+          provisioned?: boolean
+          rate_source?: string
+          rate_usd?: number
+          seen_at?: string | null
+          status?: string
+          txid?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crypto_rate_cache: {
+        Row: {
+          asset: string
+          fetched_at: string
+          source: string
+          usd: number
+        }
+        Insert: {
+          asset: string
+          fetched_at?: string
+          source: string
+          usd: number
+        }
+        Update: {
+          asset?: string
+          fetched_at?: string
+          source?: string
+          usd?: number
+        }
+        Relationships: []
+      }
       drip_queue: {
         Row: {
           conversation_id: string | null
