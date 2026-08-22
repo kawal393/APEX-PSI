@@ -96,6 +96,7 @@ const Index = () => {
         <FAQ />
         <ContactSection />
         <VerifiedByApexSection />
+        <EnforcementStrip />
         <Footer />
       </div>
     </>
