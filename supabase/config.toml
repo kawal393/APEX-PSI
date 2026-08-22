@@ -144,3 +144,10 @@ verify_jwt = false
 
 [functions.broadcast-content]
 verify_jwt = false
+
+[functions.crypto-quote]
+verify_jwt = false
+
+[functions.crypto-watcher]
+verify_jwt = false
+
