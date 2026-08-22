@@ -119,6 +119,9 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/products" element={<Products />} />
+              <Route path="/crypto" element={<CryptoCheckout />} />
+              <Route path="/crypto/:ref" element={<CryptoCheckout />} />
+
               <Route path="/integrations" element={<Integrations />} />
               <Route path="/ledger" element={<Ledger />} />
               <Route path="/ledger/:slug" element={<Ledger />} />
