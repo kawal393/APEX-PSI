@@ -21,6 +21,7 @@ import EUCodeBanner from "@/components/EUCodeBanner";
 import EcosystemStrip from "@/components/EcosystemStrip";
 import ConnectAIPill from "@/components/ConnectAIPill";
 import VerifiedByApexSection from "@/components/VerifiedByApexSection";
+import EnforcementStrip from "@/components/EnforcementStrip";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -95,6 +96,7 @@ const Index = () => {
         <FAQ />
         <ContactSection />
         <VerifiedByApexSection />
+        <EnforcementStrip />
         <Footer />
       </div>
     </>

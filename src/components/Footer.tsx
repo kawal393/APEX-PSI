@@ -59,6 +59,8 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               <li><Link to="/gallows" className="hover:text-gold transition-colors">Verification Portal</Link></li>
               <li><Link to="/verify" className="hover:text-gold transition-colors">Verify Hash</Link></li>
               <li><Link to="/hello-psi" className="hover:text-gold transition-colors">Hello PSI — prove it in 60 seconds</Link></li>
+              <li><Link to="/enforcement-watch" className="hover:text-gold transition-colors">Enforcement Watch</Link></li>
+              <li><Link to="/sealed-memory" className="hover:text-gold transition-colors">Sealed Memory</Link></li>
               <li><Link to="/regulations" className="hover:text-gold transition-colors">Regulation Map</Link></li>
               <li><Link to="/landscape" className="hover:text-gold transition-colors">Competitive Landscape</Link></li>
               <li><Link to="/assess" className="hover:text-gold transition-colors">Free Score</Link></li>
