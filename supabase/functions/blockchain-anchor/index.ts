@@ -19,6 +19,9 @@ import {
   base64ToBytes,
   sha256Hex,
   ESPLORA_ENDPOINTS,
+  OTS_CALENDARS,
+  buildDetachedProof,
+  upgradeTimestamp,
 } from "../_shared/ots.ts";
 
 const corsHeaders = {
