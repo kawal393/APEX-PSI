@@ -179,8 +179,30 @@ export async function getTransactionStatus(txid: string): Promise<TxStatus> {
  */
 const BITCOIN_ATTESTATION_TAG = [0x05, 0x88, 0x96, 0x0d, 0x73, 0xd7, 0x19, 0x01];
 
+const MIN_PLAUSIBLE_HEIGHT = 100000;
+const MAX_PLAUSIBLE_HEIGHT = 1500000;
+
+function readVarint(bytes: Uint8Array, offset: number): { value: number; next: number } | null {
+  let value = 0;
+  let shift = 0;
+  let p = offset;
+  while (p < bytes.length) {
+    const b = bytes[p++];
+    value += (b & 0x7f) * Math.pow(2, shift);
+    if ((b & 0x80) === 0) return { value, next: p };
+    shift += 7;
+    if (shift > 42) return null;
+  }
+  return null;
+}
+
+/**
+ * Scan the raw .ots serialization for a Bitcoin attestation. The block height is
+ * the single LEB128 varint DIRECTLY after the 8-byte attestation tag (optionally
+ * preceded by a 0xFF separator byte). No payload-length varint is consumed.
+ */
 export function extractBitcoinBlockHeight(otsBytes: Uint8Array): number | null {
-  for (let i = 0; i + BITCOIN_ATTESTATION_TAG.length + 2 < otsBytes.length; i++) {
+  for (let i = 0; i + BITCOIN_ATTESTATION_TAG.length + 1 < otsBytes.length; i++) {
     let match = true;
     for (let j = 0; j < BITCOIN_ATTESTATION_TAG.length; j++) {
       if (otsBytes[i + j] !== BITCOIN_ATTESTATION_TAG[j]) {
@@ -190,23 +212,67 @@ export function extractBitcoinBlockHeight(otsBytes: Uint8Array): number | null {
     }
     if (!match) continue;
 
-    // Skip the attestation payload length varint, then read the height varint.
     let p = i + BITCOIN_ATTESTATION_TAG.length;
-    // payload length
-    while (p < otsBytes.length && (otsBytes[p] & 0x80) !== 0) p++;
-    p++;
-    let height = 0;
-    let shift = 0;
-    while (p < otsBytes.length) {
-      const b = otsBytes[p++];
-      height |= (b & 0x7f) << shift;
-      if ((b & 0x80) === 0) break;
-      shift += 7;
-      if (shift > 42) return null;
-    }
-    return height > 0 ? height : null;
+    if (otsBytes[p] === 0xff) p++;
+    const read = readVarint(otsBytes, p);
+    if (!read) continue;
+    const height = read.value;
+    if (height >= MIN_PLAUSIBLE_HEIGHT && height <= MAX_PLAUSIBLE_HEIGHT) return height;
   }
   return null;
+}
+
+/** OTS detached-proof file header: magic + version + SHA-256 alg tag. */
+const OTS_MAGIC = "\x00OpenTimestamps\x00\x00Proof\x00\xbf\x89\xe2\xe8\x84\xe8\x92\x94";
+
+/**
+ * Build a detached OpenTimestamps proof:
+ *   \x00OpenTimestamps\x00 | version 0x00 | hash-alg 0x08 | 32-byte digest | calendar bytes
+ */
+export function buildDetachedProof(digestHex: string, tsBytes: Uint8Array): string {
+  const digest = hexToBytes(digestHex);
+  if (digest.length !== 32) throw new Error(`Digest must be 32 bytes, got ${digest.length}`);
+
+  const header = new TextEncoder().encode("\u0000OpenTimestamps\u0000");
+  const out = new Uint8Array(header.length + 2 + digest.length + tsBytes.length);
+  let o = 0;
+  out.set(header, o);
+  o += header.length;
+  out[o++] = 0x00; // version
+  out[o++] = 0x08; // SHA-256
+  out.set(digest, o);
+  o += digest.length;
+  out.set(tsBytes, o);
+  return bytesToBase64(out);
+}
+
+export interface OtsUpgrade {
+  ok: boolean;
+  ots_base64?: string;
+  bytes?: Uint8Array;
+  error?: string;
+}
+
+/** Ask a calendar to upgrade an existing timestamp to its Bitcoin attestation. */
+export async function upgradeTimestamp(calendarUrl: string, tsBytes: Uint8Array): Promise<OtsUpgrade> {
+  try {
+    const res = await fetch(`${calendarUrl.replace(/\/$/, "")}/upgrade`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/octet-stream",
+        Accept: "application/octet-stream",
+      },
+      body: tsBytes,
+    });
+    if (!res.ok) {
+      return { ok: false, error: `${calendarUrl} -> ${res.status} ${await res.text()}` };
+    }
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    if (bytes.length === 0) return { ok: false, error: `${calendarUrl} -> empty upgrade body` };
+    return { ok: true, bytes, ots_base64: bytesToBase64(bytes) };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+  }
 }
 
 export function base64ToBytes(b64: string): Uint8Array {
