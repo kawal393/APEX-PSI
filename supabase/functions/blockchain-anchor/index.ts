@@ -231,7 +231,7 @@ Deno.serve(async (req) => {
         // Upgrade the STORED proof at its own calendar — never re-submit a digest.
         const storedBytes = base64ToBytes(proof.ots_base64);
         const calendar = proof.calendar_url ?? OTS_CALENDARS[0];
-        const upgraded = await upgradeTimestamp(calendar, storedBytes);
+        const upgraded = await upgradeTimestamp(calendar, storedBytes, anchor.anchor_hash);
         const bytes = upgraded.ok ? upgraded.bytes! : storedBytes;
         const height = extractBitcoinBlockHeight(bytes);
 
