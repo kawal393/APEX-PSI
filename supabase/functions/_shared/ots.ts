@@ -197,9 +197,10 @@ function readVarint(bytes: Uint8Array, offset: number): { value: number; next: n
 }
 
 /**
- * Scan the raw .ots serialization for a Bitcoin attestation. The block height is
- * the single LEB128 varint DIRECTLY after the 8-byte attestation tag (optionally
- * preceded by a 0xFF separator byte). No payload-length varint is consumed.
+ * Scan the raw .ots serialization for a Bitcoin attestation. The height is the
+ * LEB128 varint after the 8-byte attestation tag (skipping an optional 0xFF
+ * separator, and an attestation payload-length varint when one is present, as
+ * the public calendars emit). Sanity range 100000–1500000.
  */
 export function extractBitcoinBlockHeight(otsBytes: Uint8Array): number | null {
   for (let i = 0; i + BITCOIN_ATTESTATION_TAG.length + 1 < otsBytes.length; i++) {
@@ -214,13 +215,20 @@ export function extractBitcoinBlockHeight(otsBytes: Uint8Array): number | null {
 
     let p = i + BITCOIN_ATTESTATION_TAG.length;
     if (otsBytes[p] === 0xff) p++;
-    const read = readVarint(otsBytes, p);
-    if (!read) continue;
-    const height = read.value;
-    if (height >= MIN_PLAUSIBLE_HEIGHT && height <= MAX_PLAUSIBLE_HEIGHT) return height;
+    const first = readVarint(otsBytes, p);
+    if (!first) continue;
+    if (first.value >= MIN_PLAUSIBLE_HEIGHT && first.value <= MAX_PLAUSIBLE_HEIGHT) {
+      return first.value;
+    }
+    // The first varint was the attestation payload length — the height follows.
+    const second = readVarint(otsBytes, first.next);
+    if (second && second.value >= MIN_PLAUSIBLE_HEIGHT && second.value <= MAX_PLAUSIBLE_HEIGHT) {
+      return second.value;
+    }
   }
   return null;
 }
+
 
 /**
  * Build a detached OpenTimestamps proof:
