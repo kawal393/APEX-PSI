@@ -225,17 +225,22 @@ Deno.serve(async (req) => {
           .maybeSingle();
         if (!proof) continue;
 
-        // Re-fetch an upgraded proof from the calendar, then look for a
-        // Bitcoin attestation inside the raw serialization.
-        const fresh = await submitDigestToCalendars(anchor.anchor_hash);
-        const bytes = base64ToBytes(fresh.ok ? fresh.ots_base64! : proof.ots_base64);
+        // Upgrade the STORED proof at its own calendar — never re-submit a digest.
+        const storedBytes = base64ToBytes(proof.ots_base64);
+        const calendar = proof.calendar_url ?? OTS_CALENDARS[0];
+        const upgraded = await upgradeTimestamp(calendar, storedBytes);
+        const bytes = upgraded.ok ? upgraded.bytes! : storedBytes;
         const height = extractBitcoinBlockHeight(bytes);
 
-        if (fresh.ok && fresh.ots_base64 !== proof.ots_base64) {
-          await supabase
-            .from("ots_proofs")
-            .update({ ots_base64: fresh.ots_base64 })
-            .eq("id", proof.id);
+        if (upgraded.ok) {
+          try {
+            const detached = buildDetachedProof(anchor.anchor_hash, upgraded.bytes!);
+            if (detached !== proof.ots_base64) {
+              await supabase.from("ots_proofs").update({ ots_base64: detached }).eq("id", proof.id);
+            }
+          } catch (_e) {
+            // Malformed digest — leave the stored proof untouched.
+          }
         }
 
         if (!height) continue; // still calendar-pending — leave status alone

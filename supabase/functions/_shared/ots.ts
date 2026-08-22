@@ -222,9 +222,6 @@ export function extractBitcoinBlockHeight(otsBytes: Uint8Array): number | null {
   return null;
 }
 
-/** OTS detached-proof file header: magic + version + SHA-256 alg tag. */
-const OTS_MAGIC = "\x00OpenTimestamps\x00\x00Proof\x00\xbf\x89\xe2\xe8\x84\xe8\x92\x94";
-
 /**
  * Build a detached OpenTimestamps proof:
  *   \x00OpenTimestamps\x00 | version 0x00 | hash-alg 0x08 | 32-byte digest | calendar bytes
