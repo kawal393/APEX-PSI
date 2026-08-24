@@ -193,8 +193,28 @@ const Receipt = () => {
                         <dt className="text-[11px] uppercase tracking-widest text-muted-foreground">Predicate</dt>
                         <dd className="font-mono text-foreground/90">{data?.predicate_id ?? "—"}</dd>
                       </div>
+                      <div>
+                        <dt className="text-[11px] uppercase tracking-widest text-muted-foreground">Phase</dt>
+                        <dd className="font-mono text-foreground/90">{data?.phase ?? "—"}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[11px] uppercase tracking-widest text-muted-foreground">Status</dt>
+                        <dd className="font-mono text-foreground/90">{data?.status ?? "—"}</dd>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <dt className="text-[11px] uppercase tracking-widest text-muted-foreground">Independent check</dt>
+                        <dd>
+                          <a
+                            href={`/verify?hash=${clean}`}
+                            className="font-mono text-xs text-gold hover:underline break-all"
+                          >
+                            /verify?hash={clean}
+                          </a>
+                        </dd>
+                      </div>
                     </dl>
                   )}
+
                 </div>
               </div>
             </motion.div>
