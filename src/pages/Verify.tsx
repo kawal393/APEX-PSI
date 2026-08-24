@@ -137,18 +137,32 @@ const Verify = () => {
     setResult(null);
     setSearched(true);
     try {
-      const res = await fetch(VERIFY_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hash: target }),
+      // Canonical public read path: GET /functions/v1/verify-hash?hash=<hash>
+      const res = await fetch(`${VERIFY_URL}?hash=${encodeURIComponent(target)}`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        cache: "no-store",
       });
       const data = await res.json();
-      setResult(data);
+      if (data && typeof data === "object" && ("found" in data || "verified" in data)) {
+        setResult(data);
+      } else {
+        // Treat any non-conformant response as a genuine miss, never a generic failure.
+        setResult({
+          verified: false,
+          found: false,
+          queried_hash: target,
+          queried_at: new Date().toISOString(),
+          engine: "APEX PSI v2.0",
+          message: "Hash not found in the APEX PSI immutable ledger",
+        } as typeof result);
+      }
     } catch {
       toast.error("Verification request failed. Please try again.");
     } finally {
       setLoading(false);
     }
+
   }, []);
 
   const handleVerify = () => runVerify(hash);
