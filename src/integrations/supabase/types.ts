@@ -553,6 +553,78 @@ export type Database = {
         }
         Relationships: []
       }
+      founding_applications: {
+        Row: {
+          ack_hash: string
+          applicant_id: string
+          created_at: string
+          display_name: string
+          email: string
+          email_verified: boolean
+          id: string
+          reserved_at: string | null
+          seat_number: number | null
+          status: Database["public"]["Enums"]["founding_status"]
+          updated_at: string
+          witness_line: string
+        }
+        Insert: {
+          ack_hash: string
+          applicant_id: string
+          created_at?: string
+          display_name: string
+          email: string
+          email_verified?: boolean
+          id?: string
+          reserved_at?: string | null
+          seat_number?: number | null
+          status?: Database["public"]["Enums"]["founding_status"]
+          updated_at?: string
+          witness_line: string
+        }
+        Update: {
+          ack_hash?: string
+          applicant_id?: string
+          created_at?: string
+          display_name?: string
+          email?: string
+          email_verified?: boolean
+          id?: string
+          reserved_at?: string | null
+          seat_number?: number | null
+          status?: Database["public"]["Enums"]["founding_status"]
+          updated_at?: string
+          witness_line?: string
+        }
+        Relationships: []
+      }
+      founding_members: {
+        Row: {
+          ack_hash: string
+          display_name: string
+          leaf_hash: string
+          receipt_id: string
+          sealed_at: string
+          seat_number: number
+        }
+        Insert: {
+          ack_hash: string
+          display_name: string
+          leaf_hash: string
+          receipt_id: string
+          sealed_at?: string
+          seat_number: number
+        }
+        Update: {
+          ack_hash?: string
+          display_name?: string
+          leaf_hash?: string
+          receipt_id?: string
+          sealed_at?: string
+          seat_number?: number
+        }
+        Relationships: []
+      }
       gallows_ledger: {
         Row: {
           action: string
@@ -2283,6 +2355,12 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user" | "auditor"
+      founding_status:
+        | "PENDING"
+        | "VERIFIED"
+        | "RESERVED"
+        | "INSCRIBED"
+        | "LAPSED"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2411,6 +2489,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user", "auditor"],
+      founding_status: [
+        "PENDING",
+        "VERIFIED",
+        "RESERVED",
+        "INSCRIBED",
+        "LAPSED",
+      ],
     },
   },
 } as const
