@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
     const [receipts, confirmed, pending, latest] = await Promise.all([
       db.from("gallows_ledger").select("id", { count: "exact", head: true }),
       db.from("anchor_records").select("id", { count: "exact", head: true }).ilike("status", "confirmed"),
-      db.from("anchor_records").select("id", { count: "exact", head: true })..ilike("status", "confirmed"),
+      db.from("anchor_records").select("id", { count: "exact", head: true }).not("status", "ilike", "confirmed"),
       db
         .from("anchor_records")
         .select("block_height, bitcoin_txid, confirmed_at")
