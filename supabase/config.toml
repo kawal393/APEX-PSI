@@ -151,3 +151,9 @@ verify_jwt = false
 [functions.crypto-watcher]
 verify_jwt = false
 
+
+[functions.founding-registry]
+verify_jwt = false
+
+[functions.ledger-stats]
+verify_jwt = false

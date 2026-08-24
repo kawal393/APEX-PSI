@@ -335,7 +335,7 @@ const references = [
     category: "Technical" as Category,
     title: "Seven Developments Prove Nobody Can Verify What AI Refuses",
     source: "Medium — VeritasChain (2026)",
-    desc: "Primary-source investigation across 4 continents, 20+ legislative efforts. The structural verification gap that APEX fills.",
+    desc: "Primary-source investigation across 4 continents, 20+ regulatory efforts. The structural verification gap that APEX fills.",
     url: "https://medium.com/@veritaschain/seven-things-happened-this-week-that-prove-nobody-can-verify-what-ai-refuses-to-generate-e23ba194fcd6",
   },
 ];
