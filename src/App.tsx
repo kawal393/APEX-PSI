@@ -212,6 +212,9 @@ const App = () => (
               <Route path="/challenge" element={<Challenge />} />
               <Route path="/enforcement-watch" element={<EnforcementWatch />} />
               <Route path="/sealed-memory" element={<SealedMemory />} />
+              <Route path="/founding" element={<Founding />} />
+              <Route path="/founding/admin" element={<ProtectedRoute><FoundingAdmin /></ProtectedRoute>} />
+              <Route path="/founding/*" element={<Navigate to="/founding" replace />} />
               <Route path="/pramaan" element={<Pramaan />} />
               <Route path="/seal" element={<UniversalSeal />} />
               <Route path="/embed/seal" element={<EmbedSeal />} />
