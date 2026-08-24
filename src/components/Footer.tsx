@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import apexLogo from "@/assets/apex-logo.png";
 import { useTranslation } from "react-i18next";
 import { DECLARATION_TEXT } from "@/components/Declaration";
+import { OPERATOR_LINE } from "@/config/founding";
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { t } = useTranslation();
