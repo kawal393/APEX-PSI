@@ -507,7 +507,7 @@ const Verify = () => {
                     <motion.div key="notfound" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                       className="rounded-xl border border-destructive/30 bg-card/80 backdrop-blur-sm p-8 text-center">
                       <ShieldX className="h-10 w-10 text-destructive mx-auto mb-3" />
-                      <p className="font-bold text-destructive mb-2">HASH NOT FOUND</p>
+                      <p className="font-bold text-destructive mb-2">NOT FOUND IN LEDGER</p>
                       <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
                         This hash does not exist in the APEX PSI immutable ledger.
                       </p>
