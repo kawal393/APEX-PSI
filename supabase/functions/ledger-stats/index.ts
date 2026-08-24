@@ -16,12 +16,12 @@ Deno.serve(async (req) => {
 
     const [receipts, confirmed, pending, latest] = await Promise.all([
       db.from("gallows_ledger").select("id", { count: "exact", head: true }),
-      db.from("anchor_records").select("id", { count: "exact", head: true }).eq("status", "CONFIRMED"),
-      db.from("anchor_records").select("id", { count: "exact", head: true }).neq("status", "CONFIRMED"),
+      db.from("anchor_records").select("id", { count: "exact", head: true }).ilike("status", "confirmed"),
+      db.from("anchor_records").select("id", { count: "exact", head: true })..ilike("status", "confirmed"),
       db
         .from("anchor_records")
         .select("block_height, bitcoin_txid, confirmed_at")
-        .eq("status", "CONFIRMED")
+        .ilike("status", "confirmed")
         .not("block_height", "is", null)
         .order("block_height", { ascending: false })
         .limit(1)
