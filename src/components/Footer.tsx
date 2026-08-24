@@ -127,6 +127,13 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
           <p className="text-[10px] leading-relaxed text-muted-foreground/70 text-center pt-2">
             {DECLARATION_TEXT}
           </p>
+
+          <p
+            data-operator-line
+            className="text-[10px] leading-relaxed text-muted-foreground/80 text-center border-t border-border pt-4"
+          >
+            {OPERATOR_LINE}
+          </p>
         </div>
       </div>
     </footer>
