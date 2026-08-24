@@ -89,6 +89,8 @@ import PSI05 from "./pages/PSI05";
 import MCP from "./pages/MCP";
 import EnforcementWatch from "./pages/EnforcementWatch";
 import SealedMemory from "./pages/SealedMemory";
+import Founding from "./pages/Founding";
+import FoundingAdmin from "./pages/FoundingAdmin";
 import ConnectAIButton from "@/components/ConnectAIButton";
 
 
