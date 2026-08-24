@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 
-const GITHUB_URL = "https://github.com/kawal393/digital-gallowsapex-infrastructurecom";
+const GITHUB_URL = "https://github.com/kawal393/APEX-PSI";
 
 // Signed challenge artefact — anyone can verify on /verify
 const CHALLENGE_HASH = "sha256:7a59558c b76e45ca 8fe01249 ccd99539 apexpsi public bounty 2026";

@@ -77,7 +77,7 @@ const ContactSection = forwardRef<HTMLElement>((_, ref) => {
                 </div>
                 <div className="flex items-center gap-3">
                   <Github className="h-4 w-4 text-gold flex-shrink-0" />
-                  <a href="https://github.com/kawal393/digital-gallowsapex-infrastructurecom" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors">
+                  <a href="https://github.com/kawal393/APEX-PSI" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors">
                     GitHub Repository
                   </a>
                 </div>

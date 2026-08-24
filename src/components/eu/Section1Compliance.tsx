@@ -247,7 +247,7 @@ const Section1Compliance = () => (
            APEX PSI publishes technical documentation relevant to Article 50 workflows. It does not claim signatory,
            approved-vendor, regulator-endorsed or certified status. Source code is available on{" "}
           <a
-            href="https://github.com/kawal393/digital-gallowsapex-infrastructurecom"
+            href="https://github.com/kawal393/APEX-PSI"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gold hover:underline"

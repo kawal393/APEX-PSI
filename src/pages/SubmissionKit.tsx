@@ -78,7 +78,7 @@ const SubmissionKit = () => {
       },
       verification_portal: "https://ai-governance-standard.com/verify",
       public_api: "https://ai-governance-standard.com/api/verify-status",
-      protocol_source: "https://github.com/kawal393/digital-gallowsapex-infrastructurecom",
+      protocol_source: "https://github.com/kawal393/APEX-PSI",
       disclaimer: "This document is cryptographically verifiable. All Merkle proof hashes can be independently validated using the APEX PSI Verification Portal without transmitting any data to Apex servers.",
     };
 
