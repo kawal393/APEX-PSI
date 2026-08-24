@@ -151,7 +151,7 @@ export default function Gallery() {
             The Sealed Gallery
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mb-8">
-            50 canonical public documents — constitutions, scientific papers,
+            50 canonical public documents — charters, scientific papers,
             protocols, and declarations — sealed with SHA-256 and anchored into
             a single Merkle root. Existence and integrity, not truth of contents.
           </p>

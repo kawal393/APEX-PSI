@@ -40,7 +40,7 @@ const FeaturedResearch = () => {
               <div className="flex flex-wrap gap-4 mb-8">
                 {[
                   { icon: Globe, label: "4 continents analyzed" },
-                  { icon: AlertTriangle, label: "20+ legislative efforts" },
+                  { icon: AlertTriangle, label: "20+ regulatory efforts" },
                   { icon: FileText, label: "7 developments fact-checked" },
                 ].map(({ icon: Icon, label }) => (
                   <div

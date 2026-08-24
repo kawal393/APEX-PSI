@@ -26,7 +26,7 @@ const matrix: { piece: string; cells: Record<string, Cell> }[] = [
     cells: { apex: "yes", zkmlops: "no", scitt: "partial", longfellow: "partial", daap: "no" },
   },
   {
-    piece: "Public Verification Layer (Citizen Auditor)",
+    piece: "Public Verification Layer (Independent Auditor)",
     cells: { apex: "yes", zkmlops: "no", scitt: "no", longfellow: "no", daap: "no" },
   },
   {

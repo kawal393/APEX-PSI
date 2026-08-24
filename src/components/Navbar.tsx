@@ -44,6 +44,7 @@ const Navbar = () => {
   }, [user]);
 
 const navLinks = [
+    { label: "Founding Members", href: "/founding", isRoute: true },
     { label: "Products", href: "/products", isRoute: true },
     { label: "Overview", href: "/home", isRoute: true },
     { label: "Engine", href: "/gallows", isRoute: true },

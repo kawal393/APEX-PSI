@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import apexLogo from "@/assets/apex-logo.png";
 import { useTranslation } from "react-i18next";
 import { DECLARATION_TEXT } from "@/components/Declaration";
+import { OPERATOR_LINE } from "@/config/founding";
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { t } = useTranslation();
@@ -126,6 +127,13 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
 
           <p className="text-[10px] leading-relaxed text-muted-foreground/70 text-center pt-2">
             {DECLARATION_TEXT}
+          </p>
+
+          <p
+            data-operator-line
+            className="text-[10px] leading-relaxed text-muted-foreground/80 text-center border-t border-border pt-4"
+          >
+            {OPERATOR_LINE}
           </p>
         </div>
       </div>

@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -89,6 +89,8 @@ import PSI05 from "./pages/PSI05";
 import MCP from "./pages/MCP";
 import EnforcementWatch from "./pages/EnforcementWatch";
 import SealedMemory from "./pages/SealedMemory";
+import Founding from "./pages/Founding";
+import FoundingAdmin from "./pages/FoundingAdmin";
 import ConnectAIButton from "@/components/ConnectAIButton";
 
 
@@ -210,6 +212,9 @@ const App = () => (
               <Route path="/challenge" element={<Challenge />} />
               <Route path="/enforcement-watch" element={<EnforcementWatch />} />
               <Route path="/sealed-memory" element={<SealedMemory />} />
+              <Route path="/founding" element={<Founding />} />
+              <Route path="/founding/admin" element={<ProtectedRoute><FoundingAdmin /></ProtectedRoute>} />
+              <Route path="/founding/*" element={<Navigate to="/founding" replace />} />
               <Route path="/pramaan" element={<Pramaan />} />
               <Route path="/seal" element={<UniversalSeal />} />
               <Route path="/embed/seal" element={<EmbedSeal />} />
