@@ -125,11 +125,17 @@ const Receipt = () => {
         </p>
 
         {loading ? (
-          <div className="flex items-center gap-3 text-muted-foreground py-16">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            Re-verifying against the live ledger…
+          <div className="rounded-xl border border-border bg-card p-6 md:p-8">
+            <div className="flex items-center gap-3 text-muted-foreground mb-5">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Re-verifying against the live ledger…
+            </div>
+            <code className="font-mono text-xs text-foreground/70 bg-muted/40 rounded px-2 py-1 break-all">
+              sha256:{clean}
+            </code>
           </div>
         ) : (
+
           <>
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -187,8 +193,28 @@ const Receipt = () => {
                         <dt className="text-[11px] uppercase tracking-widest text-muted-foreground">Predicate</dt>
                         <dd className="font-mono text-foreground/90">{data?.predicate_id ?? "—"}</dd>
                       </div>
+                      <div>
+                        <dt className="text-[11px] uppercase tracking-widest text-muted-foreground">Phase</dt>
+                        <dd className="font-mono text-foreground/90">{data?.phase ?? "—"}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-[11px] uppercase tracking-widest text-muted-foreground">Status</dt>
+                        <dd className="font-mono text-foreground/90">{data?.status ?? "—"}</dd>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <dt className="text-[11px] uppercase tracking-widest text-muted-foreground">Independent check</dt>
+                        <dd>
+                          <a
+                            href={`/verify?hash=${clean}`}
+                            className="font-mono text-xs text-gold hover:underline break-all"
+                          >
+                            /verify?hash={clean}
+                          </a>
+                        </dd>
+                      </div>
                     </dl>
                   )}
+
                 </div>
               </div>
             </motion.div>

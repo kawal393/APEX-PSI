@@ -78,7 +78,7 @@ const Partners = () => (
           </p>
           <CopyBox code={NPM_SNIPPET} />
           <a
-            href="https://github.com/kawal393/digital-gallowsapex-infrastructurecom"
+            href="https://github.com/kawal393/APEX-PSI"
             className="mt-4 inline-flex items-center gap-2 rounded border border-primary/50 px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-primary hover:bg-primary/10"
           >
             ★ Star on GitHub

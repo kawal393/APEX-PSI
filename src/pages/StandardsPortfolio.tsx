@@ -166,7 +166,7 @@ export default function StandardsPortfolio() {
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             <a
               className="text-gold hover:underline"
-              href="https://github.com/kawal393/digital-gallowsapex-infrastructurecom"
+              href="https://github.com/kawal393/APEX-PSI"
               target="_blank"
               rel="noopener noreferrer"
             >

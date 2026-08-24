@@ -14,7 +14,7 @@ const infraLinks = [
   { label: "HTTP Header Standard", href: "/standard", icon: ScrollText, desc: "draft-singh-psi-http-01" },
   { label: "Live Header Inspector", href: "/header", icon: Hash, desc: "Verify any AI endpoint" },
   { label: "PSI Foundation", href: "/foundation", icon: Shield, desc: "Governance · in formation" },
-  { label: "Open Source", href: "https://github.com/kawal393/digital-gallowsapex-infrastructurecom", icon: GitBranch, desc: "Full protocol on GitHub", external: true },
+  { label: "Open Source", href: "https://github.com/kawal393/APEX-PSI", icon: GitBranch, desc: "Full protocol on GitHub", external: true },
   { label: "Verified Registry", href: "/registry", icon: Shield, desc: "Public verified entity ledger" },
   { label: "Verify Hash", href: "/verify", icon: Hash, desc: "Public SHA-256 verification" },
   { label: "Regulation Map", href: "/regulations", icon: Globe, desc: "AI laws in 25+ countries" },
