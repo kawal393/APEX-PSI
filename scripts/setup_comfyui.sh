@@ -1,7 +1,7 @@
 #!/bin/bash
 # APEX COMFYUI SETUP — RunPod L4 GPU
 # Paste this into RunPod terminal after starting pod 995b6zjkubz8h5
-# Usage: curl -sL https://raw.githubusercontent.com/kawal393/digital-gallowsapex-infrastructurecom/main/scripts/setup_comfyui.sh | bash
+# Usage: curl -sL https://raw.githubusercontent.com/kawal393/APEX-PSI/main/scripts/setup_comfyui.sh | bash
 
 set -e
 echo "═══ APEX COMFYUI INSTALLER ═══"
