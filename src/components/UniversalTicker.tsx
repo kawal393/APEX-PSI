@@ -51,7 +51,7 @@ const UniversalTicker = () => {
     <div className="w-full border-b border-border/60 bg-card/30">
       {/* Desktop / tablet: animated marquee */}
       <div className="group hidden overflow-hidden py-2 sm:block">
-        <div className="flex w-max animate-[ticker_120s_linear_infinite] group-hover:[animation-play-state:paused]">
+        <div className="flex w-max animate-ticker group-hover:[animation-play-state:paused]">
           {items.map((item) => (
             <Item key={`a-${item.id}`} item={item} />
           ))}
