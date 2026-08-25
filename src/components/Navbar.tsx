@@ -18,6 +18,7 @@ const infraLinks = [
   { label: "Verified Registry", href: "/registry", icon: Shield, desc: "Public verified entity ledger" },
   { label: "Verify Hash", href: "/verify", icon: Hash, desc: "Public SHA-256 verification" },
   { label: "The Referee", href: "/verify-any", icon: Shield, desc: "Cross-standard seal reader" },
+  { label: "FWC 20 Oct", href: "/fwc", icon: FileText, desc: "AI filing verification, Australia" },
   { label: "Regulation Map", href: "/regulations", icon: Globe, desc: "AI laws in 25+ countries" },
   { label: "Free Score", href: "/assess", icon: Shield, desc: "Compliance in 2 minutes" },
   { label: "Trust Badge", href: "/badge", icon: Award, desc: "Embeddable PSI badge" },
