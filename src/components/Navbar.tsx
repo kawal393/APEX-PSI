@@ -17,6 +17,7 @@ const infraLinks = [
   { label: "Open Source", href: "https://github.com/kawal393/APEX-PSI", icon: GitBranch, desc: "Full protocol on GitHub", external: true },
   { label: "Verified Registry", href: "/registry", icon: Shield, desc: "Public verified entity ledger" },
   { label: "Verify Hash", href: "/verify", icon: Hash, desc: "Public SHA-256 verification" },
+  { label: "The Referee", href: "/verify-any", icon: Shield, desc: "Cross-standard seal reader" },
   { label: "Regulation Map", href: "/regulations", icon: Globe, desc: "AI laws in 25+ countries" },
   { label: "Free Score", href: "/assess", icon: Shield, desc: "Compliance in 2 minutes" },
   { label: "Trust Badge", href: "/badge", icon: Award, desc: "Embeddable PSI badge" },

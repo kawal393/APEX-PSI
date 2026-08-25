@@ -164,6 +164,23 @@ const EUCode = () => (
           </ul>
         </section>
 
+        <section className="rounded-xl border border-border bg-card/40 p-5 mb-12">
+          <h2 className="text-lg font-black uppercase tracking-widest mb-3">
+            <span className="text-gold-gradient">Interop log — cross-standard verification</span>
+          </h2>
+          <p className="text-xs text-foreground/70 leading-relaxed mb-3">
+            The referee at <Link to="/verify-any" className="text-gold hover:underline">/verify-any</Link> reads every
+            provenance mark it can — C2PA Content Credentials, the PSI in-band manifest, the PSI survival watermark,
+            and the public ledger — and reports each neutrally. Third-party interoperability results will be published
+            below, verbatim. Pass or fail, it goes on the record.
+          </p>
+          <ul className="space-y-2 text-xs text-foreground/75">
+            <li>• 2026-08-25 — Referee shipped: cross-standard reader live at /verify-any. C2PA reading uses the official Adobe toolkit (c2pa 0.30); PSI in-band verification uses the site&apos;s own verifier; watermark detection uses psi.dct-qim-v2.</li>
+            <li>• Third-party C2PA sample runs: pending — results will appear here exactly as returned, including failures.</li>
+            <li>• Method note: the referee favours no format, including its own. A mark that fails verification is reported as failed.</li>
+          </ul>
+        </section>
+
         <div className="flex flex-wrap gap-3">
           <Link to="/robustness" className="rounded-lg border border-gold/40 bg-gold/5 px-4 py-2 text-xs font-bold text-gold hover:bg-gold/10 transition-colors">
             Run the robustness benchmark
