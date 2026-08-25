@@ -80,7 +80,7 @@ import Cite from "./pages/Cite";
 import WitnessWall from "./pages/WitnessWall";
 import Gallery from "./pages/Gallery";
 import Integrations from "./pages/Integrations";
-import Ledger from "./pages/Ledger";
+import UniversalLedger from "./pages/UniversalLedger";
 import Partners from "./pages/Partners";
 import ConnectAI from "./pages/ConnectAI";
 import LiveStream from "./pages/LiveStream";
@@ -127,8 +127,8 @@ const App = () => (
               <Route path="/crypto/:ref" element={<CryptoCheckout />} />
 
               <Route path="/integrations" element={<Integrations />} />
-              <Route path="/ledger" element={<Ledger />} />
-              <Route path="/ledger/:slug" element={<Ledger />} />
+              <Route path="/ledger" element={<UniversalLedger />} />
+              <Route path="/ledger/*" element={<UniversalLedger />} />
               <Route path="/partners" element={<Partners />} />
               <Route path="/home" element={<Index />} />
 

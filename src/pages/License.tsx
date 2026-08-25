@@ -190,7 +190,7 @@ verified, not asserted; trust the math, not the maker.`}
               <h2 className="text-sm font-bold tracking-[0.2em] uppercase">Nature of output</h2>
             </div>
             <p className="text-sm text-muted-foreground">
-              A seal proves that specific bytes existed in a specific state at a specific time. It is
+              A seal records that specific bytes existed in a specific state at a specific time. It is
               not a statement that the sealed content is true, lawful or accurate. Where an assessment
               is expressed, it is a <strong>Modelled Opinion</strong>, labelled as such, provided AS-IS
               with no warranty.

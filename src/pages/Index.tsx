@@ -22,6 +22,7 @@ import EcosystemStrip from "@/components/EcosystemStrip";
 import ConnectAIPill from "@/components/ConnectAIPill";
 import VerifiedByApexSection from "@/components/VerifiedByApexSection";
 import EnforcementStrip from "@/components/EnforcementStrip";
+import UniversalTicker from "@/components/UniversalTicker";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -75,6 +76,7 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
+        <UniversalTicker />
         <Hero />
         <ConnectAIPill />
         <Article50Banner />

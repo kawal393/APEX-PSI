@@ -52,6 +52,7 @@ const navLinks = [
     { label: "Explorer", href: "/explorer", isRoute: true },
     { label: "Live", href: "/live", isRoute: true },
     { label: "Verify", href: "/verify", isRoute: true },
+    { label: "Universal Ledger", href: "/ledger", isRoute: true },
     { label: "Hello PSI", href: "/hello-psi", isRoute: true },
     { label: "Enforcement Watch", href: "/enforcement-watch", isRoute: true },
     { label: "Sealed Memory", href: "/sealed-memory", isRoute: true },

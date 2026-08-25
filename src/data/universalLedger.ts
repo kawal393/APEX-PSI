@@ -33,7 +33,7 @@ const seeds: Seed[] = [
   ["002", H, "Cyrus Cylinder", "c.539 BCE", "Public-domain translation", "EXCERPT", "I am Cyrus, king of the world, great king, mighty king, king of Babylon."],
   ["003", H, "Edicts of Ashoka", "c.250 BCE", "Public-domain translation", "EXCERPT", "All men are my children."],
   ["004", H, "Twelve Tables", "c.450 BCE", "Public-domain translation", "EXCERPT", "If a plaintiff summon defendant to court, he shall go."],
-  ["005", H, "Rosetta Stone", "196 BCE", "Budge translation", "EXCERPT", "This decree shall be inscribed on a stela of hard stone in the sacred and the current characters."],
+  ["005", H, "Rosetta Stone", "196 BCE", "Budge translation", "EXCERPT", "This decree shall be inscribed on a stela of hard stone."],
   ["006", H, "Magna Carta", "1215", "Public domain", "EXCERPT", "No free man shall be seized or imprisoned except by the lawful judgement of his equals or by the law of the land."],
   ["007", H, "English Bill of Rights", "1689", "Public domain", "EXCERPT", "The pretended power of suspending the laws by regal authority without consent of Parliament is illegal."],
   ["008", H, "US Declaration of Independence", "1776", "Public domain", "EXCERPT", "We hold these truths to be self-evident, that all men are created equal."],
