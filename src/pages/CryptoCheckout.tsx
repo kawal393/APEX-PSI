@@ -141,7 +141,15 @@ const CryptoCheckout = () => {
     setCreating(true);
     try {
       const { data, error } = await supabase.functions.invoke("crypto-quote", { body: { item, asset } });
-      if (error) throw error;
+      if (error) {
+        // Surface the server's own sentence instead of the generic non-2xx grunt.
+        const ctx = (error as { context?: unknown }).context;
+        if (ctx instanceof Response) {
+          const body = (await ctx.clone().json().catch(() => null)) as { error?: string } | null;
+          if (body?.error) throw new Error(body.error);
+        }
+        throw error;
+      }
       if (data?.error) throw new Error(data.error);
       navigate(`/crypto/${data.invoice_ref}`);
     } catch (error) {
