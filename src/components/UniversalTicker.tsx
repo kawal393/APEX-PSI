@@ -21,7 +21,11 @@ const UniversalTicker = () => {
     () =>
       UNIVERSAL_LEDGER.map((row) => {
         const digest = receipts[row.id]?.decision_digest || row.decision_digest;
-        return { id: row.id, label: `${row.title} · ${row.era} · sealed`, digest };
+        return {
+          id: row.id,
+          label: `${row.title} · ${row.era} · ${digest ? "sealed" : "genesis pending"}`,
+          digest,
+        };
       }),
     [receipts],
   );
