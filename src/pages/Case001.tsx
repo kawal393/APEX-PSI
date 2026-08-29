@@ -131,12 +131,13 @@ const Case001 = () => {
           </p>
 
           <section className="mb-16">
-            <h2 className="font-serif text-2xl font-bold mb-4">Allegation slots</h2>
+            <h2 className="font-serif text-2xl font-bold mb-4">Concern slots</h2>
             <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
-              This record can hold any claim a worker ever makes. Each claim slot opens only when
-              its evidence is sealed. Empty slots are not missing — they are reserved. Absence is
-              also a record.
+              This record can hold any concern or query a worker ever raises. Each slot opens only
+              when its evidence is sealed. Empty slots are not missing — they are reserved. Absence
+              is also a record.
             </p>
+
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: CASE_001_RESERVED_SLOTS }, (_, i) => (
                 <div
