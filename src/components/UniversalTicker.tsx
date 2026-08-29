@@ -49,6 +49,8 @@ const UniversalTicker = () => {
     );
   };
 
+  if (items.length === 0) return null;
+
   return (
     <div className="w-full border-b border-border/60 bg-card/30">
       {/* Desktop / tablet: animated marquee */}
