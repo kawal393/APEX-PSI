@@ -39,8 +39,10 @@ const infraLinks = [
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [infraOpen, setInfraOpen] = useState(false);
+  const [refOpen, setRefOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const infraRef = useRef<HTMLDivElement>(null);
+  const refRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -77,6 +79,9 @@ const navLinks = [
     const handleClickOutside = (e: MouseEvent) => {
       if (infraRef.current && !infraRef.current.contains(e.target as Node)) {
         setInfraOpen(false);
+      }
+      if (refRef.current && !refRef.current.contains(e.target as Node)) {
+        setRefOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
