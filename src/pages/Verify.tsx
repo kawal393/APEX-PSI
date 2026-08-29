@@ -473,6 +473,12 @@ const Verify = () => {
                         </div>
                         <Badge className="bg-compliant/10 text-compliant border-compliant/30">{result.phase}</Badge>
                       </div>
+                      <div className="px-6 pt-6 flex flex-col items-center gap-3">
+                        <Rosette hash={result.queried_hash} size={140} animate />
+                        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                          Rosette engraved from this digest
+                        </p>
+                      </div>
                       <div className="px-6 py-5 space-y-3">
                         {[
                           { label: "Commit ID", value: result.commit_id },
