@@ -203,6 +203,7 @@ Deno.serve(async (req) => {
     }
 
     for (const invoice of open) {
+      try {
       const want = BigInt(invoice.amount_atomic);
       let observation: Observation | null = null;
 
