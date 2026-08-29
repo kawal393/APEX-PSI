@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import ApexVerifiedStamp from "@/components/ApexVerifiedStamp";
+import Rosette from "@/components/Rosette";
 import { createSHA256 } from "hash-wasm";
 import EngineLicenseGate, { useEngineLicence, readAcceptance } from "@/components/psi/EngineLicenseGate";
 import { buildSealEnvelope, PSI_SCHEMA_ID } from "@/lib/psi-schema";

@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { verifyEd25519Signature, type PSIProofBundle } from "@/lib/psi-signatures";
 import { jcsHash } from "@/lib/psi-canonicalize";
+import Rosette from "@/components/Rosette";
 import { verifyMerkleProof, hashSHA256 } from "@/lib/gallows-engine";
 import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD, type LMSSignature } from "@/lib/psi-lms";
 import { Helmet } from "react-helmet-async";
