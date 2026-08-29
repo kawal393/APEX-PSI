@@ -82,3 +82,11 @@ export const FENCE_LINE =
   "This record certifies existence, timestamp and integrity — not the truth of any claim. The ledger does not judge. It remembers.";
 
 export const verifyUrlFor = (hash: string) => `https://apex-infrastructure.com/verify/${hash}`;
+
+/** Door one — recomputation on this site. */
+export const siteVerifyUrlFor = (hash: string) =>
+  `https://www.ai-governance-standard.com/verify?hash=${hash}`;
+
+/** The line printed under both verification doors. */
+export const TWO_DOORS_LINE =
+  "Two independent doors, one ledger. If they ever disagree, the correction is public and the finder is credited.";
