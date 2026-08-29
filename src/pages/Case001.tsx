@@ -52,7 +52,7 @@ const Case001 = () => {
             </p>
           </header>
 
-          <section className="mb-12 space-y-4">
+<section className="mb-12 space-y-4">
             {CASE_001_RECORDS.map((row, i) => (
               <article key={i} className="border border-border/50 rounded-lg p-6">
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -65,6 +65,18 @@ const Case001 = () => {
                 <p className="mt-4 font-mono text-xs text-muted-foreground break-all">
                   Hash: {row.hash ?? "—"}
                 </p>
+                {row.hash && row.artifactUrl && (
+                  <p className="mt-4">
+                    <a
+                      href={row.artifactUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary transition-colors"
+                    >
+                      View the sealed artifact →
+                    </a>
+                  </p>
+                )}
               </article>
             ))}
           </section>
