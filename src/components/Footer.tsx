@@ -63,7 +63,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               <li><Link to="/enforcement-watch" className="hover:text-gold transition-colors">Enforcement Watch</Link></li>
               <li><Link to="/sealed-memory" className="hover:text-gold transition-colors">Sealed Memory</Link></li>
               <li><Link to="/regulations" className="hover:text-gold transition-colors">Regulation Map</Link></li>
-              <li><Link to="/landscape" className="hover:text-gold transition-colors">Competitive Landscape</Link></li>
+              <li><Link to="/landscape" className="hover:text-gold transition-colors">Standards Landscape</Link></li>
               <li><Link to="/assess" className="hover:text-gold transition-colors">Free Score</Link></li>
               <li><Link to="/badge" className="hover:text-gold transition-colors">Trust Badge</Link></li>
               <li><Link to="/architecture" className="hover:text-gold transition-colors">Architecture</Link></li>
