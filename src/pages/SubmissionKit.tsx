@@ -96,7 +96,7 @@ const SubmissionKit = () => {
     const map: Record<string, string> = {
       "Article 12": "Immutable event stream. RFC 8785 Canonicalization. Monotonic sequencing with tamper detection.",
       "Article 13": "Transparency declarations. AI content labeling. User notification protocols.",
-      "Article 14": "Protocol Intervention Layer (PIL) — 5s sovereign pause. Human oversight enforcement via GALLOWS mechanism.",
+      "Article 14": "Protocol Intervention Layer (PIL) — 5s oversight pause. Human oversight enforcement via PSI intervention mechanism.",
       "Article 15": "Groth16-compatible ZK Integrity Proofs. Ed25519 non-repudiation signatures. Merkle inclusion verification.",
     };
     return map[article] || "Standard compliance verification applied.";

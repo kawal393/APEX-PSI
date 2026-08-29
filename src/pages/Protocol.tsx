@@ -28,7 +28,7 @@ const legalMapping = [
     title: "Human Oversight",
     requirement: "High-risk AI systems must allow effective human oversight, including the ability to intervene and halt the system.",
     psiSolution: [
-      "5-second Sovereign Pause (Protocol Intervention Layer) halts all pipeline operations instantly",
+      "5-second Oversight Pause (Protocol Intervention Layer) halts all pipeline operations instantly",
       "Open Public Review: Permissionless public verification with cryptographic attestation consensus",
       "Sovereign Anchors: Enterprise-grade 3-of-5 ratification for high-stakes commits",
       "Ed25519-signed auditor determinations with mandatory rationale for non-repudiation",

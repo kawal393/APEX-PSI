@@ -221,7 +221,7 @@ function combinePair(a: string, b: string): string {
                 article="Article 14"
                 title="Human Oversight"
                 component="Protocol Intervention Layer (PIL)"
-                mechanism="One-click sovereign pause that freezes all pipeline operations. Logged with timestamp. System cannot process actions while paused. Art. 14 mandate satisfied."
+                mechanism="One-click oversight pause that freezes all pipeline operations. Logged with timestamp. System cannot process actions while paused. Art. 14 mandate satisfied."
                 risk="HIGH"
               />
               <ArticleMapping
