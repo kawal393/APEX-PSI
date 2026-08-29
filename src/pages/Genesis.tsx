@@ -101,10 +101,13 @@ const Genesis = () => {
             </a>
           </section>
 
-          <p className="font-mono text-sm text-muted-foreground border-t border-border/50 pt-8">
-            If the math breaks, the correction is public and the challenger is credited. Challenge
-            it.
-          </p>
+          <div className="border-t border-border/50 pt-8 space-y-4">
+            <p className="font-mono text-sm text-muted-foreground">
+              If the math breaks, the correction is public and the challenger is credited. Challenge
+              it.
+            </p>
+            <p className="font-mono text-xs text-muted-foreground leading-relaxed">{FENCE_LINE}</p>
+          </div>
         </main>
         <Footer />
       </div>
