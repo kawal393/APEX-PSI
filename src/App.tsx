@@ -93,6 +93,11 @@ import EnforcementWatch from "./pages/EnforcementWatch";
 import SealedMemory from "./pages/SealedMemory";
 import Founding from "./pages/Founding";
 import FoundingAdmin from "./pages/FoundingAdmin";
+import Reference from "./pages/Reference";
+import Genesis from "./pages/Genesis";
+import Case001 from "./pages/Case001";
+import Case002 from "./pages/Case002";
+import Case003 from "./pages/Case003";
 import ConnectAIButton from "@/components/ConnectAIButton";
 
 
@@ -219,6 +224,11 @@ const App = () => (
               <Route path="/founding" element={<Founding />} />
               <Route path="/founding/admin" element={<ProtectedRoute><FoundingAdmin /></ProtectedRoute>} />
               <Route path="/founding/*" element={<Navigate to="/founding" replace />} />
+              <Route path="/reference" element={<Reference />} />
+              <Route path="/genesis" element={<Genesis />} />
+              <Route path="/case-001" element={<Case001 />} />
+              <Route path="/case-002" element={<Case002 />} />
+              <Route path="/case-003" element={<Case003 />} />
               <Route path="/pramaan" element={<Pramaan />} />
               <Route path="/seal" element={<UniversalSeal />} />
               <Route path="/embed/seal" element={<EmbedSeal />} />
