@@ -94,6 +94,7 @@ import SealedMemory from "./pages/SealedMemory";
 import Founding from "./pages/Founding";
 import FoundingAdmin from "./pages/FoundingAdmin";
 import Reference from "./pages/Reference";
+import DeclarationPage from "./pages/Declaration";
 import Genesis from "./pages/Genesis";
 import Case001 from "./pages/Case001";
 import Case002 from "./pages/Case002";
@@ -225,6 +226,7 @@ const App = () => (
               <Route path="/founding/admin" element={<ProtectedRoute><FoundingAdmin /></ProtectedRoute>} />
               <Route path="/founding/*" element={<Navigate to="/founding" replace />} />
               <Route path="/reference" element={<Reference />} />
+              <Route path="/declaration" element={<DeclarationPage />} />
               <Route path="/genesis" element={<Genesis />} />
               <Route path="/case-001" element={<Case001 />} />
               <Route path="/case-002" element={<Case002 />} />

@@ -12,6 +12,7 @@ import apexLogo from "@/assets/apex-logo.png";
 
 const referenceLinks = [
   { label: "The Reference", href: "/reference", icon: BookOpen, desc: "Public reference for machine-governance records" },
+  { label: "Declaration", href: "/declaration", icon: ScrollText, desc: "The Recomputation Declaration" },
   { label: "Genesis Zero", href: "/genesis", icon: Hash, desc: "Reference Implementation v1.0, sealed" },
   { label: "Case 001 — The Worker", href: "/case-001", icon: FileText, desc: "Live record" },
   { label: "Case 002 — The Money", href: "/case-002", icon: FileText, desc: "Reserved" },

@@ -1,9 +1,12 @@
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Rosette from "@/components/Rosette";
+import RowVerifier from "@/components/RowVerifier";
 import {
   CASE_001_RECORDS,
   CASE_001_RESERVED_SLOTS,
+  FENCE_LINE,
   verifyUrlFor,
   type CaseRecord,
 } from "@/data/referenceData";
@@ -15,18 +18,27 @@ const RowBadge = ({ row }: { row: CaseRecord }) => {
         href={verifyUrlFor(row.hash)}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-block rounded border border-primary bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-primary hover:bg-primary/20 transition-colors"
+        className="inline-block border border-gold/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-gold hover:bg-gold/10 transition-colors"
       >
         SEALED
       </a>
     );
   }
   return (
-    <span className="inline-block rounded border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+    <span className="inline-block border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
       SEAL PENDING
     </span>
   );
 };
+
+const Field = ({ label, value }: { label: string; value: string }) => (
+  <div className="grid gap-1 sm:grid-cols-[190px_1fr]">
+    <dt className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground pt-0.5">
+      {label}
+    </dt>
+    <dd className="font-mono text-xs text-foreground/90 break-all">{value}</dd>
+  </div>
+);
 
 const Case001 = () => {
   return (
@@ -35,7 +47,7 @@ const Case001 = () => {
         <title>CASE 001 — The Worker | APEX PSI Reference</title>
         <meta
           name="description"
-          content="The first sealed worker record. Facts only. No verdicts."
+          content="The first sealed worker record. Facts only. No verdicts. Every sealed row is recomputable in your own browser."
         />
         <link rel="canonical" href="https://ai-governance-standard.com/case-001" />
       </Helmet>
@@ -43,7 +55,7 @@ const Case001 = () => {
         <Navbar />
         <main className="container mx-auto max-w-5xl px-4 py-24">
           <header className="mb-16">
-            <h1 className="font-serif text-4xl md:text-6xl font-bold text-white leading-tight">
+            <h1 className="font-serif text-4xl md:text-6xl font-bold leading-tight">
               CASE 001 — THE WORKER
             </h1>
             <p className="mt-6 text-lg text-muted-foreground max-w-3xl">
@@ -52,31 +64,63 @@ const Case001 = () => {
             </p>
           </header>
 
-<section className="mb-12 space-y-4">
+          <section className="mb-12 space-y-6">
             {CASE_001_RECORDS.map((row, i) => (
-              <article key={i} className="border border-border/50 rounded-lg p-6">
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <p className="font-mono text-xs uppercase tracking-[0.15em] text-primary">
-                    {i + 1} — {row.date}
-                  </p>
-                  <RowBadge row={row} />
+              <article key={i} className="border border-border/40 p-6 md:p-8">
+                <div className="grid gap-8 md:grid-cols-[128px_1fr]">
+                  <div className="flex justify-center md:justify-start">
+                    <Rosette
+                      hash={row.hash}
+                      size={112}
+                      state={row.hash ? "sealed" : "pending"}
+                      animate={Boolean(row.hash)}
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                      <p className="font-mono text-xs uppercase tracking-[0.2em] text-gold">
+                        {i + 1} — {row.date}
+                      </p>
+                      <RowBadge row={row} />
+                    </div>
+
+                    <p className="text-foreground/90 leading-relaxed">{row.fact}</p>
+
+                    <dl className="mt-6 space-y-2">
+                      <Field label="Document SHA-256" value={row.documentHash ?? "—"} />
+                      <Field label="Decision hash" value={row.hash ?? "—"} />
+                      <Field label="Receipt" value={row.receipt ?? "—"} />
+                    </dl>
+
+                    {row.hash && (
+                      <div className="mt-6 flex flex-wrap gap-6">
+                        {row.artifactUrl && (
+                          <a
+                            href={row.artifactUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold underline underline-offset-4 decoration-gold/40 hover:decoration-gold"
+                          >
+                            View the sealed artifact
+                          </a>
+                        )}
+                        <a
+                          href={verifyUrlFor(row.hash)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold underline underline-offset-4 decoration-gold/40 hover:decoration-gold"
+                        >
+                          Verify this receipt
+                        </a>
+                      </div>
+                    )}
+
+                    {row.rawUrl && row.documentHash && (
+                      <RowVerifier rawUrl={row.rawUrl} expectedHash={row.documentHash} />
+                    )}
+                  </div>
                 </div>
-                <p className="text-foreground/90 leading-relaxed">{row.fact}</p>
-                <p className="mt-4 font-mono text-xs text-muted-foreground break-all">
-                  Hash: {row.hash ?? "—"}
-                </p>
-                {row.hash && row.artifactUrl && (
-                  <p className="mt-4">
-                    <a
-                      href={row.artifactUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block font-mono text-xs uppercase tracking-[0.15em] text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary transition-colors"
-                    >
-                      View the sealed artifact →
-                    </a>
-                  </p>
-                )}
               </article>
             ))}
           </section>
@@ -87,7 +131,7 @@ const Case001 = () => {
           </p>
 
           <section className="mb-16">
-            <h2 className="font-serif text-2xl font-bold text-white mb-4">Allegation slots</h2>
+            <h2 className="font-serif text-2xl font-bold mb-4">Allegation slots</h2>
             <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
               This record can hold any claim a worker ever makes. Each claim slot opens only when
               its evidence is sealed. Empty slots are not missing — they are reserved. Absence is
@@ -97,9 +141,10 @@ const Case001 = () => {
               {Array.from({ length: CASE_001_RESERVED_SLOTS }, (_, i) => (
                 <div
                   key={i}
-                  className="border border-dashed border-border/60 rounded-lg p-6 text-center"
+                  className="border border-dashed border-border/50 p-6 flex flex-col items-center gap-4"
                 >
-                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                  <Rosette state="pending" size={72} />
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground text-center">
                     RESERVED — evidence not yet sealed
                   </p>
                 </div>
@@ -110,17 +155,8 @@ const Case001 = () => {
             </p>
           </section>
 
-          <section className="mb-16 border border-border/50 rounded-lg p-6">
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              This record certifies existence, timestamp and integrity — not the truth of any claim.
-              No verdict is rendered.
-            </p>
-          </section>
-
-          <footer className="border-t border-border/50 pt-8">
-            <p className="font-mono text-sm text-muted-foreground">
-              The ledger does not judge. It remembers.
-            </p>
+          <footer className="border-t border-border/40 pt-8">
+            <p className="font-mono text-xs text-muted-foreground leading-relaxed">{FENCE_LINE}</p>
           </footer>
         </main>
         <Footer />

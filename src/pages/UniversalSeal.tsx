@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import ApexVerifiedStamp from "@/components/ApexVerifiedStamp";
+import Rosette from "@/components/Rosette";
 import { createSHA256 } from "hash-wasm";
 import EngineLicenseGate, { useEngineLicence, readAcceptance } from "@/components/psi/EngineLicenseGate";
 import { buildSealEnvelope, PSI_SCHEMA_ID } from "@/lib/psi-schema";
@@ -357,7 +358,11 @@ async function apexSeal(file) {
                     </Button>
                   </div>
                 </div>
-                <div className="flex justify-center md:justify-end">
+                <div className="flex flex-col items-center md:items-end gap-6">
+                  <Rosette hash={result.sha256} size={160} animate />
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground text-center md:text-right">
+                    Rosette engraved from this digest. Same bytes, same pattern, forever.
+                  </p>
                   <ApexVerifiedStamp hash={result.sha256} btcBlock={result.receipt_id.slice(-6)} size="md" />
                 </div>
                 <div className="md:col-span-2 mt-2 pt-6 border-t border-border/60">

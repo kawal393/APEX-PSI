@@ -3,12 +3,17 @@ import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import Rosette from "@/components/Rosette";
 import {
   GENESIS_PROOF,
   GENESIS_DOC_URL,
   GENESIS_SOURCE_URL,
   GENESIS_VERIFY_URL,
+  FENCE_LINE,
 } from "@/data/referenceData";
+
+const DECISION_HASH =
+  GENESIS_PROOF.find((p) => p.label === "Sealed decision hash")?.value ?? "";
 
 const Genesis = () => {
   const [declaration, setDeclaration] = useState<string | null>(null);
@@ -48,14 +53,19 @@ const Genesis = () => {
             <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-primary mb-6">
               The Proof Block
             </h2>
-            <dl className="space-y-4 font-mono text-sm">
-              {GENESIS_PROOF.map((row) => (
-                <div key={row.label} className="grid gap-1 md:grid-cols-[220px_1fr]">
-                  <dt className="text-muted-foreground">{row.label}</dt>
-                  <dd className="text-foreground break-all">{row.value}</dd>
-                </div>
-              ))}
-            </dl>
+            <div className="grid gap-10 md:grid-cols-[176px_1fr]">
+              <div className="flex justify-center md:justify-start">
+                <Rosette hash={DECISION_HASH} size={144} animate />
+              </div>
+              <dl className="space-y-4 font-mono text-sm">
+                {GENESIS_PROOF.map((row) => (
+                  <div key={row.label} className="grid gap-1 md:grid-cols-[220px_1fr]">
+                    <dt className="text-muted-foreground">{row.label}</dt>
+                    <dd className="text-foreground break-all">{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </section>
 
           <section className="mb-12 border border-border/50 rounded-lg p-8">
@@ -91,10 +101,13 @@ const Genesis = () => {
             </a>
           </section>
 
-          <p className="font-mono text-sm text-muted-foreground border-t border-border/50 pt-8">
-            If the math breaks, the correction is public and the challenger is credited. Challenge
-            it.
-          </p>
+          <div className="border-t border-border/50 pt-8 space-y-4">
+            <p className="font-mono text-sm text-muted-foreground">
+              If the math breaks, the correction is public and the challenger is credited. Challenge
+              it.
+            </p>
+            <p className="font-mono text-xs text-muted-foreground leading-relaxed">{FENCE_LINE}</p>
+          </div>
         </main>
         <Footer />
       </div>

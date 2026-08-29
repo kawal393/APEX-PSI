@@ -359,3 +359,9 @@ img[alt*="lovable"] {
   overflow: hidden !important;
   position: absolute !important;
 }
+
+/* ROSETTE — deterministic guilloché stroke-in animation */
+@keyframes rosette-draw {
+  from { stroke-dashoffset: 4000; opacity: 0; }
+  to { stroke-dashoffset: 0; }
+}
