@@ -1,30 +1,32 @@
-import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import Rosette from "@/components/Rosette";
 import {
   GENESIS_PROOF,
-  GENESIS_DOC_URL,
   GENESIS_SOURCE_URL,
   GENESIS_VERIFY_URL,
   FENCE_LINE,
+  TWO_DOORS_LINE,
+  siteVerifyUrlFor,
 } from "@/data/referenceData";
+import {
+  DECLARATION_TITLE,
+  DECLARATION_ALIAS,
+  DECLARATION_ISSUE,
+  DECLARATION_OPENING,
+  DECLARATION_CLAUSES,
+  DECLARATION_CLOSING,
+  DECLARATION_SEAL_LINE,
+} from "@/data/declarationText";
 
 const DECISION_HASH =
   GENESIS_PROOF.find((p) => p.label === "Sealed decision hash")?.value ?? "";
 
 const Genesis = () => {
-  const [declaration, setDeclaration] = useState<string | null>(null);
-  const [loadError, setLoadError] = useState(false);
 
-  useEffect(() => {
-    fetch(GENESIS_DOC_URL, { cache: "no-store" })
-      .then((res) => (res.ok ? res.text() : Promise.reject(new Error(String(res.status)))))
-      .then(setDeclaration)
-      .catch(() => setLoadError(true));
-  }, []);
 
   return (
     <>
