@@ -7,13 +7,13 @@ interface ShareEngineProps {
   customMessage?: string;
 }
 
-const powerStatements: Record<string, string> = {
+const shareStatements: Record<string, string> = {
   "/": "AI compliance is no longer self-reported. PSI Protocol makes it mathematically verifiable — backed by IETF draft-singh-psi-00.",
   "/protocol": "Read the protocol that replaces 'Trust Us' with cryptographic proof. IETF draft-singh-psi-00 is live.",
-  "/gallows": "The APEX PSI: where AI outputs face mathematical judgment. Every claim verified, every violation blocked.",
-  "/verify": "Verify any AI system's compliance in real-time. No login required. This is the new standard.",
+  "/gallows": "The APEX PSI engine: every AI output carries a receipt that anyone can recompute.",
+  "/verify": "Verify an AI decision receipt in real time. No login required.",
   "/research": "From IETF drafts to arXiv papers — the institutional architecture behind verifiable AI governance.",
-  "/governance": "Open Global Tribunal. Permissionless public verification with cryptographic consensus. The math is the authority.",
+  "/governance": "Permissionless public verification with cryptographic receipts. Anyone can recompute the result.",
 };
 
 const ShareEngine = ({ variant = "inline", pageTitle, customMessage }: ShareEngineProps) => {
@@ -22,7 +22,7 @@ const ShareEngine = ({ variant = "inline", pageTitle, customMessage }: ShareEngi
 
   const message =
     customMessage ||
-    powerStatements[currentPath] ||
+    shareStatements[currentPath] ||
     `${pageTitle || "PSI Protocol"} — The Open Protocol for Verifiable AI Governance.`;
 
   const shareUrl = `${siteUrl}${currentPath}`;
