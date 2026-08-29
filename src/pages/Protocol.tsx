@@ -29,9 +29,9 @@ const legalMapping = [
     requirement: "High-risk AI systems must allow effective human oversight, including the ability to intervene and halt the system.",
     psiSolution: [
       "5-second Sovereign Pause (Protocol Intervention Layer) halts all pipeline operations instantly",
-      "Open Global Tribunal: Permissionless public verification with cryptographic attestation consensus",
+      "Open Public Review: Permissionless public verification with cryptographic attestation consensus",
       "Sovereign Anchors: Enterprise-grade 3-of-5 ratification for high-stakes commits",
-      "Ed25519-signed auditor verdicts with mandatory rationale for non-repudiation",
+      "Ed25519-signed auditor determinations with mandatory rationale for non-repudiation",
       "Full audit trail of all pause/resume and ratification actions with timestamps",
     ],
     icon: Eye,
@@ -68,8 +68,8 @@ const changelog = [
     status: "CURRENT",
     changes: [
       "DETERMINISTIC MODE — UNACCEPTABLE/HIGH-risk predicates blocked before commit (Optimistic Flaw eliminated)",
-      "Sovereign Tribunal — 5-party human auditor ratification layer (3-of-5 threshold, Ed25519 signed verdicts)",
-      "48-hour SLA auto-escalation — MPC verdict stands with TRIBUNAL_TIMEOUT flag if quorum not met",
+      "Review Panel — 5-party human auditor ratification layer (3-of-5 threshold, Ed25519 signed determinations)",
+      "48-hour SLA auto-escalation — MPC determination stands with REVIEW_TIMEOUT flag if quorum not met",
       "Deterministic pre-flight check exports for SDK integration",
       "Protocol hardened against false-negative attack vector",
     ],

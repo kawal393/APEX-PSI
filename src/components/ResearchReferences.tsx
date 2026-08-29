@@ -287,7 +287,7 @@ const references = [
     category: "Technical" as Category,
     title: "EU AI Act and Cryptographic Audit Trails",
     source: "VeritasChain Blog — Dec 2025",
-    desc: "In-depth analysis of why \"trust me\" logs won't satisfy Article 12. Cryptographic audit trails provide the only defensible compliance path.",
+    desc: "In-depth analysis of why \"trust me\" logs won't satisfy Article 12. The analysis argues for cryptographic audit trails as a defensible compliance route.",
     url: "https://veritaschain.org/blog/posts/2025-12-25-eu-ai-act-cryptographic-audit/",
   },
   {
@@ -311,7 +311,7 @@ const references = [
     category: "Technical" as Category,
     title: "From 'Trust Us' to 'Verify': Cryptographic Standards for AI",
     source: "VeritasChain Blog — Jan 2026",
-    desc: "CAP-SRP and VeraSnap protocols: cryptographic proof that AI refused. 93x increase in AI-CSAM, 79% watermark bypass rate. Verification is the only answer.",
+    desc: "CAP-SRP and VeraSnap protocols: cryptographic proof that AI refused. Reports a 93x increase in AI-generated abuse material and a 79% watermark bypass rate, and argues for independent verification.",
     url: "https://veritaschain.org/blog/posts/2026-01-16-vericapture-cap-srp-complete-verification/",
   },
   {

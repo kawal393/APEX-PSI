@@ -54,8 +54,8 @@ const layers = [
     bgColor: "bg-compliant/5",
     points: [
       "5 credentialed professionals for enterprise-grade ratification",
-      "3-of-5 quorum with Ed25519-signed verdicts",
-      "48-hour SLA — machine verdict auto-ratifies on timeout",
+      "3-of-5 quorum with Ed25519-signed determinations",
+      "48-hour SLA — machine determination auto-ratifies on timeout",
       "Optional layer — the protocol functions without them",
       "Institutional Anchors validate, they do not gatekeep",
     ],

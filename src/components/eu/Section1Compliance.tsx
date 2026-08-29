@@ -53,7 +53,7 @@ const STANDARDS = [
 
 const ARTICLE_MAP = [
   { art: "Article 12", title: "Record-Keeping", impl: "SHA-256 hash-chained audit trail, monotonic sequence counter, Merkle inclusion proofs." },
-  { art: "Article 14", title: "Human Oversight", impl: "5-second Sovereign Pause, Open Global Tribunal, 3-of-5 ratification." },
+  { art: "Article 14", title: "Human Oversight", impl: "5-second review pause, open public review, 3-of-5 ratification." },
   { art: "Article 15", title: "Accuracy & Robustness", impl: "MPC 3-node consensus, Ed25519 signatures, ZK privacy commitments." },
   { art: "Article 50", title: "Transparency", impl: "In-band signed metadata + C2PA Content Credentials for all synthetic content." },
   { art: "Article 52", title: "Transparency for AI Systems", impl: "Compliance-Receipt HTTP header on every AI response." },
