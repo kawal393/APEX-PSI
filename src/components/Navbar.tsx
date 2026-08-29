@@ -57,8 +57,11 @@ const Navbar = () => {
   }, [user]);
 
 const navLinks = [
+    { label: "Declaration", href: "/declaration", isRoute: true },
+    { label: "Reference", href: "/reference", isRoute: true },
     { label: "Founding Members", href: "/founding", isRoute: true },
     { label: "Products", href: "/products", isRoute: true },
+
     { label: "Overview", href: "/home", isRoute: true },
     { label: "Engine", href: "/gallows", isRoute: true },
     { label: "Notary", href: "/notary", isRoute: true },
