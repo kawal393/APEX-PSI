@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 const GITHUB_URL = "https://github.com/kawal393/APEX-PSI";
 
 // Signed review artefact — anyone can verify on /verify
-const CHALLENGE_HASH = "sha256:7a59558c b76e45ca 8fe01249 ccd99539 apexpsi public bounty 2026";
-const CHALLENGE_PREDICATE = "APEX_PSI_BOUNTY_v1";
+const CHALLENGE_HASH = "sha256:7a59558c b76e45ca 8fe01249 ccd99539 apexpsi public review 2026";
+const CHALLENGE_PREDICATE = "APEX_PSI_PUBLIC_REVIEW_v1";
 
 const surface = [
   { area: "Ed25519 signatures", goal: "Produce a valid signature without the seed.", file: "supabase/functions/psi-api/index.ts" },
