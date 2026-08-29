@@ -15,6 +15,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        serif: ['"EB Garamond"', 'Georgia', 'Cambria', 'serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
