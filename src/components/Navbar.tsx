@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogIn, LayoutDashboard, ChevronDown, Hash, Globe, Shield, Award, Code, Layers, FileText, Bot, ExternalLink, ScrollText, GitBranch } from "lucide-react";
+import { Menu, X, LogIn, LayoutDashboard, ChevronDown, Hash, Globe, Shield, Award, Code, Layers, FileText, Bot, ExternalLink, ScrollText, GitBranch, BookOpen } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,14 @@ import LanguageSelector from "@/components/LanguageSelector";
 import ThemeToggle from "@/components/ThemeToggle";
 import PWAInstallButton from "@/components/PWAInstallButton";
 import apexLogo from "@/assets/apex-logo.png";
+
+const referenceLinks = [
+  { label: "The Reference", href: "/reference", icon: BookOpen, desc: "Public reference for machine-governance records" },
+  { label: "Genesis Zero", href: "/genesis", icon: Hash, desc: "Reference Implementation v1.0, sealed" },
+  { label: "Case 001 — The Worker", href: "/case-001", icon: FileText, desc: "Live record" },
+  { label: "Case 002 — The Money", href: "/case-002", icon: FileText, desc: "Reserved" },
+  { label: "Case 003 — The Regulator", href: "/case-003", icon: FileText, desc: "Reserved" },
+];
 
 const infraLinks = [
   { label: "HTTP Header Standard", href: "/standard", icon: ScrollText, desc: "draft-singh-psi-http-01" },
