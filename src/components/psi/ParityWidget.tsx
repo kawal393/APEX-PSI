@@ -104,14 +104,21 @@ const ParityWidget = () => {
       // Digest truth: fetch the published schema and canonicalise it here.
       let canonical = "";
       let source: "document" | "unavailable" = "unavailable";
-      try {
-        const res = await fetch("/.well-known/psi-schema.json", { cache: "no-store" });
-        if (res.ok) {
-          canonical = await psiSchemaDigestFromDocument(await res.json());
+      const sources = [
+        "/.well-known/psi-schema.json",
+        "https://ai-governance-standard.com/.well-known/psi-schema.json",
+      ];
+      for (const url of sources) {
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) continue;
+          const doc = await res.json();
+          canonical = await psiSchemaDigestFromDocument(doc);
           source = "document";
+          break;
+        } catch {
+          // try the next source; ERROR is reported only when every source fails
         }
-      } catch {
-        source = "unavailable";
       }
       const result = await verifySeal(fixture.input);
       const text = result.conformant ? formatAcceptance() : formatRejection(result, canonical || DIGEST);
