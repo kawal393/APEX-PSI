@@ -165,6 +165,46 @@ const CryptoCheckout = () => {
     [invoice?.item_key, item],
   );
 
+  // On-chain payment is not open yet. Without an existing invoice reference the
+  // page states that plainly rather than quoting an amount it cannot settle.
+  if (!ref) {
+    return (
+      <>
+        <Helmet>
+          <title>On-chain payment — available soon | Apex PSI</title>
+          <meta
+            name="description"
+            content="On-chain payment for APEX PSI receipts, API credits and registry listings is not open yet. Card checkout is available now. Verification remains free."
+          />
+          <link rel="canonical" href={`${SITE_URL}/crypto`} />
+        </Helmet>
+        <div className="min-h-screen bg-background text-foreground">
+          <Navbar />
+          <main className="px-4 pt-28 md:pt-32 pb-24">
+            <div className="container mx-auto max-w-2xl">
+              <div className="rounded-xl border border-border p-8 md:p-10 text-center">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-gold mb-4">
+                  On-chain payment
+                </p>
+                <h1 className="text-3xl md:text-4xl font-bold mb-5">Available soon</h1>
+                <p className="text-sm text-muted-foreground mb-8">
+                  Payment in Bitcoin, Ethereum or USDC is not open yet. Card checkout is available now.
+                  Sealing and public verification remain free and unmetered.
+                </p>
+                <Button variant="heroOutline" asChild>
+                  <Link to="/products">
+                    View products <ArrowRight className="h-4 w-4 ml-1" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </main>
+          <Footer />
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Helmet>

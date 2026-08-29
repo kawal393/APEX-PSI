@@ -357,25 +357,20 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
 
             <div className="mt-8 rounded-xl border border-gold/30 bg-gold/[0.04] p-6 md:p-8 text-center">
               <p className="text-[10px] font-bold tracking-[0.2em] text-gold uppercase mb-2">
-                Also payable on-chain
+                On-chain payment
               </p>
               <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
-                Pay in Bitcoin, Ethereum or USDC
+                Bitcoin, Ethereum and USDC — available soon
               </h3>
-              <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-6">
-                Receipts, receipt packs, API credits and a prepaid registry listing can be paid directly
-                on-chain. Self-custody, no payment processor, credited automatically once the chain
-                confirms. Monthly subscriptions remain card-only.
+              <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+                On-chain payment for receipts, receipt packs, API credits and prepaid registry listings is
+                not open yet. Card checkout is available now. This page will state the assets and addresses
+                on the day the option goes live.
               </p>
-              <Button variant="hero" size="lg" asChild>
-                <Link to="/crypto">
-                  Pay with crypto <ArrowRight className="h-4 w-4 ml-1" />
-                </Link>
-              </Button>
             </div>
 
             <p className="text-xs text-muted-foreground text-center mt-8 max-w-3xl mx-auto">
-              Prices in USD. Card checkout is handled by Stripe; crypto payments settle directly on-chain.
+              Prices in USD. Card checkout is handled by Stripe.
               Sealing and public verification remain free and unmetered — paying only ever adds the
               institutional countersignature, anchoring, persistence and support around a proof you can
               already generate yourself.

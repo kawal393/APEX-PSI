@@ -149,7 +149,16 @@ Deno.serve(async (req) => {
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
 
-  const summary = { checked: 0, seen: 0, paid: 0, expired: 0, underpaid: 0 };
+  const summary = { checked: 0, seen: 0, paid: 0, expired: 0, underpaid: 0, failed: 0 };
+
+  // The watcher is dormant until receive addresses are configured. Report that
+  // honestly with a 200 instead of failing the cron run every few minutes.
+  if (!Deno.env.get("BTC_XPUB") && !Deno.env.get("ETH_RECEIVE_ADDRESS")) {
+    return Response.json(
+      { ok: true, dormant: true, reason: "no receive addresses configured", ...summary },
+      { headers: corsHeaders },
+    );
+  }
 
   try {
     const { data: invoices, error } = await backend
@@ -203,6 +212,7 @@ Deno.serve(async (req) => {
     }
 
     for (const invoice of open) {
+      try {
       const want = BigInt(invoice.amount_atomic);
       let observation: Observation | null = null;
 
@@ -271,6 +281,15 @@ Deno.serve(async (req) => {
 
       if (isPaid) summary.paid += 1;
       else summary.seen += 1;
+      } catch (invoiceError) {
+        // One bad invoice must never abort the whole scan.
+        summary.failed += 1;
+        console.error(
+          "crypto-watcher: invoice failed",
+          invoice.id,
+          invoiceError instanceof Error ? invoiceError.message : JSON.stringify(invoiceError),
+        );
+      }
     }
 
     // Sweep quotes that lapsed without any payment at all.
@@ -284,8 +303,10 @@ Deno.serve(async (req) => {
 
     return Response.json({ ok: true, ...summary }, { headers: corsHeaders });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "watcher failed";
-    console.error("crypto-watcher:", message);
-    return Response.json({ ok: false, error: message }, { status: 500, headers: corsHeaders });
+    const message = error instanceof Error
+      ? error.message
+      : `watcher failed: ${JSON.stringify(error)}`;
+    console.error("crypto-watcher:", message, error);
+    return Response.json({ ok: false, error: message, ...summary }, { status: 500, headers: corsHeaders });
   }
 });
