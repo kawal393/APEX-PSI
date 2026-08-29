@@ -135,7 +135,7 @@ const Tribunal = () => {
         <div className="container mx-auto px-4 py-20 text-center">
           <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
           <h1 className="text-2xl font-mono font-bold text-foreground mb-2">Institutional Anchor Panel</h1>
-          <p className="text-muted-foreground">You must be authenticated to access the Tribunal.</p>
+          <p className="text-muted-foreground">You must be authenticated to access the review panel.</p>
         </div>
         <Footer />
       </div>
@@ -161,7 +161,7 @@ const Tribunal = () => {
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm">
             Enterprise-grade ratification layer. Institutional Anchors provide the final cryptographic seal 
-            on high-value commits that have achieved public consensus through the Open Global Tribunal.
+            on high-value commits that have achieved public consensus through open public review.
           </p>
         </motion.div>
 

@@ -42,7 +42,7 @@ const SovereignShield = ({ allPassed, passCount, totalCount }: SovereignShieldPr
             transition={{ delay: 0.3 }}
             className="text-lg sm:text-xl font-black tracking-wider text-compliant"
           >
-            SOVEREIGN INTEGRITY CONFIRMED
+            INTEGRITY CONFIRMED
           </motion.h3>
           <motion.p
             initial={{ opacity: 0 }}

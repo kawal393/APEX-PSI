@@ -803,7 +803,7 @@ const Verify = () => {
                 <div className="flex items-center gap-2 mb-4 rounded-lg border border-gold/20 bg-gold/5 px-4 py-2.5">
                   <Globe className="h-4 w-4 text-gold shrink-0" />
                   <p className="text-xs text-gold font-medium">
-                    Open Global Tribunal — Submit your independent verification as a public attestation. No login required.
+                    Open public review — submit your independent verification as a public attestation. No login required.
                   </p>
                 </div>
 

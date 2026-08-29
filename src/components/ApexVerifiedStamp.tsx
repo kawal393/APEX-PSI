@@ -9,7 +9,7 @@ interface ApexVerifiedStampProps {
 }
 
 /**
- * APEX VERIFIED™ — Sovereign Seal stamp.
+ * APEX VERIFIED — seal stamp.
  * Visually tethers any artifact to a SHA-256 hash + Bitcoin block anchor.
  * Drop on any compliance report, evidence file, or receipt.
  */
