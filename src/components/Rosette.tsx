@@ -43,6 +43,37 @@ const guilloche = (
   return `${d}Z`;
 };
 
+/** Deterministic ring geometry shared by the component and the standalone markup helper. */
+const ringsOf = (hash: string, VB: number) => {
+  const b = bytesOf(hash.toLowerCase());
+  const c = VB / 2;
+  const petals = 8 + (b[0] % 17); // 8–24
+  const rings = 3 + (b[3] % 4); // 3–6
+  const baseR = VB / 2 - 12;
+  const paths = Array.from({ length: rings }, (_, i) => {
+    const R = baseR * (1 - i * (0.12 + (b[(i * 5 + 4) % b.length] % 5) / 100));
+    const amp = 4 + (b[(i * 7 + 1) % b.length] % 16);
+    const k = petals + (b[(i * 3 + 2) % b.length] % 3);
+    const phase = ((b[(i * 11 + 6) % b.length] / 255) * Math.PI * 2) + i * 0.35;
+    const opacity = 0.35 + (b[(i * 13 + 9) % b.length] % 55) / 100;
+    return { d: guilloche(c, c, R, amp, k, phase), opacity };
+  });
+  return { paths, innerR: 14 + (b[8] % 12), c };
+};
+
+/**
+ * Standalone SVG markup for the same deterministic rosette — used when the
+ * pattern must be rasterised (receipt PNG export) outside React.
+ */
+export const rosetteSvgMarkup = (hash: string, size = 200, stroke = "#C9A227"): string => {
+  const VB = 200;
+  const { paths, innerR, c } = ringsOf(hash, VB);
+  const body = paths
+    .map((p) => `<path d="${p.d}" opacity="${p.opacity.toFixed(2)}" />`)
+    .join("");
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${VB} ${VB}"><g fill="none" stroke="${stroke}" stroke-width="0.7" stroke-linejoin="round">${body}<circle cx="${c}" cy="${c}" r="${innerR}" opacity="0.8" /><circle cx="${c}" cy="${c}" r="${(innerR / 2.4).toFixed(2)}" opacity="0.5" /></g></svg>`;
+};
+
 /**
  * ROSETTE — a deterministic guilloché engraving derived from a SHA-256 digest.
  * Same bytes render the same pattern, forever. One changed byte changes the pattern.
