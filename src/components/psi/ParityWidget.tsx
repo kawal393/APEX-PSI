@@ -126,7 +126,14 @@ const ParityWidget = () => {
     };
   }, [fixture]);
 
-  const parity = tsOutput.length > 0 && tsOutput === fixture.python;
+  const schemaUnavailable = digestSource !== "document";
+  const bothRan = tsOutput.length > 0 && !schemaUnavailable;
+  const parity = bothRan && tsOutput === fixture.python;
+  const stateLabel = schemaUnavailable
+    ? "ERROR — schema unavailable"
+    : parity
+      ? "Parity confirmed"
+      : "Parity mismatch";
 
   return (
     <Card className="p-6 border-border">
@@ -143,11 +150,15 @@ const ParityWidget = () => {
         <div className="flex flex-col items-stretch gap-2 sm:items-end">
           <div
             className={`inline-flex items-center justify-center gap-2 rounded-md border px-4 py-2 text-xs font-mono font-bold uppercase tracking-[0.15em] ${
-              parity ? "border-success/40 text-success bg-success/10" : "border-destructive/40 text-destructive bg-destructive/10"
+              schemaUnavailable
+                ? "border-warning/40 text-warning bg-warning/10"
+                : parity
+                  ? "border-success/40 text-success bg-success/10"
+                  : "border-destructive/40 text-destructive bg-destructive/10"
             }`}
           >
             {parity ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
-            {parity ? "Parity confirmed" : "Parity mismatch"}
+            {stateLabel}
           </div>
           <p className="font-mono text-[10px] leading-relaxed text-muted-foreground break-all sm:max-w-[22rem] sm:text-right">
             {digestSource === "document" ? (
@@ -157,7 +168,9 @@ const ParityWidget = () => {
                 <span className="text-gold">{digest}</span>
               </>
             ) : (
-              <span className="text-warning">schema digest: UNAVAILABLE — schema document could not be fetched</span>
+              <span className="text-warning">
+                ERROR — schema unavailable: /.well-known/psi-schema.json could not be fetched
+              </span>
             )}
           </p>
         </div>

@@ -37,6 +37,7 @@ const DeclarationPage = () => (
           <h1 className="font-serif text-3xl md:text-5xl font-bold leading-tight">
             THE RECOMPUTATION DECLARATION
           </h1>
+          <p className="mt-4 font-serif text-lg text-foreground/80">Known as the Melbourne Test.</p>
           <p className="mt-6 font-mono text-xs uppercase tracking-[0.3em] text-gold">
             Issued 30 August 2026, Melbourne
           </p>
