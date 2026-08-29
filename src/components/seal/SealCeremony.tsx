@@ -207,7 +207,10 @@ const SealCeremony = () => {
       <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
         {mode === "LOCAL"
           ? "Local — nothing leaves the device."
-          : "Sandbox seals are demonstrations. Production seals are issued under licence."}
+          : "Sandbox — a demonstration seal is notarised."}
+      </p>
+      <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        Sandbox seals are demonstrations. Production seals are issued under licence.
       </p>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
