@@ -31,16 +31,71 @@ const rules = [
 const Challenge = () => (
   <div className="min-h-screen bg-background text-foreground">
     <Helmet>
-      <title>Public Review Programme — Apex PSI — Apex PSI — Universal Verification Layer</title>
+      <title>The Standing Challenge — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
-        content="Independent public review of the Apex PSI protocol. Open source, signed, anchored and published for scrutiny."
+        content="US$10,000 standing challenge for a mathematical break of a sealed APEX PSI record. Verification free forever."
       />
     </Helmet>
     <Navbar />
 
     <main className="pt-24 pb-16 px-4">
       <div className="container mx-auto max-w-5xl">
+
+        {/* THE STANDING CHALLENGE */}
+        <section className="mb-16 border border-primary/20 rounded-xl bg-card/40 p-6 sm:p-10">
+          <h1 className="text-2xl sm:text-4xl font-black tracking-wide text-gold-gradient text-center mb-2">
+            THE STANDING CHALLENGE
+          </h1>
+          <div className="h-px bg-primary/20 my-6" />
+          <p className="text-lg sm:text-xl text-center mb-8">
+            US$10,000 to the first party that produces a mathematical break of a sealed APEX PSI record.
+          </p>
+
+          <div className="space-y-6 text-sm text-muted-foreground">
+            <div>
+              <p className="text-foreground font-semibold mb-2">What counts as a break (exhaustive):</p>
+              <ol className="space-y-2">
+                <li className="flex gap-3"><span className="font-mono text-primary">1.</span><span>A SHA-256 collision or second preimage against any sealed record digest published on this site.</span></li>
+                <li className="flex gap-3"><span className="font-mono text-primary">2.</span><span>A valid Ed25519 or LMS-W4-SHA256 signature forgery against any published receipt.</span></li>
+                <li className="flex gap-3"><span className="font-mono text-primary">3.</span><span>A valid Merkle exclusion proof for any entry this ledger publishes as included.</span></li>
+              </ol>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            <div>
+              <p className="text-foreground font-semibold mb-2">What does NOT count as a break:</p>
+              <ol className="space-y-2">
+                <li className="flex gap-3"><span className="font-mono text-primary">1.</span><span>Website bugs, UI errors, uptime issues or implementation defects. These are reviewed and credited under the Public Review Programme below and SECURITY.md. They are never eligible for the reward.</span></li>
+                <li className="flex gap-3"><span className="font-mono text-primary">2.</span><span>Disagreements about interpretation, law or opinion. The challenge is mathematical only.</span></li>
+              </ol>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            <div>
+              <p className="text-foreground font-semibold mb-2">Verification of a claimed break:</p>
+              <ol className="space-y-2">
+                <li className="flex gap-3"><span className="font-mono text-primary">1.</span><span>The claim must be publicly reproducible from published bytes alone.</span></li>
+                <li className="flex gap-3"><span className="font-mono text-primary">2.</span><span>The break must reproduce on two independent recomputation pipelines.</span></li>
+                <li className="flex gap-3"><span className="font-mono text-primary">3.</span><span>Judgement is performed by the math alone. No person can waive, alter or purchase an outcome.</span></li>
+              </ol>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            <p>
+              The reward is an obligation of ROCKYFILMS888 PTY LTD (ABN 71 672 237 795). It does not affect any other covenant on this site. Money buys process, never outcome.
+            </p>
+
+            <div className="h-px bg-primary/20" />
+            <p className="text-center text-foreground">The ledger does not judge. It remembers.</p>
+          </div>
+        </section>
+
+        <div className="h-px bg-primary/20 mb-16" />
+
         {/* Hero */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-destructive/30 bg-destructive/5 px-4 py-1.5 mb-6">
