@@ -9,7 +9,7 @@ interface ApexVerifiedStampProps {
 }
 
 /**
- * APEX VERIFIED™ — Sovereign Seal stamp.
+ * APEX VERIFIED — seal stamp.
  * Visually tethers any artifact to a SHA-256 hash + Bitcoin block anchor.
  * Drop on any compliance report, evidence file, or receipt.
  */
@@ -43,7 +43,7 @@ const ApexVerifiedStamp = ({
         <div className="flex flex-col items-center justify-center text-center px-2 leading-tight">
           <ShieldCheck className="text-gold mb-1" style={{ width: "22%", height: "22%" }} />
           <p className="font-black tracking-[0.18em] text-gold uppercase">APEX</p>
-          <p className="font-black tracking-[0.22em] text-gold uppercase">VERIFIED™</p>
+          <p className="font-black tracking-[0.22em] text-gold uppercase">VERIFIED</p>
           <p className="font-mono text-foreground/80 mt-1">{short}</p>
           <p className="font-mono text-emerald-400/90 mt-0.5">BTC#{btcBlock}</p>
         </div>

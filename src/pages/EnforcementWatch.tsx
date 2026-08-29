@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 const ENFORCEABLE_FROM = Date.UTC(2026, 7, 2, 0, 0, 0);
 
 const SUBLINE =
-  "Transparency obligations became enforceable 2 August 2026. Every enforcement signal, anywhere on Earth, is sealed here the moment it lands — timestamped, signed, post-quantum. Nobody owns the first fine. This ledger records it.";
+  "Transparency obligations became enforceable 2 August 2026. Public enforcement signals are recorded here as they are published — timestamped, signed and recomputable. This page records what is on the public record; it makes no assessment of any party.";
 
 interface Entry {
   n: number;

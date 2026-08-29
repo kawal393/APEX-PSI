@@ -4,37 +4,37 @@ import { Check, Minus, CircleDot } from "lucide-react";
 
 type Cell = "yes" | "no" | "partial";
 
-const competitors = [
+const efforts = [
   { key: "apex", name: "APEX PSI", id: "draft-singh-psi" },
   { key: "zkmlops", name: "ZKMLOps", id: "arXiv:2510.26576v1" },
-  { key: "scitt", name: "SCITT VeritasChain", id: "draft-ietf-scitt-vcp" },
-  { key: "longfellow", name: "Google Longfellow", id: "ZKP / eIDAS" },
+  { key: "scitt", name: "SCITT VCP", id: "draft-ietf-scitt-vcp" },
+  { key: "longfellow", name: "Longfellow ZK", id: "ZKP / eIDAS" },
   { key: "daap", name: "DAAP v2", id: "draft-aylward-daap-v2-00" },
 ];
 
 const matrix: { piece: string; cells: Record<string, Cell> }[] = [
   {
-    piece: "Protocol Layer (IETF-Track Spec)",
+    piece: "Published protocol document (standards track)",
     cells: { apex: "yes", zkmlops: "no", scitt: "yes", longfellow: "no", daap: "yes" },
   },
   {
-    piece: "Cryptographic Engine (ZK + MPC + Notary)",
+    piece: "Reference implementation available today",
     cells: { apex: "yes", zkmlops: "partial", scitt: "no", longfellow: "partial", daap: "no" },
   },
   {
-    piece: "Sector Foothold (Vertical Deployment Path)",
+    piece: "Sector deployment profile",
     cells: { apex: "yes", zkmlops: "no", scitt: "partial", longfellow: "partial", daap: "no" },
   },
   {
-    piece: "Public Verification Layer (Independent Auditor)",
+    piece: "Public, permissionless verification endpoint",
     cells: { apex: "yes", zkmlops: "no", scitt: "no", longfellow: "no", daap: "no" },
   },
   {
-    piece: "Royalty-Free Patent Pledge",
+    piece: "Royalty-free patent pledge",
     cells: { apex: "yes", zkmlops: "no", scitt: "no", longfellow: "yes", daap: "no" },
   },
   {
-    piece: "Multi-Jurisdiction Mapping",
+    piece: "Multi-jurisdiction obligation mapping",
     cells: { apex: "yes", zkmlops: "no", scitt: "partial", longfellow: "partial", daap: "no" },
   },
 ];
@@ -43,52 +43,46 @@ const cards = [
   {
     name: "ZKMLOps",
     id: "arXiv:2510.26576v1",
-    has: "Research framework for ZK proofs across the MLOps lifecycle. Proves models are compliant without revealing them.",
-    lacks: "No IETF draft. No live service. No MPC mesh. No jurisdiction mapping. No notary. It is a paper.",
-    diff: "APEX PSI is the production version of their thesis — protocol, infrastructure, and sector deployment shipped.",
-    verdict: "Academic predecessor. Cite, don't compete.",
+    scope: "Research framework for zero-knowledge proofs across the MLOps lifecycle: proving properties of a model without disclosing it.",
+    relation:
+      "Cited upstream research. PSI implements a production profile of the same commit-prove-verify idea and can carry proofs produced under this framework.",
   },
   {
-    name: "SCITT VeritasChain (VCP)",
+    name: "SCITT VCP",
     id: "draft-ietf-scitt-vcp",
-    has: "SCITT profile for tamper-evident audit trails of AI trading decisions. Uses COSE receipts. References EU AI Act and GDPR.",
-    lacks: "Financial-trading scope only. No ZK proofs. No consumer verification layer. No multi-vertical mapping.",
-    diff: "PSI is the general compliance proof layer; VCP is one vertical's audit trail. PSI can carry VCP receipts.",
-    verdict: "Interoperable. Potential downstream consumer.",
+    scope: "A SCITT profile for tamper-evident audit trails of AI trading decisions, using COSE receipts and referencing EU AI Act and GDPR obligations.",
+    relation:
+      "Interoperable. PSI receipts and SCITT/COSE receipts can reference one another; PSI can transport VCP receipts as evidence.",
   },
   {
-    name: "Google Longfellow",
+    name: "Longfellow ZK",
     id: "ZKP libraries / eIDAS",
-    has: "Open-source ZKP libraries, EU eIDAS compliant, for proving age without revealing date of birth.",
-    lacks: "Age assurance only. No MPC mesh. No IETF standard. No liability mapping. No audit receipts. No notary.",
-    diff: "Longfellow is the bricks. APEX PSI is the courthouse built from them.",
-    verdict: "Upstream library. Reusable. Not a competitor.",
+    scope: "Open-source zero-knowledge libraries used for attribute proofs such as age assurance, aligned to eIDAS.",
+    relation:
+      "Upstream library layer. Reusable inside a PSI deployment; PSI adds receipts, notarisation and public verification on top.",
   },
   {
     name: "DAAP v2",
     id: "draft-aylward-daap-v2-00",
-    has: "Distributed AI Accountability Protocol. Cryptographic identity, remote shutdown, behavioural monitoring.",
-    lacks: "No ZK proofs. No notary receipts. No vertical deployment. No public verification.",
-    diff: "DAAP wants to shut AI off after the fact. PSI proves AI is safe while running.",
-    verdict: "Adjacent control plane. PSI is the proof plane. Interoperable.",
+    scope: "Accountability protocol covering cryptographic identity for AI systems, behavioural monitoring and remote control signals.",
+    relation:
+      "Adjacent control plane. PSI is the evidence plane; a deployment can run both, with PSI sealing what the control plane did.",
   },
 ];
 
 const renderCell = (c: Cell) => {
-  if (c === "yes")
-    return <Check className="h-4 w-4 text-gold mx-auto" aria-label="Yes" />;
-  if (c === "partial")
-    return <CircleDot className="h-4 w-4 text-warning mx-auto" aria-label="Partial" />;
-  return <Minus className="h-4 w-4 text-muted-foreground/50 mx-auto" aria-label="No" />;
+  if (c === "yes") return <Check className="h-4 w-4 text-gold mx-auto" aria-label="In scope" />;
+  if (c === "partial") return <CircleDot className="h-4 w-4 text-warning mx-auto" aria-label="Partial" />;
+  return <Minus className="h-4 w-4 text-muted-foreground/50 mx-auto" aria-label="Not in scope" />;
 };
 
 const Landscape = () => (
   <>
     <Helmet>
-      <title>Competitive Landscape — PSI vs SCITT, DAAP, ZKMLOps, Longfellow — Apex PSI — Universal Verification Layer</title>
+      <title>Standards Landscape — Apex PSI — Universal Verification Layer</title>
       <meta
         name="description"
-        content="The toll booth where law, cryptography, and compliance meet. APEX PSI versus ZKMLOps, SCITT VeritasChain (draft-ietf-scitt-vcp), Google Longfellow, and DAAP (draft-aylward-daap-v2-00)."
+        content="How Apex PSI relates to adjacent standards work: ZKMLOps (arXiv:2510.26576v1), SCITT VCP (draft-ietf-scitt-vcp), Longfellow ZK, and DAAP (draft-aylward-daap-v2-00). Scope and interoperability, cited by document ID."
       />
       <link rel="canonical" href="https://ai-governance-standard.com/landscape" />
     </Helmet>
@@ -99,21 +93,21 @@ const Landscape = () => (
       <article className="container mx-auto max-w-5xl">
         <header className="text-center mb-14">
           <p className="text-gold font-semibold tracking-widest uppercase text-xs mb-4">
-            Competitive Landscape · April 2026
+            Standards Landscape
           </p>
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] mb-5">
-            <span className="text-chrome-gradient">The Toll Booth Where</span>
+            <span className="text-chrome-gradient">Where Law, Cryptography</span>
             <br />
-            <span className="text-gold-gradient">Law, Crypto & Compliance Meet</span>
+            <span className="text-gold-gradient">And Verification Meet</span>
           </h1>
           <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Four pieces nobody else has glued together: the IETF-track Protocol, the cryptographic Engine,
-            the Sector foothold, and the public Verification layer. Below is how every adjacent effort
-            stacks up — cited by draft ID, not vibes.
+            Apex PSI is one layer in a wider body of standards work. This page records the published
+            scope of adjacent efforts and how each relates to PSI, cited by document identifier.
+            Scope statements are drawn from each project's own published material.
           </p>
         </header>
 
-        {/* Comparison table */}
+        {/* Scope table */}
         <section className="mb-16 rounded-2xl border border-border bg-card/40 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -122,7 +116,7 @@ const Landscape = () => (
                   <th className="text-left px-4 py-4 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
                     Capability
                   </th>
-                  {competitors.map((c) => (
+                  {efforts.map((c) => (
                     <th key={c.key} className="px-3 py-4 text-center min-w-[110px]">
                       <p className={`text-xs font-bold ${c.key === "apex" ? "text-gold" : "text-foreground"}`}>
                         {c.name}
@@ -136,7 +130,7 @@ const Landscape = () => (
                 {matrix.map((row, i) => (
                   <tr key={row.piece} className={i % 2 === 0 ? "bg-background/40" : ""}>
                     <td className="px-4 py-3 font-semibold text-foreground/90">{row.piece}</td>
-                    {competitors.map((c) => (
+                    {efforts.map((c) => (
                       <td key={c.key} className="px-3 py-3 text-center">
                         {renderCell(row.cells[c.key])}
                       </td>
@@ -147,13 +141,13 @@ const Landscape = () => (
             </table>
           </div>
           <div className="px-4 py-3 border-t border-border bg-card/30 flex flex-wrap justify-center gap-x-6 gap-y-1 text-[10px] text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Check className="h-3 w-3 text-gold" /> Shipped</span>
-            <span className="inline-flex items-center gap-1.5"><CircleDot className="h-3 w-3 text-warning" /> Partial / Adjacent</span>
-            <span className="inline-flex items-center gap-1.5"><Minus className="h-3 w-3 text-muted-foreground/60" /> Not in scope</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="h-3 w-3 text-gold" /> In published scope</span>
+            <span className="inline-flex items-center gap-1.5"><CircleDot className="h-3 w-3 text-warning" /> Partial or adjacent</span>
+            <span className="inline-flex items-center gap-1.5"><Minus className="h-3 w-3 text-muted-foreground/60" /> Not in published scope</span>
           </div>
         </section>
 
-        {/* Per-competitor cards */}
+        {/* Per-effort cards */}
         <section className="grid md:grid-cols-2 gap-5 mb-16">
           {cards.map((c) => (
             <div key={c.name} className="rounded-xl border border-border bg-card/60 p-6 hover:border-gold/30 transition-colors">
@@ -163,20 +157,12 @@ const Landscape = () => (
               </div>
               <div className="space-y-3 text-sm">
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-gold/80 font-bold mb-1">Has</p>
-                  <p className="text-foreground/85 leading-relaxed">{c.has}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-destructive/80 font-bold mb-1">Lacks</p>
-                  <p className="text-foreground/80 leading-relaxed">{c.lacks}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-primary/80 font-bold mb-1">Differentiator</p>
-                  <p className="text-foreground/85 leading-relaxed">{c.diff}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-gold/80 font-bold mb-1">Published scope</p>
+                  <p className="text-foreground/85 leading-relaxed">{c.scope}</p>
                 </div>
                 <div className="pt-3 border-t border-border/60">
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1">Verdict</p>
-                  <p className="text-foreground font-semibold leading-relaxed">{c.verdict}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1">Relationship to PSI</p>
+                  <p className="text-foreground/85 leading-relaxed">{c.relation}</p>
                 </div>
               </div>
             </div>
@@ -185,15 +171,15 @@ const Landscape = () => (
 
         {/* Closing band */}
         <section className="rounded-2xl border border-gold/30 bg-card/60 p-8 md:p-12 text-center">
-          <p className="text-gold font-semibold tracking-widest uppercase text-xs mb-4">Net Position</p>
+          <p className="text-gold font-semibold tracking-widest uppercase text-xs mb-4">Position</p>
           <h2 className="text-2xl md:text-4xl font-black mb-5 leading-tight">
-            <span className="text-chrome-gradient">We didn't invent ZKPs.</span>{" "}
-            <span className="text-gold-gradient">We built the toll booth.</span>
+            <span className="text-chrome-gradient">Apex PSI does not replace this work.</span>{" "}
+            <span className="text-gold-gradient">It carries it.</span>
           </h2>
           <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            No public record shows another entity with all four pieces live: IETF-track draft,
-            multi-jurisdiction MPC notary, sector-deployable engine, and consumer verification.
-            APEX PSI is the only deployed answer to the August 2026 EU AI Act enforcement curve.
+            PSI specifies one thing: a receipt for a machine decision that anyone can recompute.
+            Where another specification already covers a layer, PSI references it rather than
+            duplicating it. Corrections to anything on this page are welcome and are published with credit.
           </p>
         </section>
       </article>

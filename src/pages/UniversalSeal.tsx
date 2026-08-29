@@ -380,7 +380,7 @@ async function apexSeal(file) {
           <Card className="p-6 bg-card/60 backdrop-blur-xl border-border">
             <div className="flex items-center gap-2 mb-4">
               <Globe className="h-5 w-5 text-gold" />
-              <h2 className="text-lg font-bold">Why It's Inevitable</h2>
+              <h2 className="text-lg font-bold">Why It Holds Up</h2>
             </div>
             <ul className="text-xs font-mono space-y-2 text-foreground/80">
               <li>· Open protocol — no vendor lock</li>

@@ -287,7 +287,7 @@ const Gallows = () => {
     refreshState();
     
     toast[result.paused ? 'warning' : 'success'](
-      result.paused ? 'SOVEREIGN PAUSE ACTIVATED' : 'System Resumed',
+      result.paused ? 'OVERSIGHT PAUSE ACTIVATED' : 'System Resumed',
       {
         description: result.paused 
           ? 'All operations halted per EU AI Act Art. 14'

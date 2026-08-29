@@ -63,7 +63,7 @@ const AustraliaPositioningBand = () => {
                   🇦🇺 <span className="text-muted-foreground mx-1">→</span> 🌏
                 </div>
                 <div className="mt-2 text-[10px] uppercase tracking-widest text-muted-foreground">
-                  Sovereign · Exported
+                  Australian · Exported
                 </div>
               </div>
             </div>

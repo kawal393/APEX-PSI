@@ -77,7 +77,7 @@ const SovereignSealStrip = () => {
 
       <div className="container mx-auto max-w-7xl px-4 py-14 md:py-20 relative">
         <div className="grid md:grid-cols-[1fr_auto] gap-10 md:gap-16 items-center">
-          {/* Left: the inevitable truth */}
+          {/* Left: live status */}
           <div>
             <p className="text-[10px] md:text-xs font-mono uppercase tracking-[0.35em] text-gold/80 mb-4">
                Integrity Seal · Operational

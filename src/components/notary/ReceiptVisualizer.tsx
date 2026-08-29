@@ -8,7 +8,7 @@ const steps = [
   { icon: FileText, label: "Decision Submitted", desc: "JSON payload received via POST /notarize", color: "text-primary" },
   { icon: Hash, label: "SHA-256 Hashed", desc: "Decision canonicalized & hashed (FIPS 180-4)", color: "text-gold" },
   { icon: Shield, label: "Merkle Anchored", desc: "Leaf inserted into global binary Merkle tree", color: "text-primary" },
-  { icon: Key, label: "Ed25519 Signed", desc: "Merkle leaf signed with sovereign key (RFC 8032)", color: "text-gold" },
+  { icon: Key, label: "Ed25519 Signed", desc: "Merkle leaf signed with the issuer key (RFC 8032)", color: "text-gold" },
   { icon: Clock, label: "Timestamped", desc: "ISO-8601 timestamp + monotonic sequence counter", color: "text-primary" },
   { icon: CheckCircle2, label: "Receipt Issued", desc: "Tamper-proof receipt with verify URL returned", color: "text-compliant" },
 ];
