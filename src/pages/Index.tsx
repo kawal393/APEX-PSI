@@ -24,6 +24,7 @@ import VerifiedByApexSection from "@/components/VerifiedByApexSection";
 import EnforcementStrip from "@/components/EnforcementStrip";
 import UniversalTicker from "@/components/UniversalTicker";
 import HomeSealStrip from "@/components/HomeSealStrip";
+import MelbourneTestPlaque from "@/components/MelbourneTestPlaque";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -77,9 +78,13 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
-        <UniversalTicker />
-        <Hero />
+        <MelbourneTestPlaque />
         <HomeSealStrip />
+        <p className="-mt-8 mb-16 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          The ledger does not judge. It remembers.
+        </p>
+        <Hero />
+        <UniversalTicker />
         <ConnectAIPill />
         <Article50Banner />
 
