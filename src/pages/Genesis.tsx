@@ -48,14 +48,19 @@ const Genesis = () => {
             <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-primary mb-6">
               The Proof Block
             </h2>
-            <dl className="space-y-4 font-mono text-sm">
-              {GENESIS_PROOF.map((row) => (
-                <div key={row.label} className="grid gap-1 md:grid-cols-[220px_1fr]">
-                  <dt className="text-muted-foreground">{row.label}</dt>
-                  <dd className="text-foreground break-all">{row.value}</dd>
-                </div>
-              ))}
-            </dl>
+            <div className="grid gap-10 md:grid-cols-[176px_1fr]">
+              <div className="flex justify-center md:justify-start">
+                <Rosette hash={DECISION_HASH} size={144} animate />
+              </div>
+              <dl className="space-y-4 font-mono text-sm">
+                {GENESIS_PROOF.map((row) => (
+                  <div key={row.label} className="grid gap-1 md:grid-cols-[220px_1fr]">
+                    <dt className="text-muted-foreground">{row.label}</dt>
+                    <dd className="text-foreground break-all">{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </section>
 
           <section className="mb-12 border border-border/50 rounded-lg p-8">
