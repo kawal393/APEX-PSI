@@ -25,6 +25,7 @@ import {
 import { toast } from "sonner";
 import ApexVerifiedStamp from "@/components/ApexVerifiedStamp";
 import Rosette from "@/components/Rosette";
+import SealCeremony from "@/components/seal/SealCeremony";
 import { createSHA256 } from "hash-wasm";
 import EngineLicenseGate, { useEngineLicence, readAcceptance } from "@/components/psi/EngineLicenseGate";
 import { buildSealEnvelope, PSI_SCHEMA_ID } from "@/lib/psi-schema";
@@ -279,6 +280,11 @@ async function apexSeal(file) {
             <span className="px-3 py-1.5 rounded-full border border-border text-muted-foreground">Verifiable forever</span>
           </div>
         </div>
+      </section>
+
+      {/* CEREMONY */}
+      <section className="container mx-auto max-w-6xl px-4 pt-12">
+        <SealCeremony />
       </section>
 
       {/* SEAL */}
