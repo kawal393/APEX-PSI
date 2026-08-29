@@ -160,7 +160,7 @@ export default function Lattice() {
             <LatticeConnections nodes={status?.nodes ?? []} />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
               {(status?.nodes ?? [
-                { id: "apex-bounty", name: "APEX BOUNTY", role: "Intelligence Hub", status: "offline" as const },
+                { id: "apex-review", name: "APEX REVIEW", role: "Intelligence Hub", status: "offline" as const },
                 { id: "apex-infrastructure", name: "APEX INFRASTRUCTURE", role: "Operations", status: "offline" as const },
                 { id: "apex-psi", name: "APEX PSI", role: "Compliance", status: "offline" as const },
               ]).map((node, i) => (

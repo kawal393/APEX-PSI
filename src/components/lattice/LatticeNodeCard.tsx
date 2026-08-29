@@ -14,7 +14,7 @@ interface LatticeNode {
 }
 
 const ICONS: Record<string, typeof Shield> = {
-  "apex-bounty": Zap,
+  "apex-review": Zap,
   "apex-infrastructure": Server,
   "apex-psi": Shield,
 };
