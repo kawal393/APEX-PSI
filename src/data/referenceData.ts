@@ -46,7 +46,9 @@ export const CASE_001_RECORDS: CaseRecord[] = [
   {
     date: "17 Aug 2026, 00:46 AEST",
     fact: "Uber Support (agent 'Mahak', Uber Pacific Pty Ltd, Level 8, 1 O'Connell Street, Sydney) acknowledged in writing receipt of the worker's notice and APP 12 access request, and stated it would be processed in accordance with applicable privacy laws.",
-    hash: null,
+    hash: "ee74bacdbef9e4dce922f9cba0d253e4084564ba6efe59fd7ee20b223917a2ef",
+    artifactUrl:
+      "https://github.com/kawal393/psi-seal-spec/blob/main/case-001/ROW1_UBER_ACKNOWLEDGMENT_2026-08-17.md",
   },
   {
     date: "23 Aug 2026",
