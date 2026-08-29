@@ -3,12 +3,17 @@ import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import Rosette from "@/components/Rosette";
 import {
   GENESIS_PROOF,
   GENESIS_DOC_URL,
   GENESIS_SOURCE_URL,
   GENESIS_VERIFY_URL,
+  FENCE_LINE,
 } from "@/data/referenceData";
+
+const DECISION_HASH =
+  GENESIS_PROOF.find((p) => p.label === "Sealed decision hash")?.value ?? "";
 
 const Genesis = () => {
   const [declaration, setDeclaration] = useState<string | null>(null);
