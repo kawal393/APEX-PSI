@@ -23,6 +23,7 @@ import ConnectAIPill from "@/components/ConnectAIPill";
 import VerifiedByApexSection from "@/components/VerifiedByApexSection";
 import EnforcementStrip from "@/components/EnforcementStrip";
 import UniversalTicker from "@/components/UniversalTicker";
+import HomeSealStrip from "@/components/HomeSealStrip";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -78,6 +79,7 @@ const Index = () => {
         <div id="top" />
         <UniversalTicker />
         <Hero />
+        <HomeSealStrip />
         <ConnectAIPill />
         <Article50Banner />
 

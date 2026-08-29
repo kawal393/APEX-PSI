@@ -21,6 +21,7 @@ import { Helmet } from "react-helmet-async";
 import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
 import CountersignUpsell from "@/components/CountersignUpsell";
 import ParityWidget from "@/components/psi/ParityWidget";
+import RosetteTest from "@/components/verify/RosetteTest";
 import VerifyTheVerifier from "@/components/psi/VerifyTheVerifier";
 
 
@@ -395,6 +396,7 @@ const Verify = () => {
           <div className="container mx-auto max-w-5xl space-y-4">
             <VerifyTheVerifier />
             <ParityWidget />
+            <RosetteTest />
             <div className="grid gap-3 sm:grid-cols-2">
               <a
                 href="https://www.npmjs.com/package/@apex/psi-verifier"
