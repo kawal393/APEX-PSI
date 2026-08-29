@@ -74,34 +74,81 @@ const Genesis = () => {
             <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-primary mb-6">
               The Declaration
             </h2>
-            {declaration === null && !loadError && (
-              <p className="font-mono text-sm text-muted-foreground">Loading sealed declaration…</p>
-            )}
-            {loadError && (
-              <p className="font-mono text-sm text-muted-foreground">
-                Declaration unavailable from source. View it directly on GitHub below.
+            <h3 className="font-serif text-2xl font-bold">{DECLARATION_TITLE}</h3>
+            <p className="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-gold">
+              {DECLARATION_ALIAS}
+            </p>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              {DECLARATION_ISSUE}
+            </p>
+
+            <p className="mt-6 font-serif text-lg text-foreground/90 leading-relaxed">
+              {DECLARATION_OPENING}
+            </p>
+
+            <dl className="mt-6 space-y-4">
+              {DECLARATION_CLAUSES.map((c) => (
+                <div key={c.n} className="border-t border-border/40 pt-4">
+                  <dt className="font-mono text-xs uppercase tracking-[0.25em] text-gold">
+                    {c.n} — {c.title}
+                  </dt>
+                  <dd className="mt-2 font-serif text-lg text-foreground/90">{c.body}</dd>
+                </div>
+              ))}
+            </dl>
+
+            {DECLARATION_CLOSING.map((line) => (
+              <p key={line} className="mt-6 font-serif text-lg text-foreground/90 leading-relaxed">
+                {line}
               </p>
-            )}
-            {declaration !== null && (
-              <pre className="whitespace-pre-wrap font-mono text-sm text-foreground/90 leading-relaxed">
-                {declaration}
-              </pre>
-            )}
-            <a
-              href={GENESIS_SOURCE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-block font-mono text-sm text-primary hover:underline"
-            >
-              View the sealed bytes on GitHub
-            </a>
+            ))}
+
+            <p className="mt-6 font-mono text-sm uppercase tracking-[0.2em] text-gold">
+              {DECLARATION_SEAL_LINE}
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-6">
+              <Link
+                to="/declaration"
+                className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold underline underline-offset-4 decoration-gold/40 hover:decoration-gold"
+              >
+                Read the charter
+              </Link>
+              <a
+                href={GENESIS_SOURCE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold underline underline-offset-4 decoration-gold/40 hover:decoration-gold"
+              >
+                View the sealed bytes on GitHub
+              </a>
+            </div>
           </section>
 
           <section className="mb-12">
-            <a href={GENESIS_VERIFY_URL} target="_blank" rel="noopener noreferrer">
-              <Button variant="hero" size="lg">Verify this receipt yourself</Button>
-            </a>
+            <div className="grid gap-3 sm:grid-cols-2 max-w-2xl">
+              <a
+                href={siteVerifyUrlFor(DECISION_HASH)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-gold/50 px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-gold hover:bg-gold/10 transition-colors"
+              >
+                Verify on this site
+              </a>
+              <a
+                href={GENESIS_VERIFY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-border px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-foreground/90 hover:border-gold/40 transition-colors"
+              >
+                Full receipt on Apex Infrastructure
+              </a>
+            </div>
+            <p className="mt-3 font-mono text-[10px] leading-relaxed text-muted-foreground">
+              {TWO_DOORS_LINE}
+            </p>
           </section>
+
 
           <div className="border-t border-border/50 pt-8 space-y-4">
             <p className="font-mono text-sm text-muted-foreground">
