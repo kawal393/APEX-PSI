@@ -40,6 +40,7 @@ export interface CaseRecord {
   date: string;
   fact: string;
   hash: string | null; // null → SEAL PENDING
+  artifactUrl?: string; // link to the sealed artifact on GitHub
 }
 
 export const CASE_001_RECORDS: CaseRecord[] = [
