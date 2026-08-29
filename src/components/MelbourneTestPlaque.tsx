@@ -11,9 +11,6 @@ const MelbourneTestPlaque = () => {
   return (
     <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 overflow-hidden bg-background">
       <article className="relative z-10 w-full max-w-3xl border border-gold/30 bg-card/30 p-8 md:p-14 text-center">
-        {/* Hairline frame */}
-        <div className="absolute inset-0 pointer-events-none border border-gold/10" style={{ margin: "8px" }} />
-
         <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold mb-6">
           Issued 30 August 2026, Melbourne
         </p>
