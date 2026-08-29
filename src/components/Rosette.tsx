@@ -105,21 +105,7 @@ const Rosette = ({ hash, size = 96, state = "sealed", className, animate = false
     );
   }
 
-  const b = bytesOf(hash.toLowerCase());
-  const petals = 8 + (b[0] % 17); // 8–24
-  const rings = 3 + (b[3] % 4); // 3–6
-  const baseR = VB / 2 - 12;
-
-  const paths = Array.from({ length: rings }, (_, i) => {
-    const R = baseR * (1 - i * (0.12 + (b[(i * 5 + 4) % b.length] % 5) / 100));
-    const amp = 4 + (b[(i * 7 + 1) % b.length] % 16);
-    const k = petals + (b[(i * 3 + 2) % b.length] % 3);
-    const phase = ((b[(i * 11 + 6) % b.length] / 255) * Math.PI * 2) + i * 0.35;
-    const opacity = 0.35 + (b[(i * 13 + 9) % b.length] % 55) / 100;
-    return { d: guilloche(c, c, R, amp, k, phase), opacity };
-  });
-
-  const innerR = 14 + (b[8] % 12);
+  const { paths, innerR } = ringsOf(hash, VB);
 
   return (
     <svg
