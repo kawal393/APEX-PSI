@@ -24,6 +24,7 @@ import VerifiedByApexSection from "@/components/VerifiedByApexSection";
 import EnforcementStrip from "@/components/EnforcementStrip";
 import UniversalTicker from "@/components/UniversalTicker";
 import HomeSealStrip from "@/components/HomeSealStrip";
+import MelbourneTestPlaque from "@/components/MelbourneTestPlaque";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
