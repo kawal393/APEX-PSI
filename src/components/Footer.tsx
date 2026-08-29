@@ -121,7 +121,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               © 2026 Apex Intelligence Empire. All rights reserved.
             </p>
             <p className="text-xs text-muted-foreground">
-              Proof of Stateful Integrity™
+              Proof of Stateful Integrity
             </p>
           </div>
 

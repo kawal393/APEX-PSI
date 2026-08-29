@@ -116,7 +116,7 @@ const PatentPledge = () => (
             </p>
             <ul className="space-y-2 text-sm md:text-base text-foreground/80 pl-5 list-disc">
               <li>
-                Use of the registered marks <span className="font-semibold text-foreground">APEX</span>, <span className="font-semibold text-foreground">APEX PSI</span>, <span className="font-semibold text-foreground">Proof of Stateful Integrity™</span>, or APEX-issued certification seals.
+                Use of the registered marks <span className="font-semibold text-foreground">APEX</span>, <span className="font-semibold text-foreground">APEX PSI</span>, <span className="font-semibold text-foreground">Proof of Stateful Integrity</span>, or APEX-issued certification seals.
               </li>
               <li>
                 Operation of the APEX-managed Notary, MPC consensus mesh, Bitcoin/Polygon anchoring service, or APEX Lattice infrastructure.

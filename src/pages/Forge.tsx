@@ -66,7 +66,7 @@ async function stampImage(dataUrl: string, hash: string, receiptId: string): Pro
   ctx.fillStyle = "#f5d97a";
   ctx.font = `900 ${titleSize}px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto`;
   ctx.textBaseline = "top";
-  ctx.fillText("APEX VERIFIED™", x + pad * 0.6, y + stampH * 0.16);
+  ctx.fillText("APEX VERIFIED", x + pad * 0.6, y + stampH * 0.16);
 
   // Hash + receipt
   const subSize = Math.floor(stampH * 0.18);
@@ -203,7 +203,7 @@ const Forge = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
         <title>APEX Forge — AI Image Generator with Cryptographic Truth Stamp — Apex PSI — Universal Verification Layer</title>
-        <meta name="description" content="Generate any image with AI and stamp it with the APEX VERIFIED™ seal. Anchored to the APEX PSI ledger. Free, open, shareable." />
+        <meta name="description" content="Generate any image with AI and stamp it with the APEX VERIFIED seal. Anchored to the APEX PSI ledger. Free, open, shareable." />
         <link rel="canonical" href="https://ai-governance-standard.com/forge" />
       </Helmet>
       <Navbar />
@@ -219,7 +219,7 @@ const Forge = () => {
             <span className="text-gold-gradient">Stamp It With Truth.</span>
           </h1>
           <p className="text-base md:text-xl text-muted-foreground max-w-3xl">
-            Every image leaves the forge SHA-256 hashed, anchored to the APEX ledger, and branded with the APEX VERIFIED™ seal. Share it anywhere — the seal is the protocol.
+            Every image leaves the forge SHA-256 hashed, anchored to the APEX ledger, and branded with the APEX VERIFIED seal. Share it anywhere — the seal is the protocol.
           </p>
         </div>
       </section>
