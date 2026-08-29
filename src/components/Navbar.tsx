@@ -91,6 +91,7 @@ const navLinks = [
   const handleNavClick = (href: string, isRoute?: boolean) => {
     setOpen(false);
     setInfraOpen(false);
+    setRefOpen(false);
     if (isRoute) {
       navigate(href);
     } else if (href.startsWith("#")) {
@@ -160,6 +161,34 @@ const navLinks = [
                 </button>
               )
             )}
+
+            {/* The Reference Dropdown */}
+            <div ref={refRef} className="relative">
+              <button
+                onClick={() => setRefOpen(!refOpen)}
+                className="px-1.5 py-1.5 text-[11px] text-muted-foreground hover:text-primary rounded-md hover:bg-muted/50 transition-colors bg-transparent border-none cursor-pointer whitespace-nowrap flex items-center gap-1"
+              >
+                The Reference
+                <ChevronDown className={`h-3 w-3 transition-transform ${refOpen ? "rotate-180" : ""}`} />
+              </button>
+              {refOpen && (
+                <div className="absolute top-full left-0 mt-1 w-72 rounded-lg border border-border bg-background/95 backdrop-blur-xl shadow-xl py-2 z-50">
+                  {referenceLinks.map((tool) => (
+                    <button
+                      key={tool.label}
+                      onClick={() => handleNavClick(tool.href, true)}
+                      className="w-full text-left px-3 py-2.5 flex items-start gap-3 hover:bg-muted/50 transition-colors bg-transparent border-none cursor-pointer group"
+                    >
+                      <tool.icon className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{tool.label}</p>
+                        <p className="text-[11px] text-muted-foreground">{tool.desc}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Infrastructure Dropdown */}
             <div ref={infraRef} className="relative">
@@ -320,6 +349,19 @@ const navLinks = [
                 </button>
               )
             )}
+            <div className="pt-2 pb-1">
+              <p className="px-3 text-[10px] font-bold text-primary uppercase tracking-widest mb-1">The Reference</p>
+            </div>
+            {referenceLinks.map((tool) => (
+              <button
+                key={tool.label}
+                onClick={() => handleNavClick(tool.href, true)}
+                className="w-full text-left px-3 py-2.5 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-md transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
+              >
+                <tool.icon className="h-3.5 w-3.5 text-primary" />
+                {tool.label}
+              </button>
+            ))}
             <div className="pt-2 pb-1">
               <p className="px-3 text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Infrastructure</p>
             </div>
