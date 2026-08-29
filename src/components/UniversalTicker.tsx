@@ -17,16 +17,18 @@ const UniversalTicker = () => {
     setReceipts(readStoredReceipts());
   }, []);
 
+  // Honesty rule: only sealed records appear in the public strip. Unsealed rows
+  // are not rendered at all, so the front page never advertises pending work.
   const items = useMemo(
     () =>
       UNIVERSAL_LEDGER.map((row) => {
         const digest = receipts[row.id]?.decision_digest || row.decision_digest;
         return {
           id: row.id,
-          label: `${row.title} · ${row.era} · ${digest ? "sealed" : "genesis pending"}`,
+          label: `${row.title} · ${row.era} · sealed`,
           digest,
         };
-      }),
+      }).filter((item) => Boolean(item.digest)),
     [receipts],
   );
 

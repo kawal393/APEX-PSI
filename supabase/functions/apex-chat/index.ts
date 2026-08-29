@@ -350,10 +350,15 @@ serve(async (req) => {
       }
       if (aiResponse.status === 402 || aiResponse.status === 403) {
         const errText = await aiResponse.text();
-        console.error("Gemini API billing/auth error:", aiResponse.status, errText);
-        return new Response(JSON.stringify({ error: "AI service authentication error. Please check your API key and billing." }), {
-          status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        console.error("AI gateway billing/auth error:", aiResponse.status, errText);
+        // Honest, non-technical unavailability rather than an opaque 502.
+        return new Response(
+          JSON.stringify({
+            error:
+              "The assistant is temporarily unavailable. Verification, sealing and the public ledger are unaffected. Written enquiries: contact@ai-governance-standard.com",
+          }),
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
       }
       const errText = await aiResponse.text();
       console.error("AI gateway error:", aiResponse.status, errText);

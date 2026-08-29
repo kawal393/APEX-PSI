@@ -303,8 +303,10 @@ Deno.serve(async (req) => {
 
     return Response.json({ ok: true, ...summary }, { headers: corsHeaders });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "watcher failed";
-    console.error("crypto-watcher:", message);
-    return Response.json({ ok: false, error: message }, { status: 500, headers: corsHeaders });
+    const message = error instanceof Error
+      ? error.message
+      : `watcher failed: ${JSON.stringify(error)}`;
+    console.error("crypto-watcher:", message, error);
+    return Response.json({ ok: false, error: message, ...summary }, { status: 500, headers: corsHeaders });
   }
 });
