@@ -7,6 +7,8 @@ import {
   CASE_001_RECORDS,
   CASE_001_RESERVED_SLOTS,
   FENCE_LINE,
+  TWO_DOORS_LINE,
+  siteVerifyUrlFor,
   verifyUrlFor,
   type CaseRecord,
 } from "@/data/referenceData";
@@ -94,26 +96,39 @@ const Case001 = () => {
                     </dl>
 
                     {row.hash && (
-                      <div className="mt-6 flex flex-wrap gap-6">
+                      <>
+                        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                          <a
+                            href={siteVerifyUrlFor(row.hash)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="border border-gold/50 px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-gold hover:bg-gold/10 transition-colors"
+                          >
+                            Verify on this site
+                          </a>
+                          <a
+                            href={verifyUrlFor(row.hash)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="border border-border px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-foreground/90 hover:border-gold/40 transition-colors"
+                          >
+                            Full receipt on Apex Infrastructure
+                          </a>
+                        </div>
+                        <p className="mt-3 font-mono text-[10px] leading-relaxed text-muted-foreground">
+                          {TWO_DOORS_LINE}
+                        </p>
                         {row.artifactUrl && (
                           <a
                             href={row.artifactUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold underline underline-offset-4 decoration-gold/40 hover:decoration-gold"
+                            className="mt-4 inline-block font-mono text-[11px] uppercase tracking-[0.2em] text-gold underline underline-offset-4 decoration-gold/40 hover:decoration-gold"
                           >
                             View the sealed artifact
                           </a>
                         )}
-                        <a
-                          href={verifyUrlFor(row.hash)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold underline underline-offset-4 decoration-gold/40 hover:decoration-gold"
-                        >
-                          Verify this receipt
-                        </a>
-                      </div>
+                      </>
                     )}
 
                     {row.rawUrl && row.documentHash && (
