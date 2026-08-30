@@ -143,7 +143,7 @@ const PrivacyPolicy = () => (
       <ul>
         <li><strong>Privacy Officer</strong> — APEX INTELLIGENCE EMPIRE</li>
         <li>Melbourne, Victoria, Australia</li>
-        <li>Email: privacy@apexdigitalgallows.com</li>
+        <li>Email: privacy@ai-governance-standard.com</li>
       </ul>
       <p>
         If you are unsatisfied with our response, you may lodge a complaint with the

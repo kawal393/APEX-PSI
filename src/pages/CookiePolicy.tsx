@@ -98,7 +98,7 @@ const CookiePolicy = () => (
         <li><strong>APEX INTELLIGENCE EMPIRE</strong></li>
         <li>Melbourne, Victoria, Australia</li>
         <li>Melbourne, Victoria, Australia</li>
-        <li>Email: privacy@apexdigitalgallows.com</li>
+        <li>Email: privacy@ai-governance-standard.com</li>
       </ul>
       <p>
         For more information about how we handle your data, please see our{" "}

@@ -17,4 +17,4 @@ const msg = await anthropic.messages.create({
 console.log(msg.compliance_receipt);
 ```
 
-Spec: https://digital-gallows.apex-infrastructure.com/standard · MIT
+Spec: https://ai-governance-standard.com/standard · MIT

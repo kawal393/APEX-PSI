@@ -1,5 +1,5 @@
 {
-  "issuer": "https://digital-gallows.apex-infrastructure.com",
+  "issuer": "https://ai-governance-standard.com",
   "spec": "draft-singh-psi-http-01",
   "version": 1,
   "public_keys": [
@@ -10,7 +10,7 @@
       "pem": "MCowBQYDK2VwAyEAWTBGhTKLPPpuxxLWYlDQ+WS7n5IWHmXi5YNah38QRyQ="
     }
   ],
-  "verify_endpoint": "https://digital-gallows.apex-infrastructure.com/verify",
-  "predicate_registry": "https://digital-gallows.apex-infrastructure.com/registry",
-  "foundation": "https://digital-gallows.apex-infrastructure.com/foundation"
+  "verify_endpoint": "https://ai-governance-standard.com/verify",
+  "predicate_registry": "https://ai-governance-standard.com/registry",
+  "foundation": "https://ai-governance-standard.com/foundation"
 }
