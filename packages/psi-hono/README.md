@@ -15,4 +15,4 @@ app.post("/ai/chat", async (c) => {
 
 Every response under `/ai/*` ships with a `Compliance-Receipt` header.
 
-Spec: https://digital-gallows.apex-infrastructure.com/standard · MIT
+Spec: https://ai-governance-standard.com/standard · MIT

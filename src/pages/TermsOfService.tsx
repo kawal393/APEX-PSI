@@ -153,7 +153,7 @@ const TermsOfService = () => (
         <li><strong>APEX INTELLIGENCE EMPIRE</strong></li>
         <li>Melbourne, Victoria, Australia</li>
         <li>Melbourne, Victoria, Australia</li>
-        <li>Email: legal@apexdigitalgallows.com</li>
+        <li>Email: legal@ai-governance-standard.com</li>
       </ul>
     </section>
   </LegalLayout>

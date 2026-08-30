@@ -19,4 +19,4 @@ export async function POST(req: Request) {
 }
 ```
 
-Spec: https://digital-gallows.apex-infrastructure.com/standard · MIT
+Spec: https://ai-governance-standard.com/standard · MIT

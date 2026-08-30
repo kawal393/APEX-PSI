@@ -9,7 +9,7 @@
 export interface WithPSIOptions {
   /** Predicates to evaluate the response against (e.g. "eu-ai-act/art-6"). */
   predicates: string[];
-  /** Notary endpoint. Defaults to digital-gallows.apex-infrastructure.com. */
+  /** Notary endpoint. Defaults to ai-governance-standard.com. */
   notaryUrl?: string;
   /** Optional API key for higher rate limits. */
   apiKey?: string;

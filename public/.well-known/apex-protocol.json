@@ -2,7 +2,6 @@
   "protocol": "APEX PSI — Proof of Stateful Integrity",
   "version": "1.3",
   "canonical_domain": "https://ai-governance-standard.com",
-  "legacy_domain": "https://digital-gallows.apex-infrastructure.com",
   "ietf_drafts": [
     {
       "name": "draft-singh-psi-00",
