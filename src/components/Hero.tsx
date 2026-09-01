@@ -7,7 +7,7 @@ import PWAInstallButton from "@/components/PWAInstallButton";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 pt-24 pb-16 grid-bg overflow-hidden">
+    <section className="relative flex items-center justify-center px-4 pt-16 pb-12 grid-bg overflow-hidden">
       {/* Ambient glow */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
@@ -21,14 +21,14 @@ const Hero = () => {
 
       <div className="relative z-10 text-center max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5 mb-6 border-glow">
+          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5 mb-4 border-glow">
             <Shield className="h-3.5 w-3.5 text-gold" />
             <span className="text-[10px] sm:text-xs font-black text-gold tracking-[0.25em] uppercase">
               Post-Quantum Provenance · IETF draft-singh-psi-00
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight leading-[0.9]">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-5 tracking-tight leading-[0.9]">
             <span className="text-gold-gradient">APEX PSI</span>
             <br />
             <span className="text-chrome-gradient">The Universal Verification Layer</span>
