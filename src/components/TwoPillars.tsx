@@ -50,14 +50,14 @@ const TwoPillars = () => {
 
             <p className="text-lg sm:text-xl font-bold text-foreground mb-2">Prove what AI did.</p>
             <p className="text-sm text-muted-foreground mb-6">
-              Cryptographic evidence for every model decision. IETF draft-singh-psi-00. EU AI Act Articles 12, 14, 15.
+              Cryptographic evidence for every model decision. IETF draft-singh-psi (rev 01). EU AI Act Articles 12, 14, 15.
             </p>
 
             <div className="space-y-3 mb-8">
               {[
                 { icon: Cpu, text: "SHA-256 + Ed25519 + ML-DSA-65 hybrid signatures" },
                 { icon: Lock, text: "Merkle-anchored, monotonic sequence counter" },
-                { icon: Globe, text: "Compliance-Receipt HTTP header (draft-singh-psi-http-01)" },
+                { icon: Globe, text: "Compliance-Receipt HTTP header (draft-singh-psi-http — in preparation, not yet filed)" },
                 { icon: FileCheck, text: "MPC lattice attestation, permissionless verification" },
               ].map((item) => (
                 <div key={item.text} className="flex items-start gap-3 text-sm">
@@ -158,7 +158,7 @@ const TwoPillars = () => {
           className="text-center mt-10"
         >
           <p className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.3em] text-muted-foreground/80">
-            Both pillars share one cryptographic root · Ed25519 · SHA-256 · IETF draft-singh-psi-00
+            Both pillars share one cryptographic root · Ed25519 · SHA-256 · IETF draft-singh-psi (rev 01)
           </p>
         </motion.div>
       </div>

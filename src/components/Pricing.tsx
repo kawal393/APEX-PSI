@@ -47,7 +47,7 @@ const Pricing = () => {
             The Standard is <span className="text-gold-gradient">Free</span>. Forever.
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            The PSI Protocol (<span className="font-mono text-primary">draft-singh-psi-00</span>) is public-good infrastructure.
+            The PSI Protocol (<span className="font-mono text-primary">draft-singh-psi (rev 01)</span>) is public-good infrastructure.
             The APEX PSI SDK and core verification logic remain <span className="font-bold text-foreground">$0 / Open Access</span> for
             every developer, lab, and enterprise. Forever.
           </p>
@@ -260,7 +260,7 @@ const Pricing = () => {
           viewport={{ once: true }}
           className="text-center text-xs text-muted-foreground mt-10 max-w-2xl mx-auto"
         >
-          The PSI Protocol is a public-good standard. The math is free, the code is open-source, and the specification (<span className="font-mono">draft-singh-psi-00</span>) is submitted to the IETF.
+          The PSI Protocol is a public-good standard. The math is free, the code is open-source, and the specification (<span className="font-mono">draft-singh-psi (rev 01)</span>) is submitted to the IETF.
           Fees apply only to countersigned artefacts and registry listings — never to sealing or verifying.
         </motion.p>
 

@@ -47,7 +47,7 @@ const BusinessModel = () => (
           The Protocol is <span className="text-gold-gradient">Free</span>. The Certification is Institutional.
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          The PSI Protocol (<span className="font-mono text-primary">draft-singh-psi-00</span>) is open-source and free forever.
+          The PSI Protocol (<span className="font-mono text-primary">draft-singh-psi (rev 01)</span>) is open-source and free forever.
           Revenue is generated through Institutional Certification, managed infrastructure, and evidence ratification services.
         </p>
       </motion.div>

@@ -72,7 +72,7 @@ const Spec = () => (
             under five minutes.
           </p>
           <div className="mt-8 flex flex-wrap gap-2">
-            {["IETF draft-singh-psi-00", "draft-singh-psi-http-01", "RFC 8785 (JCS)", "NIST FIPS 204", "JUMBF-framed (ISO 19566-2)", "MIT / Apache-2.0"].map((c) => (
+            {["IETF draft-singh-psi (rev 01)", "draft-singh-psi-http (not yet filed)", "RFC 8785 (JCS)", "NIST FIPS 204", "JUMBF-framed (ISO 19566-2)", "MIT / Apache-2.0"].map((c) => (
               <span key={c} className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground border border-border/60 rounded-full px-3 py-1">
                 {c}
               </span>
@@ -378,7 +378,7 @@ Compliance-Receipt: v=1; id=psi_01J...; alg=Ed25519+ML-DSA-65;
             <Row k="Protocol licence" v="MIT — reference implementation" />
             <Row k="Verifier libraries" v="Apache-2.0" />
             <Row k="Patent posture" v="non-assertion pledge for standards-conformant implementations" />
-            <Row k="Specifications" v="draft-singh-psi-00, draft-singh-psi-http-01 (IETF individual submissions)" />
+            <Row k="Specifications" v="draft-singh-psi (rev 01, filed 29 Aug 2026); draft-singh-psi-http in preparation, not yet filed (IETF individual submissions)" />
             <Row k="Governance" v="APEX PSI Foundation — in formation; charter and verifier-node programme published" />
             <Row k="Forkability" v="the entire protocol runs without APEX. That is the design goal, not a concession." />
           </div>

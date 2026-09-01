@@ -20,7 +20,7 @@ const referenceLinks = [
 ];
 
 const infraLinks = [
-  { label: "HTTP Header Standard", href: "/standard", icon: ScrollText, desc: "draft-singh-psi-http-01" },
+  { label: "HTTP Header Standard", href: "/standard", icon: ScrollText, desc: "draft-singh-psi-http (not yet filed)" },
   { label: "Live Header Inspector", href: "/header", icon: Hash, desc: "Verify any AI endpoint" },
   { label: "PSI Foundation", href: "/foundation", icon: Shield, desc: "Governance · in formation" },
   { label: "Open Source", href: "https://github.com/kawal393/APEX-PSI", icon: GitBranch, desc: "Full protocol on GitHub", external: true },
@@ -68,6 +68,7 @@ const navLinks = [
     { label: "Explorer", href: "/explorer", isRoute: true },
     { label: "Live", href: "/live", isRoute: true },
     { label: "Verify", href: "/verify", isRoute: true },
+    { label: "The Referee", href: "/verify-any", isRoute: true },
     { label: "Universal Ledger", href: "/ledger", isRoute: true },
     { label: "Hello PSI", href: "/hello-psi", isRoute: true },
     { label: "Enforcement Watch", href: "/enforcement-watch", isRoute: true },
@@ -139,7 +140,7 @@ const navLinks = [
             className="hidden xl:inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-[9px] font-bold text-primary tracking-widest uppercase hover:bg-primary/10 transition-colors cursor-pointer shrink-0"
           >
             <FileText className="h-2.5 w-2.5" />
-            IETF draft-singh-psi-00
+            IETF draft-singh-psi (rev 01)
           </a>
 
           <div className="flex items-center gap-0 flex-1 min-w-0 overflow-x-auto scrollbar-hide">

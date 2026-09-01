@@ -6,7 +6,7 @@ export const SECURITY_CONTACT = "security@apex-infrastructure.com";
 export const CONTACT_EMAIL = "contact@ai-governance-standard.com";
 
 export const IETF_DRAFTS = [
-  "draft-singh-psi-00",
-  "draft-singh-psi-http-01",
+  "draft-singh-psi", // datatracker name; rev 01 filed 29 Aug 2026
+  "draft-singh-psi-http", // in preparation, NOT filed yet
   "draft-singh-apex-psi-04",
 ] as const;

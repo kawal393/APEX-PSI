@@ -24,7 +24,7 @@ const rules = [
   "Open-source. MIT licensed. Read it, fork it, review it.",
   "Verifiable: every finding must include a reproducible script and a hash that fails to verify on /verify.",
   "Findings are published in the open, with the finder credited.",
-  "Accepted findings are credited by name in the IETF draft acknowledgements (draft-singh-psi-00).",
+  "Accepted findings are credited by name in the IETF draft acknowledgements (current revision).",
   "Dependency advisories are handled separately. This programme covers protocol-level findings.",
 ];
 

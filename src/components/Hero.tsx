@@ -24,7 +24,7 @@ const Hero = () => {
           <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5 mb-4 border-glow">
             <Shield className="h-3.5 w-3.5 text-gold" />
             <span className="text-[10px] sm:text-xs font-black text-gold tracking-[0.25em] uppercase">
-              Post-Quantum Provenance · IETF draft-singh-psi-00
+              Post-Quantum Provenance · IETF draft-singh-psi (rev 01)
             </span>
           </div>
 
@@ -57,7 +57,7 @@ const Hero = () => {
           {/* Status chips */}
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-6">
             {[
-              "IETF draft-singh-psi-00",
+              "IETF draft-singh-psi (rev 01)",
               "NIST FIPS 204 (ML-DSA-65)",
               "Ed25519 · SHA-256",
               "MIT Open Source",

@@ -27,7 +27,7 @@ const IN_BAND = [
   },
   {
     format: "HTTP AI Responses",
-    mech: "Compliance-Receipt header (IETF draft-singh-psi-http-01). Signed Ed25519.",
+    mech: "Compliance-Receipt header (IETF draft-singh-psi-http — in preparation, not yet filed). Signed Ed25519.",
   },
 ];
 
@@ -42,8 +42,8 @@ const CRYPTO_STACK = [
 ];
 
 const STANDARDS = [
-  { id: "draft-singh-psi-00", label: "IETF Internet-Draft — PSI Protocol", href: "/draft" },
-  { id: "draft-singh-psi-http-01", label: "IETF Internet-Draft — Compliance-Receipt HTTP Header", href: "/standard" },
+  { id: "draft-singh-psi (rev 01)", label: "IETF Internet-Draft — PSI Protocol", href: "/draft" },
+  { id: "draft-singh-psi-http (not yet filed)", label: "IETF Internet-Draft — Compliance-Receipt HTTP Header (in preparation — not yet filed)", href: "/standard" },
   { id: "C2PA 2.1", label: "C2PA Specification 2.1 (Content Credentials)", href: "https://c2pa.org/specifications/specifications/2.1/index.html" },
   { id: "FIPS 204", label: "NIST FIPS 204 (ML-DSA)", href: "https://csrc.nist.gov/pubs/fips/204/final" },
   { id: "RFC 8032", label: "Ed25519 Signature Algorithm", href: "https://www.rfc-editor.org/rfc/rfc8032" },
