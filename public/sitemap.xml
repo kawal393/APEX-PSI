@@ -251,6 +251,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/c2pa-content-credentials-for-ai-outputs-atgzti</loc>
+    <lastmod>2026-08-30T12:07:08.503Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/what-is-ai-governance-technical-definition-for-2026-ifn77b</loc>
+    <lastmod>2026-08-30T12:07:08.503Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/prove-an-ai-decision-existed-at-a-specific-time-5p2ugv</loc>
+    <lastmod>2026-08-30T12:07:08.503Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/sha-256-merkle-trees-for-tamper-evident-ai-logs-tk9i8a</loc>
     <lastmod>2026-08-30T09:07:10.754Z</lastmod>
     <changefreq>weekly</changefreq>
