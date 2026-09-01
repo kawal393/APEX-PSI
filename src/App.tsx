@@ -80,6 +80,7 @@ import ModelRegistry from "./pages/ModelRegistry";
 import Regulator from "./pages/Regulator";
 import Cite from "./pages/Cite";
 import WitnessWall from "./pages/WitnessWall";
+import ImpactWall from "./pages/ImpactWall";
 import Gallery from "./pages/Gallery";
 import Integrations from "./pages/Integrations";
 import UniversalLedger from "./pages/UniversalLedger";
@@ -253,6 +254,7 @@ const App = () => (
               <Route path="/regulator" element={<Regulator />} />
               <Route path="/cite" element={<Cite />} />
               <Route path="/witness-wall" element={<WitnessWall />} />
+              <Route path="/impact" element={<ImpactWall />} />
               <Route path="/gallery" element={<Gallery />} />
               
               

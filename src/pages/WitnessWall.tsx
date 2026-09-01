@@ -60,8 +60,8 @@ export default function WitnessWall() {
   return (
     <>
       <Helmet>
-        <title>Global Witness Wall — APEX PRAMAAN — Apex PSI — Universal Verification Layer</title>
-        <meta name="description" content="A public wall of cryptographically sealed witness events. Journalists, citizens, and observers post SHA-256 hashes of what they saw — verifiable by anyone." />
+        <title>Witness Wall (device-local) — APEX PRAMAAN — Apex PSI — Universal Verification Layer</title>
+        <meta name="description" content="A device-local board of witness notes. For testimony sealed into the permanent public ledger, use the Living Impact Wall." />
         <link rel="canonical" href="https://ai-governance-standard.com/witness-wall" />
       </Helmet>
       <div className="min-h-screen bg-background">
@@ -69,13 +69,15 @@ export default function WitnessWall() {
         <main className="container mx-auto max-w-4xl px-4 py-16">
           <div className="text-center mb-10">
             <Badge className="mb-4 bg-primary/10 text-primary border-primary/30">
-              <Globe2 className="h-3 w-3 mr-1" /> Public · Permissionless
+              <Globe2 className="h-3 w-3 mr-1" /> Device-local board — stored in your browser only
             </Badge>
             <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
               <span className="text-gold-gradient">Witness</span> <span className="text-chrome-gradient">Wall</span>
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Post a Pramaan-sealed hash and one line of context. What existed. When. Where — if you choose.
+              These notes live only on this device. To publish testimony to the permanent public
+              ledger, speak on the <a href="/impact" className="underline">Living Impact Wall</a>.
             </p>
           </div>
 
