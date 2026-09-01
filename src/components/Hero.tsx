@@ -7,41 +7,41 @@ import PWAInstallButton from "@/components/PWAInstallButton";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 pt-24 pb-16 grid-bg overflow-hidden">
+    <section className="relative flex items-center justify-center px-4 pt-16 pb-12 grid-bg overflow-hidden">
       {/* Ambient glow */}
       <div
         className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
         style={{ background: "radial-gradient(circle, hsl(43 85% 52% / 0.10) 0%, hsl(35 80% 45% / 0.05) 40%, transparent 70%)" }}
       />
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[420px] h-[420px] md:w-[680px] md:h-[680px] lg:w-[820px] lg:h-[820px] logo-emerge overflow-hidden rounded-full animate-breathe">
+        <div className="w-[380px] h-[380px] md:w-[560px] md:h-[560px] lg:w-[680px] lg:h-[680px] logo-emerge overflow-hidden rounded-full animate-breathe">
           <img src={apexLogo} alt="" className="w-full h-full object-contain" style={{ opacity: 0.95, filter: "blur(0.5px)", transform: "scale(1.1)" }} />
         </div>
       </div>
 
       <div className="relative z-10 text-center max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5 mb-6 border-glow">
+          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5 mb-4 border-glow">
             <Shield className="h-3.5 w-3.5 text-gold" />
             <span className="text-[10px] sm:text-xs font-black text-gold tracking-[0.25em] uppercase">
               Post-Quantum Provenance · IETF draft-singh-psi-00
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight leading-[0.9]">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-5 tracking-tight leading-[0.9]">
             <span className="text-gold-gradient">APEX PSI</span>
             <br />
             <span className="text-chrome-gradient">The Universal Verification Layer</span>
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl text-foreground/90 max-w-3xl mx-auto mb-4 font-semibold">
+          <p className="text-base sm:text-lg text-foreground/90 max-w-3xl mx-auto mb-3 font-semibold">
             Anyone, anywhere, verifies any AI output for free — forever. No permission. No account.
             The math is open. The issuance is ours.
           </p>
-          <p className="text-xs sm:text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <p className="text-xs sm:text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground mb-3">
             Not a product. A missing layer of the digital world.
           </p>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-10">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6">
             APEX PSI records declared <span className="text-chrome-gradient font-bold">AI</span> actions.
             APEX PRAMAAN records what <span className="text-gold-gradient font-bold">humans</span> report witnessing.{" "}
             <Link
@@ -55,7 +55,7 @@ const Hero = () => {
 
 
           {/* Status chips */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-10">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-6">
             {[
               "IETF draft-singh-psi-00",
               "NIST FIPS 204 (ML-DSA-65)",
@@ -91,7 +91,7 @@ const Hero = () => {
           {/* Regulator entry point — full technical specification */}
           <Link
             to="/spec"
-            className="group block max-w-2xl mx-auto mb-10 rounded-lg border border-gold/40 bg-gold/[0.06] hover:bg-gold/[0.12] hover:border-gold/70 transition-all px-5 py-4 text-left"
+            className="group block max-w-2xl mx-auto mb-6 rounded-lg border border-gold/40 bg-gold/[0.06] hover:bg-gold/[0.12] hover:border-gold/70 transition-all px-5 py-4 text-left"
           >
             <div className="flex items-center gap-4">
               <FileText className="h-5 w-5 text-gold shrink-0" />

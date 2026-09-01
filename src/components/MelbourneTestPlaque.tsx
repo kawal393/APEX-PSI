@@ -9,13 +9,13 @@ const CLAUSES = [
 
 const MelbourneTestPlaque = () => {
   return (
-    <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16 overflow-hidden bg-background">
-      <article className="relative z-10 w-full max-w-3xl border border-gold/30 bg-card/30 p-8 md:p-14 text-center">
-        <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold mb-6">
+    <section className="relative flex items-center justify-center px-4 py-10 md:py-14 overflow-hidden bg-background">
+      <article className="relative z-10 w-full max-w-3xl border border-gold/30 bg-card/30 p-6 md:p-10 text-center">
+        <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold mb-5">
           Issued 30 August 2026, Melbourne
         </p>
 
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight text-foreground mb-10">
+        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-[0.95] tracking-tight text-foreground mb-8">
           THE MELBOURNE TEST
         </h1>
 

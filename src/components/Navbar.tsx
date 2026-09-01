@@ -142,7 +142,7 @@ const navLinks = [
             IETF draft-singh-psi-00
           </a>
 
-          <div className="flex items-center gap-0">
+          <div className="flex items-center gap-0 flex-1 min-w-0 overflow-x-auto scrollbar-hide">
             {navLinks.map((link) =>
               (link as any).external ? (
                 <a
