@@ -2,7 +2,208 @@
 // To take ownership, delete this banner line; the plugin then leaves the file alone.
 // supabase function: mcp
 // Bundled from src/lib/mcp/index.ts by @lovable.dev/mcp-js.
+// src/lib/mcp/index.ts
+import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.26.1";
+
+// src/lib/mcp/tools/verify-hash.ts
+import { defineTool } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { z } from "npm:zod@^4.4.3";
+
+// src/lib/mcp/supabase.ts
+import { createClient } from "npm:@supabase/supabase-js@^2.98.0";
+function runtimeEnv(name) {
+  const runtime = globalThis;
+  return runtime.Deno?.env?.get?.(name) ?? runtime.process?.env?.[name];
+}
+function configuredEnv(names) {
+  for (const name of names) {
+    const value = runtimeEnv(name)?.trim();
+    if (value) return value;
+  }
+  return void 0;
+}
+function supabaseProjectUrl() {
+  const url = configuredEnv(["SUPABASE_URL", "VITE_SUPABASE_URL"]);
+  if (!url) throw new Error("SUPABASE_URL (or VITE_SUPABASE_URL) is required");
+  return url;
+}
+function supabasePublishableKey() {
+  const direct = configuredEnv([
+    "SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY"
+  ]);
+  if (direct) return direct;
+  const keyset = runtimeEnv("SUPABASE_PUBLISHABLE_KEYS");
+  if (keyset) {
+    try {
+      const parsed = JSON.parse(keyset);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        const keys = parsed;
+        const key = [keys.default, ...Object.values(keys)].find((v) => typeof v === "string" && v.trim().startsWith("sb_publishable_"))?.trim();
+        if (key) return key;
+      }
+    } catch {
+    }
+  }
+  const legacy = configuredEnv(["SUPABASE_ANON_KEY", "VITE_SUPABASE_ANON_KEY"]);
+  if (legacy) return legacy;
+  throw new Error("SUPABASE_PUBLISHABLE_KEY, SUPABASE_PUBLISHABLE_KEYS, or SUPABASE_ANON_KEY is required");
+}
+function supabaseForUser(ctx) {
+  const token = ctx.getToken();
+  if (!token) throw new Error("supabaseForUser requires a verified OAuth token");
+  return createClient(supabaseProjectUrl(), supabasePublishableKey(), {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
+
+// src/lib/mcp/tools/verify-hash.ts
+var verify_hash_default = defineTool({
+  name: "verify_hash",
+  title: "Verify a hash against the APEX PSI ledger",
+  description: "Look up a SHA-256 hash (commit hash or Merkle leaf hash) in the APEX PSI evidence ledger and report whether a matching attestation exists.",
+  inputSchema: {
+    hash: z.string().trim().regex(/^[0-9a-fA-F]{64}$/, "Expected a 64-character hex SHA-256 hash").describe("SHA-256 hash to verify, lowercase hex.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ hash }, ctx) => {
+    if (!ctx.isAuthenticated()) {
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    }
+    const needle = hash.toLowerCase();
+    const supabase = supabaseForUser(ctx);
+    const { data, error } = await supabase.from("gallows_public_ledger").select(
+      "commit_id,commit_hash,merkle_leaf_hash,merkle_root,predicate_id,status,phase,pq_algorithm,sequence_number,created_at"
+    ).or(`commit_hash.eq.${needle},merkle_leaf_hash.eq.${needle}`).limit(1).maybeSingle();
+    if (error) {
+      return { content: [{ type: "text", text: error.message }], isError: true };
+    }
+    if (!data) {
+      return {
+        content: [{ type: "text", text: `No attestation found for ${needle}.` }],
+        structuredContent: { found: false, hash: needle }
+      };
+    }
+    return {
+      content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+      structuredContent: { found: true, hash: needle, attestation: data }
+    };
+  }
+});
+
+// src/lib/mcp/tools/list-attestations.ts
+import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { z as z2 } from "npm:zod@^4.4.3";
+var list_attestations_default = defineTool2({
+  name: "list_attestations",
+  title: "List recent attestations",
+  description: "List the most recent APEX PSI ledger attestations visible to the signed-in user, newest first.",
+  inputSchema: {
+    limit: z2.number().int().min(1).max(50).default(10).describe("How many attestations to return."),
+    predicate_id: z2.string().trim().optional().describe("Optional predicate filter, e.g. EU_ART_50.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ limit, predicate_id }, ctx) => {
+    if (!ctx.isAuthenticated()) {
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    }
+    const supabase = supabaseForUser(ctx);
+    let query = supabase.from("gallows_public_ledger").select("commit_id,action,predicate_id,status,phase,commit_hash,created_at").order("created_at", { ascending: false }).limit(limit ?? 10);
+    if (predicate_id) query = query.eq("predicate_id", predicate_id);
+    const { data, error } = await query;
+    if (error) {
+      return { content: [{ type: "text", text: error.message }], isError: true };
+    }
+    return {
+      content: [{ type: "text", text: JSON.stringify(data ?? [], null, 2) }],
+      structuredContent: { count: data?.length ?? 0, attestations: data ?? [] }
+    };
+  }
+});
+
+// src/lib/mcp/tools/ledger-stats.ts
+import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.26.1";
+var ledger_stats_default = defineTool3({
+  name: "ledger_stats",
+  title: "APEX PSI ledger statistics",
+  description: "Return counts of ledger attestations, non-approved exceptions and public attestations for a quick integrity snapshot.",
+  inputSchema: {},
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async (_input, ctx) => {
+    if (!ctx.isAuthenticated()) {
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    }
+    const supabase = supabaseForUser(ctx);
+    const [total, exceptions, publicAttestations, latest] = await Promise.all([
+      supabase.from("gallows_public_ledger").select("id", { count: "exact", head: true }),
+      supabase.from("gallows_public_ledger").select("id", { count: "exact", head: true }).neq("status", "APPROVED"),
+      supabase.from("public_attestations").select("id", { count: "exact", head: true }),
+      supabase.from("gallows_public_ledger").select("commit_id,created_at,merkle_root").order("created_at", { ascending: false }).limit(1).maybeSingle()
+    ]);
+    const firstError = total.error ?? exceptions.error ?? publicAttestations.error ?? latest.error;
+    if (firstError) {
+      return { content: [{ type: "text", text: firstError.message }], isError: true };
+    }
+    const stats = {
+      attestations_visible: total.count ?? 0,
+      exceptions: exceptions.count ?? 0,
+      public_attestations: publicAttestations.count ?? 0,
+      latest_commit: latest.data ?? null
+    };
+    return {
+      content: [{ type: "text", text: JSON.stringify(stats, null, 2) }],
+      structuredContent: stats
+    };
+  }
+});
+
+// src/lib/mcp/tools/protocol-info.ts
+import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { z as z3 } from "npm:zod@^4.4.3";
+var SPEC = {
+  protocol: "APEX PSI \u2014 Proof of Stateful Integrity",
+  canonical_site: "https://ai-governance-standard.com",
+  canonicalization: "RFC 8785 (JSON Canonicalization Scheme)",
+  hashing: "SHA-256",
+  signatures: ["Ed25519", "ML-DSA-65 (hybrid)", "LMS-W4-SHA256 (NIST SP 800-208)"],
+  drafts: ["draft-singh-psi-00", "draft-singh-psi-http-01"],
+  http_header: "Compliance-Receipt",
+  anchoring: ["Bitcoin (OpenTimestamps)", "Polygon Merkle roots"],
+  trust_anchor: "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json",
+  scope: "Anchors existence and integrity of a record at a point in time \u2014 not the truth of its contents."
+};
+var protocol_info_default = defineTool4({
+  name: "protocol_info",
+  title: "APEX PSI protocol reference",
+  description: "Return the APEX PSI protocol reference: canonicalization, hashing, signature suites, IETF drafts, HTTP header and anchoring targets.",
+  inputSchema: {
+    section: z3.enum(["all", "signatures", "drafts", "anchoring"]).default("all").describe("Which part of the reference to return.")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: ({ section }) => {
+    const payload = section && section !== "all" ? { [section]: SPEC[section] } : SPEC;
+    return {
+      content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],
+      structuredContent: payload
+    };
+  }
+});
+
+// src/lib/mcp/index.ts
+var projectRef = "qhtntebpcribjiwrdtdd";
+var mcp_default = defineMcp({
+  name: "apex-psi",
+  title: "APEX PSI",
+  version: "0.1.0",
+  instructions: "Tools for APEX PSI, the cryptographic open-standard evidence protocol for AI governance. Use `verify_hash` to check a SHA-256 hash against the evidence ledger, `list_attestations` to browse recent attestations, `ledger_stats` for an integrity snapshot, and `protocol_info` for the protocol reference (canonicalization, signature suites, IETF drafts, anchoring).",
+  auth: auth.oauth.issuer({
+    issuer: `https://${projectRef}.supabase.co/auth/v1`,
+    acceptedAudiences: "authenticated"
+  }),
+  tools: [verify_hash_default, list_attestations_default, ledger_stats_default, protocol_info_default]
+});
+
 // lovable-mcp-supabase-entry.ts
-import mcp from "npm:C:\\Users\\apex1\\.openhands\\apsi-repo\\src\\lib\\mcp\\index.ts";
-import { createSupabaseHandler } from "npm:@lovable.dev/mcp-js@0.26.3/stacks/supabase";
-Deno.serve(createSupabaseHandler(mcp, { functionName: "mcp" }));
+import { createSupabaseHandler } from "npm:@lovable.dev/mcp-js@0.26.1/stacks/supabase";
+Deno.serve(createSupabaseHandler(mcp_default, { functionName: "mcp" }));
