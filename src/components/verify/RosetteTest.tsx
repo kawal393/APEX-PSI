@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import Rosette from "@/components/Rosette";
 import { Upload } from "lucide-react";
 
-type State = "idle" | "working" | "MATCH" | "MISMATCH" | "ERROR";
+type State = "idle" | "working" | "MATCH" | "MISMATCH" | "INCONCLUSIVE" | "ERROR";
 
 const HEX64 = /^[0-9a-f]{64}$/;
 
@@ -104,9 +104,11 @@ const RosetteTest = () => {
             return;
           }
           setSealed(claimed);
-          setRecomputed(claimed);
-          setState("MATCH");
-          setNote("the receipt carries a well-formed sealed digest; drop the sealed file to recompute it");
+          setRecomputed("");
+          setState("INCONCLUSIVE");
+          setNote(
+            "nothing was verified: the receipt carries a well-formed sealed digest, but no subject bytes were recomputed. Drop the sealed file itself, or paste the sealed SHA-256, to obtain a verdict.",
+          );
           return;
         }
 
@@ -125,7 +127,7 @@ const RosetteTest = () => {
       ? "border-success/40 text-success bg-success/10"
       : state === "MISMATCH"
         ? "border-destructive/40 text-destructive bg-destructive/10"
-        : state === "ERROR"
+        : state === "ERROR" || state === "INCONCLUSIVE"
           ? "border-warning/40 text-warning bg-warning/10"
           : "border-border text-muted-foreground";
 
@@ -134,7 +136,7 @@ const RosetteTest = () => {
       <h2 className="text-sm font-bold tracking-[0.2em] uppercase">The Test — sealed rosette vs recomputed rosette</h2>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
         Drop a file or a receipt. The digest is recomputed with Web Crypto in this browser; nothing is uploaded.
-        Two rosettes render side by side. Three outcomes exist: MATCH, MISMATCH, ERROR.
+        Two rosettes render side by side. Outcomes: MATCH, MISMATCH, INCONCLUSIVE, ERROR.
       </p>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
