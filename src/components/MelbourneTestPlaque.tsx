@@ -62,6 +62,14 @@ const MelbourneTestPlaque = () => {
           >
             <Link to="/challenge">Take the $10,000 Challenge</Link>
           </Button>
+          <Button
+            variant="heroOutline"
+            size="lg"
+            className="w-full sm:w-auto px-8 font-mono text-xs uppercase tracking-[0.2em] border-gold/40 hover:border-gold hover:bg-gold/5"
+            asChild
+          >
+            <Link to="/impact">Speak on the Wall</Link>
+          </Button>
         </div>
       </article>
     </section>

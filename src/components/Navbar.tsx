@@ -59,6 +59,7 @@ const Navbar = () => {
 
 const navLinks = [
     { label: "Declaration", href: "/declaration", isRoute: true },
+    { label: "Impact Wall", href: "/impact", isRoute: true },
     { label: "Reference", href: "/reference", isRoute: true },
     { label: "Founding Members", href: "/founding", isRoute: true },
     { label: "Products", href: "/products", isRoute: true },
@@ -70,7 +71,6 @@ const navLinks = [
     { label: "Live", href: "/live", isRoute: true },
     { label: "Verify", href: "/verify", isRoute: true },
     { label: "The Referee", href: "/verify-any", isRoute: true },
-    { label: "Impact Wall", href: "/impact", isRoute: true },
     { label: "Universal Ledger", href: "/ledger", isRoute: true },
     { label: "Hello PSI", href: "/hello-psi", isRoute: true },
     { label: "Enforcement Watch", href: "/enforcement-watch", isRoute: true },

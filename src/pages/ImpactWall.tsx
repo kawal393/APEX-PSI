@@ -264,6 +264,31 @@ export default function ImpactWall() {
             </p>
           )}
 
+          {/* ── The standing bet ── */}
+          <Card className="p-6 mb-8 border-gold/40 bg-gold/5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold mb-3">
+              The standing bet
+            </p>
+            <p className="text-sm leading-relaxed text-foreground/90">
+              <strong>Target — the founder's words, posted 2 Sep 2026:</strong> economic impact,
+              $1 TRILLION+.
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground mt-2">
+              <strong className="text-foreground">Instrument —</strong> this ledger. Not a press
+              release. Not a projection. Today's measurement:{" "}
+              {stats
+                ? `${stats.total_receipts.toLocaleString()} sealed receipts, ${stats.confirmed_anchors} Bitcoin anchors, ${daysSince(stats.founded_at)} days of continuous operation.`
+                : "loading…"}
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground mt-2">
+              <strong className="text-foreground">Rule —</strong> the ledger reports; the founder
+              does not. If the measurement ever reaches the target, the receipt prints here first.
+            </p>
+            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-gold">
+              Status: measuring
+            </p>
+          </Card>
+
           {/* ── The honesty strip ── */}
           <Card className="p-5 mb-10 border-warning/40 bg-warning/5">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-warning mb-2">
@@ -281,7 +306,7 @@ export default function ImpactWall() {
           </Card>
 
           {/* ── Speak ── */}
-          <Card className="p-6 mb-10 border-primary/20">
+          <Card id="speak" className="p-6 mb-10 border-primary/20">
             <h2 className="text-lg font-bold mb-4">Speak. It becomes permanent.</h2>
             <div className="flex flex-wrap gap-2 mb-4">
               {ROLES.map((r) => (
@@ -451,6 +476,42 @@ export default function ImpactWall() {
                 mempool.space - any stranger can verify them without trusting us.
               </li>
             </ul>
+          </Card>
+
+          {/* ── The conclusion ── */}
+          <Card className="p-6 md:p-10 mt-10 border-primary/20">
+            <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-6">
+              <span className="text-gold-gradient">The conclusion</span> — three facts and one door
+            </h2>
+            <ol className="space-y-4 text-sm leading-relaxed text-muted-foreground list-decimal list-inside">
+              <li>
+                Every record that moves money, law, or AI output can today be altered without a
+                trace. Paper evaporates. Databases edit. Memories disagree.
+              </li>
+              <li>
+                The law has already chosen the other side: EU AI Act Article 50 transparency
+                obligations apply since 2 August 2026, and the first enforcement actions are
+                public. Verifiable records are no longer a virtue — they are a duty.
+              </li>
+              <li>
+                Verification that depends on trusting the party being verified is not
+                verification. It is testimony without a witness.
+              </li>
+            </ol>
+            <p className="mt-6 text-sm leading-relaxed text-foreground/90">
+              Therefore: the economy needs neutral ground where any record can be recomputed by
+              anyone — free, open, anchored to something no ministry and no market controls. That
+              ground is live. It has been measuring since 22 August 2026. The question is no longer{" "}
+              <em>should it exist</em> — it is <strong>who seals first</strong>.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild variant="hero" size="lg">
+                <a href="#speak">Speak on the Wall</a>
+              </Button>
+              <Button asChild variant="heroOutline" size="lg">
+                <a href="/verify-any">Read any seal — including ours</a>
+              </Button>
+            </div>
           </Card>
         </main>
         <Footer />
