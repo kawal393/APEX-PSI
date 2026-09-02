@@ -121,10 +121,13 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
+    // Upstream failure (Stripe or database). Report it as a gateway failure so
+    // the client can tell it apart from an auth problem and degrade gracefully.
     const msg = error instanceof Error ? error.message : String(error);
-    return new Response(JSON.stringify({ error: msg }), {
+    console.error("check-subscription upstream failure:", msg);
+    return new Response(JSON.stringify({ error: msg, upstream: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
+      status: 502,
     });
   }
 });
