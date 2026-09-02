@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import {
   Globe2,
   Share2,
@@ -17,6 +18,11 @@ import {
   Anchor,
   Clock,
   Hash,
+  Fingerprint,
+  CheckCircle2,
+  XCircle,
+  ArrowRight,
+  Scale,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,6 +42,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 const NOTARIZE_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize";
 const STATS_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/ledger-stats";
+// The referee: public, anonymous, CORS-open. No key, no login, no trust in us.
+const VERIFY_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/verify-hash";
 const PREDICATE = "APEX_IMPACT_WALL";
 const MAX_STATEMENT = 450; // keeps the ledger action column lossless (500-char cap)
 
@@ -76,6 +84,52 @@ type Receipt = {
   algorithm: string;
 };
 
+// Shape returned by the public verify-hash referee (read from source, not guessed)
+type ProofResult = {
+  verified: boolean;
+  found: boolean;
+  commit_id?: string;
+  predicate_id?: string;
+  merkle_verified?: boolean;
+  merkle_root?: string | null;
+  pq_verified?: boolean | null;
+  pq_algorithm?: string | null;
+  algorithm?: string;
+  created_at?: string;
+  action_summary?: string;
+  timestamp_anchor?: {
+    status?: string;
+    bitcoin_block_height?: number | null;
+    bitcoin_txid?: string | null;
+    confirmations?: number | null;
+    explorer_url?: string | null;
+  } | null;
+};
+
+// The four steps a stranger walks to reach the conclusion alone.
+const PROOF_PATH = [
+  {
+    n: "01",
+    title: "Read a testimony",
+    body: "Any voice on the wall below - including one that disagrees with us.",
+  },
+  {
+    n: "02",
+    title: "Press prove it",
+    body: "The public referee recomputes the seal live. No key. No login. No trust in us.",
+  },
+  {
+    n: "03",
+    title: "Follow the anchor",
+    body: "One click to mempool.space: a Bitcoin block no ministry and no company controls.",
+  },
+  {
+    n: "04",
+    title: "Reach it yourself",
+    body: "If the record cannot be bent by the party being verified, the conclusion writes itself.",
+  },
+] as const;
+
 // The notary stores: "NOTARIZE: APEX_IMPACT_WALL|<role>|<statement>"
 function parseAction(action: string): { role: string; statement: string } | null {
   const body = action.replace(/^NOTARIZE:\s*/, "");
@@ -97,6 +151,36 @@ export default function ImpactWall() {
   const [statement, setStatement] = useState("");
   const [busy, setBusy] = useState(false);
   const [receipt, setReceipt] = useState<Receipt | null>(null);
+  const [proofId, setProofId] = useState("");
+  const [proofBusy, setProofBusy] = useState(false);
+  const [proof, setProof] = useState<ProofResult | null>(null);
+  const [proofError, setProofError] = useState<string | null>(null);
+
+  // Live, anonymous verification of any receipt id - the stranger's own instrument.
+  const prove = useCallback(async (id?: string) => {
+    const target = (id ?? proofId).trim();
+    if (!target) return toast.error("Paste a receipt id, or press prove it on a testimony below.");
+    setProofBusy(true);
+    setProofError(null);
+    setProof(null);
+    try {
+      const res = await fetch(`${VERIFY_URL}?hash=${encodeURIComponent(target)}`);
+      const data = (await res.json()) as ProofResult;
+      setProof(data);
+      if (!data.found) setProofError("Not found in the ledger. Check the receipt id.");
+    } catch {
+      setProofError("The referee did not answer. Try again in a moment.");
+    } finally {
+      setProofBusy(false);
+    }
+  }, [proofId]);
+
+  // One click on any testimony: verify it and walk the reader to the instrument.
+  const proveFromWall = (id: string) => {
+    setProofId(id);
+    void prove(id);
+    document.getElementById("proof")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const refresh = useCallback(async () => {
     try {
@@ -264,6 +348,167 @@ export default function ImpactWall() {
             </p>
           )}
 
+          {/* ── The proof path: how a stranger reaches the conclusion alone ── */}
+          <section id="proof" className="mb-12">
+            <div className="text-center mb-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary mb-2">
+                Do not take our word for it
+              </p>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight">
+                <span className="text-chrome-gradient">The proof path</span> — four steps, sixty
+                seconds
+              </h2>
+              <p className="text-sm text-muted-foreground mt-2 max-w-2xl mx-auto">
+                We are not asking you to believe this page. We are handing you the instrument.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+              {PROOF_PATH.map((s) => (
+                <Card key={s.n} className="p-4 relative overflow-hidden">
+                  <span className="absolute -top-3 right-1 text-5xl font-black text-primary/10 select-none">
+                    {s.n}
+                  </span>
+                  <h3 className="text-sm font-bold mb-1 flex items-center gap-2">
+                    <ArrowRight className="h-3.5 w-3.5 text-gold" /> {s.title}
+                  </h3>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">{s.body}</p>
+                </Card>
+              ))}
+            </div>
+
+            {/* ── The instrument: live anonymous verification ── */}
+            <Card className="p-5 md:p-6 border-primary/30 bg-primary/5">
+              <h3 className="text-sm font-bold mb-1 flex items-center gap-2">
+                <Fingerprint className="h-4 w-4 text-primary" /> Prove any receipt — now,
+                anonymously
+              </h3>
+              <p className="text-[11px] text-muted-foreground mb-3">
+                This button calls the public referee with no key, no login and no permission from
+                us. You can run the same call yourself from any terminal.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Input
+                  value={proofId}
+                  onChange={(e) => setProofId(e.target.value)}
+                  placeholder="Paste a receipt id — or press prove it on any testimony below"
+                  className="font-mono text-xs flex-1"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") void prove();
+                  }}
+                />
+                <Button onClick={() => void prove()} disabled={proofBusy} className="sm:w-auto">
+                  {proofBusy ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Scale className="h-4 w-4 mr-2" />
+                  )}
+                  Prove it
+                </Button>
+              </div>
+
+              {proofError && (
+                <p className="mt-3 text-xs text-destructive flex items-center gap-2">
+                  <XCircle className="h-3.5 w-3.5" /> {proofError}
+                </p>
+              )}
+
+              {proof?.found && (
+                <div className="mt-4 rounded-lg border border-primary/30 bg-background p-4">
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    <Badge
+                      className={
+                        proof.verified
+                          ? "bg-primary/10 text-primary border-primary/30"
+                          : "bg-destructive/10 text-destructive border-destructive/30"
+                      }
+                    >
+                      {proof.verified ? (
+                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                      ) : (
+                        <XCircle className="h-3 w-3 mr-1" />
+                      )}
+                      {proof.verified ? "VERIFIED IN THE LEDGER" : "NOT VERIFIED"}
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className={proof.pq_verified ? "text-primary border-primary/40" : ""}
+                    >
+                      {proof.pq_verified ? (
+                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                      ) : (
+                        <XCircle className="h-3 w-3 mr-1" />
+                      )}
+                      post-quantum: {String(proof.pq_verified)}
+                    </Badge>
+                    <Badge variant="outline">
+                      merkle proof: {String(!!proof.merkle_verified)}
+                    </Badge>
+                  </div>
+                  <dl className="grid grid-cols-1 gap-1 text-[11px] font-mono break-all text-muted-foreground">
+                    <div>
+                      <dt className="inline">receipt: </dt>
+                      <dd className="inline text-foreground">{proof.commit_id}</dd>
+                    </div>
+                    <div>
+                      <dt className="inline">sealed at: </dt>
+                      <dd className="inline text-foreground">{proof.created_at}</dd>
+                    </div>
+                    <div>
+                      <dt className="inline">algorithm: </dt>
+                      <dd className="inline text-foreground">
+                        {proof.pq_algorithm ? `${proof.algorithm} (${proof.pq_algorithm})` : proof.algorithm}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="inline">merkle root: </dt>
+                      <dd className="inline text-foreground">{proof.merkle_root}</dd>
+                    </div>
+                    <div>
+                      <dt className="inline">record: </dt>
+                      <dd className="inline text-foreground">{proof.action_summary}</dd>
+                    </div>
+                    {proof.timestamp_anchor?.bitcoin_txid && (
+                      <div>
+                        <dt className="inline">bitcoin anchor: </dt>
+                        <dd className="inline text-foreground">
+                          block #{proof.timestamp_anchor.bitcoin_block_height?.toLocaleString()}
+                          {typeof proof.timestamp_anchor.confirmations === "number" &&
+                            ` — ${proof.timestamp_anchor.confirmations.toLocaleString()} confirmations`}{" "}
+                          <a
+                            href={proof.timestamp_anchor.explorer_url ?? `https://mempool.space/tx/${proof.timestamp_anchor.bitcoin_txid}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-gold underline underline-offset-2"
+                          >
+                            open in mempool.space
+                          </a>
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+                  <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+                    Nothing above was produced by this website's opinion. It was recomputed, just
+                    now, from the ledger — and the anchor resolves on a chain nobody here controls.
+                    That is the whole argument.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <Button size="sm" variant="outline" asChild>
+                      <a href={`/r/${proof.commit_id}`}>
+                        <Link2 className="h-3.5 w-3.5 mr-1" /> Open receipt
+                      </a>
+                    </Button>
+                    <Button size="sm" variant="outline" asChild>
+                      <a href="/verify-any">
+                        <Scale className="h-3.5 w-3.5 mr-1" /> The Referee
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </Card>
+          </section>
+
           {/* ── The standing bet ── */}
           <Card className="p-6 mb-8 border-gold/40 bg-gold/5">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold mb-3">
@@ -421,6 +666,14 @@ export default function ImpactWall() {
                       {new Date(e.created_at).toLocaleString()}
                     </span>
                     <div className="ml-auto flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-primary"
+                        onClick={() => proveFromWall(e.commit_id)}
+                      >
+                        <Scale className="h-3.5 w-3.5 mr-1" /> Prove it
+                      </Button>
                       <Button variant="ghost" size="sm" onClick={() => share(e.commit_id, parsed.statement)}>
                         <Share2 className="h-3.5 w-3.5" />
                       </Button>
@@ -440,6 +693,18 @@ export default function ImpactWall() {
               );
             })}
           </div>
+          {entries.length > 0 && (
+            <p className="text-center text-[11px] text-muted-foreground mb-12">
+              Every testimony above is one press from independent proof —{" "}
+              <button
+                onClick={() => proveFromWall(entries[0].commit_id)}
+                className="text-gold underline underline-offset-2"
+              >
+                prove the newest one
+              </button>
+              . We cannot delete it, edit it, or hide it. Neither can you. That is the point.
+            </p>
+          )}
 
           {/* ── Modelled context - labelled, sourced, never dressed as live ── */}
           <Card className="p-6 border-border">
