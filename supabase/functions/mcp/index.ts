@@ -167,7 +167,7 @@ var SPEC = {
   canonicalization: "RFC 8785 (JSON Canonicalization Scheme)",
   hashing: "SHA-256",
   signatures: ["Ed25519", "ML-DSA-65 (hybrid)", "LMS-W4-SHA256 (NIST SP 800-208)"],
-  drafts: ["draft-singh-psi-00", "draft-singh-psi-http-01"],
+  drafts: ["draft-singh-psi (rev 01, filed 2026-08-29)", "draft-singh-psi-http (in preparation, not filed)"],
   http_header: "Compliance-Receipt",
   anchoring: ["Bitcoin (OpenTimestamps)", "Polygon Merkle roots"],
   trust_anchor: "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json",

@@ -136,6 +136,16 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/impact</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/timeline</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/agi-ledger</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -249,6 +259,24 @@
     <loc>https://ai-governance-standard.com/cookies</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/c2pa-provenance-and-content-credentials-for-ai-0bvmhh</loc>
+    <lastmod>2026-09-02T21:07:13.530Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ed25519-signatures-for-ai-audit-trails-s9kuy0</loc>
+    <lastmod>2026-09-02T21:07:13.530Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-governance-framework-checklist-for-regulated-firms-twi84m</loc>
+    <lastmod>2026-09-02T21:07:13.530Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ai-governance-standard.com/articles/c2pa-content-credentials-for-ai-outputs-atgzti</loc>
