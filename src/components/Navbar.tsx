@@ -60,6 +60,7 @@ const Navbar = () => {
 const navLinks = [
     { label: "Declaration", href: "/declaration", isRoute: true },
     { label: "Impact Wall", href: "/impact", isRoute: true },
+    { label: "Timeline", href: "/timeline", isRoute: true },
     { label: "Reference", href: "/reference", isRoute: true },
     { label: "Founding Members", href: "/founding", isRoute: true },
     { label: "Products", href: "/products", isRoute: true },
