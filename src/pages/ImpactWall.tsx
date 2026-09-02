@@ -442,7 +442,8 @@ export default function ImpactWall() {
                       post-quantum: {String(proof.pq_verified)}
                     </Badge>
                     <Badge variant="outline">
-                      merkle proof: {String(!!proof.merkle_verified)}
+                      merkle inclusion proof:{" "}
+                      {proof.merkle_verified ? "stored" : "not attached to this receipt"}
                     </Badge>
                   </div>
                   <dl className="grid grid-cols-1 gap-1 text-[11px] font-mono break-all text-muted-foreground">
@@ -457,7 +458,9 @@ export default function ImpactWall() {
                     <div>
                       <dt className="inline">algorithm: </dt>
                       <dd className="inline text-foreground">
-                        {proof.pq_algorithm ? `${proof.algorithm} (${proof.pq_algorithm})` : proof.algorithm}
+                        {proof.pq_algorithm && proof.algorithm && !proof.algorithm.includes(proof.pq_algorithm)
+                          ? `${proof.algorithm} (${proof.pq_algorithm})`
+                          : proof.algorithm}
                       </dd>
                     </div>
                     <div>
@@ -684,10 +687,15 @@ export default function ImpactWall() {
                       >
                         <Scale className="h-3.5 w-3.5 mr-1" /> Prove it
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => share(e.commit_id, parsed.statement)}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label="Share this testimony"
+                        onClick={() => share(e.commit_id, parsed.statement)}
+                      >
                         <Share2 className="h-3.5 w-3.5" />
                       </Button>
-                      <Button variant="ghost" size="sm" asChild>
+                      <Button variant="ghost" size="sm" aria-label="Open this receipt" asChild>
                         <a href={`/r/${e.commit_id}`}>
                           <ShieldCheck className="h-3.5 w-3.5 text-primary" />
                         </a>

@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogIn, LayoutDashboard, ChevronDown, Hash, Globe, Shield, Award, Code, Layers, FileText, Bot, ExternalLink, ScrollText, GitBranch, BookOpen } from "lucide-react";
+import { Menu, X, LogIn, LayoutDashboard, ChevronDown, ChevronLeft, ChevronRight, Hash, Globe, Shield, Award, Code, Layers, FileText, Bot, ExternalLink, ScrollText, GitBranch, BookOpen } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -82,6 +82,34 @@ const navLinks = [
     { label: "ROBUSTNESS", href: "/robustness", isRoute: true },
   ];
 
+  // The tab strip scrolls. Without an affordance it hid 17 of 23 doors behind an
+  // invisible edge (no scrollbar, no fade, no arrow) - a door nobody can find is
+  // a door that does not exist. These edges say "there is more" and move it.
+  const navStripRef = useRef<HTMLDivElement>(null);
+  const [navLeft, setNavLeft] = useState(false);
+  const [navRight, setNavRight] = useState(false);
+
+  const updateNavEdges = useCallback(() => {
+    const el = navStripRef.current;
+    if (!el) return;
+    setNavLeft(el.scrollLeft > 2);
+    setNavRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
+  }, []);
+
+  useEffect(() => {
+    updateNavEdges();
+    window.addEventListener("resize", updateNavEdges);
+    const t = window.setTimeout(updateNavEdges, 400);
+    return () => {
+      window.removeEventListener("resize", updateNavEdges);
+      window.clearTimeout(t);
+    };
+  }, [updateNavEdges]);
+
+  const scrollNav = (dir: number) => {
+    navStripRef.current?.scrollBy({ left: dir * 240, behavior: "smooth" });
+  };
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (infraRef.current && !infraRef.current.contains(e.target as Node)) {
@@ -145,7 +173,12 @@ const navLinks = [
             IETF draft-singh-psi (rev 01)
           </a>
 
-          <div className="flex items-center gap-0 flex-1 min-w-0 overflow-x-auto scrollbar-hide">
+          <div className="relative flex-1 min-w-0">
+          <div
+            ref={navStripRef}
+            onScroll={updateNavEdges}
+            className="flex items-center gap-0 w-full overflow-x-auto scrollbar-hide"
+          >
             {navLinks.map((link) =>
               (link as any).external ? (
                 <a
@@ -241,6 +274,31 @@ const navLinks = [
                 </div>
               )}
             </div>
+          </div>
+            {navLeft && (
+              <>
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-background to-transparent" />
+                <button
+                  onClick={() => scrollNav(-1)}
+                  aria-label="Scroll navigation left"
+                  className="absolute inset-y-0 left-0 z-10 flex items-center px-1 bg-transparent border-none cursor-pointer text-muted-foreground hover:text-primary"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                </button>
+              </>
+            )}
+            {navRight && (
+              <>
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
+                <button
+                  onClick={() => scrollNav(1)}
+                  aria-label="Scroll navigation right - more doors"
+                  className="absolute inset-y-0 right-0 z-10 flex items-center px-1 bg-transparent border-none cursor-pointer text-muted-foreground hover:text-primary"
+                >
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
