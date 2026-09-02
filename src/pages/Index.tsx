@@ -80,8 +80,14 @@ const Index = () => {
         <div id="top" />
         <MelbourneTestPlaque />
         <HomeSealStrip />
-        <p className="-mt-8 mb-16 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+        <p className="-mt-8 mb-4 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           The ledger does not judge. It remembers.
+        </p>
+        <p className="mb-16 text-center text-[11px] md:text-xs uppercase tracking-wider text-foreground/80">
+          "Who was first" used to be a story. Now it is a receipt.{" "}
+          <a href="/impact#challenge" className="text-gold underline underline-offset-2">
+            Read the receipt
+          </a>
         </p>
         <Hero />
         <UniversalTicker />

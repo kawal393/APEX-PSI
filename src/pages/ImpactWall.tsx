@@ -38,6 +38,11 @@ import { supabase } from "@/integrations/supabase/client";
 // them, and never a market number. Modelled figures live in their own
 // panel, labelled, with sources linked. Nothing on this page wears a
 // costume.
+//
+// The hero carries THE FIRST-TIMESTAMP CHALLENGE: the "first" claim is
+// never asserted - it is dated, printed with live figures, and wired to
+// the referee below so anyone holding an earlier public timestamp can
+// paste it in and be read. A falsifiable bet, not a boast.
 // ═══════════════════════════════════════════════════════════════════
 
 const NOTARIZE_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize";
@@ -155,6 +160,9 @@ export default function ImpactWall() {
   const [proofBusy, setProofBusy] = useState(false);
   const [proof, setProof] = useState<ProofResult | null>(null);
   const [proofError, setProofError] = useState<string | null>(null);
+  // The as-at date moves with the reader's clock; the counters move with the
+  // ledger. Nothing on this page prints a frozen number as if it were now.
+  const asAt = new Date().toLocaleDateString("en-AU", { day: "2-digit", month: "short", year: "numeric" });
 
   // Live, anonymous verification of any receipt id - the stranger's own instrument.
   const prove = useCallback(async (id?: string) => {
@@ -278,6 +286,19 @@ export default function ImpactWall() {
         <main className="container mx-auto max-w-5xl px-4 py-16">
           {/* ── Hero ── */}
           <div className="text-center mb-10">
+            <p className="font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-gold mb-5">
+              Revelation — now history has a timestamp
+            </p>
+            <div className="max-w-2xl mx-auto mb-6 space-y-2 font-mono text-[11px] md:text-xs uppercase tracking-wider text-muted-foreground">
+              <p>
+                What came first, the chicken or the egg?{" "}
+                <span className="text-foreground">Who knows. History has no timestamp.</span>
+              </p>
+              <p>
+                Which AI protocol came first, timestamped?{" "}
+                <span className="text-foreground">The timestamp answers. Not us.</span>
+              </p>
+            </div>
             <Badge className="mb-4 bg-primary/10 text-primary border-primary/30">
               <Globe2 className="h-3 w-3 mr-1" /> Public ledger - live - permissionless
             </Badge>
@@ -348,6 +369,42 @@ export default function ImpactWall() {
             </p>
           )}
 
+          {/* ── The first-timestamp challenge: dated, live, falsifiable ── */}
+          <Card id="challenge" className="p-6 md:p-8 mb-12 border-primary/40 bg-primary/5 text-center">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-4">
+              The first-timestamp challenge
+            </p>
+            <p className="font-mono text-sm md:text-base uppercase tracking-wider text-foreground">
+              Genesis:{" "}
+              {stats
+                ? new Date(stats.founded_at).toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })
+                : "22 August 2026"}
+            </p>
+            <p className="mt-2 font-mono text-[11px] text-muted-foreground">
+              As at {asAt}:{" "}
+              {stats
+                ? `${stats.total_receipts.toLocaleString()} sealed receipts · ${stats.confirmed_anchors} Bitcoin anchors${stats.latest_block_height ? ` · block #${stats.latest_block_height.toLocaleString()}` : ""}`
+                : "loading live figures…"}
+            </p>
+            <p className="mt-4 max-w-2xl mx-auto text-sm leading-relaxed text-foreground/90">
+              If anyone holds an earlier public timestamp, the referee reads their seal too. Paste
+              it into the instrument below — it needs no key, no login, no permission from us.
+            </p>
+            <Button
+              variant="hero"
+              className="mt-5"
+              onClick={() => {
+                document.getElementById("proof-input")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                setTimeout(() => (document.getElementById("proof-input") as HTMLInputElement | null)?.focus(), 500);
+              }}
+            >
+              <Scale className="h-4 w-4 mr-2" /> Bring an earlier timestamp
+            </Button>
+            <p className="mt-4 text-[11px] text-muted-foreground">
+              We do not ask you to believe we were first. We ask you to check the date.
+            </p>
+          </Card>
+
           {/* ── The proof path: how a stranger reaches the conclusion alone ── */}
           <section id="proof" className="mb-12">
             <div className="text-center mb-6">
@@ -389,6 +446,7 @@ export default function ImpactWall() {
               </p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Input
+                  id="proof-input"
                   value={proofId}
                   onChange={(e) => setProofId(e.target.value)}
                   placeholder="Paste a receipt id — or press prove it on any testimony below"
@@ -786,6 +844,10 @@ export default function ImpactWall() {
               anyone — free, open, anchored to something no ministry and no market controls. That
               ground is live. It has been measuring since 22 August 2026. The question is no longer{" "}
               <em>should it exist</em> — it is <strong>who seals first</strong>.
+            </p>
+            <p className="mt-5 text-center font-mono text-[11px] md:text-xs uppercase tracking-[0.2em] text-gold">
+              "Who was first" used to be a story. Now it is a receipt. Don't believe us. Verify the
+              math.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild variant="hero" size="lg">
