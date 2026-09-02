@@ -121,7 +121,7 @@ const PROOF_PATH = [
   {
     n: "03",
     title: "Follow the anchor",
-    body: "One click to mempool.space: a Bitcoin block no ministry and no company controls.",
+    body: "Anchors are batched at the Merkle root. Where a receipt carries one, it opens on mempool.space - a chain no ministry and no company controls.",
   },
   {
     n: "04",
@@ -468,7 +468,7 @@ export default function ImpactWall() {
                       <dt className="inline">record: </dt>
                       <dd className="inline text-foreground">{proof.action_summary}</dd>
                     </div>
-                    {proof.timestamp_anchor?.bitcoin_txid && (
+                    {proof.timestamp_anchor?.bitcoin_txid ? (
                       <div>
                         <dt className="inline">bitcoin anchor: </dt>
                         <dd className="inline text-foreground">
@@ -483,6 +483,16 @@ export default function ImpactWall() {
                           >
                             open in mempool.space
                           </a>
+                        </dd>
+                      </div>
+                    ) : (
+                      <div>
+                        <dt className="inline">bitcoin anchor: </dt>
+                        <dd className="inline text-foreground">
+                          none on this receipt individually — anchors are batched at the Merkle root
+                          {stats ? ` (${stats.confirmed_anchors} confirmed on the ledger)` : ""}. The
+                          root above is what gets anchored; we do not dress a batch as a per-record
+                          promise.
                         </dd>
                       </div>
                     )}
