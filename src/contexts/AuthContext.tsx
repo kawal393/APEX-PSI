@@ -47,7 +47,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         subscriptionEnd: data?.subscription_end ?? null,
       });
     } catch (e) {
+      // The plan check is best-effort: if the backend or Stripe is unreachable
+      // we resolve to the free tier rather than leaving the tier unknown.
       console.error("Failed to check subscription:", e);
+      setSubscription((prev) => (prev.tier ? prev : { subscribed: false, tier: "free", subscriptionEnd: null }));
     }
   };
 
