@@ -28,22 +28,27 @@ seals for personal, educational, journalistic, research and other
 non-commercial purposes, in perpetuity.
 
 ────────────────────────────────────────────────────────────────────────
-2. GRANT — COMMERCIAL AND INSTITUTIONAL (PSI-05 ROYALTY TERMS)
+2. GRANT - COMMERCIAL AND INSTITUTIONAL (FREE)
 ────────────────────────────────────────────────────────────────────────
-Any sealing activity carried out by, for, or on behalf of a commercial
-entity, government body, regulator, exchange, insurer, or institution —
-including internal compliance use — requires a PSI-05 royalty licence.
-PSI-05 royalty tiers are published at
-https://ai-governance-standard.com/standards/psi-05
+Any sealing activity - personal, commercial, government, institutional or
+otherwise, at any scale - is free of charge. No royalty is owed and no fee
+is payable for creating seals with this engine, in perpetuity. The royalty
+tiers formerly published at /standards/psi-05 were withdrawn on
+4 September 2026; no charge was ever made under them.
+
+What is reserved: the copyright in this schema and engine (you may not build
+a competing seal generator on PSI-SEAL/1), and the APEX marks (you may not
+brand a product APEX, APEX PSI, APEX VERIFIED or APEX LATTICE without a
+written licence - see https://apex-infrastructure.com/trademark).
 
 ────────────────────────────────────────────────────────────────────────
 3. CLICK-THROUGH ACCEPTANCE
 ────────────────────────────────────────────────────────────────────────
 Activating any "Generate", "Seal", "Stamp" or equivalent control, or calling
-any generator API endpoint, constitutes explicit and informed acceptance of
-this licence and of the applicable royalty terms in Section 2. The accepted
-terms and acceptance timestamp are recorded inside each emitted seal in the
-`licence` member.
+any generator API endpoint, constitutes acceptance of this licence. The
+accepted terms and acceptance timestamp are recorded inside each emitted
+seal in the `licence` member. The recorded terms are a notice that use is
+free; they create no charge, no debt and no obligation to pay.
 
 ────────────────────────────────────────────────────────────────────────
 4. CONFORMANCE
@@ -76,8 +81,11 @@ as perpetual steward, on the binding condition that:
   (a) verification remains MIT-licensed and free forever;
   (b) the schema is never narrowed, forked or relicensed in a way that breaks
       existing conformant seals;
-  (c) generator royalty terms remain published, non-discriminatory and
-      uniformly applied.
+  (c) use of the sealing engine, at any scale and for any purpose, remains
+      free of charge in perpetuity, with no royalty and no fee; and
+  (d) the marks APEX, APEX PSI, APEX VERIFIED and APEX LATTICE remain
+      reserved and may not be applied to any product without a written
+      licence.
 These terms survive the author, any corporate reorganisation, and any change
 of steward. Should no steward exist, Sections 1, 4, 5 and the MIT verifier
 grant remain in force in perpetuity.

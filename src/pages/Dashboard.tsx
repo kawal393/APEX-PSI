@@ -72,21 +72,8 @@ const Dashboard = () => {
   const tier = subscription.subscribed ? (subscription.tier || "startup") : "free";
   const isFree = tier === "free";
 
-  useEffect(() => {
-    if (searchParams.get("checkout") === "success") {
-      const sessionId = searchParams.get("session_id");
-      if (!sessionId) return;
-      void supabase.functions.invoke("finalize-checkout", { body: { session_id: sessionId } }).then(({ data, error }) => {
-        if (error) {
-          toast.error("Payment received, but activation is still processing. Use Refresh shortly.");
-          return;
-        }
-        toast.success(`${String(data?.service_key ?? "Service").replace(/_/g, " ")} activated.`);
-        void Promise.all([checkSubscription(), fetchData()]);
-        navigate("/dashboard", { replace: true });
-      });
-    }
-  }, [searchParams, navigate]);
+  // The checkout flow was withdrawn with commerce. ?checkout=success redirects
+  // no longer exist and the finalize-checkout function is deleted - nothing to do here.
 
   const fetchData = async () => {
     if (!user) return;

@@ -111,6 +111,15 @@ const ENTRIES = [
     undertaking:
       "No number appears on the site unless it is measured, live, or plainly labelled as an invented illustration.",
   },
+  {
+    date: "4 September 2026",
+    said:
+      "The sealing engine licence stated that commercial, government or institutional sealing requires a PSI-05 royalty licence, the PSI-05 page published royalty tiers for issuers and registries, the seal gate offered an Accept - commercial (PSI-05 royalty) button, and the patent pledge said standard commercial terms apply to the hosted service. The payment edge functions (create-checkout, check-subscription, customer-portal, finalize-checkout, stripe-webhook, crypto-quote, crypto-watcher) were still present in the repository although unwired, and the privacy policy still said payment information is processed by third-party providers.",
+    now:
+      "All use of the sealing engine is free of charge, at any scale, in perpetuity - personal, commercial, government or institutional. The royalty tiers are withdrawn, the gate records free terms, the seven payment functions are deleted from the repository, and the privacy policy states that no payment information is collected because no payment processor exists. What remains reserved is copyright in the schema (no competing seal generator) and the APEX marks. No charge was ever made under any of the withdrawn terms.",
+    undertaking:
+      "If a licence file and a page ever disagree about money, the page is treated as wrong until the licence file is changed, and the change is listed here with its date.",
+  },
 ];
 
 
@@ -151,7 +160,7 @@ const Corrections = () => (
           ))}
         </ul>
         <p className="mt-5 text-xs leading-relaxed text-muted-foreground/70">
-          The commercial platform at apex-infrastructure.com keeps its own register of the same
+          The sister platform at apex-infrastructure.com keeps its own register of the same
           kind.
         </p>
       </section>

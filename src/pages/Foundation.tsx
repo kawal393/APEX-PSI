@@ -37,8 +37,8 @@ registry changes require a 4-of-5 Board majority.
 ARTICLE 4 — OPENNESS
 The PSI Protocol specification and the Compliance-Receipt header standard are
 maintained under MIT and CC-BY-4.0 respectively. Any party may implement,
-fork, distribute, or commercialize implementations. Patent AMCZ-2615560564 is
-licensed royalty-free to any implementation of draft-singh-psi-http-01.
+fork, distribute, or commercialize implementations. No patent is claimed or
+asserted over any implementation of draft-singh-psi-http-01.
 
 ARTICLE 5 — VERIFIER NETWORK
 The Foundation operates the canonical issuer key (apex-psi-2026) and publishes
@@ -197,7 +197,7 @@ const Foundation = () => {
             {[
               { icon: Shield, title: "Spec stewardship", body: "Maintains draft-singh-psi-http-01 and the PSI Protocol v1.2 under MIT / CC-BY-4.0." },
               { icon: Server, title: "Verifier lattice", body: "Coordinates independent verifier nodes under a t-of-n threshold signing arrangement." },
-              { icon: Scale, title: "Patent pledge v2", body: "Patent AMCZ-2615560564 licensed royalty-free to every conformant implementation." },
+              { icon: Scale, title: "Patent pledge v2", body: "No patents are claimed or asserted over any conformant implementation. Implementation is free, permanently." },
             ].map((c) => (
               <div key={c.title} className="rounded-xl border border-border bg-card/80 p-5">
                 <c.icon className="h-5 w-5 text-primary mb-3" />

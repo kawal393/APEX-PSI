@@ -60,8 +60,10 @@ const EngineLicenseGate = ({ onAccept, className }: Props) => (
           Sealing Engine Licence
         </h3>
         <p className="text-xs text-muted-foreground mt-1">
-          Verification is MIT and free forever. Generating a seal uses the licensed{" "}
-          <span className="text-foreground font-mono">{PSI_SCHEMA_ID}</span> engine.
+          Verification is MIT and free forever. Generating a seal is free for all
+          use, including commercial. Two things stay reserved: the APEX marks, and
+          building a competing seal generator on the{" "}
+          <span className="text-foreground font-mono">{PSI_SCHEMA_ID}</span> schema.
         </p>
       </div>
     </div>
@@ -70,10 +72,10 @@ const EngineLicenseGate = ({ onAccept, className }: Props) => (
 
     <div className="flex flex-col sm:flex-row gap-2">
       <Button size="sm" variant="hero" onClick={() => onAccept("personal")}>
-        <ShieldCheck className="h-4 w-4 mr-1" /> Accept — personal / non-commercial
+        <ShieldCheck className="h-4 w-4 mr-1" /> Accept - personal / non-commercial (free)
       </Button>
       <Button size="sm" variant="heroOutline" onClick={() => onAccept("commercial")}>
-        Accept — commercial (PSI-05 royalty)
+        Accept - commercial use (free, no royalty)
       </Button>
     </div>
 

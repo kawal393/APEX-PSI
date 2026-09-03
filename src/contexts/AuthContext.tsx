@@ -38,20 +38,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const checkSubscription = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke("check-subscription");
-      if (error) throw error;
-      setSubscription({
-        subscribed: data?.subscribed ?? false,
-        tier: data?.tier ?? null,
-        subscriptionEnd: data?.subscription_end ?? null,
-      });
-    } catch (e) {
-      // The plan check is best-effort: if the backend or Stripe is unreachable
-      // we resolve to the free tier rather than leaving the tier unknown.
-      console.error("Failed to check subscription:", e);
-      setSubscription((prev) => (prev.tier ? prev : { subscribed: false, tier: "free", subscriptionEnd: null }));
-    }
+    // Commerce is withdrawn: there are no paid plans and no plan backend
+    // (the check-subscription edge function is deleted). Every signed-in
+    // user has full access. This resolves locally - no network call.
+    setSubscription({ subscribed: true, tier: "enterprise", subscriptionEnd: null });
   };
 
   useEffect(() => {

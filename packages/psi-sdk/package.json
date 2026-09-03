@@ -15,10 +15,18 @@
   "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": ["ai", "compliance", "eu-ai-act", "mifid", "dora", "verification", "merkle-tree"],
-  "author": "Apex Intelligence Empire",
+  "keywords": ["ai", "compliance", "eu-ai-act", "mifid", "dora", "verification", "merkle-tree", "sha256", "ed25519", "ai-governance"],
+  "author": "APEX Intelligence Empire / ROCKYFILMS888 PTY LTD (ABN 71 672 237 795)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kawal393/APEX-PSI.git",
+    "directory": "packages/psi-sdk"
+  },
+  "bugs": { "url": "https://github.com/kawal393/APEX-PSI/issues" },
+  "homepage": "https://ai-governance-standard.com",
   "license": "MIT",
   "engines": { "node": ">=18" },
   "peerDependencies": {},

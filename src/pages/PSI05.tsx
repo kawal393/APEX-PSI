@@ -17,8 +17,8 @@ const ENDPOINTS = [
 
 const TIERS = [
   { tier: "Reference", terms: "Royalty-free for verification, research and regulatory review. MIT-licensed implementation." },
-  { tier: "Issuer", terms: "Per-receipt tier for organisations issuing disclosure integrity receipts at scale." },
-  { tier: "Registry", terms: "Annual tier for exchanges, registries and data vendors republishing recomputation status." },
+  { tier: "Issuer", terms: "Free for organisations issuing disclosure integrity receipts, at any scale. No per-receipt charge." },
+  { tier: "Registry", terms: "Free for exchanges, registries and data vendors republishing recomputation status. No annual charge." },
 ];
 
 export default function PSI05() {
@@ -28,7 +28,7 @@ export default function PSI05() {
         <title>PSI-05 — Financial Disclosure Integrity — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
-          content="draft-singh-apex-psi-05: Financial Disclosure Integrity. Hybrid dual-signature framework, ledger structure, API endpoints and royalty tiers."
+          content="draft-singh-apex-psi-05: Financial Disclosure Integrity. Hybrid dual-signature framework, ledger structure, API endpoints and terms of use. Free for all use."
         />
         <link rel="canonical" href={`${SITE_URL}/standards/psi-05`} />
       </Helmet>
@@ -127,7 +127,7 @@ export default function PSI05() {
         </section>
 
         <section className="border border-border rounded-lg bg-card/40 p-6">
-          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground mb-3">Royalty tiers</h2>
+          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground mb-3">Terms of use</h2>
           <div className="space-y-2">
             {TIERS.map((t) => (
               <div key={t.tier} className="border border-border/60 rounded-md p-3">
@@ -137,8 +137,9 @@ export default function PSI05() {
             ))}
           </div>
           <p className="text-[11px] text-muted-foreground mt-3">
-            Verification is always free. Commercial terms apply only to issuance and redistribution at scale —
-            contact sales for the current schedule.
+            Verification and issuance are free, at any scale. The royalty tiers formerly published
+            here were withdrawn on 4 September 2026; no charge was ever made under them. The APEX marks
+            remain reserved.
           </p>
         </section>
 

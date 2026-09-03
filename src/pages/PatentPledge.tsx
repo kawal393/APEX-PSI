@@ -30,7 +30,7 @@ const PatentPledge = () => (
             <span className="text-gold-gradient">Patent Non-Assertion Pledge</span>
           </h1>
           <p className="text-xs font-mono text-muted-foreground tracking-widest uppercase">
-            Effective 23 April 2026 · Australian Innovation Patent AMCZ-2615560564
+            Effective 23 April 2026 · no patents held or pending — a standing non-assertion covenant
           </p>
         </header>
 
@@ -49,7 +49,7 @@ const PatentPledge = () => (
             <li className="flex gap-3">
               <span className="text-gold font-black">·</span>
               <span>
-                The patent guards the operational managed service (notary infrastructure, MPC mesh, anchoring rails) — never the open standard.
+                No patent is held or pending. This covenant binds APEX for any patent it may ever own that would read on the PSI Protocol.
               </span>
             </li>
             <li className="flex gap-3">
@@ -68,12 +68,11 @@ const PatentPledge = () => (
               1. Scope
             </h2>
             <p className="text-sm md:text-base text-foreground/80 leading-relaxed">
-              This Pledge applies to all claims of Australian Innovation Patent
-              AMCZ-2615560564 and any continuations, divisionals, foreign
-              counterparts, or reissues thereof (the <span className="font-semibold text-foreground">"PSI Patent"</span>),
-              insofar as those claims are necessarily infringed by a Conformant
-              Implementation of the PSI Protocol as published in IETF
-              Internet-Draft <span className="font-mono text-primary">draft-singh-psi</span> and successor revisions.
+              This Pledge applies to every patent claim owned or controlled by APEX,
+              now or in the future (including any continuations, divisionals, foreign
+              counterparts, or reissues), insofar as such a claim would be
+              necessarily infringed by a Conformant Implementation of the PSI
+              Protocol as published in IETF Internet-Draft <span className="font-mono text-primary">draft-singh-psi</span> and successor revisions.
             </p>
           </div>
 
@@ -151,7 +150,7 @@ const PatentPledge = () => (
               {
                 icon: Scale,
                 who: "Commercial Users of the Hosted Service",
-                what: "Standard commercial terms apply for the APEX-managed Notary and MPC mesh. The protocol itself remains free.",
+                what: "Free. The APEX-managed Notary and MPC mesh are free to use, as is the protocol. No royalty, no fee, no plan.",
               },
               {
                 icon: ShieldCheck,

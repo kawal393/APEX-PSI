@@ -10,9 +10,10 @@
 //   VERIFICATION code (verifySealConformance, canonical re-computation)
 //     → MIT. Free forever, everywhere. See packages/psi-verifier/LICENSE.
 //   GENERATION code (buildSealEnvelope and any sealing engine)
-//     → Proprietary. Free for personal / non-commercial use.
-//       Commercial or institutional sealing requires the PSI-05 royalty
-//       licence. See LICENSE-ENGINE.txt and /license.
+//     → Proprietary. Free for all use, including commercial and institutional.
+//       Commercial, government and institutional sealing is free too.
+//       Reserved: the APEX marks, and building a competing seal generator.
+//       See LICENSE-ENGINE.txt and /license.
 // ═══════════════════════════════════════════════════════════════════════
 
 import { jcsCanonicalize } from "./psi-canonicalize";
@@ -183,10 +184,13 @@ export async function verifySealConformance(input: unknown): Promise<Conformance
 // ═══════════ GENERATOR (proprietary — licensed at point of use) ═══════════
 
 export const ENGINE_LICENCE_TERMS =
-  "APEX PSI Sealing Engine Licence v1 — free for personal and non-commercial use; " +
-  "commercial and institutional sealing is licensed under PSI-05 royalty terms. " +
-  "Outputs are provided AS-IS, with no warranty, as mathematical statements per the " +
-  "PSI-SEAL/1 specification — never as a personal certification or statement of fact.";
+  "APEX PSI Sealing Engine Licence v2 - free for all use, including commercial, " +
+  "government and institutional use, at any scale, in perpetuity. The PSI-SEAL/1 " +
+  "schema may be read, implemented, verified and interoperated with freely; it may " +
+  "not be used to build a competing seal generator, and the APEX marks may not be " +
+  "applied to a product without a written licence. Outputs are provided AS-IS, with " +
+  "no warranty, as mathematical statements per the PSI-SEAL/1 specification - never " +
+  "as a personal certification or statement of fact.";
 
 export const ENGINE_LICENCE_KEY = "apex.psi.engine.licence.v1";
 

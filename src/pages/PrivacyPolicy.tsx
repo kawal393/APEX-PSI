@@ -35,7 +35,7 @@ const PrivacyPolicy = () => (
       <ul>
         <li>Name, email, phone number (via contact/demo request forms)</li>
         <li>Company name, role, and jurisdiction</li>
-        <li>Payment and billing information (processed by third-party payment providers)</li>
+        <li>No payment or billing information is collected — nothing is sold and no payment processor exists</li>
       </ul>
       <h3>3.2 Automatically Collected Information</h3>
       <ul>

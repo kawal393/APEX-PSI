@@ -23,10 +23,10 @@ const License = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>PSI Dual Licence — Free to Verify, Licensed to Seal — Apex PSI — Universal Verification Layer</title>
+        <title>PSI Licence — Free to Verify, Free to Seal — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
-          content="APEX PSI dual-license architecture: the verifier is MIT and free forever, the PSI-SEAL/1 sealing engine is licensed — free for personal use, PSI-05 royalty terms for commercial sealing."
+          content="APEX PSI licensing: the verifier is MIT and free forever; sealing is free for all use including commercial and institutional, at any scale. Reserved: the APEX marks and building a competing seal generator."
         />
         <link rel="canonical" href="https://ai-governance-standard.com/license" />
       </Helmet>
@@ -38,12 +38,12 @@ const License = () => {
           <h1 className="text-4xl md:text-6xl font-black tracking-tight uppercase leading-[0.95]">
             Free to check.
             <br />
-            <span className="text-gold">Licensed to create.</span>
+            <span className="text-gold">Free to create.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-muted-foreground">
-            The rules of verification belong to everyone. The engine that produces valid seals does not.
-            Anyone may verify a PSI seal, anywhere, forever, at no cost. Producing a schema-conformant
-            seal requires the licensed sealing engine.
+            The rules of verification belong to everyone, and so does the engine.
+            Anyone may verify a PSI seal, and anyone may produce one, anywhere, forever, at no cost.
+            What stays reserved is the APEX marks and the right to build a competing seal generator on the schema.
           </p>
         </section>
 
@@ -82,13 +82,13 @@ const License = () => {
             <div className="flex items-center gap-2 mb-4">
               <Lock className="h-5 w-5 text-gold" />
               <h2 className="text-sm font-bold tracking-[0.2em] uppercase text-gold">
-                Sealing engine — licensed
+                Sealing engine — free, with two reservations
               </h2>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground">
               {[
                 "Free for personal, educational, journalistic and research sealing",
-                "Commercial, government and institutional sealing: PSI-05 royalty terms",
+                "Commercial, government and institutional sealing: free - no royalty, no fee",
                 "Click-through acceptance at the point of use — recorded inside every seal",
                 "Outputs are AS-IS mathematical statements, never a certification of fact",
               ].map((t) => (
@@ -103,7 +103,7 @@ const License = () => {
                 <Button size="sm" variant="hero">Read engine licence</Button>
               </a>
               <Link to="/standards/psi-05">
-                <Button size="sm" variant="ghost">PSI-05 royalty terms</Button>
+                <Button size="sm" variant="ghost">PSI-05 specification</Button>
               </Link>
             </div>
           </Card>
@@ -205,8 +205,9 @@ verified, not asserted; trust the math, not the maker.`}
             <p className="text-sm text-muted-foreground">
               The schema copyright and licence terms are irrevocably assigned to the APEX PSI Foundation
               (in formation) as perpetual steward, on the binding condition that verification remains MIT
-              and free forever, that the schema is never narrowed in a way that breaks existing seals, and
-              that royalty terms stay published and non-discriminatory. The terms survive the author.
+              and free forever, that sealing remains free for all use at any scale, that the schema is
+              never narrowed in a way that breaks existing seals, and that the APEX marks remain reserved
+              and may not be applied to any product without a written licence. The terms survive the author.
             </p>
             <Link to="/foundation" className="text-gold text-sm hover:underline mt-3 inline-block">
               Foundation charter →

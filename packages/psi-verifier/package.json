@@ -5,10 +5,32 @@
 
   "license": "MIT",
   "type": "module",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
-  "exports": { ".": "./src/index.ts" },
-  "keywords": ["psi", "apex", "verification", "ai-governance", "eu-ai-act", "sha256", "merkle"],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["psi", "apex", "apex-psi", "verification", "verifier", "ai-governance", "eu-ai-act", "sha256", "ed25519", "merkle-tree", "rfc8785", "post-quantum", "provenance"],
+  "author": "APEX Intelligence Empire / ROCKYFILMS888 PTY LTD (ABN 71 672 237 795)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kawal393/APEX-PSI.git",
+    "directory": "packages/psi-verifier"
+  },
+  "bugs": { "url": "https://github.com/kawal393/APEX-PSI/issues" },
   "homepage": "https://ai-governance-standard.com/license",
+  "engines": { "node": ">=18" },
+  "devDependencies": { "tsup": "^8.0.0", "typescript": "^5.0.0" },
   "sideEffects": false
 }

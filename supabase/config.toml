@@ -3,15 +3,6 @@ project_id = "qhtntebpcribjiwrdtdd"
 [functions.send-contact-email]
 verify_jwt = false
 
-[functions.create-checkout]
-verify_jwt = false
-
-[functions.check-subscription]
-verify_jwt = false
-
-[functions.customer-portal]
-verify_jwt = false
-
 [functions.run-verification]
 verify_jwt = false
 
@@ -96,9 +87,6 @@ verify_jwt = false
 [functions.verify-status]
 verify_jwt = false
 
-[functions.stripe-webhook]
-verify_jwt = false
-
 [functions.harvest-social-proof]
 verify_jwt = false
 
@@ -143,12 +131,6 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.broadcast-content]
-verify_jwt = false
-
-[functions.crypto-quote]
-verify_jwt = false
-
-[functions.crypto-watcher]
 verify_jwt = false
 
 
