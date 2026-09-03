@@ -713,9 +713,9 @@ GET /verify-status?action=stats
                 <div key={pkg.name} className="border border-engine-border bg-engine-bg rounded p-4">
                   <div className="flex items-center justify-between mb-1">
                     <code className="text-xs text-engine-approved font-bold">{pkg.name}</code>
-                    <Badge className={pkg.status === "shipped"
-                      ? "bg-engine-approved/20 text-engine-approved border-engine-approved/30 text-[10px]"
-                      : "bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]"}>
+                    <Badge className={pkg.status === "roadmap"
+                      ? "bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]"
+                      : "bg-muted/30 text-muted-foreground border-border text-[10px]"}>
                       {pkg.status}
                     </Badge>
                   </div>
