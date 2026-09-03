@@ -145,7 +145,7 @@ const CommitPanel = ({ onCommit, isProcessing, paused }: CommitPanelProps) => {
           <div className="flex items-center gap-2">
             <Shield className="h-4 w-4 text-engine-highlight" />
             <div>
-              <span className="text-xs font-mono text-engine-text block">ZK PRIVACY MODE (GROTH16-COMPATIBLE)</span>
+              <span className="text-xs font-mono text-engine-text block">BN128 COMMITMENT (EXPERIMENTAL — NOT ZERO-KNOWLEDGE)</span>
               <span className="text-[10px] font-mono text-engine-muted">BN128 field commitment — hides action content</span>
             </div>
           </div>

@@ -97,7 +97,7 @@ const SubmissionKit = () => {
       "Article 12": "Immutable event stream. RFC 8785 Canonicalization. Monotonic sequencing with tamper detection.",
       "Article 13": "Transparency declarations. AI content labeling. User notification protocols.",
       "Article 14": "Protocol Intervention Layer (PIL) — 5s oversight pause. Human oversight enforcement via PSI intervention mechanism.",
-      "Article 15": "Groth16-compatible ZK Integrity Proofs. Ed25519 non-repudiation signatures. Merkle inclusion verification.",
+      "Article 15": "Ed25519 non-repudiation signatures. Merkle inclusion verification. Experimental BN128 commitments (not zero-knowledge).",
     };
     return map[article] || "Standard compliance verification applied.";
   };

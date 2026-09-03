@@ -34,7 +34,7 @@ primitives: (1) SHA-256 hash-chained audit trails with RFC 8785
 JSON Canonicalization for deterministic hashing, (2) Ed25519
 digital signatures (RFC 8032) on Merkle roots for non-repudiation,
 (3) Binary Merkle trees with inclusion proofs for O(log n)
-verification, (4) Groth16-compatible zero-knowledge commitments
+verification, (4) experimental BN128 field commitments (not zero-knowledge)
 over BN128 finite fields for privacy preservation, and (5) a
 3-node Multi-Party Computation consensus with 2/3 threshold
 verification to eliminate single-point-of-failure attacks.
@@ -48,7 +48,7 @@ Article 14 (Human Oversight) requirements through Ed25519-signed
 verdicts with mandatory rationale.
 
 The protocol currently supports 43 machine-readable predicates
-across 9 jurisdictions. All verification occurs on hashed
+across 11 regulatory frameworks. All verification occurs on hashed
 representations — source data never leaves the submitting entity's
 environment.
 
@@ -120,7 +120,7 @@ This ensures the ledger contains ONLY verified, compliant states.
   ┌─────────────────────────────────────────────┐
   │  Layer 5: Institutional Anchor Panel (Human Oversight)│
   │  Layer 4: MPC Consensus (3-node, 2/3 threshold)│
-  │  Layer 3: ZK Commitments (Groth16/BN128)      │
+  │  Layer 3: BN128 commitments (experimental)      │
   │  Layer 2: Merkle Trees (inclusion proofs)      │
   │  Layer 1: Hash Chain (SHA-256 + JCS + Ed25519) │
   └─────────────────────────────────────────────┘
@@ -152,7 +152,7 @@ Verification: Recompute root from leaf + proof path.
 
 3.3 Zero-Knowledge Commitments
 
-Groth16-structured proofs over BN128 finite field
+BN128 finite-field commitments, structurally modelled on Groth16 but with no pairing check, no trusted setup and no zero-knowledge guarantee
 (p = 21888...95617):
 
   π_A = (g^α · g^(a_i · s_i)) mod p
@@ -201,7 +201,7 @@ Oversight) through a 5-party auditor ratification layer:
 
 5. PREDICATE REGISTRY
 
-43 predicates across 9 jurisdictions:
+43 predicates across 11 regulatory frameworks:
 
   EU AI Act (Art. 5-52):     10 predicates
   MiFID II (Art. 16-27):      4 predicates

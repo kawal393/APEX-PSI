@@ -34,7 +34,7 @@ Abstract
 
    PSI achieves this through a combination of SHA-256 hash-chained
    audit trails, Ed25519 digital signatures, Merkle inclusion proofs,
-   Groth16-compatible zero-knowledge commitments over BN128 fields,
+   experimental BN128 field commitments (not zero-knowledge),
    and a 3-node Multi-Party Computation (MPC) consensus mechanism
    with 2/3 threshold verification.
 
@@ -186,7 +186,7 @@ Table of Contents
      leaf hash.  The proof consists of sibling hashes at
      each tree level with left/right position indicators.
 
-     A Groth16-compatible ZK commitment is generated over
+     An experimental BN128 field commitment is generated over
      BN128 finite field arithmetic:
 
        proof_elements = {π_A, π_B, π_C}
@@ -239,7 +239,7 @@ Table of Contents
 
 4.4.  Zero-Knowledge Commitments
 
-   Groth16-compatible commitments use BN128 finite field
+   Experimental BN128 commitments use finite field
    arithmetic (field prime p = 21888242871839275222246405745257275
    088548364400416034343698204186575808495617).
 
@@ -368,7 +368,7 @@ Table of Contents
 
 9.  Zero-Knowledge Commitments
 
-   The ZK layer generates Groth16-structured proof elements
+   The experimental commitment layer generates Groth16-structured elements without a pairing check
    without requiring a trusted setup ceremony.
 
    Field: BN128
@@ -463,7 +463,7 @@ Table of Contents
             User Notification (Rule 3(2)(c))
      4 predicates, enforcement: 2026-06-01
 
-   Total: 43 predicates across 9 jurisdictions
+   Total: 54 predicate definitions across 11 frameworks
 
 12. Proof Bundle Format
 
@@ -507,7 +507,7 @@ Table of Contents
      → Deterministic Mode: UNACCEPTABLE/HIGH blocked before commit
      → 3-node MPC consensus (2/3 threshold)
      → Ed25519 digital signatures on Merkle roots
-     → Groth16-compatible ZK privacy commitments (BN128)
+     → Experimental BN128 field commitments (not zero-knowledge)
 
 14. Security Considerations
 

@@ -113,7 +113,7 @@ const Engine = () => {
             timestamp: Date.now(),
           });
           setZkResult(zkProofResult);
-          toast.success("ZK proof generated (Groth16-compatible)", {
+          toast.success("BN128 commitment generated (experimental, not zero-knowledge)", {
             description: `BN128 field arithmetic • ${zkProofResult.generationTimeMs}ms • ${zkProofResult.privacyLevel}`,
           });
         } catch (e: any) {
