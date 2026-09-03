@@ -37,12 +37,13 @@ digital signatures (RFC 8032) on Merkle roots for non-repudiation,
 verification, (4) experimental BN128 field commitments (not zero-knowledge)
 over BN128 finite fields for privacy preservation, and (5) a
 3-node Multi-Party Computation consensus with 2/3 threshold
-verification to eliminate single-point-of-failure attacks.
+verification. All three nodes are operated by APEX, so this is
+software redundancy rather than independent institutional consensus.
 
 Version 1.2 introduces two critical advances: Deterministic Mode,
 which blocks UNACCEPTABLE and HIGH-risk actions before they enter
-the immutable ledger (eliminating the "optimistic flaw" inherent
-in post-hoc fraud proof systems), and the Institutional Anchor Panel, a
+the immutable ledger (rather than reviewing
+records after the fact), and the Institutional Anchor Panel, a
 5-party human auditor ratification layer satisfying EU AI Act
 Article 14 (Human Oversight) requirements through Ed25519-signed
 verdicts with mandatory rationale.
@@ -52,8 +53,13 @@ across 11 regulatory frameworks. All verification occurs on hashed
 representations — source data never leaves the submitting entity's
 environment.
 
-Keywords: AI compliance, zero-knowledge proofs, Merkle trees,
-          multi-party computation, EU AI Act, regulatory technology
+Keywords: AI compliance, hash chains, Merkle trees, Ed25519,
+          RFC 8785 canonicalisation, EU AI Act, regulatory technology
+
+Note: this protocol is not a zero-knowledge system. No ZK-SNARK
+or ZKML circuit is implemented. The BN128 components are an
+experimental demonstration with no pairing check, no trusted
+setup and no zero-knowledge property.
 
 ════════════════════════════════════════════════════════════════
 
@@ -78,12 +84,13 @@ Existing compliance approaches suffer from fundamental limitations:
       invalidates all certifications.
 
 We address these limitations through cryptographic verification
-primitives that enable mathematical proof of compliance without
-disclosing protected intellectual property.
+primitives that let a provider prove what bytes existed and when,
+without disclosing the content itself. They do not prove compliance;
+they produce evidence a provider or reviewer can check.
 
 Related work includes Quox VOLT (2026), which provides verifiable
-operations logging but lacks zero-knowledge proofs, MPC consensus,
-and human tribunal ratification. AIGA Protocol (IETF draft, 2025)
+operations logging but lacks a multi-node agreement layer and a
+human ratification layer. AIGA Protocol (IETF draft, 2025)
 addresses AI governance at the informational level but provides
 no cryptographic verification mechanism.
 
