@@ -55,7 +55,6 @@ const Dashboard = () => {
   const [verifications, setVerifications] = useState<any[]>([]);
   const [questionnaire, setQuestionnaire] = useState<any>(null);
   const [qLoaded, setQLoaded] = useState(false);
-  const [portalLoading, setPortalLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [showRetake, setShowRetake] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<string | null>(null);
