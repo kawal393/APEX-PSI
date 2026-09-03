@@ -47,7 +47,7 @@ in post-hoc fraud proof systems), and the Institutional Anchor Panel, a
 Article 14 (Human Oversight) requirements through Ed25519-signed
 verdicts with mandatory rationale.
 
-The protocol currently supports 43 machine-readable predicates
+The protocol currently ships 54 machine-readable predicate definitions
 across 11 regulatory frameworks. All verification occurs on hashed
 representations — source data never leaves the submitting entity's
 environment.
@@ -203,15 +203,23 @@ Oversight) through a 5-party auditor ratification layer:
 
 54 predicate definitions across 11 regulatory frameworks:
 
-  EU AI Act (Art. 5-52):     10 predicates
-  MiFID II (Art. 16-27):      4 predicates
-  DORA (Art. 5-26):            6 predicates
-  NIST AI RMF 1.0:             4 predicates
-  UK AI Safety Institute:      4 predicates
-  Canada AIDA (C-27):          4 predicates
-  NDIS (Australia):             3 predicates
-  Australia Privacy Act 2026:   4 predicates (NEW)
-  India IT Amendment 2026:      4 predicates (NEW)
+  EU AI Act:                  10 definitions
+  MiFID II (research only):    4 definitions
+  DORA (research only):        6 definitions
+  NIST AI RMF 1.0:             4 definitions
+  UK AI Safety Institute:      4 definitions
+  Canada AIDA (C-27):          7 definitions
+  NDIS (Australia):            3 definitions
+  Australia Privacy Act:       4 definitions
+  India IT Amendment:          4 definitions
+  Colorado AI Act:             3 definitions
+  ISO/IEC 42001:               5 definitions
+  ─────────────────────────────────────────
+  Total:                      54 definitions
+
+  Definitions are text pattern rules. They are an authoring
+  aid, not a legal determination, and they do not establish
+  compliance with any law.
 
 ════════════════════════════════════════════════════════════════
 
