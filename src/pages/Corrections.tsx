@@ -25,7 +25,7 @@ const ENTRIES = [
     undertaking: "A dead brand stays dead: no new file, mailbox, hostname or comment carries it.",
   },
   {
-    date: "4 September 2026",
+    date: "3 September 2026",
     said: "The site footer stated \u201cAustralian Provisional Patent \u2014 Filed\u201d.",
     now:
       "No provisional application has been filed. The footer reads \u201cNo patent claimed \u2014 open standard (MIT)\u201d.",
@@ -33,7 +33,7 @@ const ENTRIES = [
       "No patent, filing or grant is mentioned on this site unless a filing number can be produced on demand.",
   },
   {
-    date: "4 September 2026",
+    date: "3 September 2026",
     said:
       "The engine header described itself as an \u201cEU AI Act Enforcement Layer\u201d.",
     now:
@@ -42,7 +42,7 @@ const ENTRIES = [
       "Enforcement belongs to regulators and courts. This platform verifies; it never enforces.",
   },
   {
-    date: "4 September 2026",
+    date: "3 September 2026",
     said:
       "The pause control and its error messages cited EU AI Act Art. 14 as if the Act created a protocol pause mechanism.",
     now:
@@ -50,7 +50,7 @@ const ENTRIES = [
     undertaking: "Legal citations on this site name principles, never invented mechanisms.",
   },
   {
-    date: "4 September 2026",
+    date: "3 September 2026",
     said:
       "The engine badge printed the number of ledger entries loaded at startup (capped at 500) as \u201cpersisted\u201d, understating the ledger, which holds thousands of receipts.",
     now:
