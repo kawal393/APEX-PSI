@@ -8,7 +8,6 @@ export const LAPSE_DAYS = 90;
 /** Config flags — nothing claims to be live unless the flag says so. */
 export const ONCHAIN_STATUS = "IN CERTIFICATION" as const;
 export const ONCHAIN_NETWORK = "Base Sepolia" as const;
-export const FINDER_FEE_ACTIVE = false;
 export const FIRST_ANCHOR_FEE_WAIVED = true;
 
 export type FeeRow = {
@@ -27,13 +26,11 @@ export const FEE_SCHEDULE: FeeRow[] = [
   { item: "Enterprise", price: "$100/mo", note: "Organisation-wide issuance and webhooks." },
   { item: "Surplus routing", price: "0.1%", note: "Routed to the registry infrastructure pool only." },
   { item: "Referral fee", price: "10%", note: "Of a referred customer's first invoice, paid only when they pay." },
-  {
-    item: "Finder fee — litigation-finance intros",
-    price: "20%",
-    note: "Disclosed finder fee on introductions.",
-    status: FINDER_FEE_ACTIVE ? "active" : "not yet active",
-  },
 ];
+
+/** Printed verbatim beneath the fee schedule. */
+export const NO_FINDER_FEE_NOTICE =
+  "No fee is charged, and none is published, for introducing anyone to a litigation funder, a lawyer or any other third party. Apex holds no Australian Financial Services Licence, and does not arrange, promote, fund or profit from any claim, funding scheme or legal proceeding.";
 
 export const FEE_FOOTNOTE =
   "Fees published, amendable prospectively. Scale figures are modelled projections, stated so they can be checked rather than believed.";
@@ -89,7 +86,7 @@ export const CHARTER_LINES = [
 
 export const PUBLIC_PLAN = [
   { when: "NOW", line: "The wall opens. Applications are reviewed personally." },
-  { when: "AT FIRST REVENUE", line: "Finder fees activate. The on-chain mirror completes certification." },
+  { when: "AT FIRST REVENUE", line: "The on-chain mirror completes certification." },
   { when: "AT FOUNDATION FORMATION", line: "Stewards are drawn from founding seats by sealed seniority." },
 ];
 
