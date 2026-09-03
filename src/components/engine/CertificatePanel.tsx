@@ -54,7 +54,7 @@ const CertificatePanel = ({ certificate }: CertificatePanelProps) => {
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-mono text-engine-muted uppercase tracking-widest flex items-center gap-2">
               <Award className={`h-4 w-4 ${isApproved ? 'text-engine-approved' : 'text-engine-blocked'}`} />
-              PSI Compliance Certificate
+              PSI Compliance Record
             </CardTitle>
             <Badge className={`font-mono text-xs border-0 ${isApproved ? 'bg-engine-approved/15 text-engine-approved' : 'bg-engine-blocked/15 text-engine-blocked'}`}>
               {certificate.certificateId}

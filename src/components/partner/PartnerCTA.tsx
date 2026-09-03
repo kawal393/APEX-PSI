@@ -11,10 +11,10 @@ const PartnerCTA = () => (
           Apply for <span className="text-gold-gradient">Apex Institutional Certification</span>
         </h2>
         <p className="text-muted-foreground mb-2 max-w-md mx-auto">
-          The protocol is free. Certification and insurance underwriting fees apply for commercial regulatory filings.
+          The protocol is free. Apex is not a certifier, a notified body, a law firm or an insurer. No certification, accreditation or insurance is offered or implied.
         </p>
         <p className="text-xs text-muted-foreground mb-6 max-w-sm mx-auto">
-          Independently verifiable · Regulator-ready · Publicly anchored
+          Independently verifiable · Signed, verifiable · Publicly anchored
         </p>
         <Button variant="hero" size="lg" asChild>
           <Link to="/#contact">

@@ -27,7 +27,7 @@ const STEPS = [
   },
   {
     title: "Share & Refer",
-    description: "Use your referral code to invite others and earn rewards. Your compliance certificate can be shared publicly.",
+    description: "Use your referral code to invite others and earn rewards. Your compliance record can be shared publicly.",
     icon: "🎁",
   },
 ];

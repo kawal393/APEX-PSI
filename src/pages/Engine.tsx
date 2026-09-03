@@ -249,7 +249,7 @@ const Engine = () => {
               };
             }
             setCertificate(cert);
-            toast.success("Compliance certificate generated", {
+            toast.success("Compliance record generated", {
               description: cert.certificateId,
             });
           }

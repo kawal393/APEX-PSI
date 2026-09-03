@@ -21,12 +21,12 @@ const openAccessFeatures = [
 
 const certificationIncludes = [
   "Institutional Anchor ratification (enterprise-grade cryptographic seal)",
-  "Regulator-ready compliance certificate with Merkle proof",
+  "Signed, verifiable compliance record with Merkle proof",
   "Global Merkle root anchoring for proof persistence",
   "Continuous automated compliance monitoring",
   "Dedicated MPC node infrastructure",
   "24/7 SLA-backed support",
-  "Insurance underwriting eligibility",
+  "Signed evidence pack for your own advisers",
   "White-label deployment options",
 ];
 
@@ -139,7 +139,7 @@ const Pricing = () => {
                 "All Open Access features",
                 "Full Notary API access",
                 "Priority hash anchoring queue",
-                "EU AI Act compliance certificate",
+                "EU AI Act Article 50 transparency record",
               ].map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm text-foreground/80">
                   <CheckCircle2 className="h-4 w-4 text-gold flex-shrink-0 mt-0.5" />
@@ -186,7 +186,7 @@ const Pricing = () => {
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-6">
-              For enterprises requiring regulator-ready compliance filings, evidence-ratified certificates, and managed protocol infrastructure. Certification and insurance underwriting fees apply.
+              For enterprises requiring signed, verifiable compliance filings, evidence-ratified certificates, and managed protocol infrastructure. Apex is not a certifier, a notified body, a law firm or an insurer. No certification, accreditation or insurance is offered or implied.
             </p>
 
             <ul className="space-y-2.5 mb-8 flex-1">
@@ -225,7 +225,7 @@ const Pricing = () => {
             <p className="text-sm text-muted-foreground mb-5 flex-1">
               Sealing is free. This is one proof countersigned by the APEX PSI institutional trust
               anchor (Ed25519 + LMS-W4-SHA256), submitted to OpenTimestamps for Bitcoin timestamping, and issued as a
-              regulator-ready PDF at a permanent public receipt URL. No subscription.
+              signed, verifiable PDF at a permanent public receipt URL. No subscription.
             </p>
             <ServiceCheckoutButton service="conformityReceipt" label="Get a countersigned receipt" featured />
           </motion.div>
@@ -249,7 +249,7 @@ const Pricing = () => {
               <Link to="/registry/check" className="text-primary underline">procurement console</Link>.
               A listing shows your organisation as Verified, with continuous monitoring and lapse alerts.
             </p>
-            <ServiceCheckoutButton service="registryListing" label="List as a Verified Supplier" />
+            <ServiceCheckoutButton service="registryListing" label="List in the Supplier Registry" />
           </motion.div>
         </div>
 

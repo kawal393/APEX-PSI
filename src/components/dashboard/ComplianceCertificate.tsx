@@ -35,7 +35,7 @@ const ComplianceCertificate = ({ companyName, score, status, date, merkleHash }:
     const certContent = `
 ═══════════════════════════════════════════════════════
               APEX PSI
-         EU AI ACT COMPLIANCE CERTIFICATE
+         EU AI ACT ARTICLE 50 TRANSPARENCY RECORD
 ═══════════════════════════════════════════════════════
 
 Company:        ${companyName || "N/A"}
@@ -93,7 +93,7 @@ Deadline: August 2, 2026
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Award className="h-4 w-4 text-primary" />
-          Compliance Certificate
+          Compliance Record
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">

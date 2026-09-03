@@ -16,11 +16,11 @@ export const CHECKOUT = {
     cadence: "per month",
     label: "PSI Prover",
   },
-  /** Verified Supplier Registry listing — public procurement console entry. */
+  /** Supplier Registry listing — public procurement console entry. */
   registryListing: {
     price: "$199",
     cadence: "per month",
-    label: "Verified Supplier Registry Listing",
+    label: "Supplier Registry Listing",
   },
 } as const;
 
@@ -61,7 +61,7 @@ export const CRYPTO_ITEMS = [
     key: "registry_12mo",
     label: "Registry listing — 12 months",
     price: "$1,990",
-    delivers: "Verified Supplier Registry listing for 12 months",
+    delivers: "Supplier Registry listing for 12 months",
   },
 ] as const;
 

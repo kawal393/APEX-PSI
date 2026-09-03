@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX ENGINE — Compliance Certificate Generator
+// APEX ENGINE — Compliance Record Generator
 // Generates cryptographically-signed compliance attestations
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -86,7 +86,7 @@ const PREDICATE_NAMES: Record<string, string> = {
 };
 
 /**
- * Generate a compliance certificate from a verified commit record
+ * Generate a compliance record from a verified commit record
  */
 export async function generateCertificate(record: CommitRecord): Promise<ComplianceCertificate | null> {
   if (record.phase !== 'VERIFIED' || !record.proofHash || !record.merkleRoot || !record.merkleProof) {
@@ -214,7 +214,7 @@ export function generateCertificateHTML(cert: ComplianceCertificate): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>APEX Compliance Certificate - ${cert.certificateId}</title>
+  <title>APEX Compliance Record - ${cert.certificateId}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -344,7 +344,7 @@ export function generateCertificateHTML(cert: ComplianceCertificate): string {
   <div class="certificate">
     <div class="header">
       <h1>APEX PSI</h1>
-      <div class="subtitle">EU AI ACT COMPLIANCE CERTIFICATE</div>
+      <div class="subtitle">EU AI ACT ARTICLE 50 TRANSPARENCY RECORD</div>
       <div class="cert-id">${cert.certificateId}</div>
     </div>
 

@@ -51,7 +51,7 @@ const tiers = [
       "Institutional Anchor Panel ratification",
       "Dedicated MPC node",
       "SLA-backed 99.9% uptime",
-      "Compliance certificate generation",
+      "Compliance record generation",
       "Custom predicate development",
       "White-label deployment",
     ],

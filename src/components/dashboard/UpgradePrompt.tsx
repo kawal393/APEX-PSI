@@ -17,7 +17,7 @@ const MESSAGES: Record<string, { title: string; description: string; cta: string
   },
   certificate_limit: {
     title: "Certificate Limit Reached",
-    description: "Free accounts get 1 certificate per month. Upgrade for unlimited regulator-ready certificates with full Merkle audit trails.",
+    description: "Free accounts get 1 certificate per month. Upgrade for unlimited signed, verifiable certificates with full Merkle audit trails.",
     cta: "Get Unlimited Certificates",
   },
   mode_locked: {
@@ -31,8 +31,8 @@ const MESSAGES: Record<string, { title: string; description: string; cta: string
     cta: "Enable Continuous Monitoring",
   },
   audit_export: {
-    title: "Regulator-Ready Export — Paid Feature",
-    description: "Download a complete audit package with Merkle proofs, timestamps, and article-by-article evidence. Ready to hand to any regulator.",
+    title: "Signed Export — Paid Feature",
+    description: "Download a complete audit package with Merkle proofs, timestamps, and article-by-article evidence, in a form your own advisers can independently re-verify. No regulator's or court's acceptance is promised or implied.",
     cta: "Get Audit Export",
   },
 };

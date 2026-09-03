@@ -507,7 +507,7 @@ function combinePair(a: string, b: string): string {
             />
             <LimitationItem
               title="Certificate Generation"
-              description="Compliance certificates with QR codes for instant verification are now generated. PDF export via print dialog. Full Article 11/12 formatted reports on roadmap."
+              description="Compliance records with QR codes for instant verification are now generated. PDF export via print dialog. Full Article 11/12 formatted reports on roadmap."
               status="IMPLEMENTED"
             />
             <LimitationItem

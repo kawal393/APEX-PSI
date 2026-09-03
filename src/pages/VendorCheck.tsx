@@ -37,7 +37,7 @@ const GRADE_COPY: Record<
   { label: string; card: string; icon: typeof ShieldCheck; iconClass: string }
 > = {
   VERIFIED_SUPPLIER: {
-    label: "Verified Supplier",
+    label: "Registry listing",
     card: "border-compliant/40 bg-compliant/[0.04]",
     icon: ShieldCheck,
     iconClass: "text-compliant",
@@ -104,7 +104,7 @@ const VendorCheck = () => {
         <title>AI Supplier Transparency Check Registry — Apex PSI — Universal Verification Layer</title>
         <meta
           name="description"
-          content="Free check of any supplier domain for AI transparency conformity signals: PSI protocol descriptor, Compliance-Receipt header, published trust anchor and Verified Supplier listing."
+          content="Free check of any supplier domain for AI transparency conformity signals: PSI protocol descriptor, Compliance-Receipt header, published trust anchor and Supplier Registry listing."
         />
         <link rel="canonical" href={`${SITE_URL}/registry/check`} />
         <meta property="og:title" content="AI Supplier Transparency Check — APEX PSI Registry" />
@@ -159,7 +159,7 @@ const VendorCheck = () => {
                 </p>
                 {result.registry_listing.listed && (
                   <p className="text-sm text-compliant mt-1">
-                    Listed in the APEX PSI Verified Supplier Registry
+                    Listed in the APEX PSI Supplier Registry
                     {result.registry_listing.display_name ? ` as ${result.registry_listing.display_name}` : ""}.
                   </p>
                 )}

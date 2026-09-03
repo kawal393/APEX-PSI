@@ -63,7 +63,7 @@ const products: Product[] = [
     cadence: CHECKOUT.conformityReceipt.cadence,
     who: "Anyone who needs a signed technical receipt for an audit, client or internal record.",
     summary:
-      "Sealing is free. What you buy is the countersignature: your hash additionally signed by the APEX PSI institutional trust anchor, timestamped through OpenTimestamps, issued as a regulator-ready PDF.",
+      "Sealing is free. What you buy is the countersignature: your hash additionally signed by the APEX PSI published trust anchor, timestamped through OpenTimestamps, issued as a signed, verifiable PDF.",
     features: [
       "Countersigned by the APEX PSI trust anchor",
       "Ed25519 + LMS-W4-SHA256 hybrid signature",
@@ -104,9 +104,9 @@ const products: Product[] = [
     cadence: CHECKOUT.registryListing.cadence,
     who: "Vendors being asked by procurement how their AI is governed.",
     summary:
-      "A public, machine-checkable listing in the Verified Supplier Registry that buyers and regulators can query directly.",
+      "A public, machine-checkable listing in the Supplier Registry that buyers and auditors can query directly.",
     features: [
-      "Public listing in the Verified Supplier Registry",
+      "Public listing in the Supplier Registry",
       "Continuous domain transparency scoring",
       "Embeddable APEX Verified badge",
       "Procurement-facing evidence page",
@@ -124,9 +124,9 @@ const products: Product[] = [
     cadence: "per month",
     who: "Enterprises, governments and regulated operators filing evidence.",
     summary:
-      "Managed protocol infrastructure, regulator-ready filings and dedicated consensus nodes under contract.",
+      "Managed protocol infrastructure, signed, verifiable filings and dedicated consensus nodes under contract.",
     features: [
-      "Regulator-ready compliance filings with Merkle proofs",
+      "Signed, verifiable compliance filings with Merkle proofs",
       "Dedicated MPC consensus nodes",
       "Continuous automated monitoring and alerting",
       "White-label deployment and custom domains",

@@ -11,8 +11,8 @@ interface CountersignUpsellProps {
 
 /**
  * Sealing is free and always will be. What is paid is the countersignature:
- * the same proof, additionally signed by the APEX PSI institutional trust anchor,
- * anchored to Bitcoin and issued as a regulator-ready PDF.
+ * the same proof, additionally signed by the APEX PSI published trust anchor,
+ * anchored to Bitcoin and issued as a signed, verifiable PDF.
  */
 const CountersignUpsell = ({ reference, className = "" }: CountersignUpsellProps) => {
   return (
@@ -47,7 +47,7 @@ const CountersignUpsell = ({ reference, className = "" }: CountersignUpsellProps
         </li>
         <li className="flex items-start gap-2">
           <FileCheck className="h-4 w-4 text-gold flex-shrink-0 mt-0.5" />
-          Regulator-ready PDF referencing EU AI Act Article 50 transparency duties
+          Signed, verifiable PDF referencing EU AI Act Article 50 transparency duties
         </li>
       </ul>
 

@@ -281,7 +281,7 @@ const Dashboard = () => {
                 )}
                 {isFree && (
                   <p className="text-xs text-muted-foreground">
-                    Free forever — upgrade for regulator-ready proof
+                    Free forever — upgrade for signed, verifiable proof
                   </p>
                 )}
               </div>

@@ -10,7 +10,7 @@ const pillars = [
     desc: "We deploy our full PSI compliance infrastructure into your enterprise. The protocol is free; the certification, evidence ratification, and managed MPC infrastructure are engagement-based.",
     details: [
       "Full PSI Protocol deployment and integration",
-      "Evidence-ratified compliance certificates",
+      "Evidence-ratified compliance records",
       "Orbital Registry entry for global proof anchoring",
       "Terms discussed under NDA",
     ],
