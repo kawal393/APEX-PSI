@@ -601,7 +601,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
-      - run: npm install @apex/psi-sdk
+      - run: npm install ./packages/psi-sdk   # not published to npm; build from the repository
       - name: Run compliance check
         env:
           APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}
@@ -611,7 +611,7 @@ jobs:
             --mode blocking \\
             --fail-on-violation`}</code>
                   </pre>
-                  <CopyButton text={`# .github/workflows/compliance.yml\nname: APEX Compliance Gate\non: [push, pull_request]\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: '20' }\n      - run: npm install @apex/psi-sdk\n      - name: Run compliance check\n        env:\n          APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}\n        run: npx apex-verify --predicates EU_ART_14,EU_ART_50,NIST_GOVERN_1 --mode blocking --fail-on-violation`} section="github-actions" />
+                  <CopyButton text={`# .github/workflows/compliance.yml\nname: APEX Compliance Gate\non: [push, pull_request]\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: '20' }\n      - run: npm install ./packages/psi-sdk   # not published to npm; build from the repository\n      - name: Run compliance check\n        env:\n          APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}\n        run: npx apex-verify --predicates EU_ART_14,EU_ART_50,NIST_GOVERN_1 --mode blocking --fail-on-violation`} section="github-actions" />
                 </div>
               </div>
 
@@ -624,7 +624,7 @@ compliance_gate:
   stage: test
   image: node:20
   script:
-    - npm install @apex/psi-sdk
+    - npm install ./packages/psi-sdk   # not published to npm; build from the repository
     - npx apex-verify
         --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1
         --mode blocking
@@ -632,7 +632,7 @@ compliance_gate:
   artifacts:
     paths: [proof-bundle.json]`}</code>
                   </pre>
-                  <CopyButton text={`# .gitlab-ci.yml\ncompliance_gate:\n  stage: test\n  image: node:20\n  script:\n    - npm install @apex/psi-sdk\n    - npx apex-verify --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1 --mode blocking --output proof-bundle.json\n  artifacts:\n    paths: [proof-bundle.json]`} section="gitlab-ci" />
+                  <CopyButton text={`# .gitlab-ci.yml\ncompliance_gate:\n  stage: test\n  image: node:20\n  script:\n    - npm install ./packages/psi-sdk   # not published to npm; build from the repository\n    - npx apex-verify --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1 --mode blocking --output proof-bundle.json\n  artifacts:\n    paths: [proof-bundle.json]`} section="gitlab-ci" />
                 </div>
               </div>
             </div>
@@ -701,21 +701,21 @@ GET /verify-status?action=stats
           <CardContent>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
-                { name: "@apex/psi-verifier", target: "MIT verifier v1.2.0 — free forever. MIT. No permission required.", status: "shipped", install: "npm i @apex/psi-verifier" },
-                { name: "psi-verifier", target: "Python verifier v1.2.0 — free forever. MIT. No permission required.", status: "shipped", install: "pip install psi-verifier" },
-                { name: "@apex/psi-openai", target: "OpenAI Node SDK", status: "shipped", install: "npm i @apex/psi-openai" },
-                { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "shipped", install: "npm i @apex/psi-anthropic" },
-                { name: "@apex/psi-vercel-ai", target: "Vercel AI SDK", status: "shipped", install: "npm i @apex/psi-vercel-ai" },
-                { name: "@apex/psi-hono", target: "Hono middleware", status: "shipped", install: "npm i @apex/psi-hono" },
+                { name: "@apex/psi-verifier", target: "MIT verifier v1.2.0 — free forever. MIT. No permission required.", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "psi-verifier", target: "Python verifier v1.2.0 — free forever. MIT. No permission required.", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "@apex/psi-openai", target: "OpenAI Node SDK", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "@apex/psi-vercel-ai", target: "Vercel AI SDK", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "@apex/psi-hono", target: "Hono middleware", status: "not published", install: "source in packages/ — build from the repository" },
                 { name: "@apex/psi-google", target: "Gemini / Vertex", status: "roadmap", install: "Q1 2026" },
                 { name: "@apex/psi-bedrock", target: "AWS Bedrock", status: "roadmap", install: "Q1 2026" },
               ].map((pkg) => (
                 <div key={pkg.name} className="border border-engine-border bg-engine-bg rounded p-4">
                   <div className="flex items-center justify-between mb-1">
                     <code className="text-xs text-engine-approved font-bold">{pkg.name}</code>
-                    <Badge className={pkg.status === "shipped"
-                      ? "bg-engine-approved/20 text-engine-approved border-engine-approved/30 text-[10px]"
-                      : "bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]"}>
+                    <Badge className={pkg.status === "roadmap"
+                      ? "bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]"
+                      : "bg-muted/30 text-muted-foreground border-border text-[10px]"}>
                       {pkg.status}
                     </Badge>
                   </div>
@@ -738,7 +738,7 @@ GET /verify-status?action=stats
 
         <div className="text-center py-8">
           <p className="text-engine-muted mb-4">
-            Ready to integrate compliance verification into your AI systems?
+            Integration is free: no account, no key and nothing to buy.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link to="/engine">
@@ -747,12 +747,12 @@ GET /verify-status?action=stats
                 Try Live Demo
               </Button>
             </Link>
-            <a href="/#contact">
+            <Link to="/spec">
               <Button variant="outline" className="border-engine-border text-engine-text gap-2">
                 <ExternalLink className="h-4 w-4" />
-                Contact Sales
+                Read the specification
               </Button>
-            </a>
+            </Link>
           </div>
         </div>
       </main>

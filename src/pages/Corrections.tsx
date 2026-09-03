@@ -57,6 +57,15 @@ const ENTRIES = [
       "The badge reads \u201clatest loaded\u201d. The full ledger count is published on the impact wall, fetched live from the public ledger.",
     undertaking: "A counter shows what it actually measures, or it does not ship.",
   },
+  {
+    date: "3 September 2026",
+    said:
+      "The site published commercial tiers, per-unit prices, subscriptions and checkout: paid plans, a fee schedule with dollar amounts, \u201cContact sales\u201d offers and card and on-chain payment flows.",
+    now:
+      "All commerce is withdrawn. The protocol, the verifier, sealing and verification are free, with no account and no key. No price, tier, subscription, purchase offer or checkout appears anywhere on the site.",
+    undertaking:
+      "Charging for evidence gave anyone a reason to doubt the record, and paid tiers implied a standing Apex does not hold. Verification stays free so the record can be checked by anyone, at no cost, without asking us.",
+  },
 ];
 
 const Corrections = () => (

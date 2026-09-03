@@ -11,7 +11,7 @@ const features = [
   {
     icon: Gavel,
     title: "Fraud Proofs on Demand",
-    desc: "Only generate expensive ZK proofs when a regulator specifically challenges an output. 99.9% of outputs never need one.",
+    desc: "Only generate expensive ZK proofs when an output is specifically challenged. Most outputs never need one.",
   },
   {
     icon: Link2,
@@ -51,7 +51,7 @@ const SolutionSection = () => {
           <span className="text-gold-gradient">{t("solution.headline")}</span> {t("solution.headlineSuffix")}
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          An Optimistic ZKML architecture that reduces compliance costs by 99.9% while satisfying every regulatory requirement.
+          An Optimistic ZKML architecture that keeps verification cheap by proving only what is challenged. It supports a provider’s own compliance work; it does not satisfy any requirement on its own.
         </p>
       </motion.div>
 

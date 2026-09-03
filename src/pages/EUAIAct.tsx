@@ -31,7 +31,7 @@ const ARTICLES = [
     requirement: "Ensure AI systems are used by sufficiently trained personnel with adequate AI literacy.",
     psiMapping: "Signed receipts can support provenance records; organisational training obligations require separate controls.",
     icon: Eye,
-    cost: "$0.006/seal",
+    cost: "Free",
   },
   {
     number: "Article 50",
@@ -39,7 +39,7 @@ const ARTICLES = [
     requirement: "Mark AI-generated content with machine-readable metadata. Disclose deepfakes. Label synthetic text.",
     psiMapping: "Machine-readable metadata, signatures and optional watermarking can support marking workflows; legal applicability remains context-specific.",
     icon: FileText,
-    cost: "$0.006/seal",
+    cost: "Free",
     critical: true,
   },
   {
@@ -48,7 +48,7 @@ const ARTICLES = [
     requirement: "Maintain automatic logging of AI system operations for traceability.",
     psiMapping: "Hash chaining and confirmed timestamp proofs can make later alteration detectable; retention and logging duties remain with the operator.",
     icon: Hash,
-    cost: "$0.006/record",
+    cost: "Free",
   },
   {
     number: "Article 13",
@@ -56,7 +56,7 @@ const ARTICLES = [
     requirement: "Provide deployers with clear instructions on AI system capabilities and limitations.",
     psiMapping: "Receipt fields can carry machine-readable declarations; provider instructions and system documentation remain separate obligations.",
     icon: Eye,
-    cost: "$0.006/header",
+    cost: "Free",
   },
   {
     number: "Article 14",
@@ -64,7 +64,7 @@ const ARTICLES = [
     requirement: "Enable effective human oversight during AI system use.",
     psiMapping: "The portal can help a reviewer check receipt integrity; it does not itself implement human oversight.",
     icon: ShieldCheck,
-    cost: "$0.006/verify",
+    cost: "Free",
   },
   {
     number: "Article 15",
@@ -72,12 +72,12 @@ const ARTICLES = [
     requirement: "Ensure AI systems are accurate, resilient against errors, faults, and adversarial attacks.",
     psiMapping: "SHA-256 and signatures detect changes to supported signed artefacts; they do not establish model accuracy, robustness or cybersecurity.",
     icon: Lock,
-    cost: "$0.006/check",
+    cost: "Free",
   },
 ];
 
 const COST_COMPARISON = [
-  { method: "Apex PSI", cost: "Plan-dependent", per: "receipt or service", time: "Varies", features: "Signed receipt, optional timestamp proof, machine-readable evidence", recommended: true },
+  { method: "Apex PSI", cost: "Free", per: "receipt or service", time: "Varies", features: "Signed receipt, optional timestamp proof, machine-readable evidence", recommended: true },
   { method: "Blockchain (Ethereum)", cost: "$1–$20", per: "transaction", time: "12 sec – 10 min", features: "Immutable record, but slow, expensive, requires wallet" },
   { method: "Zero-Knowledge Proofs", cost: "Workload-dependent", per: "proof generation", time: "Workload-dependent", features: "Privacy-preserving; implementation cost and performance vary widely" },
   { method: "Manual Compliance", cost: "$50–$200", per: "hour (consultant)", time: "Weeks–Months", features: "Human review, error-prone, not scalable" },
@@ -154,7 +154,7 @@ export default function EUAIAct() {
         <meta name="description" content="APEX PSI technical documentation for Section 1 of the EU Code of Practice on Transparency of AI-Generated Content: in-band signed tamperproof metadata, C2PA Content Credentials, Ed25519 + ML-DSA-65." />
         <link rel="canonical" href="https://ai-governance-standard.com/eu-ai-act" />
         <meta property="og:title" content="EU AI Act Compliance — Article 50 Ready with Apex PSI" />
-        <meta property="og:description" content="Map every EU AI Act article to Apex PSI. $0.006/verification. Code of Practice signatory." />
+        <meta property="og:description" content="Map every EU AI Act article to Apex PSI. Free verification, no account and no key." />
         <meta property="og:url" content="https://ai-governance-standard.com/eu-ai-act" />
         <meta property="og:type" content="website" />
       </Helmet>

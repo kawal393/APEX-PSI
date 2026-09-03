@@ -38,6 +38,9 @@ const HowToUse = () => {
             <div>
               <p className="font-mono text-xs text-primary mb-2">01 · INSTALL</p>
               <p className="text-sm text-foreground/80 mb-3">Add a runtime adapter for your stack.</p>
+              <p className="text-[11px] text-muted-foreground mb-3">
+                Adapter API shown as designed. Packages are not published to npm yet; the verifier source is MIT in the repository.
+              </p>
               <pre className="bg-black/60 border border-primary/20 rounded-md p-3 text-[11px] font-mono text-primary overflow-x-auto">
 {`npm i @apex/psi-hono
 # or @apex/psi-openai

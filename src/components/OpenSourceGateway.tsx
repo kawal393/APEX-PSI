@@ -38,9 +38,9 @@ const OpenSourceGateway = () => {
               Trust is not earned; it is verified.
             </p>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-xs sm:text-sm">
-              APEX PSI is open-source, allowing any regulator to audit the mathematical
-              foundation of our compliance circuits. Every hash function, every Merkle
-              construction, every signature scheme — publicly verifiable.
+              The verifier and the recomputation engine are MIT-licensed, so anyone can audit
+              the mathematical foundation. Every hash function, every Merkle construction,
+              every signature scheme — publicly inspectable in the repository.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

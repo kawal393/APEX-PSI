@@ -44,11 +44,12 @@ const BusinessModel = () => (
       >
         <p className="text-gold font-semibold tracking-widest uppercase text-sm mb-3">Institutional Engagement</p>
         <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
-          The Protocol is <span className="text-gold-gradient">Free</span>. The Certification is Institutional.
+          The Protocol is <span className="text-gold-gradient">Free</span>. Nothing here is sold.
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          The PSI Protocol (<span className="font-mono text-primary">draft-singh-psi (rev 01)</span>) is open-source and free forever.
-          Revenue is generated through Institutional Certification, managed infrastructure, and evidence ratification services.
+          The PSI Protocol (<span className="font-mono text-primary">draft-singh-psi (rev 01)</span>) is free forever.
+          The MIT licence covers the verifier and the recomputation engine source — not the hosted platform, and not the
+          findings ledger. Sealing and verification are free, with no account and no key.
         </p>
       </motion.div>
 

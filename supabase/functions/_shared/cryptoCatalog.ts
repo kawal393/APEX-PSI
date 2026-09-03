@@ -23,7 +23,7 @@ export type CryptoItem = {
 export const CRYPTO_ITEMS: Record<string, CryptoItem> = {
   receipt_1: {
     key: "receipt_1",
-    label: "Article 50 Conformity Receipt",
+    label: "Article 50 Transparency Receipt",
     usdCents: 2900,
     serviceKey: "conformity_receipt",
     quantity: 1,

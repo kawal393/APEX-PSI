@@ -49,7 +49,7 @@ const tools = [
   {
     icon: Stamp,
     title: "APEX Notary",
-    desc: "Notarize any AI decision with Ed25519 signatures. Free tier: 100 records/month.",
+    desc: "Notarize any AI decision with Ed25519 signatures. Free — no account, no key.",
     cta: "Start Notarizing",
     href: "/notary",
   },

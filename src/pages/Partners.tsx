@@ -6,7 +6,8 @@ import { Check, Copy } from "lucide-react";
 
 const BADGE_SNIPPET =
   '<script src="https://ai-governance-standard.com/badge.js" data-name="Your Company" data-hash="YOUR_RECORD_HASH" async></script>';
-const NPM_SNIPPET = "npm install @apex/psi-sdk";
+const NPM_SNIPPET =
+  "@apex/psi-sdk is not published to npm. The source is in packages/ — build from the repository.";
 
 const CopyBox = ({ code }: { code: string }) => {
   const [copied, setCopied] = useState(false);
@@ -74,7 +75,7 @@ const Partners = () => (
         <section className="mt-8 rounded-md border border-border bg-card/40 p-6">
           <h2 className="text-xl font-bold uppercase tracking-tight">Integrated with Apex PSI</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Install the open-source SDK or a runtime adapter and emit signed receipts from your own stack.
+            Build the MIT SDK or a runtime adapter from the repository and emit signed receipts from your own stack.
           </p>
           <CopyBox code={NPM_SNIPPET} />
           <a

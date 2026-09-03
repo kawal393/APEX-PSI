@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 
 const DEMOS = [
-  { name: "Northgate Capital", hash: "1e9e62eda2ada5242542594b457f21a2429d5943065a82b97067f2d91637bcfb" },
-  { name: "Helios Robotics", hash: "9e5c7ed98491e6f0dd9347433cc32796208370f80c4c15a068aae471ff6c8fb0" },
-  { name: "Meridian Health AI", hash: "5a6c6328cf32512bb0963628ff34e93dd8ddb2b0ca85ffc110e7e5f2f44c2471" },
+  { name: "Example Trader Pty Ltd", hash: "1e9e62eda2ada5242542594b457f21a2429d5943065a82b97067f2d91637bcfb" },
+  { name: "Example Robotics Pty Ltd", hash: "9e5c7ed98491e6f0dd9347433cc32796208370f80c4c15a068aae471ff6c8fb0" },
+  { name: "Example Health AI Pty Ltd", hash: "5a6c6328cf32512bb0963628ff34e93dd8ddb2b0ca85ffc110e7e5f2f44c2471" },
 ];
 
 const snippetFor = (name: string, hash: string) =>
@@ -33,8 +33,13 @@ const VerifiedByApexSection = () => {
           One line of HTML. A verifiable badge.
         </h2>
         <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-muted-foreground">
-          Illustrative examples. Each badge resolves to a public verification record; it attests
-          existence and integrity, not the truth of any claim.
+          Layout demonstration only. These three company names are invented. The three hashes were
+          sealed in the ledger as illustrative examples (predicate ILLUSTRATIVE_EXAMPLE), so each link
+          opens a real record — a record of a demonstration digest, tied to no real company and to no
+          claim. A badge attests the existence and integrity of a sealed digest — never the truth of any
+          claim, and never an endorsement of the company named. Any hash never sealed opens a page
+          stating that no ledger entry exists, which is the protocol behaving correctly: it refuses to
+          attest to anything it has not seen.
         </p>
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">

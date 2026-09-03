@@ -55,7 +55,6 @@ const Dashboard = () => {
   const [verifications, setVerifications] = useState<any[]>([]);
   const [questionnaire, setQuestionnaire] = useState<any>(null);
   const [qLoaded, setQLoaded] = useState(false);
-  const [portalLoading, setPortalLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [showRetake, setShowRetake] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<string | null>(null);
@@ -145,18 +144,6 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const handleManageSubscription = async () => {
-    setPortalLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (e: any) {
-      toast.error(e.message || "Failed to open subscription management");
-    } finally {
-      setPortalLoading(false);
-    }
-  };
 
   const handleRunVerification = async () => {
     setVerifying(true);
@@ -281,7 +268,7 @@ const Dashboard = () => {
                 )}
                 {isFree && (
                   <p className="text-xs text-muted-foreground">
-                    Free forever — upgrade for signed, verifiable proof
+                    Free — sealing and verification require no payment, account tier or key
                   </p>
                 )}
               </div>
@@ -304,15 +291,6 @@ const Dashboard = () => {
                 <Button variant="ghost" size="sm" onClick={checkSubscription}>
                   <RefreshCw className="h-4 w-4 mr-1" /> Refresh
                 </Button>
-                {!isFree ? (
-                  <Button variant="heroOutline" size="sm" onClick={handleManageSubscription} disabled={portalLoading}>
-                    {portalLoading ? "Loading..." : "Manage Subscription"}
-                  </Button>
-                ) : (
-                  <Button variant="hero" size="sm" onClick={() => navigate("/#pricing")}>
-                    <Zap className="h-4 w-4 mr-1" /> Upgrade
-                  </Button>
-                )}
               </div>
             </div>
           </div>

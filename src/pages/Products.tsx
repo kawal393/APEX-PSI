@@ -14,137 +14,117 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { CHECKOUT } from "@/lib/commerce";
 import { SITE_URL } from "@/lib/site";
-import ServiceCheckoutButton from "@/components/ServiceCheckoutButton";
-import type { CheckoutKey } from "@/lib/commerce";
+import { FREE_ACCESS_STATEMENT, TRANSPARENCY_RECEIPT_LABEL } from "@/lib/commerce";
 
-type Product = {
+type Capability = {
   id: string;
   icon: typeof Globe;
   eyebrow: string;
   name: string;
-  price: string;
-  cadence: string;
   who: string;
   summary: string;
   features: string[];
-  cta: { label: string; href?: string; route?: boolean; checkout?: CheckoutKey };
+  cta: { label: string; href: string };
   featured?: boolean;
 };
 
-const products: Product[] = [
+const capabilities: Capability[] = [
   {
     id: "protocol",
     icon: Globe,
     eyebrow: "The Standard",
     name: "PSI Protocol — Open Access",
-    price: "$0",
-    cadence: "forever",
-    who: "Every developer, lab, auditor and regulator.",
+    who: "Every developer, lab, auditor and reader.",
     summary:
       "The protocol itself is public-good infrastructure. Seal, hash, sign and verify without an account, a key or an invoice.",
     features: [
-      "Full verification engine + MIT-licensed SDK",
+      "Full verification engine; verifier source is MIT in the repository",
       "Client-side SHA-256 sealing of any file (/seal, /pramaan)",
       "Ed25519 plus documented post-quantum signature options",
       "Public hash verification portal and REST API",
       "Compliance-Receipt HTTP header (draft-singh-psi-http-01)",
-      "Free vendor transparency console (/registry/check)",
+      "Vendor transparency console (/registry/check)",
     ],
-    cta: { label: "Use the protocol", href: "/seal", route: true },
+    cta: { label: "Use the protocol", href: "/seal" },
   },
   {
     id: "receipt",
     icon: Stamp,
-    eyebrow: "Pay per proof",
-    name: CHECKOUT.conformityReceipt.label,
-    price: CHECKOUT.conformityReceipt.price,
-    cadence: CHECKOUT.conformityReceipt.cadence,
+    eyebrow: "Free",
+    name: TRANSPARENCY_RECEIPT_LABEL,
     who: "Anyone who needs a signed technical receipt for an audit, client or internal record.",
     summary:
-      "Sealing is free. What you buy is the countersignature: your hash additionally signed by the APEX PSI published trust anchor, timestamped through OpenTimestamps, issued as a signed, verifiable PDF.",
+      "Sealing is free, and so is the receipt: your hash signed by the APEX PSI published trust anchor, submitted for timestamping, and issued as a verifiable record.",
     features: [
-      "Countersigned by the APEX PSI trust anchor",
+      "Signed by the APEX PSI trust anchor",
       "Ed25519 + LMS-W4-SHA256 hybrid signature",
       "Bitcoin anchoring via OpenTimestamps (.ots included)",
-      "PDF technical receipt with an Article 50 control reference",
+      "Technical receipt with an Article 50 control reference",
       "Public receipt page at /r/<hash>, subject to service availability",
-      "A free account binds the receipt credit securely to its buyer",
+      "No account, no key, no payment",
     ],
-    cta: { label: `Get a receipt — ${CHECKOUT.conformityReceipt.price}`, checkout: "conformityReceipt" },
+    cta: { label: "Seal and read the receipt", href: "/seal" },
     featured: true,
   },
   {
     id: "prover",
     icon: Zap,
     eyebrow: "For builders",
-    name: CHECKOUT.prover.label,
-    price: CHECKOUT.prover.price,
-    cadence: CHECKOUT.prover.cadence,
+    name: "PSI Prover API",
     who: "Teams shipping AI features that must produce evidence continuously.",
     summary:
-      "Managed notary API with scoped keys, priority anchoring and an ongoing signed technical evidence certificate for your system.",
+      "The notary API is open. Batch notarisation, anchoring and webhook delivery are documented and free to call.",
     features: [
-      "Managed Notary API + scoped API keys",
+      "Notary API — no plan and no paid key",
       "Batch notarization up to 100 decisions per call",
-      "Priority anchoring queue",
-      "Signed technical evidence certificate — not legal certification",
+      "Anchoring queue via OpenTimestamps",
+      "Signed technical evidence record — not legal certification",
       "Webhook delivery of receipts (HMAC signed)",
-      "Usage dashboard and audit export",
+      "Audit export",
     ],
-    cta: { label: `Start — ${CHECKOUT.prover.price}/mo`, checkout: "prover" },
+    cta: { label: "Read the API docs", href: "/api" },
   },
   {
     id: "registry",
     icon: Shield,
     eyebrow: "For suppliers",
-    name: CHECKOUT.registryListing.label,
-    price: CHECKOUT.registryListing.price,
-    cadence: CHECKOUT.registryListing.cadence,
+    name: "Supplier Transparency Console",
     who: "Vendors being asked by procurement how their AI is governed.",
     summary:
-      "A public, machine-checkable listing in the Supplier Registry that buyers and auditors can query directly.",
+      "A public, machine-checkable check of what a domain publishes, free to run for any domain including your own.",
     features: [
-      "Public listing in the Supplier Registry",
-      "Continuous domain transparency scoring",
+      "Public domain transparency check",
       "Embeddable APEX Verified badge",
       "Procurement-facing evidence page",
       "Registry API entry for buyer due diligence",
-      "Cancel any time",
+      "Reports published signals only, never a legal determination",
+      "No listing fee — there is no fee",
     ],
-    cta: { label: `List as Verified — ${CHECKOUT.registryListing.price}/mo`, checkout: "registryListing" },
+    cta: { label: "Run a check", href: "/registry/check" },
   },
   {
     id: "institutional",
     icon: Building2,
     eyebrow: "For institutions",
-    name: "Institutional Evidence Service",
-    price: "From $2,000",
-    cadence: "per month",
-    who: "Enterprises, governments and regulated operators filing evidence.",
+    name: "Protocol Infrastructure",
+    who: "Enterprises, governments and regulated operators keeping their own evidence.",
     summary:
-      "Managed protocol infrastructure, signed, verifiable filings and dedicated consensus nodes under contract.",
+      "The protocol, the schema and the verifier are published so any institution can run this itself. Nothing is sold and nothing is licensed for a fee.",
     features: [
-      "Signed, verifiable compliance filings with Merkle proofs",
-      "Dedicated MPC consensus nodes",
-      "Continuous automated monitoring and alerting",
-      "White-label deployment and custom domains",
-      "Evidence exports for underwriting review",
-      "SLA-backed support",
+      "Signed, verifiable records with Merkle proofs",
+      "Self-hostable verification — the source is in the repository",
+      "Documented consensus node roles (all current nodes operated by APEX)",
+      "Evidence exports",
+      "Open specification, individual IETF submission",
+      "No contract, no invoice, no plan",
     ],
-    cta: { label: "Contact sales", href: "/home#contact", route: true },
+    cta: { label: "Read the specification", href: "/spec" },
   },
 ];
 
-const ProductCard = ({ p, index }: { p: Product; index: number }) => {
+const CapabilityCard = ({ p, index }: { p: Capability; index: number }) => {
   const Icon = p.icon;
-  const inner = (
-    <>
-      {p.cta.label}
-      <ArrowRight className="h-4 w-4 ml-1" />
-    </>
-  );
 
   return (
     <motion.article
@@ -169,8 +149,8 @@ const ProductCard = ({ p, index }: { p: Product; index: number }) => {
       </div>
 
       <div className="mb-3">
-        <span className="text-4xl font-black text-foreground tracking-tight">{p.price}</span>
-        <span className="text-muted-foreground text-sm ml-1.5">{p.cadence}</span>
+        <span className="text-2xl font-black text-foreground tracking-tight">Free</span>
+        <span className="text-muted-foreground text-sm ml-1.5">no account, no key</span>
       </div>
 
       <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Who it is for</p>
@@ -186,13 +166,12 @@ const ProductCard = ({ p, index }: { p: Product; index: number }) => {
         ))}
       </ul>
 
-      {p.cta.checkout ? (
-        <ServiceCheckoutButton service={p.cta.checkout} label={p.cta.label} featured={p.featured} />
-      ) : (
-        <Button variant={p.featured ? "hero" : "heroOutline"} size="lg" className="w-full" asChild>
-          <Link to={p.cta.href ?? "/"}>{inner}</Link>
-        </Button>
-      )}
+      <Button variant={p.featured ? "hero" : "heroOutline"} size="lg" className="w-full" asChild>
+        <Link to={p.cta.href}>
+          {p.cta.label}
+          <ArrowRight className="h-4 w-4 ml-1" />
+        </Link>
+      </Button>
     </motion.article>
   );
 };
@@ -214,10 +193,10 @@ const steps = [
   },
   {
     n: "03",
-    title: "Buy the countersignature",
-    body: "For higher-assurance technical evidence, add an institutional countersignature and timestamp proof. This does not guarantee legal acceptance.",
-    href: "/products?checkout=conformityReceipt",
-    linkLabel: `Countersign — ${CHECKOUT.conformityReceipt.price}`,
+    title: "Keep the record",
+    body: "The receipt is yours to store, publish or hand to an auditor. It attests existence and integrity, never the truth of a claim.",
+    href: "/corrections",
+    linkLabel: "Read the corrections register",
   },
 ];
 
@@ -226,51 +205,26 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
     <>
       {!embedded && (
       <Helmet>
-        <title>Products &amp; Pricing — Apex PSI — Universal Verification Layer</title>
+        <title>What Apex PSI Provides — Universal Verification Layer</title>
         <meta
           name="description"
-          content="APEX PSI is an open AI governance evidence protocol. Review free tools and priced receipt, API, registry and institutional evidence services."
+          content="APEX PSI is an open AI governance evidence protocol. The protocol, the verifier, sealing and verification are free, with no account and no key."
         />
         <link rel="canonical" href={`${SITE_URL}/products`} />
-        <meta property="og:title" content="Products & Pricing — Apex PSI — Universal Verification Layer" />
+        <meta property="og:title" content="What Apex PSI Provides — Universal Verification Layer" />
         <meta
           property="og:description"
-          content="The protocol is free. The countersignature is paid. Every APEX PSI product and price on one page."
+          content="Sealing and verification are free, with no account and no key. Nothing on this site is sold."
         />
         <meta property="og:url" content={`${SITE_URL}/products`} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            name: "APEX PSI Products",
-            itemListElement: products.map((p, i) => ({
-              "@type": "ListItem",
-              position: i + 1,
-              item: {
-                "@type": "Product",
-                name: p.name,
-                description: p.summary,
-                brand: { "@type": "Brand", name: "APEX PSI" },
-                offers: {
-                  "@type": "Offer",
-                  price: p.price.replace(/[^0-9.]/g, "") || "0",
-                  priceCurrency: "USD",
-                  url: `${SITE_URL}/products`,
-                },
-              },
-            })),
-          })}
-        </script>
       </Helmet>
       )}
 
       <div className={embedded ? "" : "min-h-screen bg-background text-foreground overflow-x-hidden"}>
         {!embedded && <Navbar />}
 
-
-        {/* Header — h1 only on the standalone /products page; embedded it is a subsection */}
         <header className={embedded ? "pt-20 md:pt-24 pb-12 px-4" : "pt-12 md:pt-16 pb-12 px-4"}>
           <div className="container mx-auto max-w-7xl text-center">
             <motion.div
@@ -283,7 +237,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
               </span>
               {embedded ? (
                 <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-[0.95] mb-5">
-                  <span className="text-chrome-gradient">Products &amp; Pricing</span>
+                  <span className="text-chrome-gradient">What Apex PSI Provides</span>
                 </h2>
               ) : (
                 <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[0.95] mb-5">
@@ -293,14 +247,12 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
               )}
               <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
                 One open protocol for recording declared AI actions and human observations as verifiable evidence.
-                The protocol is <span className="text-foreground font-bold">free forever</span>.
-                Below is everything we sell — every product, every price, in the open.
+                {" "}{FREE_ACCESS_STATEMENT}
               </p>
             </motion.div>
           </div>
         </header>
 
-        {/* Connect the dots */}
         <section className="px-4 pb-16">
           <div className="container mx-auto max-w-7xl grid md:grid-cols-3 gap-4">
             {steps.map((s, i) => (
@@ -315,79 +267,50 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
                 <p className="font-mono text-xs text-gold mb-2">{s.n}</p>
                 <h2 className="text-sm font-bold tracking-widest uppercase text-foreground mb-2">{s.title}</h2>
                 <p className="text-sm text-muted-foreground mb-4">{s.body}</p>
-                {s.href.startsWith("http") ? (
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-bold text-gold inline-flex items-center gap-1 hover:underline"
-                  >
-                    {s.linkLabel} <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
-                ) : (
-                  <Link
-                    to={s.href}
-                    className="text-sm font-bold text-gold inline-flex items-center gap-1 hover:underline"
-                  >
-                    {s.linkLabel} <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                )}
+                <Link
+                  to={s.href}
+                  className="text-sm font-bold text-gold inline-flex items-center gap-1 hover:underline"
+                >
+                  {s.linkLabel} <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
               </motion.div>
             ))}
           </div>
         </section>
 
-        {/* Products */}
         <section className="px-4 pb-8" id="catalogue">
           <div className="container mx-auto max-w-7xl">
             <div className="text-center mb-10">
               <p className="text-gold font-semibold tracking-[0.2em] uppercase text-xs mb-3">
-                Products &amp; Pricing
+                What is provided
               </p>
               <h2 className="text-3xl md:text-5xl font-bold">
-                Free to use. <span className="text-gold-gradient">Paid to be countersigned.</span>
+                Free to use. <span className="text-gold-gradient">Nothing is sold.</span>
               </h2>
             </div>
 
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {products.map((p, i) => (
-                <ProductCard key={p.id} p={p} index={i} />
+              {capabilities.map((p, i) => (
+                <CapabilityCard key={p.id} p={p} index={i} />
               ))}
             </div>
 
-            <div className="mt-8 rounded-xl border border-gold/30 bg-gold/[0.04] p-6 md:p-8 text-center">
-              <p className="text-[10px] font-bold tracking-[0.2em] text-gold uppercase mb-2">
-                On-chain payment
-              </p>
-              <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">
-                Bitcoin, Ethereum and USDC — available soon
-              </h3>
-              <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-                On-chain payment for receipts, receipt packs, API credits and prepaid registry listings is
-                not open yet. Card checkout is available now. This page will state the assets and addresses
-                on the day the option goes live.
-              </p>
-            </div>
-
             <p className="text-xs text-muted-foreground text-center mt-8 max-w-3xl mx-auto">
-              Prices in USD. Card checkout is handled by Stripe.
-              Sealing and public verification remain free and unmetered — paying only ever adds the
-              institutional countersignature, anchoring, persistence and support around a proof you can
-              already generate yourself.
+              The commercial tiers previously published here have been withdrawn. There is no price,
+              no plan, no checkout and no sales process on this site. Every withdrawal is dated on
+              the <Link to="/corrections" className="text-gold hover:underline">corrections register</Link>.
             </p>
-
           </div>
         </section>
 
-        {/* Bottom CTA */}
         <section className="px-4 py-20">
           <div className="container mx-auto max-w-4xl rounded-xl border border-gold/30 bg-gold/[0.04] p-8 md:p-12 text-center">
             <h2 className="text-2xl md:text-4xl font-bold mb-4">
-              Not sure which one you need?
+              Not sure where to start?
             </h2>
             <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Seal one file for free and look at the receipt. If it has to convince a regulator,
-              a court or a customer, countersign it. If your product does it every day, take the API.
+              Seal one file and look at the receipt. Then verify it yourself, and have someone else
+              verify it too. That is the whole protocol.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Button variant="hero" size="lg" asChild>
@@ -399,7 +322,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
                 <Link to="/spec">Read the technical spec</Link>
               </Button>
               <Button variant="heroOutline" size="lg" asChild>
-                <Link to="/home#contact">Contact sales</Link>
+                <Link to="/verify">Verify a hash</Link>
               </Button>
             </div>
           </div>

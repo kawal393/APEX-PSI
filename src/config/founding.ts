@@ -19,13 +19,10 @@ export type FeeRow = {
 
 export const FEE_SCHEDULE: FeeRow[] = [
   { item: "Self-verification (MIT, local)", price: "FREE forever", note: "Run the verifier yourself. No account, no key." },
-  { item: "Notarise / verify (hosted)", price: "$0.001", note: "Per receipt issued or verified through the hosted layer." },
-  { item: "Bitcoin anchor", price: "$0.01", note: "Per anchored batch inclusion via OpenTimestamps." },
-  { item: "Compliance check", price: "$0.10", note: "Per predicate evaluated against a record." },
-  { item: "Operator", price: "$10/mo", note: "Single operator seat, hosted issuance." },
-  { item: "Enterprise", price: "$100/mo", note: "Organisation-wide issuance and webhooks." },
-  { item: "Surplus routing", price: "0.1%", note: "Routed to the registry infrastructure pool only." },
-  { item: "Referral fee", price: "10%", note: "Of a referred customer's first invoice, paid only when they pay." },
+  { item: "Notarise / verify (hosted)", price: "FREE", note: "No charge for issuing or verifying a receipt through the hosted layer." },
+  { item: "Bitcoin anchor", price: "FREE", note: "No charge for anchored batch inclusion via OpenTimestamps." },
+  { item: "Compliance check", price: "FREE", note: "No charge for a predicate evaluated against a record." },
+  { item: "Registry seat", price: "FREE", note: "A numbered listing costs nothing. There is no operator or enterprise plan." },
 ];
 
 /** Printed verbatim beneath the fee schedule. */
@@ -33,7 +30,7 @@ export const NO_FINDER_FEE_NOTICE =
   "No fee is charged, and none is published, for introducing anyone to a litigation funder, a lawyer or any other third party. Apex holds no Australian Financial Services Licence, and does not arrange, promote, fund or profit from any claim, funding scheme or legal proceeding.";
 
 export const FEE_FOOTNOTE =
-  "Fees published, amendable prospectively. Scale figures are modelled projections, stated so they can be checked rather than believed.";
+  "The commercial tiers previously published here have been withdrawn: the protocol, the verifier, sealing and verification are free, with no account and no key. Nothing on this site is sold.";
 
 /** §6 — verbatim. Never paraphrase, never reorder. */
 export const ACKNOWLEDGEMENT_CLAUSES: string[] = [

@@ -133,6 +133,11 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             {DECLARATION_TEXT}
           </p>
 
+          <p className="text-[10px] leading-relaxed text-muted-foreground/80 text-center">
+            Apex is not a certifier, a notified body, a law firm or an insurer. No certification,
+            accreditation or insurance is offered or implied.
+          </p>
+
           <p
             data-operator-line
             className="text-[10px] leading-relaxed text-muted-foreground/80 text-center border-t border-border pt-4"

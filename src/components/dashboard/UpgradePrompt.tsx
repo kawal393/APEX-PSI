@@ -1,6 +1,4 @@
-import { ShieldAlert, Zap, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { ShieldAlert } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface UpgradePromptProps {
@@ -9,36 +7,35 @@ interface UpgradePromptProps {
   limit?: number;
 }
 
-const MESSAGES: Record<string, { title: string; description: string; cta: string }> = {
+const MESSAGES: Record<string, { title: string; description: string }> = {
   verification_limit: {
     title: "Verification Limit Reached",
-    description: "You've used all 3 free verifications this month. Upgrade to STARTUP for 100/month or GROWTH for unlimited.",
-    cta: "Unlock More Verifications",
+    description:
+      "This hosted account has used its verifications for this month. Nothing is sold: the verifier source is MIT in the repository, so you can run unlimited verifications locally.",
   },
   certificate_limit: {
     title: "Certificate Limit Reached",
-    description: "Free accounts get 1 certificate per month. Upgrade for unlimited signed, verifiable certificates with full Merkle audit trails.",
-    cta: "Get Unlimited Certificates",
+    description:
+      "This hosted account has used its certificates for this month. There is no paid tier; the limit is a capacity limit on the hosted service.",
   },
   mode_locked: {
-    title: "SWORD & JUDGE Modes Locked",
-    description: "Free accounts have SHIELD mode only. Upgrade to GROWTH for SWORD (public audit trail) or ENTERPRISE for JUDGE (canonical standard).",
-    cta: "Unlock All Modes",
+    title: "Mode Not Available On This Account",
+    description:
+      "SHIELD mode is available here. SWORD and JUDGE modes are not enabled for this account. There is no purchase that changes this.",
   },
   monitoring: {
-    title: "Continuous Monitoring — Paid Feature",
-    description: "Automated daily compliance scans that alert you before issues arise. Available on GROWTH plans and above.",
-    cta: "Enable Continuous Monitoring",
+    title: "Continuous Monitoring — Not Enabled",
+    description:
+      "Automated daily compliance scans are not enabled for this account. This is a capacity setting, not a paid feature.",
   },
   audit_export: {
-    title: "Signed Export — Paid Feature",
-    description: "Download a complete audit package with Merkle proofs, timestamps, and article-by-article evidence, in a form your own advisers can independently re-verify. No regulator's or court's acceptance is promised or implied.",
-    cta: "Get Audit Export",
+    title: "Signed Export — Not Enabled",
+    description:
+      "A complete audit package with Merkle proofs, timestamps and article-by-article evidence, in a form your own advisers can independently re-verify, is not enabled for this account. No regulator's or court's acceptance is promised or implied.",
   },
 };
 
 const UpgradePrompt = ({ reason, currentUsage, limit }: UpgradePromptProps) => {
-  const navigate = useNavigate();
   const msg = MESSAGES[reason];
 
   return (
@@ -62,22 +59,7 @@ const UpgradePrompt = ({ reason, currentUsage, limit }: UpgradePromptProps) => {
               <span className="text-xs font-mono text-warning">{currentUsage}/{limit}</span>
             </div>
           )}
-          <p className="text-xs text-muted-foreground mb-4">{msg.description}</p>
-
-          <div className="flex items-center gap-3">
-            <Button
-              variant="hero"
-              size="sm"
-              onClick={() => navigate("/#pricing")}
-            >
-              <Zap className="h-3.5 w-3.5 mr-1" />
-              {msg.cta}
-              <ArrowRight className="h-3.5 w-3.5 ml-1" />
-            </Button>
-            <span className="text-[10px] text-muted-foreground">
-              €35M max fine for non-compliance
-            </span>
-          </div>
+          <p className="text-xs text-muted-foreground">{msg.description}</p>
         </div>
       </div>
     </motion.div>
