@@ -201,7 +201,7 @@ Oversight) through a 5-party auditor ratification layer:
 
 5. PREDICATE REGISTRY
 
-43 predicates across 11 regulatory frameworks:
+54 predicate definitions across 11 regulatory frameworks:
 
   EU AI Act (Art. 5-52):     10 predicates
   MiFID II (Art. 16-27):      4 predicates
