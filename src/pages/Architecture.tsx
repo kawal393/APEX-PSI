@@ -80,13 +80,13 @@ const Architecture = () => {
             <p>
               The <span className="text-amber-400 font-bold">APEX PSI Engine</span> implements{" "}
               <span className="text-engine-approved font-bold">Proof of Stateful Integrity (PSI)</span>,
-              an Optimistic ZKML compliance architecture designed for the EU AI Act.
+              a commit-and-challenge evidence architecture. It is not a zero-knowledge system: no ZK-SNARK or ZKML circuit is used anywhere.
             </p>
             <p>
               Unlike traditional Zero-Knowledge approaches that prove every computation upfront (computationally
               prohibitive for large models), PSI uses an <span className="text-amber-400">optimistic model</span>:
               AI outputs are committed to an immutable ledger and assumed compliant until challenged.
-              Only when a regulator issues a formal challenge does the system generate a cryptographic fraud proof.
+              Only when a challenge is raised does the system produce the full evidence response: the record is recomputed, the hash chain replayed and the signature checked.
             </p>
             <div className="p-3 border border-engine-approved/20 bg-engine-approved/5 rounded">
               <p className="text-xs text-engine-approved">
@@ -261,7 +261,7 @@ function combinePair(a: string, b: string): string {
               <TrioCard
                 name="SWORD"
                 role="The Police"
-                description="Public audit enforcement. Processes challenges against committed actions, generates fraud proofs, and maintains the immutable verification record. All outputs are independently verifiable."
+                description="Public audit enforcement. Processes challenges against committed actions, produces recomputation evidence, and maintains the immutable verification record. All outputs are independently verifiable."
                 color="text-engine-blocked border-engine-blocked/30"
               />
               <TrioCard

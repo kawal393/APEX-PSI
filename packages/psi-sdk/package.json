@@ -17,7 +17,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
   },
-  "keywords": ["ai", "compliance", "eu-ai-act", "mifid", "dora", "verification", "zk-snark", "merkle-tree"],
+  "keywords": ["ai", "compliance", "eu-ai-act", "mifid", "dora", "verification", "merkle-tree"],
   "author": "Apex Intelligence Empire",
   "license": "MIT",
   "engines": { "node": ">=18" },

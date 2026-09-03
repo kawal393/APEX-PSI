@@ -44,7 +44,7 @@
     "subtitle": "An experimental evidence architecture for recording claims, challenges and cryptographic verification results.",
     "feat1Title": "Optimistic Compliance",
     "feat1Desc": "Assume compliant until challenged. Like optimistic rollups in blockchain — your AI outputs are 'innocent until proven guilty.'",
-    "feat2Title": "Fraud Proofs on Demand",
+    "feat2Title": "Evidence On Demand",
     "feat2Desc": "Generate additional technical evidence when an output is challenged. Performance and cost depend on the proof and workload.",
     "feat3Title": "Immutable Audit Trail",
     "feat3Desc": "AI decision claims can be logged with SHA-256 hash chains so later modification is detectable when checkpoints are retained.",
