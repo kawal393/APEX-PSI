@@ -2,7 +2,7 @@
 
 > **Runtime AI compliance verification — Block non-compliant AI actions before they reach users.**
 
-Part of the [APEX PSI Protocol](https://apex-psi.apex-infrastructure.com/protocol) — the definitive standard for verifiable AI governance.
+Part of the [APEX PSI Protocol](https://ai-governance-standard.com/protocol) — a proposed open standard for verifiable AI governance.
 
 ---
 
@@ -20,7 +20,8 @@ The PSI SDK is the enforcement layer of APEX PSI. It sits between your AI system
 ## Install
 
 ```bash
-npm install @apex/psi-sdk
+# not published to npm — build from the repository
+npm install ./packages/psi-sdk
 ```
 
 ---

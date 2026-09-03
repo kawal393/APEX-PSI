@@ -314,7 +314,7 @@ const LiveCaseStudy = () => {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-3 text-center">
-                <span className="text-gold font-bold">99.9%</span> cost reduction
+                <span className="text-gold font-bold">large</span> cost reduction
               </p>
             </div>
 
