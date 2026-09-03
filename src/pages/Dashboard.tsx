@@ -281,7 +281,7 @@ const Dashboard = () => {
                 )}
                 {isFree && (
                   <p className="text-xs text-muted-foreground">
-                    Free forever — upgrade for signed, verifiable proof
+                    Free — sealing and verification require no payment, account tier or key
                   </p>
                 )}
               </div>
@@ -304,15 +304,6 @@ const Dashboard = () => {
                 <Button variant="ghost" size="sm" onClick={checkSubscription}>
                   <RefreshCw className="h-4 w-4 mr-1" /> Refresh
                 </Button>
-                {!isFree ? (
-                  <Button variant="heroOutline" size="sm" onClick={handleManageSubscription} disabled={portalLoading}>
-                    {portalLoading ? "Loading..." : "Manage Subscription"}
-                  </Button>
-                ) : (
-                  <Button variant="hero" size="sm" onClick={() => navigate("/#pricing")}>
-                    <Zap className="h-4 w-4 mr-1" /> Upgrade
-                  </Button>
-                )}
               </div>
             </div>
           </div>
