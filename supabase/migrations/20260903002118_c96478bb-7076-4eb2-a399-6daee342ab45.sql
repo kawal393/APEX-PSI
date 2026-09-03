@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.assign_engine_sequence() FROM anon, authenticated, public;
