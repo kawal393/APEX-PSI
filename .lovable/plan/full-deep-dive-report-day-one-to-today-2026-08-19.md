@@ -5,7 +5,7 @@ A single authoritative document covering the entire life of APEX PSI — from th
 ## What the report will contain
 
 1. **Executive summary** — what APEX PSI is today in one page: Universal Verification Layer, dual licence, PSI-SEAL/1.0.0 schema, verifier 1.2.0.
-2. **The timeline** — month-by-month narrative (Feb → Aug 2026), each phase with: what was asked, what shipped, what broke, what was learned. Includes the pivots: Digital Gallows → APEX PSI rebrand, NDIS/Pharma removal, EU AI Office rejections and the watermark rebuild, canonical domain move, dual-licence split, enforcement-by-default, v1.2.0 declaration.
+2. **The timeline** — month-by-month narrative (Feb → Aug 2026), each phase with: what was asked, what shipped, what broke, what was learned. Includes the pivots: the pre-PSI legacy brand → APEX PSI rebrand, NDIS/Pharma removal, EU AI Office rejections and the watermark rebuild, canonical domain move, dual-licence split, enforcement-by-default, v1.2.0 declaration.
 3. **What exists now — full inventory** — every page/route, every edge function, database tables and their protections, published packages (npm/PyPI + 4 runtime adapters), standards artifacts (IETF drafts, .well-known endpoints, schema), patent AMCZ-2615560564.
 4. **Technical achievements, ranked by defensibility** — cryptography (SHA-256/Ed25519/ML-DSA-65/LMS), DCT-QIM watermark benchmark numbers, Bitcoin anchoring via OpenTimestamps, cross-language digest parity, MCP/API surface.
 5. **The honesty ledger** — every claim that was walked back and why (LSB watermark, simulated anchors, "world's first" headline, Foundation "in formation"). This is the section that makes the report credible to a regulator.
