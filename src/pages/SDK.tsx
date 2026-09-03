@@ -701,12 +701,12 @@ GET /verify-status?action=stats
           <CardContent>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
-                { name: "@apex/psi-verifier", target: "MIT verifier v1.2.0 — free forever. MIT. No permission required.", status: "shipped", install: "npm i @apex/psi-verifier" },
-                { name: "psi-verifier", target: "Python verifier v1.2.0 — free forever. MIT. No permission required.", status: "shipped", install: "pip install psi-verifier" },
-                { name: "@apex/psi-openai", target: "OpenAI Node SDK", status: "shipped", install: "npm i @apex/psi-openai" },
-                { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "shipped", install: "npm i @apex/psi-anthropic" },
-                { name: "@apex/psi-vercel-ai", target: "Vercel AI SDK", status: "shipped", install: "npm i @apex/psi-vercel-ai" },
-                { name: "@apex/psi-hono", target: "Hono middleware", status: "shipped", install: "npm i @apex/psi-hono" },
+                { name: "@apex/psi-verifier", target: "MIT verifier v1.2.0 — free forever. MIT. No permission required.", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "psi-verifier", target: "Python verifier v1.2.0 — free forever. MIT. No permission required.", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "@apex/psi-openai", target: "OpenAI Node SDK", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "@apex/psi-vercel-ai", target: "Vercel AI SDK", status: "not published", install: "source in packages/ — build from the repository" },
+                { name: "@apex/psi-hono", target: "Hono middleware", status: "not published", install: "source in packages/ — build from the repository" },
                 { name: "@apex/psi-google", target: "Gemini / Vertex", status: "roadmap", install: "Q1 2026" },
                 { name: "@apex/psi-bedrock", target: "AWS Bedrock", status: "roadmap", install: "Q1 2026" },
               ].map((pkg) => (
