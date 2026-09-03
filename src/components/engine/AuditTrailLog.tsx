@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { CommitRecord } from "@/lib/gallows-engine";
+import type { CommitRecord } from "@/lib/engine-core";
 import { FileText, AlertTriangle } from "lucide-react";
 
 interface AuditTrailLogProps {
@@ -18,9 +18,9 @@ interface AuditTrailLogProps {
 
 const phaseStyle: Record<string, string> = {
   COMMITTED: 'bg-amber-400/15 text-amber-400',
-  CHALLENGED: 'bg-gallows-blocked/15 text-gallows-blocked',
-  VERIFIED: 'bg-gallows-approved/15 text-gallows-approved',
-  PAUSED: 'bg-gallows-blocked/15 text-gallows-blocked',
+  CHALLENGED: 'bg-engine-blocked/15 text-engine-blocked',
+  VERIFIED: 'bg-engine-approved/15 text-engine-approved',
+  PAUSED: 'bg-engine-blocked/15 text-engine-blocked',
 };
 
 const AuditTrailLog = ({ entries }: AuditTrailLogProps) => {
@@ -80,15 +80,15 @@ const AuditTrailLog = ({ entries }: AuditTrailLogProps) => {
   const sequenceGaps = detectGaps();
 
   return (
-    <Card className="bg-gallows-surface border-gallows-border">
+    <Card className="bg-engine-surface border-engine-border">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-mono text-gallows-muted uppercase tracking-widest">
+          <CardTitle className="text-sm font-mono text-engine-muted uppercase tracking-widest">
             Immutable Audit Trail ({entries.length} entries)
           </CardTitle>
           <div className="flex items-center gap-2">
             {sequenceGaps.size > 0 && (
-              <Badge className="bg-gallows-blocked/15 text-gallows-blocked border-0 font-mono text-xs flex items-center gap-1">
+              <Badge className="bg-engine-blocked/15 text-engine-blocked border-0 font-mono text-xs flex items-center gap-1">
                 <AlertTriangle className="h-3 w-3" />
                 {sequenceGaps.size} SEQUENCE BREAK{sequenceGaps.size > 1 ? 'S' : ''}
               </Badge>
@@ -96,7 +96,7 @@ const AuditTrailLog = ({ entries }: AuditTrailLogProps) => {
             {entries.length > 0 && (
               <button
                 onClick={handleExport}
-                className="flex items-center gap-1.5 text-xs font-mono text-gallows-muted hover:text-gallows-approved transition-colors bg-transparent border border-gallows-border rounded px-2 py-1 cursor-pointer"
+                className="flex items-center gap-1.5 text-xs font-mono text-engine-muted hover:text-engine-approved transition-colors bg-transparent border border-engine-border rounded px-2 py-1 cursor-pointer"
               >
                 <FileText className="h-3 w-3" />
                 EXPORT JSON
@@ -107,22 +107,22 @@ const AuditTrailLog = ({ entries }: AuditTrailLogProps) => {
       </CardHeader>
       <CardContent>
         {entries.length === 0 ? (
-          <p className="text-gallows-muted font-mono text-sm text-center py-6">
+          <p className="text-engine-muted font-mono text-sm text-center py-6">
             No entries yet. Commit an action to begin building the immutable ledger.
           </p>
         ) : (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="border-gallows-border hover:bg-transparent">
-                  <TableHead className="font-mono text-xs text-gallows-muted">Seq #</TableHead>
-                  <TableHead className="font-mono text-xs text-gallows-muted">Commit ID</TableHead>
-                  <TableHead className="font-mono text-xs text-gallows-muted">Timestamp</TableHead>
-                  <TableHead className="font-mono text-xs text-gallows-muted">Action</TableHead>
-                  <TableHead className="font-mono text-xs text-gallows-muted">Predicate</TableHead>
-                  <TableHead className="font-mono text-xs text-gallows-muted">Phase</TableHead>
-                  <TableHead className="font-mono text-xs text-gallows-muted">Status</TableHead>
-                  <TableHead className="font-mono text-xs text-gallows-muted">Commit Hash</TableHead>
+                <TableRow className="border-engine-border hover:bg-transparent">
+                  <TableHead className="font-mono text-xs text-engine-muted">Seq #</TableHead>
+                  <TableHead className="font-mono text-xs text-engine-muted">Commit ID</TableHead>
+                  <TableHead className="font-mono text-xs text-engine-muted">Timestamp</TableHead>
+                  <TableHead className="font-mono text-xs text-engine-muted">Action</TableHead>
+                  <TableHead className="font-mono text-xs text-engine-muted">Predicate</TableHead>
+                  <TableHead className="font-mono text-xs text-engine-muted">Phase</TableHead>
+                  <TableHead className="font-mono text-xs text-engine-muted">Status</TableHead>
+                  <TableHead className="font-mono text-xs text-engine-muted">Commit Hash</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -131,29 +131,29 @@ const AuditTrailLog = ({ entries }: AuditTrailLogProps) => {
                   return (
                     <Fragment key={entry.id}>
                       {hasGap && (
-                        <TableRow key={`gap-${entry.id}`} className="border-gallows-blocked/30">
+                        <TableRow key={`gap-${entry.id}`} className="border-engine-blocked/30">
                           <TableCell colSpan={8} className="py-1 px-3">
-                            <div className="flex items-center gap-2 text-gallows-blocked font-mono text-xs">
+                            <div className="flex items-center gap-2 text-engine-blocked font-mono text-xs">
                               <AlertTriangle className="h-3 w-3" />
                               SEQUENCE BREAK DETECTED — Missing entries between seq #{(entry.sequenceNumber || 0) - 1} and #{entry.sequenceNumber}
                             </div>
                           </TableCell>
                         </TableRow>
                       )}
-                      <TableRow className={`border-gallows-border hover:bg-gallows-bg/50 ${hasGap ? 'bg-gallows-blocked/5' : ''}`}>
-                        <TableCell className="font-mono text-xs text-gallows-muted whitespace-nowrap">
+                      <TableRow className={`border-engine-border hover:bg-engine-bg/50 ${hasGap ? 'bg-engine-blocked/5' : ''}`}>
+                        <TableCell className="font-mono text-xs text-engine-muted whitespace-nowrap">
                           {entry.sequenceNumber != null ? `#${entry.sequenceNumber}` : '—'}
                         </TableCell>
-                        <TableCell className="font-mono text-xs text-gallows-approved whitespace-nowrap font-bold">
+                        <TableCell className="font-mono text-xs text-engine-approved whitespace-nowrap font-bold">
                           {entry.id}
                         </TableCell>
-                        <TableCell className="font-mono text-xs text-gallows-text whitespace-nowrap">
+                        <TableCell className="font-mono text-xs text-engine-text whitespace-nowrap">
                           {new Date(entry.timestamp).toLocaleTimeString()}
                         </TableCell>
-                        <TableCell className="font-mono text-xs text-gallows-text max-w-[180px] truncate">
+                        <TableCell className="font-mono text-xs text-engine-text max-w-[180px] truncate">
                           {entry.action}
                         </TableCell>
-                        <TableCell className="font-mono text-xs text-gallows-muted whitespace-nowrap">
+                        <TableCell className="font-mono text-xs text-engine-muted whitespace-nowrap">
                           {entry.predicateId}
                         </TableCell>
                         <TableCell>
@@ -165,16 +165,16 @@ const AuditTrailLog = ({ entries }: AuditTrailLogProps) => {
                           {entry.status ? (
                             <Badge className={`font-mono text-xs border-0 ${
                               entry.status === 'APPROVED'
-                                ? 'bg-gallows-approved/15 text-gallows-approved'
-                                : 'bg-gallows-blocked/15 text-gallows-blocked'
+                                ? 'bg-engine-approved/15 text-engine-approved'
+                                : 'bg-engine-blocked/15 text-engine-blocked'
                             }`}>
                               {entry.status}
                             </Badge>
                           ) : (
-                            <span className="text-xs font-mono text-gallows-muted">—</span>
+                            <span className="text-xs font-mono text-engine-muted">—</span>
                           )}
                         </TableCell>
-                        <TableCell className="font-mono text-[10px] text-gallows-muted max-w-[140px] truncate" title={entry.commitHash}>
+                        <TableCell className="font-mono text-[10px] text-engine-muted max-w-[140px] truncate" title={entry.commitHash}>
                           {entry.commitHash.substring(0, 20)}…
                         </TableCell>
                       </TableRow>

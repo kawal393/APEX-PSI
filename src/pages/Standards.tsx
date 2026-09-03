@@ -97,7 +97,7 @@ const Standards = () => {
           </button>
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" onClick={() => navigate("/compare")} className="font-mono text-xs">Compare</Button>
-            <Button variant="outline" size="sm" onClick={() => navigate("/gallows")} className="font-mono text-xs">PSI Engine</Button>
+            <Button variant="outline" size="sm" onClick={() => navigate("/engine")} className="font-mono text-xs">PSI Engine</Button>
             <Button variant="outline" size="sm" onClick={() => navigate("/architecture")} className="font-mono text-xs">Architecture</Button>
           </div>
         </div>
@@ -240,7 +240,7 @@ const Standards = () => {
             No other platform provides verifiable, cryptographic mapping across NIST, ISO, CISA, and the EU AI Act simultaneously.
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <Button onClick={() => navigate("/gallows")} className="bg-primary text-primary-foreground font-mono gap-2">
+            <Button onClick={() => navigate("/engine")} className="bg-primary text-primary-foreground font-mono gap-2">
               Verify Now <ArrowRight className="h-4 w-4" />
             </Button>
             <Button variant="outline" onClick={() => navigate("/compare")} className="font-mono gap-2">

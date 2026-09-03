@@ -15,7 +15,7 @@ export interface Predicate {
   enforcementDate: string;
 }
 
-export type GallowsPhase = 'IDLE' | 'COMMITTED' | 'CHALLENGED' | 'PROVING' | 'VERIFIED' | 'PAUSED';
+export type EnginePhase = 'IDLE' | 'COMMITTED' | 'CHALLENGED' | 'PROVING' | 'VERIFIED' | 'PAUSED';
 
 export interface CommitRecord {
   id: string;
@@ -24,7 +24,7 @@ export interface CommitRecord {
   timestamp: string;
   commitHash: string;
   merkleLeafHash: string;
-  phase: GallowsPhase;
+  phase: EnginePhase;
   challengeHash?: string;
   proofHash?: string;
   merkleProof?: MerkleProofPath;
@@ -62,7 +62,7 @@ export interface MerkleTreeState {
 }
 
 // Keep backward compat
-export interface GallowsResult {
+export interface EngineResult {
   status: 'APPROVED' | 'BLOCKED';
   verificationTimeMs: number;
   auditHash: string;
@@ -848,7 +848,7 @@ export async function initializeFromLedger(entries: {
     timestamp: e.created_at,
     commitHash: e.commit_hash,
     merkleLeafHash: e.merkle_leaf_hash,
-    phase: e.phase as GallowsPhase,
+    phase: e.phase as EnginePhase,
     challengeHash: e.challenge_hash ?? undefined,
     proofHash: e.proof_hash ?? undefined,
     merkleProof: e.merkle_proof ?? undefined,
@@ -1084,7 +1084,7 @@ export async function verifyHash(hash: string): Promise<{
 }
 
 // Legacy compat
-export async function runGallows(actionText: string, predicateId: string): Promise<GallowsResult> {
+export async function runEngine(actionText: string, predicateId: string): Promise<EngineResult> {
   const record = await commitAction(actionText, predicateId);
   const challenged = await challengeCommit(record.id);
   const proven = await proveCommit(record.id);

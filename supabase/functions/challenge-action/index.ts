@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX GALLOWS — Server-Side Challenge Endpoint
+// APEX ENGINE — Server-Side Challenge Endpoint
 // Persists challenge hash to ledger using service role (bypasses RLS)
 // ═══════════════════════════════════════════════════════════════════════
 

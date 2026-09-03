@@ -66,7 +66,7 @@ const navLinks = [
     { label: "Products", href: "/products", isRoute: true },
 
     { label: "Overview", href: "/home", isRoute: true },
-    { label: "Engine", href: "/gallows", isRoute: true },
+    { label: "Engine", href: "/engine", isRoute: true },
     { label: "Notary", href: "/notary", isRoute: true },
     { label: "Explorer", href: "/explorer", isRoute: true },
     { label: "Live", href: "/live", isRoute: true },

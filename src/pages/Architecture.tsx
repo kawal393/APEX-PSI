@@ -35,29 +35,29 @@ const Architecture = () => {
         <meta property="og:url" content="https://ai-governance-standard.com/architecture" />
         <meta property="og:type" content="website" />
       </Helmet>
-      <div className="min-h-screen bg-gallows-bg text-gallows-text">
+      <div className="min-h-screen bg-engine-bg text-engine-text">
       {/* Header */}
-      <header className="border-b border-gallows-border px-4 md:px-6 py-4">
+      <header className="border-b border-engine-border px-4 md:px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/")}
-              className="text-gallows-muted hover:text-gallows-text transition-colors bg-transparent border-none cursor-pointer"
+              className="text-engine-muted hover:text-engine-text transition-colors bg-transparent border-none cursor-pointer"
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="text-xl md:text-2xl font-bold font-mono tracking-wider text-gallows-text">
+              <h1 className="text-xl md:text-2xl font-bold font-mono tracking-wider text-engine-text">
                 ARCHITECTURE SPECIFICATION
               </h1>
-              <p className="text-xs font-mono text-gallows-muted mt-0.5">
+              <p className="text-xs font-mono text-engine-muted mt-0.5">
                 Proof of Stateful Integrity — Technical Documentation
               </p>
             </div>
           </div>
           <Button
-            onClick={() => navigate("/gallows")}
-            className="bg-gallows-bg border border-gallows-approved/40 text-gallows-approved font-mono text-xs hover:bg-gallows-approved/10 gap-2"
+            onClick={() => navigate("/engine")}
+            className="bg-engine-bg border border-engine-approved/40 text-engine-approved font-mono text-xs hover:bg-engine-approved/10 gap-2"
             variant="outline"
             size="sm"
           >
@@ -69,17 +69,17 @@ const Architecture = () => {
 
       <main className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
         {/* Overview */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text flex items-center gap-2">
+            <CardTitle className="text-lg font-mono text-engine-text flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-amber-400" />
               System Overview
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 font-mono text-sm text-gallows-text/80 leading-relaxed">
+          <CardContent className="space-y-4 font-mono text-sm text-engine-text/80 leading-relaxed">
             <p>
               The <span className="text-amber-400 font-bold">APEX PSI Engine</span> implements{" "}
-              <span className="text-gallows-approved font-bold">Proof of Stateful Integrity (PSI)</span>,
+              <span className="text-engine-approved font-bold">Proof of Stateful Integrity (PSI)</span>,
               an Optimistic ZKML compliance architecture designed for the EU AI Act.
             </p>
             <p>
@@ -88,8 +88,8 @@ const Architecture = () => {
               AI outputs are committed to an immutable ledger and assumed compliant until challenged.
               Only when a regulator issues a formal challenge does the system generate a cryptographic fraud proof.
             </p>
-            <div className="p-3 border border-gallows-approved/20 bg-gallows-approved/5 rounded">
-              <p className="text-xs text-gallows-approved">
+            <div className="p-3 border border-engine-approved/20 bg-engine-approved/5 rounded">
+              <p className="text-xs text-engine-approved">
                 <strong>Result:</strong> 99.9% cost reduction over traditional ZK proofs while maintaining
                 mathematical compliance guarantees through SHA-256 Merkle tree inclusion proofs.
               </p>
@@ -98,9 +98,9 @@ const Architecture = () => {
         </Card>
 
         {/* Pipeline Architecture */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text flex items-center gap-2">
+            <CardTitle className="text-lg font-mono text-engine-text flex items-center gap-2">
               <Layers className="h-5 w-5 text-amber-400" />
               Verification Pipeline
             </CardTitle>
@@ -119,7 +119,7 @@ const Architecture = () => {
                 icon={<Swords className="h-5 w-5" />}
                 phase="Phase 2"
                 title="CHALLENGE"
-                color="text-gallows-blocked border-gallows-blocked/30 bg-gallows-blocked/5"
+                color="text-engine-blocked border-engine-blocked/30 bg-engine-blocked/5"
                 description="Regulator challenges a committed action. System runs predicate compliance check against locked violation patterns. Challenge hash is generated."
                 code={`challengeHash = SHA256(commitHash | timestamp | predicateId)\nresult = checkCompliance(action, predicateId)\nstatus = result.compliant ? 'APPROVED' : 'BLOCKED'`}
               />
@@ -135,7 +135,7 @@ const Architecture = () => {
                 icon={<ShieldCheck className="h-5 w-5" />}
                 phase="Phase 4"
                 title="VERIFY"
-                color="text-gallows-approved border-gallows-approved/30 bg-gallows-approved/5"
+                color="text-engine-approved border-engine-approved/30 bg-engine-approved/5"
                 description="Anyone can independently verify: recompute the Merkle root from the leaf hash and proof path. If it matches the published root, inclusion is proven."
                 code={`hash = leafHash\nfor (step of proof):\n  hash = SHA256(canonical_order(hash, step.hash))\nassert(hash === publishedRoot)`}
               />
@@ -144,9 +144,9 @@ const Architecture = () => {
         </Card>
 
         {/* Merkle Tree Spec */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text flex items-center gap-2">
+            <CardTitle className="text-lg font-mono text-engine-text flex items-center gap-2">
               <GitBranch className="h-5 w-5 text-amber-400" />
               Merkle Tree Specification
             </CardTitle>
@@ -160,9 +160,9 @@ const Architecture = () => {
               <SpecItem label="Root Update" value="On every new commit" />
               <SpecItem label="Verification" value="O(log n) proof path" />
             </div>
-            <div className="mt-4 p-4 bg-gallows-bg rounded border border-gallows-border">
-              <span className="text-xs font-mono text-gallows-muted block mb-2">CANONICAL ORDERING RULE</span>
-              <pre className="text-xs font-mono text-gallows-text/80 whitespace-pre-wrap">{`// Prevents second-preimage attacks
+            <div className="mt-4 p-4 bg-engine-bg rounded border border-engine-border">
+              <span className="text-xs font-mono text-engine-muted block mb-2">CANONICAL ORDERING RULE</span>
+              <pre className="text-xs font-mono text-engine-text/80 whitespace-pre-wrap">{`// Prevents second-preimage attacks
 // Always hash smaller value first
 function combinePair(a: string, b: string): string {
   const combined = a < b ? a + b : b + a;
@@ -173,9 +173,9 @@ function combinePair(a: string, b: string): string {
         </Card>
 
         {/* EU AI Act Mapping */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text flex items-center gap-2">
+            <CardTitle className="text-lg font-mono text-engine-text flex items-center gap-2">
               <Globe className="h-5 w-5 text-amber-400" />
               EU AI Act Article Mapping
             </CardTitle>
@@ -243,9 +243,9 @@ function combinePair(a: string, b: string): string {
         </Card>
 
         {/* TRIO Framework */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text flex items-center gap-2">
+            <CardTitle className="text-lg font-mono text-engine-text flex items-center gap-2">
               <Shield className="h-5 w-5 text-amber-400" />
               The TRIO Framework
             </CardTitle>
@@ -256,13 +256,13 @@ function combinePair(a: string, b: string): string {
                 name="SHIELD"
                 role="The Lawyer"
                 description="Private compliance layer. MPC-based verification ensures model weights and proprietary data never leave the deployer's environment. Merkle tree commitments prove compliance without exposing internals."
-                color="text-gallows-approved border-gallows-approved/30"
+                color="text-engine-approved border-engine-approved/30"
               />
               <TrioCard
                 name="SWORD"
                 role="The Police"
                 description="Public audit enforcement. Processes challenges against committed actions, generates fraud proofs, and maintains the immutable verification record. All outputs are independently verifiable."
-                color="text-gallows-blocked border-gallows-blocked/30"
+                color="text-engine-blocked border-engine-blocked/30"
               />
               <TrioCard
                 name="JUDGE"
@@ -275,18 +275,18 @@ function combinePair(a: string, b: string): string {
         </Card>
 
         {/* Predicate Schema */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text flex items-center gap-2">
+            <CardTitle className="text-lg font-mono text-engine-text flex items-center gap-2">
               <Code className="h-5 w-5 text-amber-400" />
               Predicate Schema (Downloadable)
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm font-mono text-gallows-muted">
+            <p className="text-sm font-mono text-engine-muted">
               Each predicate is a locked, hash-verified legal rule mapped to a specific EU AI Act article.
             </p>
-            <pre className="p-4 bg-gallows-bg rounded border border-gallows-border text-xs font-mono text-gallows-text/80 whitespace-pre-wrap overflow-x-auto">{`{
+            <pre className="p-4 bg-engine-bg rounded border border-engine-border text-xs font-mono text-engine-text/80 whitespace-pre-wrap overflow-x-auto">{`{
   "id": "EU_ART_14",
   "name": "Human Oversight",
   "article": "Article 14",
@@ -329,7 +329,7 @@ function combinePair(a: string, b: string): string {
                 a.click();
                 URL.revokeObjectURL(url);
               }}
-              className="bg-gallows-bg border border-gallows-border text-gallows-muted font-mono text-xs hover:text-gallows-approved hover:border-gallows-approved/40 gap-2"
+              className="bg-engine-bg border border-engine-border text-engine-muted font-mono text-xs hover:text-engine-approved hover:border-engine-approved/40 gap-2"
               variant="outline"
               size="sm"
             >
@@ -340,31 +340,31 @@ function combinePair(a: string, b: string): string {
         </Card>
 
         {/* Public API Documentation */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text flex items-center gap-2">
+            <CardTitle className="text-lg font-mono text-engine-text flex items-center gap-2">
               <Globe className="h-5 w-5 text-amber-400" />
               Public Verification API
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm font-mono text-gallows-muted">
-              Anyone can independently verify a hash against the APEX Gallows immutable ledger via the public API.
+            <p className="text-sm font-mono text-engine-muted">
+              Anyone can independently verify a hash against the APEX Engine immutable ledger via the public API.
             </p>
             <div className="space-y-3">
-              <div className="p-3 bg-gallows-bg rounded border border-gallows-border">
-                <span className="text-[10px] font-mono text-gallows-approved block mb-1">GET REQUEST</span>
-                <pre className="text-xs font-mono text-gallows-text/80 whitespace-pre-wrap">{`curl "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/verify-hash?hash=<SHA256_HASH>"`}</pre>
+              <div className="p-3 bg-engine-bg rounded border border-engine-border">
+                <span className="text-[10px] font-mono text-engine-approved block mb-1">GET REQUEST</span>
+                <pre className="text-xs font-mono text-engine-text/80 whitespace-pre-wrap">{`curl "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/verify-hash?hash=<SHA256_HASH>"`}</pre>
               </div>
-              <div className="p-3 bg-gallows-bg rounded border border-gallows-border">
-                <span className="text-[10px] font-mono text-gallows-approved block mb-1">POST REQUEST</span>
-                <pre className="text-xs font-mono text-gallows-text/80 whitespace-pre-wrap">{`curl -X POST "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/verify-hash" \\
+              <div className="p-3 bg-engine-bg rounded border border-engine-border">
+                <span className="text-[10px] font-mono text-engine-approved block mb-1">POST REQUEST</span>
+                <pre className="text-xs font-mono text-engine-text/80 whitespace-pre-wrap">{`curl -X POST "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/verify-hash" \\
   -H "Content-Type: application/json" \\
   -d '{"hash": "<SHA256_HASH>"}'`}</pre>
               </div>
-              <div className="p-3 bg-gallows-bg rounded border border-gallows-border">
+              <div className="p-3 bg-engine-bg rounded border border-engine-border">
                 <span className="text-[10px] font-mono text-amber-400 block mb-1">RESPONSE (FOUND)</span>
-                <pre className="text-xs font-mono text-gallows-text/80 whitespace-pre-wrap">{`{
+                <pre className="text-xs font-mono text-engine-text/80 whitespace-pre-wrap">{`{
   "verified": true,
   "found": true,
   "merkle_verified": true,
@@ -383,21 +383,21 @@ function combinePair(a: string, b: string): string {
         </Card>
 
         {/* Live Code Samples */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text flex items-center gap-2">
+            <CardTitle className="text-lg font-mono text-engine-text flex items-center gap-2">
               <Code className="h-5 w-5 text-amber-400" />
               Live Engine Source (Actual Implementation)
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm font-mono text-gallows-muted">
-              These are actual code excerpts from <code className="text-gallows-approved">src/lib/gallows-engine.ts</code> — not pseudocode.
+            <p className="text-sm font-mono text-engine-muted">
+              These are actual code excerpts from <code className="text-engine-approved">src/lib/engine-core.ts</code> — not pseudocode.
             </p>
             
-            <div className="p-4 bg-gallows-bg rounded border border-gallows-border">
-              <span className="text-[10px] font-mono text-gallows-approved block mb-2">SHA-256 HASHING (Web Crypto API)</span>
-              <pre className="text-xs font-mono text-gallows-text/80 whitespace-pre-wrap overflow-x-auto">{`export async function hashSHA256(data: string): Promise<string> {
+            <div className="p-4 bg-engine-bg rounded border border-engine-border">
+              <span className="text-[10px] font-mono text-engine-approved block mb-2">SHA-256 HASHING (Web Crypto API)</span>
+              <pre className="text-xs font-mono text-engine-text/80 whitespace-pre-wrap overflow-x-auto">{`export async function hashSHA256(data: string): Promise<string> {
   const encoder = new TextEncoder();
   const dataBuffer = encoder.encode(data);
   const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
@@ -406,9 +406,9 @@ function combinePair(a: string, b: string): string {
 }`}</pre>
             </div>
 
-            <div className="p-4 bg-gallows-bg rounded border border-gallows-border">
-              <span className="text-[10px] font-mono text-gallows-approved block mb-2">MERKLE TREE LAYER COMPUTATION</span>
-              <pre className="text-xs font-mono text-gallows-text/80 whitespace-pre-wrap overflow-x-auto">{`private async computeLayers(): Promise<string[][]> {
+            <div className="p-4 bg-engine-bg rounded border border-engine-border">
+              <span className="text-[10px] font-mono text-engine-approved block mb-2">MERKLE TREE LAYER COMPUTATION</span>
+              <pre className="text-xs font-mono text-engine-text/80 whitespace-pre-wrap overflow-x-auto">{`private async computeLayers(): Promise<string[][]> {
   if (this.leaves.length === 0) return [['0'.repeat(64)]];
   
   let currentLayer = [...this.leaves];
@@ -430,9 +430,9 @@ function combinePair(a: string, b: string): string {
 }`}</pre>
             </div>
 
-            <div className="p-4 bg-gallows-bg rounded border border-gallows-border">
-              <span className="text-[10px] font-mono text-gallows-approved block mb-2">MERKLE PROOF VERIFICATION</span>
-              <pre className="text-xs font-mono text-gallows-text/80 whitespace-pre-wrap overflow-x-auto">{`export async function verifyMerkleProof(
+            <div className="p-4 bg-engine-bg rounded border border-engine-border">
+              <span className="text-[10px] font-mono text-engine-approved block mb-2">MERKLE PROOF VERIFICATION</span>
+              <pre className="text-xs font-mono text-engine-text/80 whitespace-pre-wrap overflow-x-auto">{`export async function verifyMerkleProof(
   leafHash: string,
   proof: MerkleProofPath,
   root: string
@@ -453,14 +453,14 @@ function combinePair(a: string, b: string): string {
         </Card>
 
         {/* C2PA Content Credentials Integration */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text">
+            <CardTitle className="text-lg font-mono text-engine-text">
               C2PA Content Credentials Integration
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <p className="text-xs font-mono text-gallows-muted leading-relaxed">
+            <p className="text-xs font-mono text-engine-muted leading-relaxed">
               Content files are signed using C2PA Content Credentials manifests. The manifest contains: claim store,
               signature, certificate chain, and timestamp. Signatures use Ed25519 + ML-DSA-65 hybrid mode. Timestamps
               anchored to Bitcoin via OpenTimestamps. Verification is permissionless and offline-capable.
@@ -472,9 +472,9 @@ function combinePair(a: string, b: string): string {
                 ["WAV / MP3", "ID3v2 signed metadata block"],
                 ["PDF", "XMP + PDF/A-3 signed manifest"],
               ].map(([f, m]) => (
-                <div key={f} className="p-3 rounded border border-gallows-border">
-                  <span className="font-mono text-xs text-gallows-approved font-bold block">{f}</span>
-                  <span className="font-mono text-[11px] text-gallows-muted">{m}</span>
+                <div key={f} className="p-3 rounded border border-engine-border">
+                  <span className="font-mono text-xs text-engine-approved font-bold block">{f}</span>
+                  <span className="font-mono text-[11px] text-engine-muted">{m}</span>
                 </div>
               ))}
             </div>
@@ -482,9 +482,9 @@ function combinePair(a: string, b: string): string {
         </Card>
 
         {/* Known Limitations — Intellectual Honesty */}
-        <Card className="bg-gallows-surface border-gallows-border">
+        <Card className="bg-engine-surface border-engine-border">
           <CardHeader>
-            <CardTitle className="text-lg font-mono text-gallows-text flex items-center gap-2">
+            <CardTitle className="text-lg font-mono text-engine-text flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-amber-400" />
               Known Limitations & Roadmap
             </CardTitle>
@@ -521,8 +521,8 @@ function combinePair(a: string, b: string): string {
         {/* CTA */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 py-8">
           <Button
-            onClick={() => navigate("/gallows")}
-            className="bg-gallows-bg border border-gallows-approved/40 text-gallows-approved font-mono tracking-wider hover:bg-gallows-approved/10 hover:shadow-gallows-approved gap-2"
+            onClick={() => navigate("/engine")}
+            className="bg-engine-bg border border-engine-approved/40 text-engine-approved font-mono tracking-wider hover:bg-engine-approved/10 hover:shadow-engine-approved gap-2"
             size="lg"
           >
             <Zap className="h-4 w-4" />
@@ -530,7 +530,7 @@ function combinePair(a: string, b: string): string {
           </Button>
           <Button
             onClick={() => navigate("/#contact")}
-            className="bg-gallows-bg border border-amber-400/40 text-amber-400 font-mono tracking-wider hover:bg-amber-400/10 gap-2"
+            className="bg-engine-bg border border-amber-400/40 text-amber-400 font-mono tracking-wider hover:bg-amber-400/10 gap-2"
             variant="outline"
             size="lg"
           >
@@ -563,16 +563,16 @@ const PipelineStep = ({ icon, phase, title, color, description, code }: {
       </div>
     </div>
     <p className="text-xs font-mono opacity-80 leading-relaxed">{description}</p>
-    <pre className="text-[10px] font-mono bg-gallows-bg/80 rounded p-2 whitespace-pre-wrap opacity-70 border border-gallows-border/50">
+    <pre className="text-[10px] font-mono bg-engine-bg/80 rounded p-2 whitespace-pre-wrap opacity-70 border border-engine-border/50">
       {code}
     </pre>
   </div>
 );
 
 const SpecItem = ({ label, value }: { label: string; value: string }) => (
-  <div className="p-3 bg-gallows-bg rounded border border-gallows-border">
-    <span className="text-[10px] font-mono text-gallows-muted block">{label}</span>
-    <span className="text-sm font-mono text-gallows-text">{value}</span>
+  <div className="p-3 bg-engine-bg rounded border border-engine-border">
+    <span className="text-[10px] font-mono text-engine-muted block">{label}</span>
+    <span className="text-sm font-mono text-engine-text">{value}</span>
   </div>
 );
 
@@ -584,26 +584,26 @@ const ArticleMapping = ({ article, title, component, mechanism, risk }: {
   risk: string;
 }) => {
   const riskColors: Record<string, string> = {
-    UNACCEPTABLE: 'bg-gallows-blocked/15 text-gallows-blocked',
+    UNACCEPTABLE: 'bg-engine-blocked/15 text-engine-blocked',
     HIGH: 'bg-amber-500/15 text-amber-400',
     LIMITED: 'bg-blue-400/15 text-blue-400',
   };
 
   return (
-    <div className="p-3 rounded border border-gallows-border space-y-2">
+    <div className="p-3 rounded border border-engine-border space-y-2">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-sm text-gallows-approved font-bold">{article}</span>
-          <span className="font-mono text-sm text-gallows-text">{title}</span>
+          <span className="font-mono text-sm text-engine-approved font-bold">{article}</span>
+          <span className="font-mono text-sm text-engine-text">{title}</span>
         </div>
         <Badge className={`font-mono text-[10px] border-0 ${riskColors[risk] || ''}`}>{risk}</Badge>
       </div>
       <div className="flex items-center gap-2">
-        <Badge className="bg-gallows-bg border border-gallows-border text-gallows-muted font-mono text-[10px]">
+        <Badge className="bg-engine-bg border border-engine-border text-engine-muted font-mono text-[10px]">
           {component}
         </Badge>
       </div>
-      <p className="text-xs font-mono text-gallows-muted leading-relaxed">{mechanism}</p>
+      <p className="text-xs font-mono text-engine-muted leading-relaxed">{mechanism}</p>
     </div>
   );
 };
@@ -631,18 +631,18 @@ const LimitationItem = ({ title, description, status }: {
   const statusColors: Record<string, string> = {
     SIMULATED: 'bg-amber-500/15 text-amber-400',
     PROTOTYPE: 'bg-blue-400/15 text-blue-400',
-    ARCHITECTURAL: 'bg-gallows-approved/15 text-gallows-approved',
-    PLANNED: 'bg-gallows-muted/15 text-gallows-muted',
+    ARCHITECTURAL: 'bg-engine-approved/15 text-engine-approved',
+    PLANNED: 'bg-engine-muted/15 text-engine-muted',
     DESIGNED: 'bg-amber-400/15 text-amber-400',
   };
 
   return (
-    <div className="p-3 rounded border border-gallows-border space-y-1.5">
+    <div className="p-3 rounded border border-engine-border space-y-1.5">
       <div className="flex items-center justify-between gap-2">
-        <span className="font-mono text-sm text-gallows-text font-bold">{title}</span>
+        <span className="font-mono text-sm text-engine-text font-bold">{title}</span>
         <Badge className={`font-mono text-[10px] border-0 ${statusColors[status] || ''}`}>{status}</Badge>
       </div>
-      <p className="text-xs font-mono text-gallows-muted leading-relaxed">{description}</p>
+      <p className="text-xs font-mono text-engine-muted leading-relaxed">{description}</p>
     </div>
   );
 };

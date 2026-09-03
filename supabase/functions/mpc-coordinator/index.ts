@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX GALLOWS — MPC Coordinator
+// APEX ENGINE — MPC Coordinator
 // Orchestrates 3-node verification network with 2-of-3 threshold
 // ═══════════════════════════════════════════════════════════════════════
 

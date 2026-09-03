@@ -38,7 +38,7 @@ APEX is an AI compliance infrastructure platform using PSI (Provable Stateful In
 - Compliance scores across silos
 - Revenue by silo and partner
 - Kill switch activations
-- Gallows ledger activity
+- Engine ledger activity
 - Knowledge gaps from customer chats
 
 When asked to research something, provide detailed, well-sourced analysis. When asked about platform data, query and analyze it. Always be ready to suggest the next strategic move.`;

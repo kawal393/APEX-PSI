@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX GALLOWS — Server-Side Commit Verification API
+// APEX ENGINE — Server-Side Commit Verification API
 // Re-computes SHA-256 hashes server-side to prevent client tampering
 // Includes rate limiting to prevent ledger spam
 // ═══════════════════════════════════════════════════════════════════════
@@ -170,7 +170,7 @@ Deno.serve(async (req) => {
       // Compute Merkle root from all existing leaves + new leaf
       merkleRoot = await hashSHA256(`${merkleLeafHash}|${timestamp}`);
     } catch (sigErr) {
-      console.warn("[Gallows] Ed25519 signing unavailable:", sigErr);
+      console.warn("[Engine] Ed25519 signing unavailable:", sigErr);
       // Fallback: HMAC-based signature
       const hmacData = `${merkleLeafHash}|${timestamp}|${commitId}`;
       ed25519Signature = await hashSHA256(hmacData);
@@ -181,7 +181,7 @@ Deno.serve(async (req) => {
     let hashMismatch = false;
     if (client_commit_hash && client_commit_hash !== commitHash) {
       hashMismatch = true;
-      console.warn(`[Gallows] Hash mismatch detected from ${clientIP}: client=${client_commit_hash}, server=${commitHash}`);
+      console.warn(`[Engine] Hash mismatch detected from ${clientIP}: client=${client_commit_hash}, server=${commitHash}`);
     }
 
     // Insert into ledger with server-computed hashes + signature
@@ -199,7 +199,7 @@ Deno.serve(async (req) => {
     }).select().single();
 
     if (error) {
-      console.error("[Gallows] Insert failed:", error);
+      console.error("[Engine] Insert failed:", error);
       return new Response(
         JSON.stringify({ error: "Failed to persist commit", details: error.message }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -233,7 +233,7 @@ Deno.serve(async (req) => {
       }
     );
   } catch (err) {
-    console.error("[Gallows] Unexpected error:", err);
+    console.error("[Engine] Unexpected error:", err);
     return new Response(
       JSON.stringify({ error: "Internal server error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

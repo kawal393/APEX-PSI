@@ -20,12 +20,12 @@ const SDK = () => {
   const CopyButton = ({ text, section }: { text: string; section: string }) => (
     <button
       onClick={() => copyToClipboard(text, section)}
-      className="absolute top-3 right-3 p-1.5 rounded bg-gallows-border/50 hover:bg-gallows-border transition-colors"
+      className="absolute top-3 right-3 p-1.5 rounded bg-engine-border/50 hover:bg-engine-border transition-colors"
     >
       {copiedSection === section ? (
-        <Check className="h-4 w-4 text-gallows-approved" />
+        <Check className="h-4 w-4 text-engine-approved" />
       ) : (
-        <Copy className="h-4 w-4 text-gallows-muted" />
+        <Copy className="h-4 w-4 text-engine-muted" />
       )}
     </button>
   );
@@ -134,16 +134,16 @@ const result = await response.json();
 //   }
 // }`;
 
-  const sdkExample = `import { ApexGallows } from '@apex/gallows-sdk';
+  const sdkExample = `import { ApexEngine } from '@apex/psi-sdk';
 
 // Initialize SDK
-const gallows = new ApexGallows({
+const engine = new ApexEngine({
   projectId: 'qhtntebpcribjiwrdtdd',
   apiKey: process.env.APEX_API_KEY
 });
 
 // Runtime blocking middleware for Express/Node.js
-app.use(gallows.middleware({
+app.use(engine.middleware({
   predicates: ['EU_ART_14', 'EU_ART_50', 'MIFID_ART_17'],
   mode: 'blocking',       // 'blocking' | 'audit-only'
   zkMode: true,           // Privacy-preserving verification
@@ -155,7 +155,7 @@ app.use(gallows.middleware({
 
 // Inline usage in your code
 async function generateAIResponse(prompt: string) {
-  const result = await gallows.verify({
+  const result = await engine.verify({
     action: \`Generate response: \${prompt}\`,
     predicates: ['EU_ART_50', 'EU_ART_52'],
     blocking: true
@@ -182,34 +182,34 @@ async function generateAIResponse(prompt: string) {
     <>
       <Helmet>
         <title>SDKs & Integrations — Apex PSI — Universal Verification Layer</title>
-        <meta name="description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/gallows-sdk runtime pattern cache." />
+        <meta name="description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/psi-sdk runtime pattern cache." />
         <link rel="canonical" href="https://ai-governance-standard.com/sdk" />
         <meta property="og:title" content="SDKs & Integrations — APEX PSI" />
-        <meta property="og:description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/gallows-sdk runtime pattern cache." />
+        <meta property="og:description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/psi-sdk runtime pattern cache." />
         <meta property="og:url" content="https://ai-governance-standard.com/sdk" />
         <meta property="og:type" content="website" />
       </Helmet>
-      <div className="min-h-screen bg-gallows-bg text-gallows-text">
+      <div className="min-h-screen bg-engine-bg text-engine-text">
       {/* Header */}
-      <header className="border-b border-gallows-border bg-gallows-surface/50 sticky top-0 z-50 backdrop-blur-sm">
+      <header className="border-b border-engine-border bg-engine-surface/50 sticky top-0 z-50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/">
-              <Button variant="ghost" size="sm" className="gap-2 text-gallows-muted hover:text-gallows-text">
+              <Button variant="ghost" size="sm" className="gap-2 text-engine-muted hover:text-engine-text">
                 <ArrowLeft className="h-4 w-4" />
                 Back
               </Button>
             </Link>
             <div className="flex items-center gap-2">
-              <Terminal className="h-5 w-5 text-gallows-approved" />
+              <Terminal className="h-5 w-5 text-engine-approved" />
               <span className="font-mono font-bold">APEX SDK</span>
-              <Badge className="bg-gallows-approved/20 text-gallows-approved border-gallows-approved/30 text-xs">
+              <Badge className="bg-engine-approved/20 text-engine-approved border-engine-approved/30 text-xs">
                 v2.1
               </Badge>
             </div>
           </div>
-          <Link to="/gallows">
-            <Button size="sm" className="bg-gallows-approved hover:bg-gallows-approved/90 text-black font-mono">
+          <Link to="/engine">
+            <Button size="sm" className="bg-engine-approved hover:bg-engine-approved/90 text-black font-mono">
               Try Live Demo →
             </Button>
           </Link>
@@ -226,46 +226,46 @@ async function generateAIResponse(prompt: string) {
           <h1 className="text-4xl md:text-5xl font-bold mb-4 font-mono">
             Runtime Compliance SDK
           </h1>
-          <p className="text-lg text-gallows-muted max-w-2xl mx-auto mb-6">
+          <p className="text-lg text-engine-muted max-w-2xl mx-auto mb-6">
             Integrate cryptographic compliance verification directly into your AI systems.
             Block violations in milliseconds, before they reach production.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
-            <Badge className="bg-gallows-surface border-gallows-border text-gallows-text gap-1.5 px-3 py-1">
+            <Badge className="bg-engine-surface border-engine-border text-engine-text gap-1.5 px-3 py-1">
               <Zap className="h-3 w-3 text-amber-400" /> &lt;15ms verification
             </Badge>
-            <Badge className="bg-gallows-surface border-gallows-border text-gallows-text gap-1.5 px-3 py-1">
-              <Lock className="h-3 w-3 text-gallows-approved" /> ZK proof mode
+            <Badge className="bg-engine-surface border-engine-border text-engine-text gap-1.5 px-3 py-1">
+              <Lock className="h-3 w-3 text-engine-approved" /> ZK proof mode
             </Badge>
-            <Badge className="bg-gallows-surface border-gallows-border text-gallows-text gap-1.5 px-3 py-1">
+            <Badge className="bg-engine-surface border-engine-border text-engine-text gap-1.5 px-3 py-1">
               <Shield className="h-3 w-3 text-blue-400" /> 35 predicates · 7 jurisdictions
             </Badge>
           </div>
         </motion.div>
 
         {/* Quick Start */}
-        <Card className="bg-gallows-surface border-gallows-border mb-8">
+        <Card className="bg-engine-surface border-engine-border mb-8">
           <CardHeader>
             <CardTitle className="font-mono text-lg flex items-center gap-2">
-              <Code2 className="h-5 w-5 text-gallows-approved" />
+              <Code2 className="h-5 w-5 text-engine-approved" />
               Quick Start
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-gallows-muted text-sm">
-              The APEX Gallows API exposes four core endpoints for the commit-challenge-prove pipeline.
+            <p className="text-engine-muted text-sm">
+              The APEX Engine API exposes four core endpoints for the commit-challenge-prove pipeline.
               All endpoints are public and require no authentication for basic usage.
             </p>
-            <div className="bg-gallows-bg rounded border border-gallows-border p-4 font-mono text-sm">
-              <span className="text-gallows-muted">Base URL:</span>{" "}
-              <span className="text-gallows-approved">https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1</span>
+            <div className="bg-engine-bg rounded border border-engine-border p-4 font-mono text-sm">
+              <span className="text-engine-muted">Base URL:</span>{" "}
+              <span className="text-engine-approved">https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1</span>
             </div>
           </CardContent>
         </Card>
 
         {/* API Reference */}
         <Tabs defaultValue="notarize" className="mb-12">
-          <TabsList className="bg-gallows-surface border border-gallows-border w-full justify-start overflow-x-auto scrollbar-hide flex-nowrap">
+          <TabsList className="bg-engine-surface border border-engine-border w-full justify-start overflow-x-auto scrollbar-hide flex-nowrap">
             <TabsTrigger value="notarize" className="font-mono text-[10px] sm:text-xs whitespace-nowrap">Notarize</TabsTrigger>
             <TabsTrigger value="notarize-batch" className="font-mono text-[10px] sm:text-xs whitespace-nowrap">Batch</TabsTrigger>
             <TabsTrigger value="commit" className="font-mono text-[10px] sm:text-xs whitespace-nowrap">Commit</TabsTrigger>
@@ -277,21 +277,21 @@ async function generateAIResponse(prompt: string) {
 
           {/* Notarize tab */}
           <TabsContent value="notarize" className="mt-4">
-            <Card className="bg-gallows-surface border-gallows-border">
+            <Card className="bg-engine-surface border-engine-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="font-mono text-base">POST /notarize</CardTitle>
-                  <Badge className="bg-gallows-approved/20 text-gallows-approved border-gallows-approved/30">Live</Badge>
+                  <Badge className="bg-engine-approved/20 text-engine-approved border-engine-approved/30">Live</Badge>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gallows-muted text-sm mb-4">
+                <p className="text-engine-muted text-sm mb-4">
                   Notarize any AI decision with a single API call. Returns a SHA-256 hashed, Ed25519 signed,
                   Merkle-anchored receipt. No authentication required for the free tier (100/day).
                 </p>
                 <div className="relative">
-                  <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-gallows-text">{`const response = await fetch(
+                  <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                    <code className="text-engine-text">{`const response = await fetch(
   "https://\${PROJECT_ID}.supabase.co/functions/v1/notarize",
   {
     method: "POST",
@@ -325,21 +325,21 @@ const receipt = await response.json();
 
           {/* Batch Notarize tab */}
           <TabsContent value="notarize-batch" className="mt-4">
-            <Card className="bg-gallows-surface border-gallows-border">
+            <Card className="bg-engine-surface border-engine-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="font-mono text-base">POST /notarize-batch</CardTitle>
-                  <Badge className="bg-gallows-approved/20 text-gallows-approved border-gallows-approved/30">Live</Badge>
+                  <Badge className="bg-engine-approved/20 text-engine-approved border-engine-approved/30">Live</Badge>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gallows-muted text-sm mb-4">
+                <p className="text-engine-muted text-sm mb-4">
                   Notarize up to 100 AI decisions in a single API call. All decisions share a single
                   cumulative Merkle root for batch integrity.
                 </p>
                 <div className="relative">
-                  <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-gallows-text">{`const response = await fetch(
+                  <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                    <code className="text-engine-text">{`const response = await fetch(
   "https://\${PROJECT_ID}.supabase.co/functions/v1/notarize-batch",
   {
     method: "POST",
@@ -368,25 +368,25 @@ const batch = await response.json();
           </TabsContent>
 
           <TabsContent value="commit" className="mt-4">
-            <Card className="bg-gallows-surface border-gallows-border">
+            <Card className="bg-engine-surface border-engine-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="font-mono text-base">
                     POST /commit-action
                   </CardTitle>
-                  <Badge className="bg-gallows-approved/20 text-gallows-approved border-gallows-approved/30">
+                  <Badge className="bg-engine-approved/20 text-engine-approved border-engine-approved/30">
                     Phase 1
                   </Badge>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gallows-muted text-sm mb-4">
+                <p className="text-engine-muted text-sm mb-4">
                   Submit an AI action for compliance verification. The server computes SHA-256 hashes
                   and adds the action to the Merkle tree.
                 </p>
                 <div className="relative">
-                  <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-gallows-text">{commitExample}</code>
+                  <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                    <code className="text-engine-text">{commitExample}</code>
                   </pre>
                   <CopyButton text={commitExample} section="commit" />
                 </div>
@@ -395,7 +395,7 @@ const batch = await response.json();
           </TabsContent>
 
           <TabsContent value="challenge" className="mt-4">
-            <Card className="bg-gallows-surface border-gallows-border">
+            <Card className="bg-engine-surface border-engine-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="font-mono text-base">
@@ -407,13 +407,13 @@ const batch = await response.json();
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gallows-muted text-sm mb-4">
+                <p className="text-engine-muted text-sm mb-4">
                   Challenge a committed action for regulatory review. Generates a challenge hash
                   binding the original commit to the review process.
                 </p>
                 <div className="relative">
-                  <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-gallows-text">{challengeExample}</code>
+                  <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                    <code className="text-engine-text">{challengeExample}</code>
                   </pre>
                   <CopyButton text={challengeExample} section="challenge" />
                 </div>
@@ -422,7 +422,7 @@ const batch = await response.json();
           </TabsContent>
 
           <TabsContent value="prove" className="mt-4">
-            <Card className="bg-gallows-surface border-gallows-border">
+            <Card className="bg-engine-surface border-engine-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="font-mono text-base">
@@ -434,13 +434,13 @@ const batch = await response.json();
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gallows-muted text-sm mb-4">
+                <p className="text-engine-muted text-sm mb-4">
                   Generate a Merkle inclusion proof and run compliance verification. Optionally enable
-                  <span className="text-gallows-approved"> zk_mode</span> for privacy-preserving verification.
+                  <span className="text-engine-approved"> zk_mode</span> for privacy-preserving verification.
                 </p>
                 <div className="relative">
-                  <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-gallows-text">{proveExample}</code>
+                  <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                    <code className="text-engine-text">{proveExample}</code>
                   </pre>
                   <CopyButton text={proveExample} section="prove" />
                 </div>
@@ -449,25 +449,25 @@ const batch = await response.json();
           </TabsContent>
 
           <TabsContent value="verify" className="mt-4">
-            <Card className="bg-gallows-surface border-gallows-border">
+            <Card className="bg-engine-surface border-engine-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="font-mono text-base">
                     POST /verify-hash
                   </CardTitle>
-                  <Badge className="bg-gallows-approved/20 text-gallows-approved border-gallows-approved/30">
+                  <Badge className="bg-engine-approved/20 text-engine-approved border-engine-approved/30">
                     Phase 4
                   </Badge>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gallows-muted text-sm mb-4">
+                <p className="text-engine-muted text-sm mb-4">
                   Verify that a hash exists in the public audit ledger. Useful for third-party
                   verification without access to the original action content.
                 </p>
                 <div className="relative">
-                  <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-gallows-text">{verifyExample}</code>
+                  <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                    <code className="text-engine-text">{verifyExample}</code>
                   </pre>
                   <CopyButton text={verifyExample} section="verify" />
                 </div>
@@ -476,25 +476,25 @@ const batch = await response.json();
           </TabsContent>
 
           <TabsContent value="sdk" className="mt-4">
-            <Card className="bg-gallows-surface border-gallows-border">
+            <Card className="bg-engine-surface border-engine-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="font-mono text-base">
                     Runtime SDK (Coming Soon)
                   </CardTitle>
-                  <Badge className="bg-gallows-muted/20 text-gallows-muted border-gallows-muted/30">
+                  <Badge className="bg-engine-muted/20 text-engine-muted border-engine-muted/30">
                     Roadmap
                   </Badge>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gallows-muted text-sm mb-4">
+                <p className="text-engine-muted text-sm mb-4">
                   The SDK will provide middleware integration, automatic blocking, and privacy-preserving
                   verification with ZK proofs. Contact us for early access.
                 </p>
                 <div className="relative">
-                  <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-gallows-text">{sdkExample}</code>
+                  <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                    <code className="text-engine-text">{sdkExample}</code>
                   </pre>
                   <CopyButton text={sdkExample} section="sdk" />
                 </div>
@@ -504,30 +504,30 @@ const batch = await response.json();
         </Tabs>
 
         {/* Predicate Registry */}
-        <Card className="bg-gallows-surface border-gallows-border mb-8">
+        <Card className="bg-engine-surface border-engine-border mb-8">
           <CardHeader>
             <CardTitle className="font-mono text-lg flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-gallows-approved" />
+              <BookOpen className="h-5 w-5 text-engine-approved" />
               Predicate Registry
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gallows-muted text-sm mb-6">
+            <p className="text-engine-muted text-sm mb-6">
               APEX supports compliance verification across multiple regulatory frameworks.
               Each predicate contains violation patterns that trigger automatic blocking.
             </p>
             <div className="grid md:grid-cols-3 gap-4">
               {predicates.map((p) => (
-                <div key={p.category} className="bg-gallows-bg border border-gallows-border rounded p-4">
+                <div key={p.category} className="bg-engine-bg border border-engine-border rounded p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-mono font-bold text-gallows-approved">{p.category}</span>
-                    <Badge className="bg-gallows-surface text-gallows-muted border-gallows-border text-xs">
+                    <span className="font-mono font-bold text-engine-approved">{p.category}</span>
+                    <Badge className="bg-engine-surface text-engine-muted border-engine-border text-xs">
                       {p.count} predicates
                     </Badge>
                   </div>
                   <div className="space-y-1">
                     {p.examples.map((ex) => (
-                      <code key={ex} className="block text-xs text-gallows-muted font-mono">
+                      <code key={ex} className="block text-xs text-engine-muted font-mono">
                         {ex}
                       </code>
                     ))}
@@ -539,31 +539,31 @@ const batch = await response.json();
         </Card>
 
         {/* ZK Mode */}
-        <Card className="bg-gradient-to-br from-gallows-surface to-gallows-bg border-gallows-border mb-8">
+        <Card className="bg-gradient-to-br from-engine-surface to-engine-bg border-engine-border mb-8">
           <CardHeader>
             <CardTitle className="font-mono text-lg flex items-center gap-2">
-              <Lock className="h-5 w-5 text-gallows-approved" />
+              <Lock className="h-5 w-5 text-engine-approved" />
               Zero-Knowledge Mode
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gallows-muted text-sm mb-4">
-              Enable <code className="text-gallows-approved">zk_mode: true</code> in prove requests
+            <p className="text-engine-muted text-sm mb-4">
+              Enable <code className="text-engine-approved">zk_mode: true</code> in prove requests
               to verify compliance without revealing the original action content. The proof demonstrates
               that your action passes predicate checks without exposing proprietary information.
             </p>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
-              <div className="bg-gallows-bg/50 border border-gallows-border rounded p-3">
-                <span className="text-gallows-approved font-mono text-xs">What's proven:</span>
-                <ul className="mt-2 space-y-1 text-gallows-muted text-xs">
+              <div className="bg-engine-bg/50 border border-engine-border rounded p-3">
+                <span className="text-engine-approved font-mono text-xs">What's proven:</span>
+                <ul className="mt-2 space-y-1 text-engine-muted text-xs">
                   <li>• Action satisfies predicate requirements</li>
                   <li>• Hash is included in Merkle tree</li>
                   <li>• Verification completed within SLA</li>
                 </ul>
               </div>
-              <div className="bg-gallows-bg/50 border border-gallows-border rounded p-3">
-                <span className="text-gallows-blocked font-mono text-xs">What's hidden:</span>
-                <ul className="mt-2 space-y-1 text-gallows-muted text-xs">
+              <div className="bg-engine-bg/50 border border-engine-border rounded p-3">
+                <span className="text-engine-blocked font-mono text-xs">What's hidden:</span>
+                <ul className="mt-2 space-y-1 text-engine-muted text-xs">
                   <li>• Original action content</li>
                   <li>• Model weights or parameters</li>
                   <li>• Business logic details</li>
@@ -574,24 +574,24 @@ const batch = await response.json();
         </Card>
 
         {/* CI/CD Integration Guide */}
-        <Card className="bg-gallows-surface border-gallows-border mb-8">
+        <Card className="bg-engine-surface border-engine-border mb-8">
           <CardHeader>
             <CardTitle className="font-mono text-lg flex items-center gap-2">
-              <Terminal className="h-5 w-5 text-gallows-approved" />
+              <Terminal className="h-5 w-5 text-engine-approved" />
               CI/CD Integration
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-gallows-muted text-sm">
+            <p className="text-engine-muted text-sm">
               Embed compliance verification into your build pipeline. Every deployment gets a cryptographic proof.
             </p>
 
             <div className="space-y-4">
               <div>
-                <p className="text-xs font-mono text-gallows-approved mb-2">GitHub Actions</p>
+                <p className="text-xs font-mono text-engine-approved mb-2">GitHub Actions</p>
                 <div className="relative">
-                  <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-gallows-text">{`# .github/workflows/compliance.yml
+                  <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                    <code className="text-engine-text">{`# .github/workflows/compliance.yml
 name: APEX Compliance Gate
 on: [push, pull_request]
 jobs:
@@ -601,7 +601,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
-      - run: npm install @apex/gallows-sdk
+      - run: npm install @apex/psi-sdk
       - name: Run compliance check
         env:
           APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}
@@ -611,20 +611,20 @@ jobs:
             --mode blocking \\
             --fail-on-violation`}</code>
                   </pre>
-                  <CopyButton text={`# .github/workflows/compliance.yml\nname: APEX Compliance Gate\non: [push, pull_request]\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: '20' }\n      - run: npm install @apex/gallows-sdk\n      - name: Run compliance check\n        env:\n          APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}\n        run: npx apex-verify --predicates EU_ART_14,EU_ART_50,NIST_GOVERN_1 --mode blocking --fail-on-violation`} section="github-actions" />
+                  <CopyButton text={`# .github/workflows/compliance.yml\nname: APEX Compliance Gate\non: [push, pull_request]\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: '20' }\n      - run: npm install @apex/psi-sdk\n      - name: Run compliance check\n        env:\n          APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}\n        run: npx apex-verify --predicates EU_ART_14,EU_ART_50,NIST_GOVERN_1 --mode blocking --fail-on-violation`} section="github-actions" />
                 </div>
               </div>
 
               <div>
-                <p className="text-xs font-mono text-gallows-approved mb-2">GitLab CI</p>
+                <p className="text-xs font-mono text-engine-approved mb-2">GitLab CI</p>
                 <div className="relative">
-                  <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-gallows-text">{`# .gitlab-ci.yml
+                  <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                    <code className="text-engine-text">{`# .gitlab-ci.yml
 compliance_gate:
   stage: test
   image: node:20
   script:
-    - npm install @apex/gallows-sdk
+    - npm install @apex/psi-sdk
     - npx apex-verify
         --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1
         --mode blocking
@@ -632,7 +632,7 @@ compliance_gate:
   artifacts:
     paths: [proof-bundle.json]`}</code>
                   </pre>
-                  <CopyButton text={`# .gitlab-ci.yml\ncompliance_gate:\n  stage: test\n  image: node:20\n  script:\n    - npm install @apex/gallows-sdk\n    - npx apex-verify --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1 --mode blocking --output proof-bundle.json\n  artifacts:\n    paths: [proof-bundle.json]`} section="gitlab-ci" />
+                  <CopyButton text={`# .gitlab-ci.yml\ncompliance_gate:\n  stage: test\n  image: node:20\n  script:\n    - npm install @apex/psi-sdk\n    - npx apex-verify --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1 --mode blocking --output proof-bundle.json\n  artifacts:\n    paths: [proof-bundle.json]`} section="gitlab-ci" />
                 </div>
               </div>
             </div>
@@ -640,20 +640,20 @@ compliance_gate:
         </Card>
 
         {/* Compliance DNS */}
-        <Card className="bg-gradient-to-br from-gallows-surface to-gallows-bg border-gallows-border mb-8">
+        <Card className="bg-gradient-to-br from-engine-surface to-engine-bg border-engine-border mb-8">
           <CardHeader>
             <CardTitle className="font-mono text-lg flex items-center gap-2">
-              <Shield className="h-5 w-5 text-gallows-approved" />
+              <Shield className="h-5 w-5 text-engine-approved" />
               Compliance DNS — Public Verification API
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-gallows-muted text-sm">
+            <p className="text-engine-muted text-sm">
               Query any entity's compliance status. No authentication required. The WHOIS of AI Compliance.
             </p>
             <div className="relative">
-              <pre className="bg-gallows-bg border border-gallows-border rounded p-4 overflow-x-auto text-xs">
-                <code className="text-gallows-text">{`# Lookup a specific entity
+              <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
+                <code className="text-engine-text">{`# Lookup a specific entity
 GET /verify-status?entity=<compliance_result_id>
 
 # Browse the public registry
@@ -686,16 +686,16 @@ GET /verify-status?action=stats
         </Card>
 
         {/* Runtime Middleware Cards — Compliance-Receipt header adapters */}
-        <Card className="bg-gradient-to-br from-gallows-surface to-gallows-bg border-gallows-border mb-8">
+        <Card className="bg-gradient-to-br from-engine-surface to-engine-bg border-engine-border mb-8">
           <CardHeader>
             <CardTitle className="font-mono text-lg flex items-center gap-2">
-              <Code2 className="h-5 w-5 text-gallows-approved" />
+              <Code2 className="h-5 w-5 text-engine-approved" />
               Runtime Adapters — Compliance-Receipt Header
             </CardTitle>
-            <p className="text-gallows-muted text-xs mt-2">
+            <p className="text-engine-muted text-xs mt-2">
               Wrap your AI runtime in one line. Every response carries a signed{" "}
-              <code className="text-gallows-approved">Compliance-Receipt</code> header
-              (<Link to="/standard" className="text-gallows-approved underline">draft-singh-psi-http-01</Link>).
+              <code className="text-engine-approved">Compliance-Receipt</code> header
+              (<Link to="/standard" className="text-engine-approved underline">draft-singh-psi-http-01</Link>).
             </p>
           </CardHeader>
           <CardContent>
@@ -710,23 +710,23 @@ GET /verify-status?action=stats
                 { name: "@apex/psi-google", target: "Gemini / Vertex", status: "roadmap", install: "Q1 2026" },
                 { name: "@apex/psi-bedrock", target: "AWS Bedrock", status: "roadmap", install: "Q1 2026" },
               ].map((pkg) => (
-                <div key={pkg.name} className="border border-gallows-border bg-gallows-bg rounded p-4">
+                <div key={pkg.name} className="border border-engine-border bg-engine-bg rounded p-4">
                   <div className="flex items-center justify-between mb-1">
-                    <code className="text-xs text-gallows-approved font-bold">{pkg.name}</code>
+                    <code className="text-xs text-engine-approved font-bold">{pkg.name}</code>
                     <Badge className={pkg.status === "shipped"
-                      ? "bg-gallows-approved/20 text-gallows-approved border-gallows-approved/30 text-[10px]"
+                      ? "bg-engine-approved/20 text-engine-approved border-engine-approved/30 text-[10px]"
                       : "bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]"}>
                       {pkg.status}
                     </Badge>
                   </div>
-                  <div className="text-[11px] text-gallows-muted mb-2">{pkg.target}</div>
-                  <code className="text-[11px] font-mono text-gallows-text">{pkg.install}</code>
+                  <div className="text-[11px] text-engine-muted mb-2">{pkg.target}</div>
+                  <code className="text-[11px] font-mono text-engine-text">{pkg.install}</code>
                 </div>
               ))}
             </div>
             <div className="mt-4 text-center">
               <Link to="/header">
-                <Button variant="outline" size="sm" className="border-gallows-border text-gallows-text gap-2">
+                <Button variant="outline" size="sm" className="border-engine-border text-engine-text gap-2">
                   <Zap className="h-4 w-4" />
                   Try the live header inspector
                 </Button>
@@ -737,18 +737,18 @@ GET /verify-status?action=stats
 
 
         <div className="text-center py-8">
-          <p className="text-gallows-muted mb-4">
+          <p className="text-engine-muted mb-4">
             Ready to integrate compliance verification into your AI systems?
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
-            <Link to="/gallows">
-              <Button className="bg-gallows-approved hover:bg-gallows-approved/90 text-black font-mono gap-2">
+            <Link to="/engine">
+              <Button className="bg-engine-approved hover:bg-engine-approved/90 text-black font-mono gap-2">
                 <Terminal className="h-4 w-4" />
                 Try Live Demo
               </Button>
             </Link>
             <a href="/#contact">
-              <Button variant="outline" className="border-gallows-border text-gallows-text gap-2">
+              <Button variant="outline" className="border-engine-border text-engine-text gap-2">
                 <ExternalLink className="h-4 w-4" />
                 Contact Sales
               </Button>

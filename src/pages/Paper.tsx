@@ -261,8 +261,8 @@ The PSI Protocol roadmap includes:
       predicate patterns correctly implement regulatory text
       using Coq/Lean theorem provers.
 
-  (c) Decentralized Gallows Node Federation — enabling any
-      organization to run an independent Gallows node that
+  (c) Decentralized Engine Node Federation — enabling any
+      organization to run an independent Engine node that
       federates with the protocol ledger.
 
   (d) APEX NOTARY API — a public notarization endpoint

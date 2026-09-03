@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX GALLOWS — Public Hash Verification API
+// APEX ENGINE — Public Hash Verification API
 // POST /verify-hash { hash: "..." }
 // GET /verify-hash?hash=...
 // Returns verification status against the immutable ledger

@@ -14,7 +14,7 @@ import {
   DISCLAIMERS,
   FEE_FOOTNOTE,
   FEE_SCHEDULE,
-  FINDER_FEE_ACTIVE,
+  NO_FINDER_FEE_NOTICE,
   HOLDINGS,
   LAPSE_DAYS,
   ONCHAIN_NETWORK,
@@ -240,11 +240,9 @@ const Founding = () => {
               </table>
             </div>
             <p className="text-xs text-muted-foreground mt-4 max-w-3xl leading-relaxed">{FEE_FOOTNOTE}</p>
-            {!FINDER_FEE_ACTIVE && (
-              <p className="text-xs text-muted-foreground mt-2 font-mono">
-                Finder fee — litigation-finance intros: not yet active.
-              </p>
-            )}
+            <p className="text-xs text-muted-foreground mt-4 max-w-3xl leading-relaxed">
+              {NO_FINDER_FEE_NOTICE}
+            </p>
           </div>
         </section>
 

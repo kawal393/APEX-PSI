@@ -9,7 +9,7 @@ type ProactiveTrigger = {
 
 const TRIGGERS: ProactiveTrigger[] = [
   { route: "/", delayMs: 45000, message: "👋 I noticed you've been exploring APEX. Have any questions about EU AI Act compliance? I'm here to help!" },
-  { route: "/gallows", delayMs: 30000, message: "🔧 Testing the Gallows engine? I can explain how the Commit-Challenge-Prove protocol works." },
+  { route: "/engine", delayMs: 30000, message: "🔧 Testing the Engine engine? I can explain how the Commit-Challenge-Prove protocol works." },
   { route: "/assess", delayMs: 20000, message: "📊 Need help with your compliance assessment? I can guide you through the process." },
   { route: "/compare", delayMs: 25000, message: "⚖️ Comparing compliance solutions? Ask me how APEX differs from traditional audit firms." },
   { route: "/architecture", delayMs: 35000, message: "🏗️ Deep-diving into PSI architecture? I can answer technical questions about our ZK-Oracle and Commit Layer." },

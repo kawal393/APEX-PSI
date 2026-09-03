@@ -126,9 +126,9 @@ const proposedChanges = [
   },
   {
     id: "PSI-RFC-004",
-    title: "Decentralized Gallows Node Federation",
+    title: "Decentralized Engine Node Federation",
     status: "DRAFT",
-    description: "Self-hosting specification enabling any organization to run an independent Gallows node that federates with the sovereign ledger, preventing single-entity nationalization.",
+    description: "Self-hosting specification enabling any organization to run an independent Engine node that federates with the sovereign ledger, preventing single-entity nationalization.",
   },
 ];
 

@@ -1,13 +1,13 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import GallowsHeader from "@/components/gallows/GallowsHeader";
-import CommitPanel from "@/components/gallows/CommitPanel";
-import PipelineView from "@/components/gallows/PipelineView";
-import MerkleVisualizer from "@/components/gallows/MerkleVisualizer";
-import AuditTrailLog from "@/components/gallows/AuditTrailLog";
-import PredicateRegistry from "@/components/gallows/PredicateRegistry";
-import HashVerifier from "@/components/gallows/HashVerifier";
-import CertificatePanel from "@/components/gallows/CertificatePanel";
+import EngineHeader from "@/components/engine/EngineHeader";
+import CommitPanel from "@/components/engine/CommitPanel";
+import PipelineView from "@/components/engine/PipelineView";
+import MerkleVisualizer from "@/components/engine/MerkleVisualizer";
+import AuditTrailLog from "@/components/engine/AuditTrailLog";
+import PredicateRegistry from "@/components/engine/PredicateRegistry";
+import HashVerifier from "@/components/engine/HashVerifier";
+import CertificatePanel from "@/components/engine/CertificatePanel";
 import {
   commitAction,
   toggleProtocolPause,
@@ -17,7 +17,7 @@ import {
   updateRecordFromServer,
   type CommitRecord,
   type MerkleTreeState,
-} from "@/lib/gallows-engine";
+} from "@/lib/engine-core";
 import { 
   persistCommit, 
   challengeCommitServer,
@@ -25,15 +25,15 @@ import {
   fetchLedger, 
   subscribeLedgerAll, 
   type LedgerEntry 
-} from "@/lib/gallows-persistence";
-import { generateCertificate, type ComplianceCertificate } from "@/lib/gallows-certificate";
-import { generateZKProof, type ZKProofResult } from "@/lib/gallows-zk";
+} from "@/lib/engine-persistence";
+import { generateCertificate, type ComplianceCertificate } from "@/lib/engine-certificate";
+import { generateZKProof, type ZKProofResult } from "@/lib/engine-zk";
 import TrafficNoticeBanner from "@/components/TrafficNoticeBanner";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-const Gallows = () => {
+const Engine = () => {
   const [currentRecord, setCurrentRecord] = useState<CommitRecord | null>(null);
   const [commitLog, setCommitLog] = useState<CommitRecord[]>([]);
   const [treeState, setTreeState] = useState<(MerkleTreeState & { layers: string[][] }) | null>(null);
@@ -60,7 +60,7 @@ const Gallows = () => {
         
         if (entries.length > 0) {
           const result = await initializeFromLedger(entries);
-          console.log(`[Gallows] Initialized from ${result.loaded} persisted entries. Root: ${result.merkleRoot.substring(0, 16)}...`);
+          console.log(`[Engine] Initialized from ${result.loaded} persisted entries. Root: ${result.merkleRoot.substring(0, 16)}...`);
           toast.success(`Loaded ${result.loaded} entries from ledger`, {
             description: `Merkle root: ${result.merkleRoot.substring(0, 16)}...`,
           });
@@ -69,7 +69,7 @@ const Gallows = () => {
         setPersistedCount(entries.length);
         refreshState();
       } catch (err) {
-        console.error('[Gallows] Initialization failed:', err);
+        console.error('[Engine] Initialization failed:', err);
       } finally {
         setIsLoading(false);
       }
@@ -117,7 +117,7 @@ const Gallows = () => {
             description: `BN128 field arithmetic • ${zkProofResult.generationTimeMs}ms • ${zkProofResult.privacyLevel}`,
           });
         } catch (e: any) {
-          console.warn("[Gallows] ZK proof generation failed:", e.message);
+          console.warn("[Engine] ZK proof generation failed:", e.message);
         }
       }
 
@@ -144,7 +144,7 @@ const Gallows = () => {
         setCurrentRecord(serverRecord);
         refreshState();
       } else {
-        console.error('[Gallows] Persistence failed:', result.error);
+        console.error('[Engine] Persistence failed:', result.error);
         toast.error("Persistence failed", {
           description: result.error,
         });
@@ -298,10 +298,10 @@ const Gallows = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gallows-bg text-gallows-text flex items-center justify-center">
+      <div className="min-h-screen bg-engine-bg text-engine-text flex items-center justify-center">
         <div className="text-center space-y-4">
-          <Loader2 className="h-10 w-10 text-gallows-approved animate-spin mx-auto" />
-          <div className="font-mono text-sm text-gallows-muted">
+          <Loader2 className="h-10 w-10 text-engine-approved animate-spin mx-auto" />
+          <div className="font-mono text-sm text-engine-muted">
             INITIALIZING MERKLE TREE FROM LEDGER...
           </div>
         </div>
@@ -310,15 +310,15 @@ const Gallows = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gallows-bg text-gallows-text">
+    <div className="min-h-screen bg-engine-bg text-engine-text">
       <TrafficNoticeBanner />
-      <GallowsHeader paused={paused} onTogglePause={handlePause} persistedCount={persistedCount} />
+      <EngineHeader paused={paused} onTogglePause={handlePause} persistedCount={persistedCount} />
 
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mx-4 md:mx-6 mt-4 p-3 border border-gallows-blocked/40 bg-gallows-blocked/10 rounded font-mono text-sm text-gallows-blocked"
+          className="mx-4 md:mx-6 mt-4 p-3 border border-engine-blocked/40 bg-engine-blocked/10 rounded font-mono text-sm text-engine-blocked"
         >
           ⚠ {error}
         </motion.div>
@@ -328,14 +328,14 @@ const Gallows = () => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mx-4 md:mx-6 mt-4 p-3 border border-gallows-approved/40 bg-gallows-approved/10 rounded font-mono text-sm"
+          className="mx-4 md:mx-6 mt-4 p-3 border border-engine-approved/40 bg-engine-approved/10 rounded font-mono text-sm"
         >
-          <span className="text-gallows-approved">⚓ EXTERNAL ANCHOR:</span>{" "}
+          <span className="text-engine-approved">⚓ EXTERNAL ANCHOR:</span>{" "}
           <a 
             href={externalAnchoring.ots_url} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-gallows-highlight underline"
+            className="text-engine-highlight underline"
           >
             OpenTimestamps Proof
           </a>
@@ -406,4 +406,4 @@ const Gallows = () => {
   );
 };
 
-export default Gallows;
+export default Engine;

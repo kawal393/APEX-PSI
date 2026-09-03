@@ -309,7 +309,7 @@ const Admin = () => {
 
           <TabsContent value="ledger">
             <Card>
-              <CardHeader><CardTitle className="text-base">Gallows Ledger (Recent 50)</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="text-base">Engine Ledger (Recent 50)</CardTitle></CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>

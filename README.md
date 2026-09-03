@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://apex-psi.apex-infrastructure.com">Live Platform</a> ·
   <a href="https://apex-psi.apex-infrastructure.com/protocol">Protocol Spec</a> ·
-  <a href="https://apex-psi.apex-infrastructure.com/gallows">PSI Engine</a> ·
+  <a href="https://apex-psi.apex-infrastructure.com/engine">PSI Engine</a> ·
   <a href="https://apex-psi.apex-infrastructure.com/verify">Verify a Proof</a>
 </p>
 

@@ -101,7 +101,7 @@ const Pricing = () => {
             </ul>
 
             <Button variant="hero" className="w-full" size="lg" asChild>
-              <Link to="/gallows">
+              <Link to="/engine">
                 Access the Protocol <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </Button>

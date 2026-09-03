@@ -226,7 +226,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://ai-governance-standard.com/gallows</loc>
+    <loc>https://ai-governance-standard.com/engine</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -259,6 +259,24 @@
     <loc>https://ai-governance-standard.com/cookies</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/c2pa-provenance-and-content-credentials-for-ai-0obdhu</loc>
+    <lastmod>2026-09-03T00:07:07.790Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-lf7hee</loc>
+    <lastmod>2026-09-03T00:07:07.790Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/how-to-prove-an-ai-decision-existed-at-a-specific-time-5z5eu9</loc>
+    <lastmod>2026-09-03T00:07:07.790Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ai-governance-standard.com/articles/c2pa-provenance-and-content-credentials-for-ai-0bvmhh</loc>

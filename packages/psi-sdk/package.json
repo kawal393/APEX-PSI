@@ -1,5 +1,5 @@
 {
-  "name": "@apex/gallows-sdk",
+  "name": "@apex/psi-sdk",
   "version": "1.0.0",
   "description": "Runtime AI compliance verification SDK — Block non-compliant AI actions before they reach users",
   "main": "dist/index.js",

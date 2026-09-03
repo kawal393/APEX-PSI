@@ -77,7 +77,7 @@ export default {
         "eu-blue": "hsl(var(--eu-blue))",
         compliant: "hsl(var(--compliant))",
         warning: "hsl(var(--warning))",
-        gallows: {
+        engine: {
           bg: "#0a0a0a",
           surface: "#111111",
           border: "#1a1a1a",

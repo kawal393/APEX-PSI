@@ -104,7 +104,7 @@ Deno.serve(async (req) => {
             method: "POST",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}` },
             body: JSON.stringify({
-              to: "admin@apex-gallows.com",
+              to: "apexinfrastructure369@gmail.com",
               company: silo.display_name,
               score: avgScore,
               status: "auto_halted",

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX GALLOWS — MPC Node Beta
+// APEX ENGINE — MPC Node Beta
 // Independent verification node (2 of 3) for distributed consensus
 // ═══════════════════════════════════════════════════════════════════════
 

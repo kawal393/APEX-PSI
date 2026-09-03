@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX GALLOWS — Compliance Certificate Generator
+// APEX ENGINE — Compliance Certificate Generator
 // Generates cryptographically-signed compliance attestations
 // ═══════════════════════════════════════════════════════════════════════
 
-import type { CommitRecord } from "./gallows-engine";
-import { hashSHA256 } from "./gallows-engine";
+import type { CommitRecord } from "./engine-core";
+import { hashSHA256 } from "./engine-core";
 import QRCode from "qrcode";
 
 export interface ComplianceCertificate {
