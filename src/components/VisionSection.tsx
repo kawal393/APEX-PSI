@@ -152,8 +152,9 @@ const VisionSection = () => {
               We Already Fixed It
             </p>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              We open-sourced the math. Built cryptographic verification. Made
-              compliance provable without disclosure.{" "}
+              The verifier is MIT and free forever, so anyone can recompute a seal
+              without permission. Existence and integrity are provable without
+              publishing the content.{" "}
               <span className="text-gold font-semibold">
                 No committee. No permission. Just code.
               </span>

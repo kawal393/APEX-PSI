@@ -10,7 +10,7 @@ const features = [
   },
   {
     icon: Gavel,
-    title: "Fraud Proofs on Demand",
+    title: "Evidence On Demand",
     desc: "Only generate expensive ZK proofs when an output is specifically challenged. Most outputs never need one.",
   },
   {
@@ -51,7 +51,7 @@ const SolutionSection = () => {
           <span className="text-gold-gradient">{t("solution.headline")}</span> {t("solution.headlineSuffix")}
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          An Optimistic ZKML architecture that keeps verification cheap by proving only what is challenged. It supports a provider’s own compliance work; it does not satisfy any requirement on its own.
+          A commit-and-challenge architecture that keeps verification cheap by producing full evidence only for challenged records. It is not zero-knowledge and uses no ZK-SNARK. It supports a provider’s own compliance work; it does not satisfy any requirement on its own.
         </p>
       </motion.div>
 

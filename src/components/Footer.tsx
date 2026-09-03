@@ -115,7 +115,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <Link to="/auth" className="hover:text-gold">Sign in with Google</Link>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] text-muted-foreground font-mono">
-            <span>No patent claimed — open standard (MIT)</span>
+            <span>No patent claimed — verifier MIT, sealing engine licensed</span>
             <span className="hidden sm:inline text-border">|</span>
             <Link to="/portfolio" className="hover:text-gold">IETF portfolio — individual submissions, each linked</Link>
           </div>

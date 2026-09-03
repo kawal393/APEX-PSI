@@ -20,7 +20,7 @@ const layers = [
     bgColor: "bg-primary/5",
     points: [
       "3-node Multi-Party Computation cluster",
-      "2-of-3 consensus threshold — no single point of failure",
+      "2-of-3 agreement across three nodes, all operated by APEX — software redundancy, not independent institutional consensus",
       "SHA-256 hash chaining with monotonic sequence counters",
       "Ed25519 root signatures for non-repudiation",
       "Sub-second verification latency",

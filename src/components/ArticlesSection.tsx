@@ -22,7 +22,7 @@ const articles = [
     icon: Search,
     article: "Article 13",
     title: "Transparency",
-    tech: "Optimistic ZK Proof Engine",
+    tech: "Commit-and-challenge evidence engine",
     description: "Prove model behaviour and compliance without disclosing proprietary weights. Transparency without IP surrender.",
     reference: "\"High-risk AI systems shall be designed and developed in such a way to ensure...sufficient transparency...\"",
   },

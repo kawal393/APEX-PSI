@@ -162,7 +162,7 @@ const Section1Compliance = () => (
             Public Ed25519 key (hex): <code className="text-xs font-mono text-gold">{PUBLIC_KEY_HEX}</code>
           </li>
           <li>Offline cryptographic verification is supported for documented receipt formats.</li>
-          <li>Zero-knowledge proof option (Groth16-compatible / BN128) for privacy-preserving compliance checks.</li>
+          <li>Experimental BN128 field commitments. These are a demonstration, not zero-knowledge proofs; privacy comes from publishing digests only.</li>
         </ul>
       </SectionShell>
 

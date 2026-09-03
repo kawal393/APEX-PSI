@@ -34,26 +34,32 @@ primitives: (1) SHA-256 hash-chained audit trails with RFC 8785
 JSON Canonicalization for deterministic hashing, (2) Ed25519
 digital signatures (RFC 8032) on Merkle roots for non-repudiation,
 (3) Binary Merkle trees with inclusion proofs for O(log n)
-verification, (4) Groth16-compatible zero-knowledge commitments
+verification, (4) experimental BN128 field commitments (not zero-knowledge)
 over BN128 finite fields for privacy preservation, and (5) a
 3-node Multi-Party Computation consensus with 2/3 threshold
-verification to eliminate single-point-of-failure attacks.
+verification. All three nodes are operated by APEX, so this is
+software redundancy rather than independent institutional consensus.
 
 Version 1.2 introduces two critical advances: Deterministic Mode,
 which blocks UNACCEPTABLE and HIGH-risk actions before they enter
-the immutable ledger (eliminating the "optimistic flaw" inherent
-in post-hoc fraud proof systems), and the Institutional Anchor Panel, a
+the immutable ledger (rather than reviewing
+records after the fact), and the Institutional Anchor Panel, a
 5-party human auditor ratification layer satisfying EU AI Act
 Article 14 (Human Oversight) requirements through Ed25519-signed
 verdicts with mandatory rationale.
 
-The protocol currently supports 43 machine-readable predicates
-across 9 jurisdictions. All verification occurs on hashed
+The protocol currently ships 54 machine-readable predicate definitions
+across 11 regulatory frameworks. All verification occurs on hashed
 representations — source data never leaves the submitting entity's
 environment.
 
-Keywords: AI compliance, zero-knowledge proofs, Merkle trees,
-          multi-party computation, EU AI Act, regulatory technology
+Keywords: AI compliance, hash chains, Merkle trees, Ed25519,
+          RFC 8785 canonicalisation, EU AI Act, regulatory technology
+
+Note: this protocol is not a zero-knowledge system. No ZK-SNARK
+or ZKML circuit is implemented. The BN128 components are an
+experimental demonstration with no pairing check, no trusted
+setup and no zero-knowledge property.
 
 ════════════════════════════════════════════════════════════════
 
@@ -78,12 +84,13 @@ Existing compliance approaches suffer from fundamental limitations:
       invalidates all certifications.
 
 We address these limitations through cryptographic verification
-primitives that enable mathematical proof of compliance without
-disclosing protected intellectual property.
+primitives that let a provider prove what bytes existed and when,
+without disclosing the content itself. They do not prove compliance;
+they produce evidence a provider or reviewer can check.
 
 Related work includes Quox VOLT (2026), which provides verifiable
-operations logging but lacks zero-knowledge proofs, MPC consensus,
-and human tribunal ratification. AIGA Protocol (IETF draft, 2025)
+operations logging but lacks a multi-node agreement layer and a
+human ratification layer. AIGA Protocol (IETF draft, 2025)
 addresses AI governance at the informational level but provides
 no cryptographic verification mechanism.
 
@@ -102,8 +109,7 @@ verifiable by any party possessing the public key.
 
 2.2 Deterministic Mode
 
-Unlike "optimistic" compliance systems that generate fraud proofs
-after the fact, Deterministic Mode evaluates every action BEFORE
+Unlike systems that only review records after the fact, Deterministic Mode evaluates every action BEFORE
 it enters the ledger:
 
   deterministicPreFlight(action, predicate):
@@ -120,7 +126,7 @@ This ensures the ledger contains ONLY verified, compliant states.
   ┌─────────────────────────────────────────────┐
   │  Layer 5: Institutional Anchor Panel (Human Oversight)│
   │  Layer 4: MPC Consensus (3-node, 2/3 threshold)│
-  │  Layer 3: ZK Commitments (Groth16/BN128)      │
+  │  Layer 3: BN128 commitments (experimental)      │
   │  Layer 2: Merkle Trees (inclusion proofs)      │
   │  Layer 1: Hash Chain (SHA-256 + JCS + Ed25519) │
   └─────────────────────────────────────────────┘
@@ -150,9 +156,9 @@ Binary Merkle trees provide O(log n) inclusion proofs:
 Proof: Array of sibling hashes with position indicators.
 Verification: Recompute root from leaf + proof path.
 
-3.3 Zero-Knowledge Commitments
+3.3 Experimental BN128 Commitments (not zero-knowledge)
 
-Groth16-structured proofs over BN128 finite field
+BN128 finite-field commitments, structurally modelled on Groth16 but with no pairing check, no trusted setup and no zero-knowledge guarantee
 (p = 21888...95617):
 
   π_A = (g^α · g^(a_i · s_i)) mod p
@@ -201,17 +207,25 @@ Oversight) through a 5-party auditor ratification layer:
 
 5. PREDICATE REGISTRY
 
-43 predicates across 9 jurisdictions:
+54 predicate definitions across 11 regulatory frameworks:
 
-  EU AI Act (Art. 5-52):     10 predicates
-  MiFID II (Art. 16-27):      4 predicates
-  DORA (Art. 5-26):            6 predicates
-  NIST AI RMF 1.0:             4 predicates
-  UK AI Safety Institute:      4 predicates
-  Canada AIDA (C-27):          4 predicates
-  NDIS (Australia):             3 predicates
-  Australia Privacy Act 2026:   4 predicates (NEW)
-  India IT Amendment 2026:      4 predicates (NEW)
+  EU AI Act:                  10 definitions
+  MiFID II (research only):    4 definitions
+  DORA (research only):        6 definitions
+  NIST AI RMF 1.0:             4 definitions
+  UK AI Safety Institute:      4 definitions
+  Canada AIDA (C-27):          7 definitions
+  NDIS (Australia):            3 definitions
+  Australia Privacy Act:       4 definitions
+  India IT Amendment:          4 definitions
+  Colorado AI Act:             3 definitions
+  ISO/IEC 42001:               5 definitions
+  ─────────────────────────────────────────
+  Total:                      54 definitions
+
+  Definitions are text pattern rules. They are an authoring
+  aid, not a legal determination, and they do not establish
+  compliance with any law.
 
 ════════════════════════════════════════════════════════════════
 
