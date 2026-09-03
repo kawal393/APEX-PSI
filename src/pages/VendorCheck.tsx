@@ -195,14 +195,9 @@ const VendorCheck = () => {
               Buyers check you next
             </h2>
             <p className="text-sm text-muted-foreground mb-5">
-              Every check above is public and repeatable. Suppliers listed in the registry appear as
-              Verified, with continuous monitoring and lapse alerts if their published signals break.
+              Every check above is public and repeatable. There is nothing to buy: the protocol, the
+              verifier, sealing and verification are free, with no account and no key.
             </p>
-            <ServiceCheckoutButton
-              service="registryListing"
-              label={`List as Verified — ${CHECKOUT.registryListing.price} ${CHECKOUT.registryListing.cadence}`}
-              featured
-            />
           </div>
 
           <div className="rounded-xl border border-border bg-card p-6">
