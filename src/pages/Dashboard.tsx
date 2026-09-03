@@ -145,18 +145,6 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const handleManageSubscription = async () => {
-    setPortalLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (e: any) {
-      toast.error(e.message || "Failed to open subscription management");
-    } finally {
-      setPortalLoading(false);
-    }
-  };
 
   const handleRunVerification = async () => {
     setVerifying(true);
