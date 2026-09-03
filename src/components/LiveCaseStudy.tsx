@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Shield, AlertTriangle, CheckCircle2, Hash, Clock, DollarSign, Lock } from "lucide-react";
+import { Play, Shield, AlertTriangle, CheckCircle2, Hash, Clock, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -29,8 +29,8 @@ const LiveCaseStudy = () => {
   const [proofHash, setProofHash] = useState("");
   const [blockNumber, setBlockNumber] = useState(0);
   const [timestamp, setTimestamp] = useState("");
-  const [outputsLogged, setOutputsLogged] = useState(1247);
-  const [challenges, setChallenges] = useState(2);
+  const [outputsLogged, setOutputsLogged] = useState(0);
+  const [challenges, setChallenges] = useState(0);
 
   const handleRegister = useCallback(async () => {
     setStep("registering");
@@ -45,7 +45,7 @@ const LiveCaseStudy = () => {
 
   const handleChallenge = useCallback(async () => {
     setStep("challenging");
-    const p = await generateHash("fraud-proof-" + hash);
+    const p = await generateHash("evidence-response-" + hash);
     setProofHash(p);
     setChallenges((prev) => prev + 1);
     setTimeout(() => setStep("proven"), 2400);
@@ -57,8 +57,6 @@ const LiveCaseStudy = () => {
     setProofHash("");
   };
 
-  const totalCostPSI = ((challenges + (step === "proven" ? 1 : 0)) * 0.003).toFixed(3);
-  const totalCostZKML = (outputsLogged * 1000).toLocaleString();
 
   return (
     <section className="relative py-24 px-4 overflow-hidden" id="demo">
@@ -205,10 +203,10 @@ const LiveCaseStudy = () => {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="h-5 w-5 rounded-full border-2 border-destructive border-t-transparent animate-spin" />
-                    <p className="text-sm text-foreground font-medium">Generating Fraud Proof…</p>
+                    <p className="text-sm text-foreground font-medium">Building evidence response…</p>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Verifying compliance with {SCENARIO.article} without exposing model weights…
+                    Recomputing the digest and replaying the hash chain for {SCENARIO.article} — the source content is never published…
                   </p>
                 </motion.div>
               )}
@@ -224,20 +222,17 @@ const LiveCaseStudy = () => {
                     <div className="rounded-lg border border-green-500/30 bg-green-500/5 p-4 space-y-2">
                       <div className="flex items-center gap-2">
                         <Shield className="h-5 w-5 text-green-500" />
-                        <p className="text-sm font-black text-green-500">FRAUD PROOF VERIFIED</p>
+                        <p className="text-sm font-black text-green-500">EVIDENCE RESPONSE VERIFIED</p>
                       </div>
                       <div className="text-xs font-mono space-y-1">
                         <p className="text-muted-foreground">
                           Proof Hash: <span className="text-gold">{proofHash.slice(0, 32)}…</span>
                         </p>
                         <p className="text-muted-foreground">
-                          Verification: <span className="text-green-500">{SCENARIO.article} — COMPLIANT</span>
+                          Predicate check: <span className="text-green-500">{SCENARIO.article} — no violation pattern matched</span>
                         </p>
                         <p className="text-muted-foreground">
-                          IP Exposure: <span className="text-foreground font-bold">ZERO</span>
-                        </p>
-                        <p className="text-muted-foreground">
-                          Cost: <span className="text-foreground font-bold">$0.003</span>
+                          Content published: <span className="text-foreground font-bold">NONE — digest only</span>
                         </p>
                       </div>
                     </div>
@@ -248,9 +243,10 @@ const LiveCaseStudy = () => {
                         <p className="text-xs font-bold text-foreground">KEY INSIGHT</p>
                       </div>
                       <p className="text-xs text-muted-foreground leading-relaxed">
-                        This proof verified compliance with <strong className="text-foreground">{SCENARIO.article}</strong> without
-                        exposing a single model weight. Traditional ZKML would have cost <strong className="text-foreground">$1,000</strong> for
-                        this single output. PSI cost: <strong className="text-gold">$0.003</strong>.
+                        The record was recomputed and matched byte for byte, and the source content stayed private —
+                        only its SHA-256 digest was published. This is an integrity and existence check against
+                        <strong className="text-foreground"> {SCENARIO.article}</strong> predicate patterns. It is not a
+                        zero-knowledge proof and it is not a compliance determination.
                       </p>
                     </div>
 
@@ -271,12 +267,12 @@ const LiveCaseStudy = () => {
             className="space-y-4"
           >
             <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm p-5">
-              <p className="text-xs font-bold text-muted-foreground tracking-widest mb-4">LIVE SESSION STATS</p>
+              <p className="text-xs font-bold text-muted-foreground tracking-widest mb-4">THIS BROWSER SESSION</p>
               <div className="space-y-4">
                 {[
                   { icon: Hash, label: "Outputs Logged", value: outputsLogged.toLocaleString(), color: "text-foreground" },
                   { icon: AlertTriangle, label: "Challenges", value: challenges.toString(), color: "text-destructive" },
-                  { icon: Shield, label: "Proofs Generated", value: challenges.toString(), color: "text-green-500" },
+                  { icon: Shield, label: "Evidence Responses", value: challenges.toString(), color: "text-green-500" },
                 ].map((stat) => (
                   <div key={stat.label} className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
@@ -291,49 +287,22 @@ const LiveCaseStudy = () => {
               </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm p-5">
-              <p className="text-xs font-bold text-muted-foreground tracking-widest mb-4">COST COMPARISON</p>
-              <div className="space-y-3">
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">Full ZKML</span>
-                    <span className="text-destructive font-bold">${totalCostZKML}</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-destructive/20">
-                    <div className="h-full rounded-full bg-destructive" style={{ width: "100%" }} />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-muted-foreground">Apex PSI</span>
-                    <span className="text-green-500 font-bold">${totalCostPSI}</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-green-500/20">
-                    <div className="h-full rounded-full bg-green-500" style={{ width: "0.1%" }} />
-                  </div>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground mt-3 text-center">
-                <span className="text-gold font-bold">large</span> cost reduction
-              </p>
-            </div>
-
             <div className="rounded-xl border border-gold/20 bg-gold/5 p-5">
               <div className="flex items-center gap-2 mb-2">
                 <Clock className="h-4 w-4 text-gold" />
-                <p className="text-xs font-bold text-gold">WHY THIS MATTERS</p>
+                <p className="text-xs font-bold text-gold">WHAT THIS PROVES</p>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                At $1,000/output, full ZKML verification of {outputsLogged.toLocaleString()} outputs
-                would cost <strong className="text-foreground">${totalCostZKML}</strong>.
-                PSI achieves the same regulatory compliance for <strong className="text-gold">${totalCostPSI}</strong>.
+                That a specific sequence of bytes existed at a specific time, and that the record has not
+                changed since. Nothing more. Costs, savings and comparisons to other systems are not
+                published here because we have not measured them.
               </p>
             </div>
           </motion.div>
         </div>
 
         <p className="text-xs text-center text-muted-foreground mt-6">
-          This is a simulated demonstration. All hashes are generated live using the Web Crypto API (SHA-256). No real patient data is used.
+          This is a simulated demonstration. Company, model and patient references are invented. All hashes are generated live in your browser using the Web Crypto API (SHA-256). Counters reflect only this browser session.
         </p>
       </div>
     </section>
