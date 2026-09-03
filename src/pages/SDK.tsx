@@ -601,7 +601,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '20' }
-      - run: npm install @apex/psi-sdk
+      - run: npm install ./packages/psi-sdk   # not published to npm; build from the repository
       - name: Run compliance check
         env:
           APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}
@@ -611,7 +611,7 @@ jobs:
             --mode blocking \\
             --fail-on-violation`}</code>
                   </pre>
-                  <CopyButton text={`# .github/workflows/compliance.yml\nname: APEX Compliance Gate\non: [push, pull_request]\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: '20' }\n      - run: npm install @apex/psi-sdk\n      - name: Run compliance check\n        env:\n          APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}\n        run: npx apex-verify --predicates EU_ART_14,EU_ART_50,NIST_GOVERN_1 --mode blocking --fail-on-violation`} section="github-actions" />
+                  <CopyButton text={`# .github/workflows/compliance.yml\nname: APEX Compliance Gate\non: [push, pull_request]\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: '20' }\n      - run: npm install ./packages/psi-sdk   # not published to npm; build from the repository\n      - name: Run compliance check\n        env:\n          APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}\n        run: npx apex-verify --predicates EU_ART_14,EU_ART_50,NIST_GOVERN_1 --mode blocking --fail-on-violation`} section="github-actions" />
                 </div>
               </div>
 
@@ -624,7 +624,7 @@ compliance_gate:
   stage: test
   image: node:20
   script:
-    - npm install @apex/psi-sdk
+    - npm install ./packages/psi-sdk   # not published to npm; build from the repository
     - npx apex-verify
         --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1
         --mode blocking
@@ -632,7 +632,7 @@ compliance_gate:
   artifacts:
     paths: [proof-bundle.json]`}</code>
                   </pre>
-                  <CopyButton text={`# .gitlab-ci.yml\ncompliance_gate:\n  stage: test\n  image: node:20\n  script:\n    - npm install @apex/psi-sdk\n    - npx apex-verify --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1 --mode blocking --output proof-bundle.json\n  artifacts:\n    paths: [proof-bundle.json]`} section="gitlab-ci" />
+                  <CopyButton text={`# .gitlab-ci.yml\ncompliance_gate:\n  stage: test\n  image: node:20\n  script:\n    - npm install ./packages/psi-sdk   # not published to npm; build from the repository\n    - npx apex-verify --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1 --mode blocking --output proof-bundle.json\n  artifacts:\n    paths: [proof-bundle.json]`} section="gitlab-ci" />
                 </div>
               </div>
             </div>
@@ -738,7 +738,7 @@ GET /verify-status?action=stats
 
         <div className="text-center py-8">
           <p className="text-engine-muted mb-4">
-            Ready to integrate compliance verification into your AI systems?
+            Integration is free: no account, no key and nothing to buy.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link to="/engine">
@@ -747,12 +747,12 @@ GET /verify-status?action=stats
                 Try Live Demo
               </Button>
             </Link>
-            <a href="/#contact">
+            <Link to="/spec">
               <Button variant="outline" className="border-engine-border text-engine-text gap-2">
                 <ExternalLink className="h-4 w-4" />
-                Contact Sales
+                Read the specification
               </Button>
-            </a>
+            </Link>
           </div>
         </div>
       </main>
