@@ -109,8 +109,7 @@ verifiable by any party possessing the public key.
 
 2.2 Deterministic Mode
 
-Unlike "optimistic" compliance systems that generate fraud proofs
-after the fact, Deterministic Mode evaluates every action BEFORE
+Unlike systems that only review records after the fact, Deterministic Mode evaluates every action BEFORE
 it enters the ledger:
 
   deterministicPreFlight(action, predicate):
@@ -157,7 +156,7 @@ Binary Merkle trees provide O(log n) inclusion proofs:
 Proof: Array of sibling hashes with position indicators.
 Verification: Recompute root from leaf + proof path.
 
-3.3 Zero-Knowledge Commitments
+3.3 Experimental BN128 Commitments (not zero-knowledge)
 
 BN128 finite-field commitments, structurally modelled on Groth16 but with no pairing check, no trusted setup and no zero-knowledge guarantee
 (p = 21888...95617):
