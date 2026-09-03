@@ -14,7 +14,7 @@ const STATIC = [
   { loc: "/articles", priority: "0.9", changefreq: "daily" },
   { loc: "/integrations", priority: "0.8", changefreq: "weekly" },
   { loc: "/assess", priority: "0.8", changefreq: "weekly" },
-  { loc: "/gallows", priority: "0.8", changefreq: "weekly" },
+  { loc: "/engine", priority: "0.8", changefreq: "weekly" },
   { loc: "/verify", priority: "0.8", changefreq: "weekly" },
   { loc: "/regulations", priority: "0.8", changefreq: "monthly" },
   { loc: "/architecture", priority: "0.7", changefreq: "monthly" },

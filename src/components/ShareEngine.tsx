@@ -10,7 +10,7 @@ interface ShareEngineProps {
 const shareStatements: Record<string, string> = {
   "/": "AI compliance is no longer self-reported. PSI Protocol makes it mathematically verifiable — backed by IETF draft-singh-psi (rev 01).",
   "/protocol": "Read the protocol that replaces 'Trust Us' with cryptographic proof. IETF draft-singh-psi (rev 01) is live.",
-  "/gallows": "The APEX PSI engine: every AI output carries a receipt that anyone can recompute.",
+  "/engine": "The APEX PSI engine: every AI output carries a receipt that anyone can recompute.",
   "/verify": "Verify an AI decision receipt in real time. No login required.",
   "/research": "From IETF drafts to arXiv papers — the institutional architecture behind verifiable AI governance.",
   "/governance": "Permissionless public verification with cryptographic receipts. Anyone can recompute the result.",

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════
-// @apex/gallows-sdk — Runtime Compliance Verification SDK
+// @apex/psi-sdk — Runtime Compliance Verification SDK
 // Block non-compliant AI actions BEFORE they reach end users
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -101,22 +101,22 @@ const PATTERN_CACHE: Record<string, string[]> = {
  * 
  * @example
  * ```typescript
- * import { ApexGallows } from '@apex/gallows-sdk';
+ * import { ApexEngine } from '@apex/psi-sdk';
  * 
- * const gallows = new ApexGallows({
+ * const engine = new ApexEngine({
  *   endpoint: 'https://your-project.supabase.co/functions/v1',
  *   predicates: ['EU_ART_14', 'EU_ART_50'],
  *   mode: 'blocking',
  * });
  * 
  * // Verify before sending AI response
- * const result = await gallows.verify('AI-generated summary', 'EU_ART_50');
+ * const result = await engine.verify('AI-generated summary', 'EU_ART_50');
  * if (!result.compliant) {
  *   console.log('BLOCKED:', result.violationFound);
  * }
  * ```
  */
-export class ApexGallows {
+export class ApexEngine {
   private config: Required<ApexConfig>;
 
   constructor(config: ApexConfig) {
@@ -234,7 +234,7 @@ export class ApexGallows {
    * 
    * @example
    * ```typescript
-   * app.use('/api/ai', gallows.middleware({
+   * app.use('/api/ai', engine.middleware({
    *   predicates: ['EU_ART_14', 'EU_ART_50'],
    *   mode: 'blocking',
    * }));
@@ -321,7 +321,7 @@ export class ApexGallows {
  * 
  * @example
  * ```tsx
- * const { verify, isVerifying, lastResult } = useGallowsVerify({
+ * const { verify, isVerifying, lastResult } = useEngineVerify({
  *   endpoint: 'https://your-project.supabase.co/functions/v1',
  *   predicates: ['EU_ART_50'],
  * });
@@ -334,16 +334,16 @@ export class ApexGallows {
  * };
  * ```
  */
-export function useGallowsVerify(config: ApexConfig) {
+export function useEngineVerify(config: ApexConfig) {
   // Note: This is a framework-agnostic implementation
   // For React, import { useState, useCallback } from 'react'
-  const gallows = new ApexGallows(config);
+  const engine = new ApexEngine(config);
 
   return {
-    verify: (action: string, predicateId?: string) => gallows.verify(action, predicateId),
-    checkLocal: (action: string, predicateId: string) => gallows.checkLocal(action, predicateId),
-    commit: (action: string, predicateId?: string) => gallows.commit(action, predicateId),
+    verify: (action: string, predicateId?: string) => engine.verify(action, predicateId),
+    checkLocal: (action: string, predicateId: string) => engine.checkLocal(action, predicateId),
+    commit: (action: string, predicateId?: string) => engine.commit(action, predicateId),
   };
 }
 
-export default ApexGallows;
+export default ApexEngine;

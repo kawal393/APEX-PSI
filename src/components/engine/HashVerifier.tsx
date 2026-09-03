@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { verifyHash } from "@/lib/gallows-engine";
-import { verifyHashInLedger as verifyInDB } from "@/lib/gallows-persistence";
+import { verifyHash } from "@/lib/engine-core";
+import { verifyHashInLedger as verifyInDB } from "@/lib/engine-persistence";
 import { Search, ShieldCheck, ShieldX, Loader2, Globe, Database } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -74,15 +74,15 @@ const HashVerifier = () => {
   };
 
   return (
-    <Card className="bg-gallows-surface border-gallows-border">
+    <Card className="bg-engine-surface border-engine-border">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-mono text-gallows-muted uppercase tracking-widest flex items-center gap-2">
+        <CardTitle className="text-sm font-mono text-engine-muted uppercase tracking-widest flex items-center gap-2">
           <Search className="h-4 w-4" />
           Independent Hash Verification
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <p className="text-xs font-mono text-gallows-muted">
+        <p className="text-xs font-mono text-engine-muted">
           Verify any hash against the immutable ledger — works with commit hashes, leaf hashes, proof hashes, or challenge hashes.
         </p>
         <div className="flex gap-2">
@@ -91,13 +91,13 @@ const HashVerifier = () => {
             onChange={(e) => setInputHash(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleVerify()}
             placeholder="Paste SHA-256 hash..."
-            className="bg-gallows-bg border-gallows-border text-gallows-text font-mono text-xs focus-visible:ring-gallows-approved/50"
+            className="bg-engine-bg border-engine-border text-engine-text font-mono text-xs focus-visible:ring-engine-approved/50"
           />
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               onClick={handleVerify}
               disabled={checking || !inputHash.trim()}
-              className="bg-gallows-bg border border-gallows-border text-gallows-text font-mono text-xs hover:bg-gallows-border shrink-0 gap-1.5"
+              className="bg-engine-bg border border-engine-border text-engine-text font-mono text-xs hover:bg-engine-border shrink-0 gap-1.5"
               variant="outline"
               size="sm"
             >
@@ -119,10 +119,10 @@ const HashVerifier = () => {
               exit={{ opacity: 0, y: -10 }}
               className={`p-3 rounded border space-y-2 ${
                 result.found && result.merkleVerified
-                  ? 'border-gallows-approved/30 bg-gallows-approved/5'
+                  ? 'border-engine-approved/30 bg-engine-approved/5'
                   : result.found
                   ? 'border-amber-400/30 bg-amber-400/5'
-                  : 'border-gallows-blocked/30 bg-gallows-blocked/5'
+                  : 'border-engine-blocked/30 bg-engine-blocked/5'
               }`}
             >
               {result.found ? (
@@ -130,43 +130,43 @@ const HashVerifier = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {result.merkleVerified ? (
-                        <ShieldCheck className="h-4 w-4 text-gallows-approved" />
+                        <ShieldCheck className="h-4 w-4 text-engine-approved" />
                       ) : (
                         <ShieldCheck className="h-4 w-4 text-amber-400" />
                       )}
-                      <span className={`font-mono text-xs font-bold ${result.merkleVerified ? 'text-gallows-approved' : 'text-amber-400'}`}>
+                      <span className={`font-mono text-xs font-bold ${result.merkleVerified ? 'text-engine-approved' : 'text-amber-400'}`}>
                         {result.merkleVerified ? 'MERKLE INCLUSION VERIFIED' : 'RECORD FOUND — AWAITING PROOF'}
                       </span>
                     </div>
-                    <Badge className="bg-gallows-bg border border-gallows-border text-gallows-muted font-mono text-[10px] gap-1">
+                    <Badge className="bg-engine-bg border border-engine-border text-engine-muted font-mono text-[10px] gap-1">
                       {result.source === 'database' ? <Database className="h-2.5 w-2.5" /> : <Globe className="h-2.5 w-2.5" />}
                       {result.source}
                     </Badge>
                   </div>
                   <div className="space-y-1 text-xs font-mono">
                     {result.commitId && (
-                      <div><span className="text-gallows-muted">Commit: </span><span className="text-gallows-text">{result.commitId}</span></div>
+                      <div><span className="text-engine-muted">Commit: </span><span className="text-engine-text">{result.commitId}</span></div>
                     )}
                     {result.predicateId && (
-                      <div><span className="text-gallows-muted">Predicate: </span><span className="text-gallows-text">{result.predicateId}</span></div>
+                      <div><span className="text-engine-muted">Predicate: </span><span className="text-engine-text">{result.predicateId}</span></div>
                     )}
                     {result.status && (
                       <div>
-                        <span className="text-gallows-muted">Status: </span>
+                        <span className="text-engine-muted">Status: </span>
                         <Badge className={`font-mono text-xs border-0 ${
-                          result.status === 'APPROVED' ? 'bg-gallows-approved/15 text-gallows-approved' : 'bg-gallows-blocked/15 text-gallows-blocked'
+                          result.status === 'APPROVED' ? 'bg-engine-approved/15 text-engine-approved' : 'bg-engine-blocked/15 text-engine-blocked'
                         }`}>{result.status}</Badge>
                       </div>
                     )}
                     {result.merkleRoot && (
-                      <div><span className="text-gallows-muted">Root: </span><span className="text-gallows-text/70 break-all text-[10px]">{result.merkleRoot.substring(0, 32)}…</span></div>
+                      <div><span className="text-engine-muted">Root: </span><span className="text-engine-text/70 break-all text-[10px]">{result.merkleRoot.substring(0, 32)}…</span></div>
                     )}
                   </div>
                 </>
               ) : (
                 <div className="flex items-center gap-2">
-                  <ShieldX className="h-4 w-4 text-gallows-blocked" />
-                  <span className="font-mono text-xs font-bold text-gallows-blocked">
+                  <ShieldX className="h-4 w-4 text-engine-blocked" />
+                  <span className="font-mono text-xs font-bold text-engine-blocked">
                     HASH NOT FOUND IN LEDGER
                   </span>
                 </div>
@@ -176,9 +176,9 @@ const HashVerifier = () => {
         </AnimatePresence>
 
         {/* Public API Hint */}
-        <div className="pt-2 border-t border-gallows-border">
-          <p className="text-[10px] font-mono text-gallows-muted/60">
-            <span className="text-gallows-approved">API:</span> POST /functions/v1/verify-hash {`{ "hash": "..." }`}
+        <div className="pt-2 border-t border-engine-border">
+          <p className="text-[10px] font-mono text-engine-muted/60">
+            <span className="text-engine-approved">API:</span> POST /functions/v1/verify-hash {`{ "hash": "..." }`}
           </p>
         </div>
       </CardContent>

@@ -21,7 +21,7 @@ import Dashboard from "./pages/Dashboard";
 import ResetPassword from "./pages/ResetPassword";
 import Partner from "./pages/Partner";
 import PartnerDashboard from "./pages/PartnerDashboard";
-import Gallows from "./pages/Gallows";
+import Engine from "./pages/Engine";
 import Architecture from "./pages/Architecture";
 import SDK from "./pages/SDK";
 import Compare from "./pages/Compare";
@@ -153,7 +153,7 @@ const App = () => (
                 }
               />
               <Route path="/protocol" element={<Protocol />} />
-              <Route path="/gallows" element={<Gallows />} />
+              <Route path="/engine" element={<Engine />} />
               <Route path="/notary" element={<Notary />} />
               <Route path="/explorer" element={<Explorer />} />
               <Route path="/live" element={<LiveLedger />} />

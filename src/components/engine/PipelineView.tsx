@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { CommitRecord } from "@/lib/gallows-engine";
+import type { CommitRecord } from "@/lib/engine-core";
 import { Swords, Scale, ShieldCheck, ArrowRight, Clock, Copy, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -16,10 +16,10 @@ interface PipelineViewProps {
 
 const phaseColors: Record<string, string> = {
   COMMITTED: 'text-amber-400 border-amber-400/30 bg-amber-400/10',
-  CHALLENGED: 'text-gallows-blocked border-gallows-blocked/30 bg-gallows-blocked/10',
+  CHALLENGED: 'text-engine-blocked border-engine-blocked/30 bg-engine-blocked/10',
   PROVING: 'text-blue-400 border-blue-400/30 bg-blue-400/10',
-  VERIFIED: 'text-gallows-approved border-gallows-approved/30 bg-gallows-approved/10',
-  PAUSED: 'text-gallows-blocked border-gallows-blocked/30 bg-gallows-blocked/10',
+  VERIFIED: 'text-engine-approved border-engine-approved/30 bg-engine-approved/10',
+  PAUSED: 'text-engine-blocked border-engine-blocked/30 bg-engine-blocked/10',
 };
 
 const phaseIndex: Record<string, number> = {
@@ -41,13 +41,13 @@ const PipelineView = ({ record, onChallenge, onProve, isProcessing }: PipelineVi
 
   if (!record) {
     return (
-      <Card className="bg-gallows-surface border-gallows-border flex items-center justify-center min-h-[280px]">
+      <Card className="bg-engine-surface border-engine-border flex items-center justify-center min-h-[280px]">
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 mx-auto rounded-full border-2 border-dashed border-gallows-border flex items-center justify-center">
-            <ArrowRight className="h-6 w-6 text-gallows-muted" />
+          <div className="w-16 h-16 mx-auto rounded-full border-2 border-dashed border-engine-border flex items-center justify-center">
+            <ArrowRight className="h-6 w-6 text-engine-muted" />
           </div>
-          <div className="text-gallows-muted font-mono text-sm">PIPELINE IDLE</div>
-          <div className="text-gallows-muted/50 font-mono text-xs">Commit an action to begin verification</div>
+          <div className="text-engine-muted font-mono text-sm">PIPELINE IDLE</div>
+          <div className="text-engine-muted/50 font-mono text-xs">Commit an action to begin verification</div>
         </div>
       </Card>
     );
@@ -58,14 +58,14 @@ const PipelineView = ({ record, onChallenge, onProve, isProcessing }: PipelineVi
   const currentPhase = phaseIndex[record.phase] || 0;
 
   return (
-    <Card className={`bg-gallows-surface border min-h-[280px] transition-all duration-300 ${
+    <Card className={`bg-engine-surface border min-h-[280px] transition-all duration-300 ${
       record.phase === 'VERIFIED'
-        ? isApproved ? 'border-gallows-approved/30 shadow-gallows-approved' : 'border-gallows-blocked/30 shadow-gallows-blocked'
-        : 'border-gallows-border'
+        ? isApproved ? 'border-engine-approved/30 shadow-engine-approved' : 'border-engine-blocked/30 shadow-engine-blocked'
+        : 'border-engine-border'
     }`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-mono text-gallows-muted uppercase tracking-widest">
+          <CardTitle className="text-sm font-mono text-engine-muted uppercase tracking-widest">
             Verification Pipeline
           </CardTitle>
           <motion.div
@@ -81,29 +81,29 @@ const PipelineView = ({ record, onChallenge, onProve, isProcessing }: PipelineVi
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Commit ID */}
-        <div className="p-2 bg-gallows-bg rounded border border-gallows-border">
-          <span className="text-[10px] font-mono text-gallows-muted block">COMMIT ID</span>
-          <span className="text-sm font-mono text-gallows-approved font-bold">{record.id}</span>
+        <div className="p-2 bg-engine-bg rounded border border-engine-border">
+          <span className="text-[10px] font-mono text-engine-muted block">COMMIT ID</span>
+          <span className="text-sm font-mono text-engine-approved font-bold">{record.id}</span>
         </div>
 
         {/* Phase Progress Bar */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-[10px] font-mono text-gallows-muted">
+          <div className="flex items-center justify-between text-[10px] font-mono text-engine-muted">
             <span>COMMIT</span>
             <span>CHALLENGE</span>
             <span>PROVE</span>
             <span>VERIFY</span>
           </div>
-          <div className="h-1.5 bg-gallows-bg rounded-full overflow-hidden flex gap-1">
+          <div className="h-1.5 bg-engine-bg rounded-full overflow-hidden flex gap-1">
             {[1, 2, 3, 4].map((step) => (
               <motion.div
                 key={step}
                 className={`flex-1 rounded-full ${
                   step <= currentPhase 
                     ? record.phase === 'VERIFIED' 
-                      ? isApproved ? 'bg-gallows-approved' : 'bg-gallows-blocked'
+                      ? isApproved ? 'bg-engine-approved' : 'bg-engine-blocked'
                       : 'bg-amber-400'
-                    : 'bg-gallows-border'
+                    : 'bg-engine-border'
                 }`}
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: step <= currentPhase ? 1 : 0.3 }}
@@ -124,7 +124,7 @@ const PipelineView = ({ record, onChallenge, onProve, isProcessing }: PipelineVi
 
         {/* Timing */}
         {record.verificationTimeMs !== undefined && (
-          <div className="flex items-center gap-1.5 text-xs font-mono text-gallows-muted">
+          <div className="flex items-center gap-1.5 text-xs font-mono text-engine-muted">
             <Clock className="h-3 w-3" />
             {record.verificationTimeMs}ms total pipeline
           </div>
@@ -136,16 +136,16 @@ const PipelineView = ({ record, onChallenge, onProve, isProcessing }: PipelineVi
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`p-3 rounded border ${isApproved ? 'border-gallows-approved/30 bg-gallows-approved/5' : 'border-gallows-blocked/30 bg-gallows-blocked/5'}`}
+              className={`p-3 rounded border ${isApproved ? 'border-engine-approved/30 bg-engine-approved/5' : 'border-engine-blocked/30 bg-engine-blocked/5'}`}
             >
               <Badge className={`text-base px-4 py-1.5 font-mono font-bold tracking-wider border-0 mb-2 ${
                 isApproved
-                  ? 'bg-gallows-approved/15 text-gallows-approved'
-                  : 'bg-gallows-blocked/15 text-gallows-blocked'
+                  ? 'bg-engine-approved/15 text-engine-approved'
+                  : 'bg-engine-blocked/15 text-engine-blocked'
               }`}>
                 {isApproved ? '✓ STRUCTURALLY VERIFIED' : '✗ STRUCTURALLY BLOCKED'}
               </Badge>
-              <p className={`text-xs font-mono ${isApproved ? 'text-gallows-approved' : 'text-gallows-blocked'}`}>
+              <p className={`text-xs font-mono ${isApproved ? 'text-engine-approved' : 'text-engine-blocked'}`}>
                 {isApproved
                   ? `Action verified via Merkle inclusion proof against [${record.predicateId}].`
                   : `Violation: "${record.violationFound}" — blocked by [${record.predicateId}].`
@@ -162,7 +162,7 @@ const PipelineView = ({ record, onChallenge, onProve, isProcessing }: PipelineVi
               <Button
                 onClick={() => onChallenge(record.id)}
                 disabled={isProcessing}
-                className="w-full bg-gallows-bg border border-gallows-blocked/40 text-gallows-blocked font-mono text-xs tracking-wider hover:bg-gallows-blocked/10 gap-1.5"
+                className="w-full bg-engine-bg border border-engine-blocked/40 text-engine-blocked font-mono text-xs tracking-wider hover:bg-engine-blocked/10 gap-1.5"
                 variant="outline"
                 size="sm"
               >
@@ -176,7 +176,7 @@ const PipelineView = ({ record, onChallenge, onProve, isProcessing }: PipelineVi
               <Button
                 onClick={() => onProve(record.id)}
                 disabled={isProcessing}
-                className="w-full bg-gallows-bg border border-blue-400/40 text-blue-400 font-mono text-xs tracking-wider hover:bg-blue-400/10 gap-1.5"
+                className="w-full bg-engine-bg border border-blue-400/40 text-blue-400 font-mono text-xs tracking-wider hover:bg-blue-400/10 gap-1.5"
                 variant="outline"
                 size="sm"
               >
@@ -186,7 +186,7 @@ const PipelineView = ({ record, onChallenge, onProve, isProcessing }: PipelineVi
             </motion.div>
           )}
           {record.phase === 'VERIFIED' && (
-            <div className="flex items-center gap-1.5 text-xs font-mono text-gallows-approved">
+            <div className="flex items-center gap-1.5 text-xs font-mono text-engine-approved">
               <ShieldCheck className="h-3.5 w-3.5" />
               Pipeline complete — proof recorded
             </div>
@@ -212,20 +212,20 @@ const HashRow = ({
 }) => (
   <div className="group flex items-start gap-2">
     <div className="flex-1 min-w-0">
-      <span className="text-[10px] font-mono text-gallows-muted block">{label}</span>
-      <span className={`font-mono text-[11px] break-all ${accent ? 'text-amber-400' : 'text-gallows-text/80'}`}>
+      <span className="text-[10px] font-mono text-engine-muted block">{label}</span>
+      <span className={`font-mono text-[11px] break-all ${accent ? 'text-amber-400' : 'text-engine-text/80'}`}>
         {hash}
       </span>
     </div>
     <button
       onClick={() => onCopy(hash, label)}
-      className="shrink-0 p-1 rounded hover:bg-gallows-border transition-colors opacity-0 group-hover:opacity-100 bg-transparent border-none cursor-pointer"
+      className="shrink-0 p-1 rounded hover:bg-engine-border transition-colors opacity-0 group-hover:opacity-100 bg-transparent border-none cursor-pointer"
       title="Copy to clipboard"
     >
       {copied ? (
-        <Check className="h-3 w-3 text-gallows-approved" />
+        <Check className="h-3 w-3 text-engine-approved" />
       ) : (
-        <Copy className="h-3 w-3 text-gallows-muted" />
+        <Copy className="h-3 w-3 text-engine-muted" />
       )}
     </button>
   </div>

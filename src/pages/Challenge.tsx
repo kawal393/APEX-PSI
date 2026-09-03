@@ -17,7 +17,7 @@ const surface = [
   { area: "Public ledger", goal: "Alter a committed entry without detection.", file: "supabase/functions/commit-action/index.ts" },
   { area: "Unified /v1 API auth", goal: "Notarize or verify without a valid apex_sk_ key.", file: "supabase/functions/psi-api/index.ts" },
   { area: "JCS canonicalization (RFC 8785)", goal: "Two payloads, same hash.", file: "src/lib/psi-canonicalize.ts" },
-  { area: "SDK enforcement", goal: "Pass a blocked output through the middleware.", file: "packages/gallows-sdk/src/index.ts" },
+  { area: "SDK enforcement", goal: "Pass a blocked output through the middleware.", file: "packages/psi-sdk/src/index.ts" },
 ];
 
 const rules = [

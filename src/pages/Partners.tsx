@@ -6,7 +6,7 @@ import { Check, Copy } from "lucide-react";
 
 const BADGE_SNIPPET =
   '<script src="https://ai-governance-standard.com/badge.js" data-name="Your Company" data-hash="YOUR_RECORD_HASH" async></script>';
-const NPM_SNIPPET = "npm install @apex/gallows-sdk";
+const NPM_SNIPPET = "npm install @apex/psi-sdk";
 
 const CopyBox = ({ code }: { code: string }) => {
   const [copied, setCopied] = useState(false);

@@ -23,7 +23,7 @@ const features = [
 
 
 const CellIcon = ({ value }: { value: boolean | "partial" }) => {
-  if (value === true) return <Check className="h-5 w-5 text-gallows-approved" />;
+  if (value === true) return <Check className="h-5 w-5 text-engine-approved" />;
   if (value === "partial") return <Minus className="h-5 w-5 text-amber-400" />;
   return <X className="h-5 w-5 text-muted-foreground/30" />;
 };
@@ -59,7 +59,7 @@ const Compare = () => {
             <span className="text-gold-gradient">APEX</span>
           </button>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => navigate("/gallows")} className="font-mono text-xs">
+            <Button variant="outline" size="sm" onClick={() => navigate("/engine")} className="font-mono text-xs">
               Live Demo
             </Button>
             <Button variant="outline" size="sm" onClick={() => navigate("/standards")} className="font-mono text-xs">
@@ -208,7 +208,7 @@ const Compare = () => {
             <span className="text-gold-gradient">Ready to verify?</span>
           </h2>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <Button onClick={() => navigate("/gallows")} className="bg-primary text-primary-foreground font-mono gap-2">
+            <Button onClick={() => navigate("/engine")} className="bg-primary text-primary-foreground font-mono gap-2">
               Try APEX PSI <ArrowRight className="h-4 w-4" />
             </Button>
             <Button variant="outline" onClick={() => navigate("/standards")} className="font-mono gap-2">

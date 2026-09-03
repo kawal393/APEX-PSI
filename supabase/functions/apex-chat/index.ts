@@ -74,7 +74,7 @@ PSI combines Merkle Trees (tamper-proof audit trails), Zero-Knowledge Proofs (pr
 - **JUDGE Mode** — Adversarial technical review. It does not constitute regulatory inspection or certification.
 
 ### Verification Engine
-A free, open verification engine at /gallows. Users can:
+A free, open verification engine at /engine. Users can:
 - Commit AI actions to the tamper-evident ledger
 - Challenge and verify compliance claims
 - View Merkle tree visualizations of their audit trail
@@ -92,7 +92,7 @@ A free, open verification engine at /gallows. Users can:
 
 ### Free Tools
 - **Free Assessment** at /assess — 5-minute compliance score
-- **Verification Engine** at /gallows — Open verification engine
+- **Verification Engine** at /engine — Open verification engine
 - **Badge** at /badge — Compliance badge for your website
 
 ## LEAD CAPTURE
@@ -102,7 +102,7 @@ When the visitor provides contact info, call the capture_lead tool.
 
 ## ROUTING
 - Questions about pricing → mention /assess for free assessment
-- Want to try it → suggest /seal or /gallows
+- Want to try it → suggest /seal or /engine
 - Ready to buy → suggest /products; checkout securely binds the service to their account
 - Technical questions about PSI → suggest /architecture for deep dive
 - Want to compare → suggest /compare

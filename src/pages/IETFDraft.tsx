@@ -537,7 +537,7 @@ Table of Contents
 
    14.6. Nationalization / Capture
       Mitigated by: Proposed PSI-RFC-004 (Decentralized
-      Gallows Node Federation) enabling self-hosted nodes.
+      Engine Node Federation) enabling self-hosted nodes.
 
 15. IANA Considerations
 

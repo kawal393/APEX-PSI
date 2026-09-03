@@ -42,7 +42,7 @@ serve(async (req) => {
     const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const last30d = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-    const [subsRes, compRes, vhRes, gallowsRes, usersRes, visits24hRes, visits7dRes, visits30dRes, visitsRecentRes, campaignVisitsRes, leadsRes] = await Promise.all([
+    const [subsRes, compRes, vhRes, engineRes, usersRes, visits24hRes, visits7dRes, visits30dRes, visitsRecentRes, campaignVisitsRes, leadsRes] = await Promise.all([
       supabase.from("subscriptions").select("*").order("created_at", { ascending: false }),
       supabase.from("compliance_results").select("*").order("updated_at", { ascending: false }),
       supabase.from("verification_history").select("*").order("created_at", { ascending: false }).limit(100),
@@ -60,7 +60,7 @@ serve(async (req) => {
     const subscriptions = subsRes.data || [];
     const complianceResults = compRes.data || [];
     const recentVerifications = vhRes.data || [];
-    const recentLedger = gallowsRes.data || [];
+    const recentLedger = engineRes.data || [];
     const users = usersRes.data?.users || [];
     const visits24h = visits24hRes.data || [];
     const visits7d = visits7dRes.data || [];

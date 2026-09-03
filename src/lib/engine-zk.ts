@@ -24,7 +24,7 @@
 //   △ Poseidon hash → SHA-256 commitment
 // ═══════════════════════════════════════════════════════════════════════
 
-import { hashSHA256 } from "./gallows-engine";
+import { hashSHA256 } from "./engine-engine";
 
 // ── Types ──────────────────────────────────────────────────────────────
 

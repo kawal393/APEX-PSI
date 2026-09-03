@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX GALLOWS — Server-Side Prove Endpoint
+// APEX ENGINE — Server-Side Prove Endpoint
 // Generates Merkle proof server-side, persists to ledger
 // Anchors root to OpenTimestamps for external proof
 // ═══════════════════════════════════════════════════════════════════════
@@ -63,7 +63,7 @@ async function hashSHA256(data: string): Promise<string> {
 
 /**
  * Generate a Groth16-compatible ZK commitment that proves compliance without revealing action.
- * Server-side complement to the client-side BN128 field arithmetic in gallows-zk.ts.
+ * Server-side complement to the client-side BN128 field arithmetic in engine-zk.ts.
  */
 async function generateZKCommitment(
   actionHash: string,

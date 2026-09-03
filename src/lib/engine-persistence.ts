@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX GALLOWS — Server-Side Persistence Layer
+// APEX ENGINE — Server-Side Persistence Layer
 // ALL mutations go through Edge Functions for tamper-proof verification
 // ═══════════════════════════════════════════════════════════════════════
 
 import { supabase } from "@/integrations/supabase/client";
-import type { CommitRecord, MerkleProofPath } from "./gallows-engine";
+import type { CommitRecord, MerkleProofPath } from "./engine-engine";
 
 export interface LedgerEntry {
   id: string;
@@ -84,7 +84,7 @@ export async function persistCommit(record: CommitRecord): Promise<ServerCommitR
     });
 
     if (error) {
-      console.error('[Gallows Persistence] Server commit failed:', error.message);
+      console.error('[Engine Persistence] Server commit failed:', error.message);
       return { success: false, error: error.message };
     }
 
@@ -103,7 +103,7 @@ export async function persistCommit(record: CommitRecord): Promise<ServerCommitR
       rate_limit_remaining: data.rate_limit_remaining,
     };
   } catch (e: any) {
-    console.error('[Gallows Persistence] Commit failed:', e.message);
+    console.error('[Engine Persistence] Commit failed:', e.message);
     return { success: false, error: e.message };
   }
 }
@@ -119,7 +119,7 @@ export async function challengeCommitServer(commitId: string): Promise<ServerCha
     });
 
     if (error) {
-      console.error('[Gallows Persistence] Server challenge failed:', error.message);
+      console.error('[Engine Persistence] Server challenge failed:', error.message);
       return { success: false, error: error.message };
     }
 
@@ -135,7 +135,7 @@ export async function challengeCommitServer(commitId: string): Promise<ServerCha
       challenged_at: data.challenged_at,
     };
   } catch (e: any) {
-    console.error('[Gallows Persistence] Challenge failed:', e.message);
+    console.error('[Engine Persistence] Challenge failed:', e.message);
     return { success: false, error: e.message };
   }
 }
@@ -151,7 +151,7 @@ export async function proveCommitServer(commitId: string): Promise<ServerProveRe
     });
 
     if (error) {
-      console.error('[Gallows Persistence] Server prove failed:', error.message);
+      console.error('[Engine Persistence] Server prove failed:', error.message);
       return { success: false, error: error.message };
     }
 
@@ -174,7 +174,7 @@ export async function proveCommitServer(commitId: string): Promise<ServerProveRe
       external_anchoring: data.external_anchoring,
     };
   } catch (e: any) {
-    console.error('[Gallows Persistence] Prove failed:', e.message);
+    console.error('[Engine Persistence] Prove failed:', e.message);
     return { success: false, error: e.message };
   }
 }
@@ -190,7 +190,7 @@ export async function fetchLedger(limit = 500): Promise<LedgerEntry[]> {
     .limit(limit);
 
   if (error) {
-    console.error('[Gallows Persistence] Fetch failed:', error.message);
+    console.error('[Engine Persistence] Fetch failed:', error.message);
     return [];
   }
 
@@ -207,7 +207,7 @@ export async function fetchLedgerDescending(limit = 100): Promise<LedgerEntry[]>
     .limit(limit);
 
   if (error) {
-    console.error('[Gallows Persistence] Fetch failed:', error.message);
+    console.error('[Engine Persistence] Fetch failed:', error.message);
     return [];
   }
 
