@@ -33,11 +33,13 @@ const VerifiedByApexSection = () => {
           One line of HTML. A verifiable badge.
         </h2>
         <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-muted-foreground">
-          Layout demonstration only. These three names are invented and these three hashes have not
-          been sealed, so each link opens a page stating that no ledger entry exists. That page is the
-          protocol behaving correctly: it refuses to attest to anything it has not seen. A real badge
-          attests the existence and integrity of a sealed digest — never the truth of any claim, and
-          never an endorsement of the company named.
+          Layout demonstration only. These three company names are invented. The three hashes were
+          sealed in the ledger as illustrative examples (predicate ILLUSTRATIVE_EXAMPLE), so each link
+          opens a real record — a record of a demonstration digest, tied to no real company and to no
+          claim. A badge attests the existence and integrity of a sealed digest — never the truth of any
+          claim, and never an endorsement of the company named. Any hash never sealed opens a page
+          stating that no ledger entry exists, which is the protocol behaving correctly: it refuses to
+          attest to anything it has not seen.
         </p>
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">
