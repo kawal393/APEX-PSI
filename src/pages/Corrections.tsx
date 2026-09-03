@@ -66,7 +66,53 @@ const ENTRIES = [
     undertaking:
       "Charging for evidence gave anyone a reason to doubt the record, and paid tiers implied a standing Apex does not hold. Verification stays free so the record can be checked by anyone, at no cost, without asking us.",
   },
+  {
+    date: "4 September 2026",
+    said:
+      "The public repository README told developers to run \u201cnpm install @apex/psi-sdk\u201d.",
+    now:
+      "No Apex package is published to npm or PyPI \u2014 all nine names return 404. Every install instruction now clones the repository and installs from the local path, and each package is marked \u201cnot published\u201d.",
+    undertaking:
+      "No install command is published unless it runs as written against a registry that actually serves the package.",
+  },
+  {
+    date: "4 September 2026",
+    said:
+      "The README, the paper, the IETF draft text and several pages described the protocol as \u201cOptimistic ZKML\u201d and listed \u201cZK-SNARK fraud proofs\u201d, with one row marked \u201cLive\u201d.",
+    now:
+      "There is no zero-knowledge system here: no ZK-SNARK, no ZKML, no circuit, no trusted setup and no pairing check. The implemented stack is SHA-256 hash chains, Merkle trees, RFC 8785 (JCS) canonicalisation, Ed25519 and post-quantum LMS/ML-DSA signing. The BN128 code is labelled everywhere as an experimental demonstration that is not zero-knowledge.",
+    undertaking:
+      "A cryptographic primitive is named only where it is implemented. Research placeholders carry the word experimental in the same sentence.",
+  },
+  {
+    date: "4 September 2026",
+    said:
+      "The protocol was advertised as \u201c43 Predicates \u00b7 9 Jurisdictions \u00b7 3 Institutional Nodes\u201d, and the node layer as \u201c2-of-3 consensus \u2014 no single point of failure\u201d.",
+    now:
+      "The source contains 54 predicate definitions across 11 regulatory frameworks, counted from the registry in the code. All three verification nodes are operated by APEX: the 2-of-3 check is software redundancy inside one operator's infrastructure, not independent institutional consensus. No third party runs a node.",
+    undertaking:
+      "Counts are taken from the code, and the word institutional is never used for infrastructure we run ourselves.",
+  },
+  {
+    date: "4 September 2026",
+    said:
+      "The README said \u201cWe open-sourced the math\u201d and gave the licence as \u201cMIT\u201d for the whole project, while the engine licence reserves all rights.",
+    now:
+      "The repository is dual-licensed and the README says so: verification is MIT and free forever (packages/psi-verifier and the Python reference verifier), while the PSI-SEAL/1 sealing engine is proprietary, all rights reserved (LICENSE-ENGINE.txt). Where marketing copy and the licence files disagree, the licence files govern.",
+    undertaking:
+      "One licence sentence, stated the same way in the README, on /license and in the licence files.",
+  },
+  {
+    date: "4 September 2026",
+    said:
+      "The homepage case study compared Apex to \u201cfull ZKML at $1,000 per output\u201d, showed a $0.003 Apex cost and opened with 1,247 outputs and 2 challenges already logged.",
+    now:
+      "The invented price comparison and the pre-loaded counters are removed. The demo starts at zero, counts only this browser session, and states that costs and savings are not published because they have not been measured.",
+    undertaking:
+      "No number appears on the site unless it is measured, live, or plainly labelled as an invented illustration.",
+  },
 ];
+
 
 const Corrections = () => (
   <div className="min-h-screen bg-background text-foreground">
