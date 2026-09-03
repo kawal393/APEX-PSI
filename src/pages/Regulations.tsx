@@ -241,7 +241,7 @@ const Regulations = () => {
                   <a href="/assess">Free Compliance Score</a>
                 </Button>
                 <Button variant="heroOutline" asChild>
-                  <a href="/#contact">Contact Sales</a>
+                  <a href="/spec">Read the specification</a>
                 </Button>
               </div>
             </motion.div>
