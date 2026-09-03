@@ -35,7 +35,7 @@ const EngineHeader = ({ paused, onTogglePause, persistedCount = 0 }: EngineHeade
               <span className="text-engine-text">PSI ENGINE</span>
             </motion.h1>
             <p className="text-xs md:text-sm font-mono text-engine-muted mt-0.5">
-              AI Compliance Gateway — EU AI Act Enforcement Layer
+              AI Compliance Gateway — EU AI Act transparency verification · a compliance instrument, not an authority
             </p>
           </div>
         </div>
@@ -45,7 +45,7 @@ const EngineHeader = ({ paused, onTogglePause, persistedCount = 0 }: EngineHeade
           {persistedCount > 0 && (
             <Badge className="bg-engine-bg border border-engine-border text-engine-muted font-mono text-xs gap-1.5">
               <Database className="h-3 w-3" />
-              {persistedCount} persisted
+              {persistedCount} latest loaded
             </Badge>
           )}
 
@@ -72,7 +72,7 @@ const EngineHeader = ({ paused, onTogglePause, persistedCount = 0 }: EngineHeade
               ) : (
                 <>
                   <Shield className="h-3.5 w-3.5" />
-                  PROTOCOL PAUSE (Art. 14)
+                  PROTOCOL PAUSE (Art. 14 principle)
                 </>
               )}
             </Button>

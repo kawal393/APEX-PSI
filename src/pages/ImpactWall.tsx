@@ -587,7 +587,7 @@ export default function ImpactWall() {
             </p>
             <p className="text-sm leading-relaxed text-foreground/90">
               <strong>Target — the founder's words, posted 2 Sep 2026:</strong> economic impact,
-              $1 TRILLION+.
+              $1 TRILLION+ — a stated aspiration of the founder, not a measurement and not a projection by Apex.
             </p>
             <p className="text-sm leading-relaxed text-muted-foreground mt-2">
               <strong className="text-foreground">Instrument —</strong> this ledger. Not a press

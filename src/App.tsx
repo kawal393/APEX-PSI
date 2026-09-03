@@ -22,6 +22,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Partner from "./pages/Partner";
 import PartnerDashboard from "./pages/PartnerDashboard";
 import Engine from "./pages/Engine";
+import Corrections from "./pages/Corrections";
 import Architecture from "./pages/Architecture";
 import SDK from "./pages/SDK";
 import Compare from "./pages/Compare";
@@ -154,6 +155,7 @@ const App = () => (
               />
               <Route path="/protocol" element={<Protocol />} />
               <Route path="/engine" element={<Engine />} />
+                            <Route path="/corrections" element={<Corrections />} />
               <Route path="/notary" element={<Notary />} />
               <Route path="/explorer" element={<Explorer />} />
               <Route path="/live" element={<LiveLedger />} />

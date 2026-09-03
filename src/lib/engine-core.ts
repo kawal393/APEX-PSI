@@ -950,7 +950,7 @@ export function deterministicPreFlight(action: string, predicateId: string): {
 // Phase 1: COMMIT — Hash the action into a Merkle leaf
 export async function commitAction(action: string, predicateId: string): Promise<CommitRecord> {
   if (systemPaused) {
-    throw new Error('PROTOCOL PAUSE ACTIVE — All operations halted by human oversight authority (EU AI Act Art. 14)');
+    throw new Error('PROTOCOL PAUSE ACTIVE — All operations halted by human oversight (Art. 14 principle, EU AI Act)');
   }
 
   // ── DETERMINISTIC PRE-FLIGHT ──
@@ -999,7 +999,7 @@ export async function commitAction(action: string, predicateId: string): Promise
 // Phase 2: CHALLENGE — Regulator challenges a committed action
 export async function challengeCommit(commitId: string): Promise<CommitRecord> {
   if (systemPaused) {
-    throw new Error('PROTOCOL PAUSE ACTIVE — All operations halted by human oversight authority (EU AI Act Art. 14)');
+    throw new Error('PROTOCOL PAUSE ACTIVE — All operations halted by human oversight (Art. 14 principle, EU AI Act)');
   }
 
   const t0 = performance.now();
@@ -1027,7 +1027,7 @@ export async function challengeCommit(commitId: string): Promise<CommitRecord> {
 // Phase 3: PROVE — Generate Merkle inclusion proof
 export async function proveCommit(commitId: string): Promise<CommitRecord> {
   if (systemPaused) {
-    throw new Error('PROTOCOL PAUSE ACTIVE — All operations halted by human oversight authority (EU AI Act Art. 14)');
+    throw new Error('PROTOCOL PAUSE ACTIVE — All operations halted by human oversight (Art. 14 principle, EU AI Act)');
   }
 
   const t0 = performance.now();

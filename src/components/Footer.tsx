@@ -57,7 +57,8 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               <li><Link to="/robustness" className="hover:text-gold transition-colors">Robustness Benchmark</Link></li>
               <li><Link to="/eu-code" className="hover:text-gold transition-colors">EU Code Section 1 Mapping</Link></li>
               <li><Link to="/protocol" className="hover:text-gold transition-colors">PSI Protocol</Link></li>
-              <li><Link to="/engine" className="hover:text-gold transition-colors">Verification Portal</Link></li>
+              <li><Link to="/engine" className="hover:text-gold transition-colors">Engine — verification portal</Link></li>
+              <li><Link to="/corrections" className="hover:text-gold transition-colors">Corrections</Link></li>
               <li><Link to="/verify" className="hover:text-gold transition-colors">Verify Hash</Link></li>
               <li><Link to="/verify-any" className="hover:text-gold transition-colors">The Referee — cross-standard verification</Link></li>
               <li><Link to="/impact" className="hover:text-gold transition-colors">Living Impact Wall — the world speaks, the ledger remembers</Link></li>
@@ -114,9 +115,9 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <Link to="/auth" className="hover:text-gold">Sign in with Google</Link>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] text-muted-foreground font-mono">
-            <span>Australian Provisional Patent — Filed</span>
+            <span>No patent claimed — open standard (MIT)</span>
             <span className="hidden sm:inline text-border">|</span>
-            <Link to="/portfolio" className="hover:text-gold">IETF portfolio — PSI 00-09</Link>
+            <Link to="/portfolio" className="hover:text-gold">IETF portfolio — individual submissions, each linked</Link>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">

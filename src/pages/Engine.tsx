@@ -290,7 +290,7 @@ const Engine = () => {
       result.paused ? 'OVERSIGHT PAUSE ACTIVATED' : 'System Resumed',
       {
         description: result.paused 
-          ? 'All operations halted per EU AI Act Art. 14'
+          ? 'All operations halted under human-oversight pause (Art. 14 principle)'
           : 'Verification pipeline operational',
       }
     );
