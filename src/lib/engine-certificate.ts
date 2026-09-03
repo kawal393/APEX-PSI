@@ -3,8 +3,8 @@
 // Generates cryptographically-signed compliance attestations
 // ═══════════════════════════════════════════════════════════════════════
 
-import type { CommitRecord } from "./engine-engine";
-import { hashSHA256 } from "./engine-engine";
+import type { CommitRecord } from "./engine-core";
+import { hashSHA256 } from "./engine-core";
 import QRCode from "qrcode";
 
 export interface ComplianceCertificate {

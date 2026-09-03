@@ -4,7 +4,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { supabase } from "@/integrations/supabase/client";
-import type { CommitRecord, MerkleProofPath } from "./engine-engine";
+import type { CommitRecord, MerkleProofPath } from "./engine-core";
 
 export interface LedgerEntry {
   id: string;
