@@ -1,6 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX PSI — Zero-Knowledge Commitment System
-// Groth16-Compatible Commitment Scheme on BN128 Curve
+// APEX PSI — Experimental BN128 Commitment Demonstration
+// THIS IS NOT A ZERO-KNOWLEDGE PROOF SYSTEM.
+// There is no ZK-SNARK, no ZKML, no circuit, no trusted setup and no
+// pairing check here. It is Groth16-SHAPED output over real BN128 field
+// arithmetic, kept as a research placeholder only.
 // Browser-native implementation via Web Crypto API
 //
 // INTEGRITY NOTICE: This implementation performs REAL finite field
@@ -135,15 +138,15 @@ function bigintToHex(n: bigint): string {
 // ── Proof Generation (Groth16 Protocol) ───────────────────────────────
 
 /**
- * Generate a ZK-SNARK proof for compliance verification.
+ * Generate an experimental BN128 commitment. NOT a ZK-SNARK and NOT zero-knowledge.
  * 
  * This implements a Groth16-compatible commitment scheme:
  * 1. Witness computation (private inputs → circuit evaluation)
  * 2. Field element commitment (using BN128 prime arithmetic)
  * 3. Proof generation (3 group elements: π_A, π_B, π_C)
  * 
- * The proof demonstrates knowledge of `actionHash` that satisfies
- * the compliance predicate WITHOUT revealing the action content.
+ * The commitment hides the action content behind a SHA-256 commitment.
+ * It provides no zero-knowledge guarantee and must not be presented as one.
  */
 export async function generateZKProof(input: ZKCircuitInput): Promise<ZKProofResult> {
   const t0 = performance.now();
@@ -236,12 +239,12 @@ export async function generateZKProof(input: ZKCircuitInput): Promise<ZKProofRes
     proofHash,
     generationTimeMs,
     privacyLevel: "GROTH16_COMPATIBLE",
-    integrityNote: "Real BN128 field arithmetic. Pairing check is structural (not elliptic curve pairing). Action content hidden via Pedersen-style commitment.",
+    integrityNote: "Experimental. Real BN128 field arithmetic, but no elliptic-curve pairing, no trusted setup and no zero-knowledge property. Not a ZK-SNARK and not a compliance proof.",
   };
 }
 
 /**
- * Verify a ZK-SNARK proof.
+ * Check an experimental BN128 commitment. This is not a ZK-SNARK verification.
  * 
  * Implements the Groth16 verification equation:
  *   e(π_A, π_B) = e(α, β) · e(Σ(s_i · IC_i), γ) · e(π_C, δ)
@@ -344,6 +347,6 @@ export function getProofSummary(result: ZKProofResult): {
     curveType: "BN128 (alt_bn128)",
     constraintCount: 3, // R1CS constraints in our circuit
     publicInputCount: result.publicSignals.length,
-    privacyGuarantee: "Action content hidden via Pedersen-style commitment on BN128. Compliance status publicly verifiable. Pairing check is structural (upgrade path: snarkjs/Circom for full EC pairing).",
+    privacyGuarantee: "Action content is hidden behind a SHA-256 commitment. This is NOT zero-knowledge: no pairing check, no trusted setup, no soundness claim. Upgrade path: snarkjs/Circom with compiled circuits.",
   };
 }
