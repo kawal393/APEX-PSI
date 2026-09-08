@@ -5,8 +5,7 @@ const LAYERS = [
     icon: "🔏",
     name: "The Mirror Library",
     state: "Truth is Recorded",
-    body:
-      "Immutable timestamped receipts. Nothing but hash, source URL, and block height. No content stored. No metadata stored. Pure facts. Forever verifiable.",
+    body: "Immutable receipts. Forever verifiable.",
     quote: "The ledger does not judge. It remembers.",
     to: "/verify",
     cta: "Verify a receipt",
@@ -15,8 +14,7 @@ const LAYERS = [
     icon: "👁️",
     name: "The Perception Layer",
     state: "Truth is Seen — Coming Soon",
-    body:
-      "Open-source browser extension. Local computation. Zero-metadata queries. Verify anything, anywhere, without leaving a trace. Not built yet — nothing to download.",
+    body: "Verify anything. Everywhere. Instantly.",
     quote: "Not a filter. A lens. What was always there, now visible.",
     to: null,
     cta: null,
@@ -25,22 +23,21 @@ const LAYERS = [
     icon: "⚖️",
     name: "The Inverse Standard",
     state: "Truth is Adopted",
-    body:
-      "The public record. Neutral. Sorted by first seal date. Pressure comes from peers above, not from us below.",
-    quote: "No one wants to be last. Everyone wants to be first. Gravity does the rest.",
+    body: "The public record. Sorted by first seal.",
+    quote: "First sealed. First in line.",
     to: "/registry",
     cta: "/registry",
   },
 ];
 
 const ThreeLayers = () => (
-  <section className="py-20 px-4 border-t border-border/60" aria-label="The three layers">
+  <section className="py-20 px-4 border-t border-border/60" aria-label="The three pillars">
     <div className="container mx-auto max-w-6xl">
       <p className="text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">
         🔒 Recorded · 👁️ Seen · ⚖️ Adopted
       </p>
       <h2 className="text-center text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight mb-12">
-        The Three Layers of the Truth Cycle
+        One Protocol. Three Pillars. Forever Free.
       </h2>
 
       <div className="grid md:grid-cols-3 gap-5">
@@ -61,7 +58,7 @@ const ThreeLayers = () => (
       </div>
 
       <p className="mt-10 text-center font-mono text-xs uppercase tracking-[0.3em] text-foreground/80">
-        One protocol. One cycle. Forever free.
+        One protocol. One standard. Forever free.
       </p>
     </div>
   </section>
