@@ -501,6 +501,9 @@ const Verify = () => {
                         ))}
                       </div>
                       <ProofReceipt data={result} />
+                      <div className="px-6 pb-5">
+                        <ZeroClaimLabel state="verified" />
+                      </div>
                       <div className="border-t border-border px-6 py-3 flex items-center justify-between">
 
                         <span className="text-[10px] text-muted-foreground font-mono">{result.engine} — {result.algorithm}</span>
@@ -522,6 +525,9 @@ const Verify = () => {
                       </p>
                       <div className="rounded-lg bg-background/60 border border-border p-3 font-mono text-xs text-muted-foreground break-all max-w-lg mx-auto">
                         {result.queried_hash}
+                      </div>
+                      <div className="max-w-lg mx-auto mt-4 text-left">
+                        <ZeroClaimLabel state="absent" />
                       </div>
                     </motion.div>
                   )}
