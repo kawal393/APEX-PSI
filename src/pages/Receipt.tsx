@@ -15,6 +15,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
 import CountersignUpsell from "@/components/CountersignUpsell";
+import ZeroClaimLabel from "@/components/ZeroClaimLabel";
 import { Button } from "@/components/ui/button";
 import { SITE_URL } from "@/lib/site";
 import { toast } from "sonner";
@@ -214,6 +215,8 @@ const Receipt = () => {
                       </div>
                     </dl>
                   )}
+
+                  <ZeroClaimLabel state={found ? "verified" : "absent"} className="mt-6" />
 
                 </div>
               </div>
