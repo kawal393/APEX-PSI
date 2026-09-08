@@ -5,6 +5,8 @@ import Article50Banner from "@/components/Article50Banner";
 
 import TwoPillars from "@/components/TwoPillars";
 import Declaration from "@/components/Declaration";
+import CoreDeclaration from "@/components/CoreDeclaration";
+import ThreeLayers from "@/components/ThreeLayers";
 import LeadCaptureOffer from "@/components/LeadCaptureOffer";
 import HowToUse from "@/components/HowToUse";
 
@@ -78,7 +80,8 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
-        <MelbourneTestPlaque />
+        <CoreDeclaration />
+        <Hero />
         <HomeSealStrip />
         <p className="-mt-8 mb-4 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           The ledger does not judge. It remembers.
@@ -89,7 +92,7 @@ const Index = () => {
             Read the receipt
           </a>
         </p>
-        <Hero />
+        <MelbourneTestPlaque />
         <UniversalTicker />
         <ConnectAIPill />
         <Article50Banner />
@@ -111,6 +114,7 @@ const Index = () => {
         <FAQ />
         <ContactSection />
         <VerifiedByApexSection />
+        <ThreeLayers />
         <EnforcementStrip />
         <Footer />
       </div>
