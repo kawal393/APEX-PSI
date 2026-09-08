@@ -81,6 +81,7 @@ const navLinks = [
     { label: "Protocol", href: "/protocol", isRoute: true },
     { label: "MCP", href: "/mcp", isRoute: true },
     { label: "ROBUSTNESS", href: "/robustness", isRoute: true },
+    { label: "Disclaimers", href: "/disclaimers", isRoute: true },
   ];
 
   // The tab strip scrolls. Without an affordance it hid 17 of 23 doors behind an

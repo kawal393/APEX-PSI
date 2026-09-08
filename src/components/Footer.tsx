@@ -120,6 +120,19 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <Link to="/portfolio" className="hover:text-gold">IETF portfolio — individual submissions, each linked</Link>
           </div>
 
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] text-muted-foreground font-mono">
+            <Link to="/registry" className="hover:text-gold">Registry</Link>
+            <span className="text-border">·</span>
+            <Link to="/disclaimers" className="hover:text-gold">Disclaimers</Link>
+          </div>
+
+          <p className="text-[10px] leading-relaxed text-muted-foreground/80 text-center max-w-3xl mx-auto">
+            Stewardship promise: the verification standard stays open. The verifier is MIT
+            licensed and free forever, the seal format is published, and anyone can recompute
+            any record without our permission, our servers or our consent.
+          </p>
+
+
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-muted-foreground">
               © 2026 Apex Intelligence Empire. All rights reserved.
