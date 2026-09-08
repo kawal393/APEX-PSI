@@ -78,7 +78,8 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
-        <MelbourneTestPlaque />
+        <CoreDeclaration />
+        <Hero />
         <HomeSealStrip />
         <p className="-mt-8 mb-4 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           The ledger does not judge. It remembers.
@@ -89,7 +90,7 @@ const Index = () => {
             Read the receipt
           </a>
         </p>
-        <Hero />
+        <MelbourneTestPlaque />
         <UniversalTicker />
         <ConnectAIPill />
         <Article50Banner />
