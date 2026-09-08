@@ -5,6 +5,8 @@ import Article50Banner from "@/components/Article50Banner";
 
 import TwoPillars from "@/components/TwoPillars";
 import Declaration from "@/components/Declaration";
+import CoreDeclaration from "@/components/CoreDeclaration";
+import ThreeLayers from "@/components/ThreeLayers";
 import LeadCaptureOffer from "@/components/LeadCaptureOffer";
 import HowToUse from "@/components/HowToUse";
 
@@ -112,6 +114,7 @@ const Index = () => {
         <FAQ />
         <ContactSection />
         <VerifiedByApexSection />
+        <ThreeLayers />
         <EnforcementStrip />
         <Footer />
       </div>
