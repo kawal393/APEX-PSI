@@ -39,8 +39,8 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Apex PSI — Universal Verification Layer</title>
-        <meta name="description" content="Apex PSI — Universal Verification Layer. Open, neutral, deterministic proof for AI outputs and records. Verification free forever (MIT). Proposed open standard under active development." />
+        <title>Apex PSI — The Continuity Layer for Digital Civilization</title>
+        <meta name="description" content="PSI makes digital history independently verifiable. Open, neutral, deterministic proof of existence and integrity. Free to verify. Free to create. Paid to operate at scale." />
         <link rel="canonical" href="https://ai-governance-standard.com/" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Articles" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />
         <meta property="og:title" content="Apex PSI — Universal Verification Layer" />
