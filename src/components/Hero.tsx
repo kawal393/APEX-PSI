@@ -4,6 +4,7 @@ import { ArrowRight, Shield, Globe, Clock, Zap, Camera, FileText } from "lucide-
 import { Link } from "react-router-dom";
 import apexLogo from "@/assets/apex-logo.png";
 import PWAInstallButton from "@/components/PWAInstallButton";
+import { CONTINUITY_LINE, PSI_ONE_LINER, ECONOMIC_LINE } from "@/data/psiConstitution";
 
 const Hero = () => {
   return (
@@ -28,18 +29,22 @@ const Hero = () => {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-5 tracking-tight leading-[0.9]">
+          <p className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.3em] text-muted-foreground mb-3">
+            {CONTINUITY_LINE}
+          </p>
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-5 tracking-tight leading-[0.95]">
             <span className="text-gold-gradient">APEX PSI</span>
             <br />
-            <span className="text-chrome-gradient">The Universal Verification Layer</span>
+            <span className="text-chrome-gradient">{PSI_ONE_LINER}</span>
           </h1>
 
           <p className="text-base sm:text-lg text-foreground/90 max-w-3xl mx-auto mb-3 font-semibold">
-            Anyone, anywhere, verifies any AI output for free — forever. No permission. No account.
-            The math is open. The issuance is ours.
+            A digital state existed. A transition was declared. PSI creates durable evidence of that
+            state and transition — verifiable by anyone, anywhere, forever.
           </p>
-          <p className="text-xs sm:text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground mb-3">
-            Not a product. A missing layer of the digital world.
+          <p className="text-xs sm:text-sm font-mono uppercase tracking-[0.2em] text-gold mb-3">
+            {ECONOMIC_LINE}
           </p>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6">
             APEX PSI records declared <span className="text-chrome-gradient font-bold">AI</span> actions.
@@ -109,16 +114,21 @@ const Hero = () => {
             </div>
           </Link>
 
-          {/* Dual CTA — one per pillar */}
+          {/* Three doors — verify, create, operate */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4">
             <Button variant="hero" size="lg" className="text-sm sm:text-base px-8 w-full sm:w-auto" asChild>
-              <Link to="/standard">
-                <Shield className="mr-2 h-4 w-4" /> Adopt the Standard <ArrowRight className="ml-1 h-4 w-4" />
+              <Link to="/verify">
+                <Zap className="mr-2 h-4 w-4" /> Verify — forever free <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
             <Button variant="hero" size="lg" className="text-sm sm:text-base px-8 w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-emerald-950" asChild>
-              <Link to="/pramaan">
-                <Camera className="mr-2 h-4 w-4" /> Seal Your Content <ArrowRight className="ml-1 h-4 w-4" />
+              <Link to="/seal">
+                <Camera className="mr-2 h-4 w-4" /> Create a proof <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button variant="heroOutline" size="lg" className="text-sm sm:text-base px-8 w-full sm:w-auto" asChild>
+              <Link to="/operate">
+                <Shield className="mr-2 h-4 w-4" /> Run at scale <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -129,7 +139,7 @@ const Hero = () => {
             </Button>
             <PWAInstallButton />
             <Button variant="heroOutline" size="sm" asChild>
-              <Link to="/verify"><Zap className="mr-1 h-3.5 w-3.5" /> Verify a Receipt</Link>
+              <Link to="/standard"><Shield className="mr-1 h-3.5 w-3.5" /> Adopt the standard</Link>
             </Button>
           </div>
 
