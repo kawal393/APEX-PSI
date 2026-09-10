@@ -8,7 +8,7 @@ const CoreDeclaration = () => (
   <section className="px-4 pt-20 pb-6" aria-label="Core declaration">
     <div className="container mx-auto max-w-4xl text-center">
       <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-gold mb-4">
-        Apex PSI — Universal Verification Layer
+        Apex PSI — The Continuity Layer for Digital Civilization
       </p>
       <p className="text-lg sm:text-2xl md:text-3xl font-black uppercase leading-tight tracking-tight text-foreground">
         We do not validate content. We validate timestamp and existence.{" "}
