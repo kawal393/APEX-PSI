@@ -151,6 +151,14 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             </p>
           </div>
 
+          <div className="space-y-1 pt-2 text-center">
+            {FOOTER_CONSTITUTION_LINES.map((line) => (
+              <p key={line} className="text-[10px] leading-relaxed text-muted-foreground/80">
+                {line}
+              </p>
+            ))}
+          </div>
+
           <p className="text-[10px] leading-relaxed text-muted-foreground/70 text-center pt-2">
             {DECLARATION_TEXT}
           </p>
