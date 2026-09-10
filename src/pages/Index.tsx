@@ -27,6 +27,12 @@ import EnforcementStrip from "@/components/EnforcementStrip";
 import UniversalTicker from "@/components/UniversalTicker";
 import HomeSealStrip from "@/components/HomeSealStrip";
 import MelbourneTestPlaque from "@/components/MelbourneTestPlaque";
+import ConstitutionLaws from "@/components/ConstitutionLaws";
+import GenesisAnchor from "@/components/GenesisAnchor";
+import WhatItIsAndIsnt from "@/components/WhatItIsAndIsnt";
+import PsiNamespaces from "@/components/PsiNamespaces";
+import EconomicDivide from "@/components/EconomicDivide";
+import ComplementsStandards from "@/components/ComplementsStandards";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -98,6 +104,12 @@ const Index = () => {
         <Article50Banner />
 
         <Declaration />
+        <ConstitutionLaws />
+        <GenesisAnchor />
+        <WhatItIsAndIsnt />
+        <PsiNamespaces />
+        <EconomicDivide />
+        <ComplementsStandards />
         <TwoPillars />
         <Products embedded />
         <LeadCaptureOffer />
