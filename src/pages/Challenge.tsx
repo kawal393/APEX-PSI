@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Github, ExternalLink, ShieldAlert, Target, Award, Hash } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import RedTeamScope from "@/components/RedTeamScope";
 import { Button } from "@/components/ui/button";
 
 const GITHUB_URL = "https://github.com/kawal393/APEX-PSI";
