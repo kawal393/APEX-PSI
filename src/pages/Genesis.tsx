@@ -71,6 +71,8 @@ const Genesis = () => {
             </div>
           </section>
 
+          <GenesisAnchor />
+
           <section className="mb-12 border border-border/50 rounded-lg p-8">
             <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-primary mb-6">
               The Declaration
