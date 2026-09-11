@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import OpenSourceGateway from "@/components/OpenSourceGateway";
+import ConstitutionLaws from "@/components/ConstitutionLaws";
+import StatusTaxonomy from "@/components/StatusTaxonomy";
 import { Helmet } from "react-helmet-async";
 
 const protocolVersion = "1.2";
