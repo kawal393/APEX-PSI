@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 import Rosette from "@/components/Rosette";
+import GenesisAnchor from "@/components/GenesisAnchor";
 import {
   GENESIS_PROOF,
   GENESIS_SOURCE_URL,
