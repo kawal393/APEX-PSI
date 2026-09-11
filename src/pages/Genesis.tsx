@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 import Rosette from "@/components/Rosette";
+import GenesisAnchor from "@/components/GenesisAnchor";
 import {
   GENESIS_PROOF,
   GENESIS_SOURCE_URL,
@@ -69,6 +70,8 @@ const Genesis = () => {
               </dl>
             </div>
           </section>
+
+          <GenesisAnchor />
 
           <section className="mb-12 border border-border/50 rounded-lg p-8">
             <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-primary mb-6">
