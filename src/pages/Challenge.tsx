@@ -203,6 +203,7 @@ const Challenge = () => (
           </p>
         </section>
       </div>
+      <RedTeamScope />
     </main>
 
     <Footer />
