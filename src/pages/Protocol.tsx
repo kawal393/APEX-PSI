@@ -428,6 +428,8 @@ const Protocol = () => {
             </motion.div>
           </div>
         </section>
+        <ConstitutionLaws />
+        <StatusTaxonomy />
         <OpenSourceGateway />
       </div>
       <Footer />
