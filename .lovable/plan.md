@@ -1,36 +1,26 @@
-# New Opening Hero — "The World's First & Only"
+# Grand Hero — Font & "Standard" Update
 
-## What you'll see
-The very first thing on the homepage becomes one massive, majestic headline block:
+## What changes
 
-```
-THE WORLD'S FIRST & ONLY
-GLOBAL OPEN PROTOCOL FOR DIGITAL TRUTH
+1. **Typeface: Institutional Classic**
+   - Load **Libre Baskerville** (headings) and **IBM Plex Sans** (body) via Google Fonts in `index.html`.
+   - Update `tailwind.config.ts` `fontFamily.serif` to Libre Baskerville so the Grand Hero headline renders in it.
+   - The hero keeps its massive scale; only the typeface changes — stately, book-like, charter feel.
 
-Open sourced. Free forever.
+2. **Add "standard" as the subline**
+   - Headline stays: "THE WORLD'S FIRST & ONLY — Global Open Protocol for Digital Truth".
+   - The mono subline changes from "Open sourced. Free forever." to include the standard claim:
+     - Line 1: **The open standard for digital truth.**
+     - Line 2: Open sourced. Free forever.
 
-[ THE PROTOCOL ]   [ STRAIGHT TO THE ENGINE ]
-```
+## Scope guardrails
 
-- Massive display typography (huge caps, gold/chrome gradient treatment on the main line, matching the existing Bloomberg-terminal + obsidian/gold language).
-- Two buttons directly beneath: **The Protocol** → `/protocol`, **Straight to the Engine** → `/engine`. Both routes already exist, no new pages.
-- Everything currently on the homepage stays — this block is added above, not replacing.
+- Only `src/components/GrandHero.tsx`, `tailwind.config.ts`, and `index.html` (font link) are touched.
+- No other homepage sections, copy, or layout change.
+- Buttons (The Protocol / Straight to the Engine) stay exactly as they are.
 
-## Changes (frontend only)
-1. New component `src/components/OpeningHero.tsx`:
-   - Line 1 "THE WORLD'S FIRST & ONLY" — large mono caps kicker with gold treatment.
-   - Line 2 "Global Open Protocol for Digital Truth" — the largest text on the page, rendered as the page's H1 (so the site keeps exactly one H1 for SEO; the existing hero's "APEX PSI" headline is demoted from h1 to styled text — its look is unchanged).
-   - Line 3 "Open sourced. Free forever." — clean supporting line.
-   - Two link buttons in the existing button style (hero / heroOutline variants).
-   - Subtle entrance animation consistent with the current hero (fade/rise), no heavy motion.
-2. `src/pages/Index.tsx`: render `<OpeningHero />` as the first element inside the page, before `CoreDeclaration`.
-3. Demote the existing Hero h1 to a non-h1 element (visual styling untouched).
-4. Update the homepage `<title>`/meta description to carry the new headline wording.
+## Technical details
 
-## Honesty guardrail
-"First & only" is the owner's positioning claim; the existing zero-claim and disclaimers blocks remain untouched below it, so the site still states that PSI proves existence and integrity, not truth.
-
-## Verification
-- TypeScript check and build pass.
-- Playwright screenshot of the top of the homepage at desktop and mobile widths: headline fully visible, no clipping, both buttons readable and in the first screen.
-- Confirm single H1 in the served HTML.
+- Google Fonts: `Libre+Baskerville:ital,wght@0,400;0,700;1,400` and `IBM+Plex+Sans:wght@400;500;600`.
+- `fontFamily.serif` becomes `['"Libre Baskerville"', 'Georgia', 'serif']` — this also affects other serif usages site-wide (charter/declaration text), which is consistent with the chosen direction.
+- Verify with a preview screenshot of the homepage hero.
