@@ -11,7 +11,7 @@ const GrandHero = () => {
           The World's First &amp; Only
         </p>
 
-        <h1 className="mt-6 font-serif text-5xl font-bold leading-[1.05] tracking-tight text-foreground md:text-8xl lg:text-9xl">
+        <h1 className="mt-6 font-serif text-4xl font-bold leading-[1.05] tracking-tight text-foreground md:text-7xl lg:text-8xl">
           Global Open Standard
           <span className="mt-2 block bg-gradient-to-b from-gold via-gold/90 to-gold/50 bg-clip-text text-transparent">
             &amp; Protocol for Digital Truth
