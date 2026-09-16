@@ -58,7 +58,7 @@ const RedTeamScope = () => (
             <p className="font-mono text-xs uppercase tracking-[0.16em] text-gold">{c.name}</p>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{c.detail}</p>
             <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/80">
-              US$5,000 — from the US$10,000 commitment
+              In scope — US$10,000 standing commitment
             </p>
           </div>
         ))}
