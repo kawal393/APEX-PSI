@@ -12,14 +12,14 @@ const GrandHero = () => {
         </p>
 
         <h1 className="mt-6 font-serif text-5xl font-bold leading-[1.05] tracking-tight text-foreground md:text-8xl lg:text-9xl">
-          Global Open Protocol
+          Global Open Standard
           <span className="mt-2 block bg-gradient-to-b from-gold via-gold/90 to-gold/50 bg-clip-text text-transparent">
-            for Digital Truth
+            &amp; Protocol for Digital Truth
           </span>
         </h1>
 
         <p className="mx-auto mt-8 max-w-2xl font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground md:text-sm">
-          Open sourced. Free forever.
+          The world's first. Open sourced. Free forever.
         </p>
 
         <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
