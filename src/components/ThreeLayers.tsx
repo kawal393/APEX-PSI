@@ -26,7 +26,7 @@ const LAYERS = [
     body: "The public record. Sorted by first seal.",
     quote: "First sealed. First in line.",
     to: "/registry",
-    cta: "/registry",
+    cta: "View the public registry",
   },
 ];
 
