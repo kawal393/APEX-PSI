@@ -47,9 +47,9 @@ const RedTeamScope = () => (
       </h2>
       <p className="mt-5 max-w-3xl text-sm md:text-base text-muted-foreground leading-relaxed">
         No claim of perfection is made here. A reproducible mathematical or implementation break is
-        rewarded, published and corrected. Five categories are in scope, each carrying a reward of
-        US$5,000, under a total published commitment of US$10,000 held by ROCKYFILMS888 PTY LTD.
-        Rewards are paid from that commitment in the order findings are confirmed.
+        rewarded, published and corrected. Five categories are in scope. A single published
+        commitment of US$10,000, held by ROCKYFILMS888 PTY LTD, is paid to the first party that
+        produces a confirmed mathematical break of a sealed APEX PSI record.
       </p>
 
       <div className="mt-10 grid gap-3 sm:grid-cols-2">
