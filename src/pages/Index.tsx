@@ -27,6 +27,7 @@ import EnforcementStrip from "@/components/EnforcementStrip";
 import UniversalTicker from "@/components/UniversalTicker";
 import HomeSealStrip from "@/components/HomeSealStrip";
 import MelbourneTestPlaque from "@/components/MelbourneTestPlaque";
+import GrandHero from "@/components/GrandHero";
 import ConstitutionLaws from "@/components/ConstitutionLaws";
 import GenesisAnchor from "@/components/GenesisAnchor";
 import WhatItIsAndIsnt from "@/components/WhatItIsAndIsnt";
@@ -86,6 +87,7 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
+        <GrandHero />
         <CoreDeclaration />
         <Hero />
         <HomeSealStrip />
