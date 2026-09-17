@@ -5,6 +5,8 @@ import Article50Banner from "@/components/Article50Banner";
 
 import TwoPillars from "@/components/TwoPillars";
 import Declaration from "@/components/Declaration";
+import CoreDeclaration from "@/components/CoreDeclaration";
+import ThreeLayers from "@/components/ThreeLayers";
 import LeadCaptureOffer from "@/components/LeadCaptureOffer";
 import HowToUse from "@/components/HowToUse";
 
@@ -25,14 +27,21 @@ import EnforcementStrip from "@/components/EnforcementStrip";
 import UniversalTicker from "@/components/UniversalTicker";
 import HomeSealStrip from "@/components/HomeSealStrip";
 import MelbourneTestPlaque from "@/components/MelbourneTestPlaque";
+import GrandHero from "@/components/GrandHero";
+import ConstitutionLaws from "@/components/ConstitutionLaws";
+import GenesisAnchor from "@/components/GenesisAnchor";
+import WhatItIsAndIsnt from "@/components/WhatItIsAndIsnt";
+import PsiNamespaces from "@/components/PsiNamespaces";
+import EconomicDivide from "@/components/EconomicDivide";
+import ComplementsStandards from "@/components/ComplementsStandards";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Apex PSI — Universal Verification Layer</title>
-        <meta name="description" content="Apex PSI — Universal Verification Layer. Open, neutral, deterministic proof for AI outputs and records. Verification free forever (MIT). Proposed open standard under active development." />
+        <title>Apex PSI — The Continuity Layer for Digital Civilization</title>
+        <meta name="description" content="PSI makes digital history independently verifiable. Open, neutral, deterministic proof of existence and integrity. Free to verify. Free to create. Paid to operate at scale." />
         <link rel="canonical" href="https://ai-governance-standard.com/" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Articles" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />
         <meta property="og:title" content="Apex PSI — Universal Verification Layer" />
@@ -78,7 +87,9 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
-        <MelbourneTestPlaque />
+        <GrandHero />
+        <CoreDeclaration />
+        <Hero />
         <HomeSealStrip />
         <p className="-mt-8 mb-4 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           The ledger does not judge. It remembers.
@@ -89,12 +100,18 @@ const Index = () => {
             Read the receipt
           </a>
         </p>
-        <Hero />
+        <MelbourneTestPlaque />
         <UniversalTicker />
         <ConnectAIPill />
         <Article50Banner />
 
         <Declaration />
+        <ConstitutionLaws />
+        <GenesisAnchor />
+        <WhatItIsAndIsnt />
+        <PsiNamespaces />
+        <EconomicDivide />
+        <ComplementsStandards />
         <TwoPillars />
         <Products embedded />
         <LeadCaptureOffer />
@@ -111,6 +128,7 @@ const Index = () => {
         <FAQ />
         <ContactSection />
         <VerifiedByApexSection />
+        <ThreeLayers />
         <EnforcementStrip />
         <Footer />
       </div>

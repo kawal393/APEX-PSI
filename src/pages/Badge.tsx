@@ -8,6 +8,7 @@ import { Badge as UiBadge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EmbedCodeGenerator from "@/components/EmbedCodeGenerator";
+import ZeroClaimLabel from "@/components/ZeroClaimLabel";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -102,6 +103,9 @@ const Badge = () => {
               <p className="text-muted-foreground max-w-xl mx-auto">
                 Display the PSI Verified badge on your website. Every badge links back to our public verification portal — building trust with customers and regulators.
               </p>
+              <div className="max-w-xl mx-auto mt-5 text-left">
+                <ZeroClaimLabel state="verified" />
+              </div>
             </motion.div>
 
             <div className="grid lg:grid-cols-2 gap-8">

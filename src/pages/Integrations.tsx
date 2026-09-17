@@ -227,8 +227,8 @@ const Integrations = () => (
               Wire your platform into the standard
             </h2>
             <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">
-              Bring an API key, a header or an SDK adapter. We will help you get the first signed
-              receipt out of your stack.
+              An API key, a header or an SDK adapter. One signed receipt out of your stack.
+
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Button variant="hero" size="lg" asChild>

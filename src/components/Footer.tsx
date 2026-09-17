@@ -5,6 +5,7 @@ import apexLogo from "@/assets/apex-logo.png";
 import { useTranslation } from "react-i18next";
 import { DECLARATION_TEXT } from "@/components/Declaration";
 import { OPERATOR_LINE } from "@/config/founding";
+import { FOOTER_CONSTITUTION_LINES } from "@/data/psiConstitution";
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { t } = useTranslation();
@@ -120,6 +121,27 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <Link to="/portfolio" className="hover:text-gold">IETF portfolio — individual submissions, each linked</Link>
           </div>
 
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] text-muted-foreground font-mono">
+            <Link to="/registry" className="hover:text-gold">Registry</Link>
+            <span className="text-border">·</span>
+            <Link to="/ecosystem" className="hover:text-gold">Ecosystem</Link>
+            <span className="text-border">·</span>
+            <Link to="/operate" className="hover:text-gold">Operate at scale</Link>
+            <span className="text-border">·</span>
+            <Link to="/protocol#constitution" className="hover:text-gold">The Constitution</Link>
+            <span className="text-border">·</span>
+            <Link to="/genesis" className="hover:text-gold">Genesis anchor</Link>
+            <span className="text-border">·</span>
+            <Link to="/disclaimers" className="hover:text-gold">Disclaimers</Link>
+          </div>
+
+          <p className="text-[10px] leading-relaxed text-muted-foreground/80 text-center max-w-3xl mx-auto">
+            Stewardship promise: the verification standard stays open. The verifier is MIT
+            licensed and free forever, the seal format is published, and anyone can recompute
+            any record without our permission, our servers or our consent.
+          </p>
+
+
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-muted-foreground">
               © 2026 Apex Intelligence Empire. All rights reserved.
@@ -127,6 +149,14 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <p className="text-xs text-muted-foreground">
               Proof of Stateful Integrity
             </p>
+          </div>
+
+          <div className="space-y-1 pt-2 text-center">
+            {FOOTER_CONSTITUTION_LINES.map((line) => (
+              <p key={line} className="text-[10px] leading-relaxed text-muted-foreground/80">
+                {line}
+              </p>
+            ))}
           </div>
 
           <p className="text-[10px] leading-relaxed text-muted-foreground/70 text-center pt-2">

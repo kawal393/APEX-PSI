@@ -23,6 +23,7 @@ import Partner from "./pages/Partner";
 import PartnerDashboard from "./pages/PartnerDashboard";
 import Engine from "./pages/Engine";
 import Corrections from "./pages/Corrections";
+import Disclaimers from "./pages/Disclaimers";
 import Architecture from "./pages/Architecture";
 import SDK from "./pages/SDK";
 import Compare from "./pages/Compare";
@@ -41,6 +42,8 @@ import Admin from "./pages/Admin";
 import Master from "./pages/Master";
 import SiloDashboard from "./pages/SiloDashboard";
 import Protocol from "./pages/Protocol";
+import Ecosystem from "./pages/Ecosystem";
+import OperateAtScale from "./pages/OperateAtScale";
 import Registry from "./pages/Registry";
 import SubmissionKit from "./pages/SubmissionKit";
 import IETFDraft from "./pages/IETFDraft";
@@ -154,8 +157,14 @@ const App = () => (
                 }
               />
               <Route path="/protocol" element={<Protocol />} />
+              <Route path="/constitution" element={<Navigate to="/protocol#constitution" replace />} />
+              <Route path="/ecosystem" element={<Ecosystem />} />
+              <Route path="/operate" element={<OperateAtScale />} />
+              <Route path="/cloud" element={<Navigate to="/operate" replace />} />
+              <Route path="/create" element={<Navigate to="/seal" replace />} />
               <Route path="/engine" element={<Engine />} />
                             <Route path="/corrections" element={<Corrections />} />
+                            <Route path="/disclaimers" element={<Disclaimers />} />
               <Route path="/notary" element={<Notary />} />
               <Route path="/explorer" element={<Explorer />} />
               <Route path="/live" element={<LiveLedger />} />

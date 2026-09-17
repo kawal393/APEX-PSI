@@ -37,20 +37,23 @@ const Declaration = () => (
           </Link>
         </div>
         <div className="rounded-lg border border-gold/40 bg-gold/[0.05] p-6">
-          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-gold mb-3">Issue</p>
-          <h3 className="text-xl font-black tracking-tight mb-2">Canonical, anchored, paid</h3>
+          <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-gold mb-3">Operate</p>
+          <h3 className="text-xl font-black tracking-tight mb-2">
+            Free to create. Paid to operate at scale.
+          </h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Issuance of canonical seals — anchored, sequenced and licensed. The layer stays open; the
-            issuance is ours.
+            Basic proof creation is free forever and needs no account. Managed issuance at
+            institutional volume, redundancy, priority anchoring and retention are operated by APEX
+            under agreement.
           </p>
-          <Link to="/license" className="inline-block mt-4 text-xs font-mono text-gold hover:underline">
-            Licence terms →
+          <Link to="/operate" className="inline-block mt-4 text-xs font-mono text-gold hover:underline">
+            Operating at scale →
           </Link>
         </div>
       </div>
 
       <p className="mt-6 text-sm text-center text-foreground/80 font-semibold">
-        The gatekeeper accusation dies mathematically. The billing address survives honestly.
+        Nobody needs APEX to verify anything. That is the point of Law III.
       </p>
     </div>
   </section>
