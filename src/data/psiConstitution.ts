@@ -31,11 +31,8 @@ export const NO_CONTROL_LINE =
   "Anyone can mint a basic PSI proof. Anyone can run a verifier. Anyone can host a node. APEX does not control the protocol. We operate one implementation of it, for those who need reliability, scale and contractual guarantees.";
 
 // THE LAYER LOCK — canonical framing statement (FRAMING.md in the
-// economic-operating-infrastructure repository). Protocol defence, not marketing:
-// the moment the world files the protocol under "tools" it is compared to tools
-// and replaced by one. The word "service" is deliberately absent — the legal
-// fence names the business an independent verification service, and services are
-// built ON the layer; the protocol itself is not the business.
+// economic-operating-infrastructure repository). Services are built ON the
+// layer; the protocol itself is not a service and judges nothing.
 export const LAYER_LOCK =
   "Apex PSI is not a tool and not a product. It is the verification substrate — the layer beneath proof. It does not judge. It does not certify. It only remembers.";
 
