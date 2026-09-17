@@ -29,7 +29,7 @@ Anything that deviates — even if functionally similar — fails. **Only schema
 ## Licensing model
 
 - **This verifier: MIT.** Check seals forever, at no cost, with no permission.
-- **The generator (sealing engine): proprietary.** Free for personal / non-commercial use; commercial and institutional sealing is licensed under PSI-05 royalty terms. See <https://ai-governance-standard.com/license>.
+- **The generator (sealing engine): proprietary.** Free for personal / non-commercial use; commercial and institutional sealing is also free of charge in perpetuity (royalty tiers withdrawn 4 September 2026). See <https://ai-governance-standard.com/license>.
 
 Schema: © 2026 APEX Infrastructure. Specification: <https://ai-governance-standard.com/spec>
 
