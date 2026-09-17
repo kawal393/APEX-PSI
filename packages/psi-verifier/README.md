@@ -1,5 +1,7 @@
 # @apex/psi-verifier
 
+> Apex PSI is not a tool and not a product. It is the verification substrate — the layer beneath proof. It does not judge. It does not certify. It only remembers.
+
 **MIT. Free forever.** Verify any APEX PSI seal, anywhere — browser, Node, Deno, Bun, workers, CI. Zero dependencies.
 
 ```ts
