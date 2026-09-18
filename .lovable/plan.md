@@ -1,26 +1,21 @@
-# Grand Hero — Font & "Standard" Update
+# Project Lifespan Clock
 
 ## What changes
 
-1. **Typeface: Institutional Classic**
-   - Load **Libre Baskerville** (headings) and **IBM Plex Sans** (body) via Google Fonts in `index.html`.
-   - Update `tailwind.config.ts` `fontFamily.serif` to Libre Baskerville so the Grand Hero headline renders in it.
-   - The hero keeps its massive scale; only the typeface changes — stately, book-like, charter feel.
+- Add an elegant live counter to the opening homepage section beneath the main statement.
+- Anchor it to the earliest verified project conversation: **27 February 2026 at 11:02 UTC** (**9:02 PM Sydney time**).
+- Present the start as “ACTIVE SINCE 27 FEBRUARY 2026” with a continuously ticking **days · hours · minutes · seconds** display.
+- Keep the existing headline, supporting line, and both links unchanged.
 
-2. **Add "standard" as the subline**
-   - Headline stays: "THE WORLD'S FIRST & ONLY — Global Open Protocol for Digital Truth".
-   - The mono subline changes from "Open sourced. Free forever." to include the standard claim:
-     - Line 1: **The open standard for digital truth.**
-     - Line 2: Open sourced. Free forever.
+## Design
 
-## Scope guardrails
-
-- Only `src/components/GrandHero.tsx`, `tailwind.config.ts`, and `index.html` (font link) are touched.
-- No other homepage sections, copy, or layout change.
-- Buttons (The Protocol / Straight to the Engine) stay exactly as they are.
+- Use the existing antique-gold, bone-white, obsidian, and monospace visual language.
+- Make the clock feel like a permanent protocol chronometer rather than a promotional countdown.
+- Keep all values stable-width to prevent layout shifting and fit the complete opening section on mobile and desktop.
+- Respect reduced-motion preferences; only the numerals update.
 
 ## Technical details
 
-- Google Fonts: `Libre+Baskerville:ital,wght@0,400;0,700;1,400` and `IBM+Plex+Sans:wght@400;500;600`.
-- `fontFamily.serif` becomes `['"Libre Baskerville"', 'Georgia', 'serif']` — this also affects other serif usages site-wide (charter/declaration text), which is consistent with the chosen direction.
-- Verify with a preview screenshot of the homepage hero.
+- Build the timer inside `GrandHero.tsx` using a one-second interval with cleanup.
+- Derive elapsed time from the fixed UTC timestamp `2026-02-27T11:02:00Z` so time zones cannot alter the result.
+- Verify the visible timestamp and ticking behavior in the homepage preview at desktop and mobile sizes.
