@@ -261,6 +261,72 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-nsb1fw</loc>
+    <lastmod>2026-09-19T06:07:34.666Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-compliance-ietf-draft-singh-psi-00-07zqmm</loc>
+    <lastmod>2026-09-19T06:07:34.666Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-5cyc67</loc>
+    <lastmod>2026-09-19T06:07:34.666Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-accountability-why-logs-are-not-evidence-8abmih</loc>
+    <lastmod>2026-09-19T03:07:10.408Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-c24e1j</loc>
+    <lastmod>2026-09-19T03:07:10.408Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-lj0dvn</loc>
+    <lastmod>2026-09-19T03:07:10.408Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/sha-256-merkle-trees-for-tamper-evident-ai-logs-wp4c6r</loc>
+    <lastmod>2026-09-19T00:07:30.667Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-without-vendor-trust-jya6f0</loc>
+    <lastmod>2026-09-19T00:07:30.667Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-header-0fvakx</loc>
+    <lastmod>2026-09-19T00:07:30.667Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/c2pa-provenance-and-content-credentials-for-ai-08qxwg</loc>
+    <lastmod>2026-09-18T21:07:30.292Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-accountability-why-logs-are-not-evidence-s2omvx</loc>
+    <lastmod>2026-09-18T21:06:12.061Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-header-29nj2t</loc>
     <lastmod>2026-09-18T18:07:36.693Z</lastmod>
     <changefreq>weekly</changefreq>
