@@ -16,7 +16,7 @@
   "hero": {
     "psiVersion": "PSI Protocol v1.0",
     "headline1": "APEX PSI:",
-    "headline2": "The Open Standard for Verifiable AI Governance.",
+    "headline2": "The Open Protocol for Verifiable AI Governance.",
     "subtitle1": "Creating cryptographically verifiable evidence for AI governance workflows",
     "subtitle2": "without claiming automatic legal compliance.",
     "byline": "RFC 8785 (JCS) · Ed25519 Signatures · Monotonic Sequencing · EU AI Act Articles 12, 14, 15",
@@ -142,7 +142,7 @@
   "footer": {
     "disclaimer": "Apex Intelligence Empire provides technical tools to assist with AI compliance. We are not a law firm and do not provide legal advice. Our tools and documentation are designed to support regulatory compliance efforts — consult qualified legal counsel for legal matters specific to your jurisdiction.",
     "disclaimerLabel": "Disclaimer:",
-    "tagline": "Proof of Stateful Integrity — The Open Standard for Verifiable AI Governance. By Apex Intelligence Empire.",
+    "tagline": "Proof of Stateful Integrity — The Open Protocol for Verifiable AI Governance. By Apex Intelligence Empire.",
     "division": "A division of",
     "navigation": "Navigation",
     "theParadox": "The Paradox",

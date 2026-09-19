@@ -57,23 +57,23 @@ const ActiveSinceClock = () => {
 const GrandHero = () => {
   return (
     <section
-      aria-label="The world's first and only global open protocol for digital truth"
+      aria-label="The first global open protocol for digital truth — the proof layer of the AI economy"
       className="relative border-b border-gold/20 bg-background px-4 pb-14 pt-12 text-center md:pb-20 md:pt-16"
     >
       <div className="mx-auto max-w-6xl">
         <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-gold md:text-sm md:tracking-[0.7em]">
-          The World's First &amp; Only
+          The First
         </p>
 
         <h1 className="mt-6 font-serif text-4xl font-bold leading-[1.05] tracking-tight text-foreground md:text-7xl lg:text-8xl">
-          Global Open Standard
+          Global Open Protocol
           <span className="mt-2 block bg-gradient-to-b from-gold via-gold/90 to-gold/50 bg-clip-text text-transparent">
-            &amp; Protocol for Digital Truth
+            for Digital Truth
           </span>
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground md:text-sm">
-          The world's first. Open sourced. Free forever.
+          The Proof Layer of the AI Economy. Open sourced. Free forever.
         </p>
 
         <ActiveSinceClock />
