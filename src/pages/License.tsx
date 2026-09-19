@@ -23,7 +23,7 @@ const License = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>PSI Licence — Free to Verify, Free to Seal — Apex PSI — Universal Verification Layer</title>
+        <title>PSI Licence — Free to Verify, Free to Seal — Apex PSI — Universal Verification Protocol</title>
         <meta
           name="description"
           content="APEX PSI licensing: the verifier is MIT and free forever; sealing is free for all use including commercial and institutional, at any scale. Reserved: the APEX marks and building a competing seal generator."

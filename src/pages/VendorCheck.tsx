@@ -99,7 +99,7 @@ const VendorCheck = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>AI Supplier Transparency Check Registry — Apex PSI — Universal Verification Layer</title>
+        <title>AI Supplier Transparency Check Registry — Apex PSI — Universal Verification Protocol</title>
         <meta
           name="description"
           content="Free check of any supplier domain for AI transparency conformity signals: PSI protocol descriptor, Compliance-Receipt header, published trust anchor and Supplier Registry listing."

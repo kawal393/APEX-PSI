@@ -160,7 +160,7 @@ const navLinks = [
                 <span className="text-chrome-gradient">PSI</span>
               </span>
               <span className="text-[8px] font-mono uppercase tracking-[0.18em] text-muted-foreground mt-0.5">
-                Universal Verification Layer
+                Universal Verification Protocol
               </span>
             </span>
           </button>

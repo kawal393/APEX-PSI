@@ -86,7 +86,7 @@ export default function Lattice() {
   return (
     <>
       <Helmet>
-        <title>Protocol Lattice — Apex PSI — Universal Verification Layer</title>
+        <title>Protocol Lattice — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Real-time distributed mesh network status across APEX platforms" />
       </Helmet>
       <Navbar />

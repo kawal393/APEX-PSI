@@ -62,7 +62,7 @@ export default function Article() {
   return (
     <>
       <Helmet>
-        <title>{article.title} — Apex PSI — Universal Verification Layer</title>
+        <title>{article.title} — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content={article.description} />
         <meta name="keywords" content={(article.keywords || []).join(", ")} />
         <link rel="canonical" href={url} />

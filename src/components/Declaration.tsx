@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 export const DECLARATION_TEXT =
-  "Apex PSI — Universal Verification Layer. Proposed open standard under active development. Verification free forever (MIT). IETF drafts are individual submissions, not formally endorsed. Verify everything yourself.";
+  "Apex PSI — Universal Verification Protocol. Proposed open standard under active development. Verification free forever (MIT). IETF drafts are individual submissions, not formally endorsed. Verify everything yourself.";
 
 /** THE DECLARATION — the plain statement of what this layer is. */
 const Declaration = () => (

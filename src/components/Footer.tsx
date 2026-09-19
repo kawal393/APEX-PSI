@@ -36,11 +36,11 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
                 <span className="text-chrome-gradient">PSI</span>
               </h3>
               <span className="text-[9px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                Universal Verification Layer
+                Universal Verification Protocol
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mb-4">
-              Universal Verification Layer — open, neutral, deterministic proof for AI outputs and
+              Universal Verification Protocol — open, neutral, deterministic proof for AI outputs and
               records. Verification free forever (MIT). By APEX Infrastructure.
             </p>
             <div className="text-xs text-muted-foreground space-y-1">

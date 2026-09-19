@@ -32,7 +32,7 @@ const rules = [
 const Challenge = () => (
   <div className="min-h-screen bg-background text-foreground">
     <Helmet>
-      <title>The Standing Challenge — Apex PSI — Universal Verification Layer</title>
+      <title>The Standing Challenge — Apex PSI — Universal Verification Protocol</title>
       <meta
         name="description"
         content="US$10,000 standing challenge for a mathematical break of a sealed APEX PSI record. Verification free forever."
