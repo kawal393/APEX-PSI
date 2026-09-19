@@ -38,7 +38,7 @@ const CopyBox = ({ code }: { code: string }) => {
 const Partners = () => (
   <>
     <Helmet>
-      <title>Partners — Verified, Integrated and Powered by Apex PSI — Apex PSI — Universal Verification Layer</title>
+      <title>Partners — Verified, Integrated and Powered by Apex PSI — Apex PSI — Universal Verification Protocol</title>
       <meta
         name="description"
         content="Three ways to appear alongside APEX PSI: display a verification badge, integrate the SDK, or apply as a Tier-1 partner."

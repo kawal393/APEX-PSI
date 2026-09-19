@@ -642,7 +642,7 @@ const IETFDraft = () => {
   return (
     <>
       <Helmet>
-        <title>IETF Draft — draft-singh-psi-00 — Apex PSI — Universal Verification Layer</title>
+        <title>IETF Draft — draft-singh-psi-00 — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Internet-Draft: Proof of Stateful Integrity for verifiable AI governance. Full protocol text." />
         <link rel="canonical" href="https://ai-governance-standard.com/draft" />
         <meta property="og:title" content="IETF Draft — draft-singh-psi-00 | APEX PSI" />

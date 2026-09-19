@@ -205,13 +205,13 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
     <>
       {!embedded && (
       <Helmet>
-        <title>What Apex PSI Provides — Universal Verification Layer</title>
+        <title>What Apex PSI Provides — Universal Verification Protocol</title>
         <meta
           name="description"
           content="APEX PSI is an open AI governance evidence protocol. The protocol, the verifier, sealing and verification are free, with no account and no key."
         />
         <link rel="canonical" href={`${SITE_URL}/products`} />
-        <meta property="og:title" content="What Apex PSI Provides — Universal Verification Layer" />
+        <meta property="og:title" content="What Apex PSI Provides — Universal Verification Protocol" />
         <meta
           property="og:description"
           content="Sealing and verification are free, with no account and no key. Nothing on this site is sold."
@@ -242,7 +242,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
               ) : (
                 <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[0.95] mb-5">
                   <span className="text-gold-gradient">APEX PSI</span>
-                  <span className="block text-chrome-gradient">The Universal Verification Layer</span>
+                  <span className="block text-chrome-gradient">The Universal Verification Protocol</span>
                 </h1>
               )}
               <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">

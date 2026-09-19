@@ -127,13 +127,13 @@ const HelloPsi = () => {
   return (
     <>
       <Helmet>
-        <title>Hello PSI — Apex PSI — Universal Verification Layer</title>
+        <title>Hello PSI — Apex PSI — Universal Verification Protocol</title>
         <meta
           name="description"
           content="Prove it in 60 seconds. Compute a PSI-SEAL/1.0.0 seal in your own browser, then recompute the identical bytes with the Python or Node reference implementation. Free forever (MIT)."
         />
         <link rel="canonical" href={`${SITE_URL}/hello-psi`} />
-        <meta property="og:title" content="Hello PSI — Apex PSI — Universal Verification Layer" />
+        <meta property="og:title" content="Hello PSI — Apex PSI — Universal Verification Protocol" />
         <meta property="og:description" content="A seal is deterministic math. Recompute it yourself — no account, no permission." />
         <meta property="og:url" content={`${SITE_URL}/hello-psi`} />
         <meta property="og:type" content="website" />

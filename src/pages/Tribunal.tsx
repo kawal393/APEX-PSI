@@ -145,7 +145,7 @@ const Tribunal = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Institutional Anchors — Apex PSI — Universal Verification Layer</title>
+        <title>Institutional Anchors — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Enterprise-grade Institutional Anchor ratification layer for high-stakes compliance certification." />
       </Helmet>
       <Navbar />
