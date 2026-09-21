@@ -31,7 +31,7 @@ const TOOLS = [
   },
   {
     name: "verify",
-    desc: "Check any hash against the immutable ledger.",
+    desc: "Check any hash against the append-only ledger.",
     linkLabel: "Open verifier",
     to: "/verify",
   },

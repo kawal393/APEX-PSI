@@ -15,7 +15,7 @@ const articles = [
     article: "Article 12",
     title: "Record-Keeping",
     tech: "SHA-256 Hash Chain Ledger",
-    description: "Every AI decision logged cryptographically. Immutable, tamper-proof audit trail that satisfies record-keeping requirements without exposing model internals.",
+    description: "Every AI decision logged cryptographically. Tamper-evident audit trail that satisfies record-keeping requirements without exposing model internals.",
     reference: "\"High-risk AI systems shall technically allow for the automatic recording of events...\"",
   },
   {

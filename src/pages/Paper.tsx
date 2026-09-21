@@ -42,7 +42,7 @@ software redundancy rather than independent institutional consensus.
 
 Version 1.2 introduces two critical advances: Deterministic Mode,
 which blocks UNACCEPTABLE and HIGH-risk actions before they enter
-the immutable ledger (rather than reviewing
+the append-only ledger (rather than reviewing
 records after the fact), and the Institutional Anchor Panel, a
 5-party human auditor ratification layer satisfying EU AI Act
 Article 14 (Human Oversight) requirements through Ed25519-signed
@@ -268,7 +268,7 @@ Signing: Web Crypto API (Ed25519, PKCS8 DER)
 The PSI Protocol roadmap includes:
 
   (a) Bitcoin Timestamp Anchoring — anchoring Merkle roots to
-      the Bitcoin blockchain via OpenTimestamps for immutable
+      the Bitcoin blockchain via OpenTimestamps for tamper-evident
       third-party proof of existence.
 
   (b) Formal Verification — machine-verifiable proofs that

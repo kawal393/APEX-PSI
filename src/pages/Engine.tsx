@@ -127,7 +127,7 @@ const Engine = () => {
         const description = result.hash_mismatch_detected 
           ? `⚠ Hash mismatch detected - server values used` 
           : `ID: ${result.commit_id} • Server verified`;
-        toast.success("Committed to immutable ledger", { description });
+        toast.success("Committed to append-only ledger", { description });
         setPersistedCount((prev) => prev + 1);
         
         // Create updated record with server values (use server commit_id!)

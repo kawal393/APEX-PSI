@@ -40,7 +40,7 @@ Abstract
 
    The protocol introduces a Deterministic Mode that blocks
    UNACCEPTABLE and HIGH-risk actions before they enter the
-   immutable ledger, and a 5-party Institutional Anchor Panel for human
+   append-only ledger, and a 5-party Institutional Anchor Panel for human
    auditor ratification of automated verdicts.
 
 Status of This Memo
@@ -271,7 +271,7 @@ Table of Contents
    4. Compute merkle_leaf_hash = SHA-256(commit_hash)
    5. If Deterministic Mode: run pre-flight check
       - If BLOCKED: return immediately, do not persist
-   6. Persist to immutable ledger with sequence number
+   6. Persist to append-only ledger with sequence number
    7. Sign merkle_leaf_hash with Ed25519
 
 5.2.  Challenge Phase

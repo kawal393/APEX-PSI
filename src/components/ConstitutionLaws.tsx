@@ -1,6 +1,6 @@
 import { PSI_LAWS, APEX_DISAPPEARS_TEST } from "@/data/psiConstitution";
 
-/** THE PSI CONSTITUTION — five immutable laws. Rendered on every major page. */
+/** THE PSI CONSTITUTION — five founding laws. Rendered on every major page. */
 const ConstitutionLaws = ({ compact = false }: { compact?: boolean }) => (
   <section id="constitution" className="px-4 py-20 border-y border-border/60">
     <div className="container mx-auto max-w-6xl">

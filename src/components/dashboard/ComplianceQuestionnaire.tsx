@@ -443,7 +443,7 @@ const ComplianceQuestionnaire = ({ onComplete, existingData }: Props) => {
             {Object.keys(evidenceHashes).length > 0 && (
               <div className="rounded-lg border border-compliant/20 bg-compliant/5 px-3 py-2">
                 <p className="text-xs text-compliant font-medium">
-                  {Object.keys(evidenceHashes).length} document(s) attested — evidence hashes committed to immutable ledger
+                  {Object.keys(evidenceHashes).length} document(s) attested — evidence hashes committed to the append-only ledger
                 </p>
               </div>
             )}

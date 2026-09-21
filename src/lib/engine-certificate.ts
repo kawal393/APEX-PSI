@@ -106,7 +106,7 @@ export async function generateCertificate(record: CommitRecord): Promise<Complia
       article: 'Article 12',
       title: 'Record-Keeping',
       compliant: true,
-      evidence: `Immutable Merkle tree entry at leaf hash: ${record.merkleLeafHash.substring(0, 16)}...`,
+      evidence: `Tamper-evident Merkle tree entry at leaf hash: ${record.merkleLeafHash.substring(0, 16)}...`,
     },
     {
       article: 'Article 13',

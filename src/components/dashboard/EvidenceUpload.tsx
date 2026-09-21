@@ -47,7 +47,7 @@ const EvidenceUpload = ({ articleKey, articleLabel, existingHash, onHashGenerate
         .upload(path, file, { upsert: true });
       if (uploadErr) throw uploadErr;
 
-      // 3. Commit hash to immutable ledger via edge function
+      // 3. Commit hash to append-only ledger via edge function
       const { error: commitErr } = await supabase.functions.invoke("commit-action", {
         body: {
           action: `evidence_upload:${articleKey}`,

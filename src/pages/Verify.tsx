@@ -157,7 +157,7 @@ const Verify = () => {
           queried_hash: target,
           queried_at: new Date().toISOString(),
           engine: "APEX PSI v2.0",
-          message: "Hash not found in the APEX PSI immutable ledger",
+          message: "Hash not found in the APEX PSI append-only ledger",
         } as typeof result);
       }
     } catch {
@@ -459,7 +459,7 @@ const Verify = () => {
                     <motion.div key="loading" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                       className="rounded-xl border border-border bg-card/80 backdrop-blur-sm p-8 text-center">
                       <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                      <p className="text-sm text-muted-foreground font-mono">Querying immutable ledger...</p>
+                      <p className="text-sm text-muted-foreground font-mono">Querying append-only ledger...</p>
                     </motion.div>
                   )}
 
@@ -472,7 +472,7 @@ const Verify = () => {
                           <ShieldCheck className="h-6 w-6 text-compliant" />
                           <div>
                             <p className="font-black text-compliant text-sm">HASH VERIFIED</p>
-                            <p className="text-xs text-muted-foreground">Found in APEX PSI immutable ledger</p>
+                            <p className="text-xs text-muted-foreground">Found in APEX PSI append-only ledger</p>
                           </div>
                         </div>
                         <Badge className="bg-compliant/10 text-compliant border-compliant/30">{result.phase}</Badge>
@@ -522,7 +522,7 @@ const Verify = () => {
                       <ShieldX className="h-10 w-10 text-destructive mx-auto mb-3" />
                       <p className="font-bold text-destructive mb-2">NOT FOUND IN LEDGER</p>
                       <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
-                        This hash does not exist in the APEX PSI immutable ledger.
+                        This hash does not exist in the APEX PSI append-only ledger.
                       </p>
                       <div className="rounded-lg bg-background/60 border border-border p-3 font-mono text-xs text-muted-foreground break-all max-w-lg mx-auto">
                         {result.queried_hash}
@@ -567,7 +567,7 @@ const Verify = () => {
                           <ShieldCheck className="h-6 w-6 text-compliant" />
                           <div>
                             <p className="font-black text-compliant text-sm">RECEIPT VERIFIED</p>
-                            <p className="text-xs text-muted-foreground">Found in APEX NOTARY immutable ledger</p>
+                            <p className="text-xs text-muted-foreground">Found in APEX NOTARY append-only ledger</p>
                           </div>
                         </div>
                         <Badge className="bg-compliant/10 text-compliant border-compliant/30">{receiptResult.phase}</Badge>
@@ -883,7 +883,7 @@ const Verify = () => {
                     <Shield className="h-8 w-8 text-compliant mx-auto mb-3" />
                     <p className="font-black text-compliant text-sm mb-1">ATTESTATION ANCHORED</p>
                     <p className="text-xs text-muted-foreground">
-                      Your verification has been cryptographically hashed and recorded on the immutable public ledger.
+                      Your verification has been cryptographically hashed and recorded on the append-only public ledger.
                       It can never be altered or deleted.
                     </p>
                   </motion.div>

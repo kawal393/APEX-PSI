@@ -5,7 +5,7 @@ const LAYERS = [
     icon: "🔏",
     name: "The Mirror Library",
     state: "Truth is Recorded",
-    body: "Immutable receipts. Forever verifiable.",
+    body: "Tamper-evident receipts. Forever verifiable.",
     quote: "The ledger does not judge. It remembers.",
     to: "/verify",
     cta: "Verify a receipt",

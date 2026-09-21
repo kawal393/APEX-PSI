@@ -84,7 +84,7 @@ const AuditTrailLog = ({ entries }: AuditTrailLogProps) => {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-mono text-engine-muted uppercase tracking-widest">
-            Immutable Audit Trail ({entries.length} entries)
+            Tamper-evident Audit Trail ({entries.length} entries)
           </CardTitle>
           <div className="flex items-center gap-2">
             {sequenceGaps.size > 0 && (
@@ -108,7 +108,7 @@ const AuditTrailLog = ({ entries }: AuditTrailLogProps) => {
       <CardContent>
         {entries.length === 0 ? (
           <p className="text-engine-muted font-mono text-sm text-center py-6">
-            No entries yet. Commit an action to begin building the immutable ledger.
+            No entries yet. Commit an action to begin building the append-only ledger.
           </p>
         ) : (
           <div className="overflow-x-auto">

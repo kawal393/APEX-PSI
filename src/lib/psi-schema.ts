@@ -18,7 +18,7 @@
 
 import { jcsCanonicalize } from "./psi-canonicalize";
 
-/** Immutable schema identifier. Embedded in every conformant seal. */
+/** Fixed schema identifier. Embedded in every conformant seal. */
 export const PSI_SCHEMA_ID = "PSI-SEAL/1.0.0";
 
 /** Registered copyright reference for the schema as an original work. */

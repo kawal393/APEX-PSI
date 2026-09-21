@@ -25,7 +25,7 @@ const statusBadge: Record<string, string> = {
 };
 
 const legalMathMap: Record<string, string> = {
-  "Article 12": "Immutable event stream active. RFC 8785 Canonicalization applied.",
+  "Article 12": "Append-only event stream active. RFC 8785 Canonicalization applied.",
   "Article 14": "Protocol Intervention Layer (PIL) — 5s oversight pause enabled.",
   "Article 15": "Experimental BN128 commitment generated for session (not a zero-knowledge proof).",
 };

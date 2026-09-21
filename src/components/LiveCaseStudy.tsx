@@ -124,7 +124,7 @@ const LiveCaseStudy = () => {
                     Register Output in PSI Ledger
                   </Button>
                   <p className="text-xs text-center text-muted-foreground mt-2">
-                    Step 1 of 3 — Hash the output and commit to the immutable ledger
+                    Step 1 of 3 — Hash the output and commit to the append-only ledger
                   </p>
                 </motion.div>
               )}

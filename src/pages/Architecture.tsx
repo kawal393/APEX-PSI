@@ -85,7 +85,7 @@ const Architecture = () => {
             <p>
               Unlike traditional Zero-Knowledge approaches that prove every computation upfront (computationally
               prohibitive for large models), PSI uses an <span className="text-amber-400">optimistic model</span>:
-              AI outputs are committed to an immutable ledger and assumed compliant until challenged.
+              AI outputs are committed to an append-only ledger and assumed compliant until challenged.
               Only when a challenge is raised does the system produce the full evidence response: the record is recomputed, the hash chain replayed and the signature checked.
             </p>
             <div className="p-3 border border-engine-approved/20 bg-engine-approved/5 rounded">
@@ -207,7 +207,7 @@ function combinePair(a: string, b: string): string {
                 article="Article 12"
                 title="Record-Keeping"
                 component="Merkle Tree Ledger"
-                mechanism="Immutable SHA-256 hash chain. Every action is a Merkle leaf. Tree root updates on each commit. Historical states are cryptographically provable."
+                mechanism="Tamper-evident SHA-256 hash chain. Every action is a Merkle leaf. Tree root updates on each commit. Historical states are cryptographically provable."
                 risk="HIGH"
               />
               <ArticleMapping
@@ -261,7 +261,7 @@ function combinePair(a: string, b: string): string {
               <TrioCard
                 name="SWORD"
                 role="The Police"
-                description="Public audit enforcement. Processes challenges against committed actions, produces recomputation evidence, and maintains the immutable verification record. All outputs are independently verifiable."
+                description="Public audit enforcement. Processes challenges against committed actions, produces recomputation evidence, and maintains the tamper-evident verification record. All outputs are independently verifiable."
                 color="text-engine-blocked border-engine-blocked/30"
               />
               <TrioCard
@@ -302,7 +302,7 @@ function combinePair(a: string, b: string): string {
   ],
   "riskLevel": "HIGH",
   "enforcementDate": "2026-08-02",
-  "definitionHash": "sha256:a1b2c3d4e5f6..."  // Immutable
+  "definitionHash": "sha256:a1b2c3d4e5f6..."  // Append-only
 }`}</pre>
             <Button
               onClick={() => {
@@ -319,7 +319,7 @@ function combinePair(a: string, b: string): string {
                     riskLevel: 'enum — UNACCEPTABLE | HIGH | LIMITED | MINIMAL',
                     enforcementDate: 'string — ISO date when article becomes enforceable',
                   },
-                  verification: 'SHA-256 hash of concatenated fields ensures predicate immutability',
+                  verification: 'SHA-256 hash of concatenated fields ensures predicate integrity',
                 };
                 const blob = new Blob([JSON.stringify(schema, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
@@ -349,7 +349,7 @@ function combinePair(a: string, b: string): string {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm font-mono text-engine-muted">
-              Anyone can independently verify a hash against the APEX Engine immutable ledger via the public API.
+              Anyone can independently verify a hash against the APEX Engine append-only ledger via the public API.
             </p>
             <div className="space-y-3">
               <div className="p-3 bg-engine-bg rounded border border-engine-border">

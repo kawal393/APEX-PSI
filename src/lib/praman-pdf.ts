@@ -144,7 +144,7 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
 
   setText(doc, MUTED);
   doc.setFontSize(5.5);
-  doc.text("SEALED · ANCHORED · IMMUTABLE", sealCX, sealCY + 31, { align: "center", charSpace: 0.8 });
+  doc.text("SEALED · ANCHORED · TAMPER-EVIDENT", sealCX, sealCY + 31, { align: "center", charSpace: 0.8 });
 
   // === RIGHT META BLOCK ===
   const metaX = 200;

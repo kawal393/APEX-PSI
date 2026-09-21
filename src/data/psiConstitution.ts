@@ -40,7 +40,7 @@ export const FOOTER_CONSTITUTION_LINES = [
   LAYER_LOCK,
   "PSI does not judge truth. It proves existence and integrity. The ledger does not decide. It remembers.",
   "draft-singh-psi — IETF Internet-Draft. Not yet an official standard.",
-  "© 2026 APEX. PSI is open. The Constitution is immutable. The infrastructure evolves.",
+  "© 2026 APEX. PSI is open. The Constitution is fixed. The infrastructure evolves.",
 ];
 
 export interface PsiLaw {

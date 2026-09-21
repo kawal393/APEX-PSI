@@ -83,7 +83,7 @@ const HashVerifier = () => {
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-xs font-mono text-engine-muted">
-          Verify any hash against the immutable ledger — works with commit hashes, leaf hashes, proof hashes, or challenge hashes.
+          Verify any hash against the append-only ledger — works with commit hashes, leaf hashes, proof hashes, or challenge hashes.
         </p>
         <div className="flex gap-2">
           <Input

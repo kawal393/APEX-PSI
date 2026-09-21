@@ -100,7 +100,7 @@ const Explorer = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
         <title>APEX Ledger Explorer — Live Notarization Feed — Apex PSI — Universal Verification Protocol</title>
-        <meta name="description" content="Real-time view of the APEX PSI immutable ledger. Watch cryptographic attestations being anchored in real-time." />
+        <meta name="description" content="Real-time view of the APEX PSI append-only ledger. Watch cryptographic attestations being anchored in real-time." />
       </Helmet>
       <Navbar />
       <div className="pt-20 pb-16">
@@ -117,7 +117,7 @@ const Explorer = () => {
               <span className="text-gold-gradient">Explorer</span>
             </h1>
             <p className="text-muted-foreground max-w-xl mx-auto text-sm mb-6">
-              Every notarization. Every hash. Every signature. Streaming in real-time from the immutable ledger.
+              Every notarization. Every hash. Every signature. Streaming in real-time from the append-only ledger.
             </p>
             <div className="flex flex-wrap justify-center gap-6 mb-8">
               <div className="flex items-center gap-2">

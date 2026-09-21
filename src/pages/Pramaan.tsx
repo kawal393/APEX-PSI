@@ -270,7 +270,7 @@ const Pramaan = () => {
             Pramāṇ · प्रमाण · &quot;Proof&quot;. The Truth Protocol.
           </p>
           <p className="text-base md:text-xl text-muted-foreground max-w-3xl mb-8">
-            After the AI flood, truth and lies floated together. <span className="text-foreground font-semibold">Pramaan is the oil-in-water mechanism</span> — a 2 KB cryptographic receipt that anchors any photo, video, or file to an immutable chain. Re-hash. Compare. Done. Verifiable on any phone, in 30 seconds, with zero accounts.
+            After the AI flood, truth and lies floated together. <span className="text-foreground font-semibold">Pramaan is the oil-in-water mechanism</span> — a 2 KB cryptographic receipt that anchors any photo, video, or file to an append-only chain. Re-hash. Compare. Done. Verifiable on any phone, in 30 seconds, with zero accounts.
           </p>
           <div className="flex flex-wrap gap-3">
             <a href="#seal"><Button variant="hero" size="lg"><Shield className="h-4 w-4 mr-2" /> Seal Your First File</Button></a>
@@ -448,7 +448,7 @@ const Pramaan = () => {
           </span>
         </div>
         <p className="text-muted-foreground mb-6 max-w-3xl">
-          The .praman file is an open, immutable receipt. Mathematically minimal. Politically neutral. Free forever. This is the HTTPS moment for digital truth.
+          The .praman file is an open, tamper-evident receipt. Mathematically minimal. Politically neutral. Free forever. This is the HTTPS moment for digital truth.
         </p>
 
         <Card className="p-6 bg-card/60 border-border mb-6">

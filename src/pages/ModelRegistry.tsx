@@ -100,7 +100,7 @@ export default function ModelRegistry() {
               <span className="text-chrome-gradient">Every Model.</span> <span className="text-gold-gradient">Signed. Searchable.</span>
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              A permissionless registry of AI model cards. Anyone can register — every entry is hybrid-signed and immutable.
+              A permissionless registry of AI model cards. Anyone can register — every entry is hybrid-signed and tamper-evident.
             </p>
           </div>
 

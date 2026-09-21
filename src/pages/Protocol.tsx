@@ -17,7 +17,7 @@ const legalMapping = [
     title: "Record-Keeping (Logging)",
     requirement: "High-risk AI systems must include logging capabilities for automatic recording of events relevant to risk identification.",
     psiSolution: [
-      "Immutable event streaming via SHA-256 hash-chained audit trail",
+      "Append-only event streaming via SHA-256 hash-chained audit trail",
       "RFC 8785 JSON Canonicalization (JCS) ensures deterministic log formatting across all systems",
       "Monotonic sequence counter with gap detection prevents log deletion or tampering",
       "Real-time Merkle tree inclusion proofs for every logged event",
@@ -112,7 +112,7 @@ const proposedChanges = [
     id: "PSI-RFC-001",
     title: "Bitcoin Timestamp Anchoring",
     status: "DRAFT",
-    description: "Anchor every Merkle root to the Bitcoin blockchain via OpenTimestamps for immutable third-party proof of existence.",
+    description: "Anchor every Merkle root to the Bitcoin blockchain via OpenTimestamps for tamper-evident third-party proof of existence.",
   },
   {
     id: "PSI-RFC-002",

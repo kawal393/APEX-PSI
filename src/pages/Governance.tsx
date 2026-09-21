@@ -38,9 +38,9 @@ const layers = [
     points: [
       "Anyone, anywhere can independently verify any proof",
       "No login required — the math is the credential",
-      "Public attestations anchored to the immutable ledger",
+      "Public attestations anchored to the append-only ledger",
       "Consensus emerges from volume, not authority",
-      "Every attestation is itself hashed and immutable",
+      "Every attestation is itself hashed and tamper-evident",
     ],
     status: "LIVE",
   },
@@ -150,7 +150,7 @@ const Governance = () => {
               <Scale className="h-8 w-8 text-gold mx-auto mb-5" />
               <p className="text-foreground/90 text-sm sm:text-base leading-relaxed max-w-xl mx-auto mb-5">
                 True fairness cannot be centralized in a boardroom. It must be mathematically proven and publicly verifiable.
-                The protocol is open. The math is public. The ledger is immutable.
+                The protocol is open. The math is public. The ledger is append-only.
               </p>
               <p className="text-foreground/90 text-sm sm:text-base leading-relaxed max-w-xl mx-auto mb-6">
                 When 100,000 citizens verify a contract with mathematics, no regulator can dispute the result —
@@ -251,7 +251,7 @@ const Governance = () => {
               </h2>
               <p className="text-foreground/80 text-sm sm:text-base leading-relaxed max-w-xl mx-auto mb-8">
                 The protocol is open source. The cryptographic proofs are publicly verifiable.
-                The ledger is immutable and append-only. The attestations are permissionless.
+                The ledger is append-only. The attestations are permissionless.
               </p>
               <div className="rounded-xl border border-gold/20 bg-gold/5 p-8 max-w-lg mx-auto">
                 <p className="text-gold font-black text-xl sm:text-2xl tracking-wide leading-snug">
@@ -283,7 +283,7 @@ const Governance = () => {
                   {[
                     "Human-in-the-loop: The public IS the human oversight layer — unlimited, permissionless, global",
                     "Diversity: Not 5 experts from one boardroom, but thousands of independent verifiers across jurisdictions",
-                    "Non-repudiation: Every attestation is hashed and immutable — verifiers cannot deny their results",
+                    "Non-repudiation: Every attestation is hashed and tamper-evident — verifiers cannot deny their results",
                     "Accountability: Attestation volume creates mathematical consensus, not opinion-based governance",
                     "Timeliness: Verification is instantaneous — no 48-hour wait, no bureaucratic bottleneck",
                   ].map((item, i) => (

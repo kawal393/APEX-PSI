@@ -11,7 +11,7 @@ const critiques = [
       "SHA-256 hashing provides data integrity — proof a file hasn't changed — but it cannot provide data veracity. If a provider inputs a fake report, the math will perfectly notarize that lie.",
     responseTitle: "We Notarize Attestations, Not Truth",
     response:
-      "Exactly like a legal notary. A notary doesn't verify the truthfulness of a document — they verify who signed it, when, and that it hasn't been altered. APEX's PSI Protocol does the same thing cryptographically: it creates an immutable, timestamped, signed record of what was attested. If the attestation is later proven fraudulent, the notarized record becomes evidence against the attester — not a shield for them. The ledger is the courtroom exhibit.",
+      "Exactly like a legal notary. A notary doesn't verify the truthfulness of a document — they verify who signed it, when, and that it hasn't been altered. APEX's PSI Protocol does the same thing cryptographically: it creates a tamper-evident, timestamped, signed record of what was attested. If the attestation is later proven fraudulent, the notarized record becomes evidence against the attester — not a shield for them. The ledger is the courtroom exhibit.",
     sources: [
       { label: "Oracle Problem in Hashing", url: "http://psasir.upm.edu.my/id/eprint/118206/1/118206.pdf" },
       { label: "Data Integrity vs Veracity", url: "http://www.jatit.org/volumes/Vol103No2/1Vol103No2.pdf" },

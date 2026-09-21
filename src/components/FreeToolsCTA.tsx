@@ -7,7 +7,7 @@ const tools = [
   {
     icon: Hash,
     title: "Verify Any Hash",
-    desc: "Independently verify any SHA-256 hash against our immutable ledger. No account needed.",
+    desc: "Independently verify any SHA-256 hash against our append-only ledger. No account needed.",
     cta: "Verify Now",
     href: "/verify",
   },

@@ -26,8 +26,8 @@ const pillars = [
     subtitle: "State Engine",
     headline: "Verified State Mutations",
     description:
-      "Every state change requires verified proof. The immutable commit layer ensures no compliance state can be forged or altered.",
-    features: ["Immutable State Transitions", "Proof-Required Mutations", "Hash-Chained Commits", "Audit-Ready History"],
+      "Every state change requires verified proof. The tamper-evident commit layer ensures no compliance state can be forged or altered.",
+    features: ["Tamper-Evident State Transitions", "Proof-Required Mutations", "Hash-Chained Commits", "Audit-Ready History"],
   },
 ];
 
