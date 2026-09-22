@@ -79,17 +79,31 @@ const GrandHero = () => {
         <ActiveSinceClock />
 
         <div className="mt-7 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link
-            to="/protocol"
+          <a
+            href="#demo"
             className="w-full border border-gold bg-gold px-10 py-4 font-mono text-xs font-bold uppercase tracking-[0.3em] text-background transition-colors hover:bg-transparent hover:text-gold sm:w-auto"
           >
-            The Protocol
+            Watch It Work
+          </a>
+          <Link
+            to="/verify"
+            className="w-full border border-gold/40 px-10 py-4 font-mono text-xs font-bold uppercase tracking-[0.3em] text-gold transition-colors hover:border-gold hover:bg-gold/10 sm:w-auto"
+          >
+            Verify One Yourself
+          </Link>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <Link
+            to="/protocol"
+            className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors hover:text-gold"
+          >
+            Read the Protocol
           </Link>
           <Link
             to="/engine"
-            className="w-full border border-gold/40 px-10 py-4 font-mono text-xs font-bold uppercase tracking-[0.3em] text-gold transition-colors hover:border-gold hover:bg-gold/10 sm:w-auto"
+            className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors hover:text-gold"
           >
-            Straight to the Engine
+            Open the Engine
           </Link>
         </div>
       </div>
@@ -98,3 +112,4 @@ const GrandHero = () => {
 };
 
 export default GrandHero;
+ 

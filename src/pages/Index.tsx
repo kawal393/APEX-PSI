@@ -34,6 +34,7 @@ import WhatItIsAndIsnt from "@/components/WhatItIsAndIsnt";
 import PsiNamespaces from "@/components/PsiNamespaces";
 import EconomicDivide from "@/components/EconomicDivide";
 import ComplementsStandards from "@/components/ComplementsStandards";
+import LiveCaseStudy from "@/components/LiveCaseStudy";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -90,6 +91,7 @@ const Index = () => {
         <GrandHero />
         <CoreDeclaration />
         <Hero />
+        <LiveCaseStudy />
         <HomeSealStrip />
         <p className="-mt-8 mb-4 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           The ledger does not judge. It remembers.
