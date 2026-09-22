@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Shield, AlertTriangle, CheckCircle2, Hash, Clock, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -304,6 +305,17 @@ const LiveCaseStudy = () => {
         <p className="text-xs text-center text-muted-foreground mt-6">
           This is a simulated demonstration. Company, model and patient references are invented. All hashes are generated live in your browser using the Web Crypto API (SHA-256). Counters reflect only this browser session.
         </p>
+        <div className="mt-7 flex flex-col items-center gap-2">
+          <Link
+            to="/pramaan"
+            className="inline-flex items-center gap-2 rounded-md border border-gold bg-gold px-8 py-3 font-mono text-xs font-bold uppercase tracking-[0.2em] text-background transition-colors hover:bg-transparent hover:text-gold"
+          >
+            Do It Yourself — Seal Your Own File →
+          </Link>
+          <p className="text-[11px] text-muted-foreground">
+            Free · runs in your browser · no account · the file never leaves your device
+          </p>
+        </div>
       </div>
     </section>
   );
