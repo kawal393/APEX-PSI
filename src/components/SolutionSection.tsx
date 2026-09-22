@@ -16,7 +16,7 @@ const features = [
   {
     icon: Link2,
     title: "Tamper-evident Audit Trail",
-    desc: "Every AI decision logged cryptographically with SHA-256 hash chains. Tamper-proof, regulator-readable, IP-preserving.",
+    desc: "Every AI decision logged cryptographically with SHA-256 hash chains. Tamper-evident, regulator-readable, IP-preserving.",
   },
   {
     icon: ClipboardList,

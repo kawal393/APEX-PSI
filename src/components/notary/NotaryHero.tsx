@@ -36,7 +36,7 @@ const NotaryHero = () => {
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base sm:text-lg mb-8">
             One API call. SHA-256 hashed. Ed25519 signed. Merkle-anchored.
-            A tamper-proof receipt for every AI decision your system makes —
+            A tamper-evident receipt for every AI decision your system makes —
             satisfying EU AI Act Articles 12, 13 & 14.
           </p>
 

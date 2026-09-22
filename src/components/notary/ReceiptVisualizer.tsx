@@ -10,7 +10,7 @@ const steps = [
   { icon: Shield, label: "Merkle Anchored", desc: "Leaf inserted into global binary Merkle tree", color: "text-primary" },
   { icon: Key, label: "Ed25519 Signed", desc: "Merkle leaf signed with the issuer key (RFC 8032)", color: "text-gold" },
   { icon: Clock, label: "Timestamped", desc: "ISO-8601 timestamp + monotonic sequence counter", color: "text-primary" },
-  { icon: CheckCircle2, label: "Receipt Issued", desc: "Tamper-proof receipt with verify URL returned", color: "text-compliant" },
+  { icon: CheckCircle2, label: "Receipt Issued", desc: "Tamper-evident receipt with verify URL returned", color: "text-compliant" },
 ];
 
 const ReceiptVisualizer = () => {

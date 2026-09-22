@@ -144,7 +144,7 @@ const Hero = () => {
           </div>
 
           <p className="mt-8 text-[10px] sm:text-xs font-mono tracking-[0.25em] uppercase text-muted-foreground/70">
-            The standard exists. The receipts are permanent.
+            The standard exists. The receipts are tamper-evident.
           </p>
         </motion.div>
       </div>

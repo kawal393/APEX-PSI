@@ -91,7 +91,7 @@ const Architecture = () => {
             <div className="p-3 border border-engine-approved/20 bg-engine-approved/5 rounded">
               <p className="text-xs text-engine-approved">
                 <strong>Result:</strong> a large cost reduction over always-on ZK proofs while maintaining
-                mathematical compliance guarantees through SHA-256 Merkle tree inclusion proofs.
+                mathematical integrity guarantees through SHA-256 Merkle tree inclusion proofs.
               </p>
             </div>
           </CardContent>

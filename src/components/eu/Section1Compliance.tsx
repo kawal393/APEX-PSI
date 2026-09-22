@@ -109,7 +109,7 @@ const Section1Compliance = () => (
     </div>
 
     <div className="space-y-5">
-      <SectionShell letter="A" title="In-Band Signed Tamperproof Metadata" icon={FileSignature}>
+      <SectionShell letter="A" title="In-Band Signed Tamper-Evident Metadata" icon={FileSignature}>
         <p className="text-sm text-foreground/80 mb-4">
           APEX PSI embeds cryptographically signed metadata directly inside content files. The signature travels
           <span className="text-gold font-semibold"> with the file</span> — not as a separate receipt.

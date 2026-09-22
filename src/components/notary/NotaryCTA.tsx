@@ -25,7 +25,7 @@ const NotaryCTA = () => (
           <span className="text-gold-gradient">One API Call.</span>
         </h2>
         <p className="text-muted-foreground max-w-xl mx-auto mb-8 text-sm">
-          SHA-256 hashed. Ed25519 signed. Merkle-anchored. Get a tamper-proof receipt
+          SHA-256 hashed. Ed25519 signed. Merkle-anchored. Get a tamper-evident receipt
           for every AI decision — satisfying EU AI Act record-keeping requirements.
           Free tier: 100 receipts/day.
         </p>

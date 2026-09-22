@@ -15,10 +15,10 @@ const pillars = [
     icon: Eye,
     title: "CONTEXT ORACLE",
     subtitle: "ZK-Oracle",
-    headline: "Tamper-Proof Data Feeds",
+    headline: "Tamper-Evident Data Feeds",
     description:
-      "Provides verified, tamper-proof contextual data to the compliance engine. Every input is cryptographically attested.",
-    features: ["Cryptographic Attestation", "Tamper-Proof Data Feeds", "Real-Time Context Verification", "Zero-Knowledge Compatible"],
+      "Provides verified, tamper-evident contextual data to the compliance engine. Every input is cryptographically attested.",
+    features: ["Cryptographic Attestation", "Tamper-Evident Data Feeds", "Real-Time Context Verification", "Zero-Knowledge Compatible"],
   },
   {
     icon: Layers,
