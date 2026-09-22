@@ -85,12 +85,12 @@ const GrandHero = () => {
           >
             Watch It Work
           </a>
-          <Link
-            to="/verify"
+          <a
+            href="#seal"
             className="w-full border border-gold/40 px-10 py-4 font-mono text-xs font-bold uppercase tracking-[0.3em] text-gold transition-colors hover:border-gold hover:bg-gold/10 sm:w-auto"
           >
-            Verify One Yourself
-          </Link>
+            Do It Yourself
+          </a>
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           <Link

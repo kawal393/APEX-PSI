@@ -35,6 +35,7 @@ import PsiNamespaces from "@/components/PsiNamespaces";
 import EconomicDivide from "@/components/EconomicDivide";
 import ComplementsStandards from "@/components/ComplementsStandards";
 import LiveCaseStudy from "@/components/LiveCaseStudy";
+import InstantSeal from "@/components/InstantSeal";
 import { Helmet } from "react-helmet-async";
 
 const Index = () => {
@@ -89,6 +90,7 @@ const Index = () => {
         <Navbar />
         <div id="top" />
         <GrandHero />
+        <InstantSeal />
         <CoreDeclaration />
         <Hero />
         <LiveCaseStudy />
