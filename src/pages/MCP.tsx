@@ -25,33 +25,39 @@ const Code = ({ children }: { children: React.ReactNode }) => (
 const TOOLS = [
   {
     name: "seal",
-    desc: "SHA-256 + Ed25519 + post-quantum LMS receipt for any content.",
-    linkLabel: "Verify receipts",
-    to: "/verify",
+    desc: "Mint a SHA-256 + Ed25519 + post-quantum LMS receipt for any action or decision.",
+    linkLabel: "Read the protocol",
+    to: "/protocol",
   },
   {
-    name: "verify",
+    name: "verify_hash",
     desc: "Check any hash against the append-only ledger.",
     linkLabel: "Open verifier",
     to: "/verify",
   },
   {
-    name: "anchor",
-    desc: "Bitcoin anchoring via OpenTimestamps.",
-    linkLabel: "Read the protocol",
-    to: "/protocol",
-  },
-  {
-    name: "cite",
-    desc: "APA / MLA / BibTeX citation of a receipt.",
-    linkLabel: "Citation formats",
-    to: "/cite",
-  },
-  {
-    name: "audit",
-    desc: "Verify a batch of receipts and report chain integrity.",
+    name: "anchor_status",
+    desc: "Report whether a receipt's Merkle root is committed to Bitcoin.",
     linkLabel: "Ledger explorer",
     to: "/explorer",
+  },
+  {
+    name: "list_attestations",
+    desc: "Browse the most recent ledger attestations, newest first.",
+    linkLabel: "Ledger explorer",
+    to: "/explorer",
+  },
+  {
+    name: "ledger_stats",
+    desc: "A quick integrity snapshot of the public ledger.",
+    linkLabel: "Open verifier",
+    to: "/verify",
+  },
+  {
+    name: "protocol_info",
+    desc: "Canonicalization, signature suites, IETF drafts and anchoring reference.",
+    linkLabel: "Read the protocol",
+    to: "/protocol",
   },
 ];
 
@@ -68,7 +74,7 @@ const MCP = () => (
       <title>Apex PSI MCP Server — Official Model Context Protocol integration — Apex PSI — Universal Verification Protocol</title>
       <meta
         name="description"
-        content="Install APEX PSI as an MCP server: seal, verify, anchor, cite, audit. Published on npm and the official MCP Registry."
+        content="Install APEX PSI as an MCP server: seal, verify, report Bitcoin anchor status, browse the ledger. Published on npm and the official MCP Registry."
       />
     </Helmet>
     <Navbar />
@@ -84,7 +90,8 @@ const MCP = () => (
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mb-6">
           APEX PSI is now an official MCP server. Any MCP-compatible agent — Claude, Cursor, Cline, or
-          your own — can seal, verify, anchor, cite, and audit against our live ledger.
+          your own — can seal an action, verify a hash, and read its Bitcoin anchoring status against
+          our live ledger.
         </p>
         <div className="flex flex-wrap gap-3 mb-6">
           <a
@@ -107,7 +114,7 @@ const MCP = () => (
         <div className="flex flex-wrap gap-2 font-mono">
           <Badge variant="outline">apex-psi-mcp v1.0.1 · npm</Badge>
           <Badge variant="outline">io.github.kawal393/apex-psi-mcp — ACTIVE</Badge>
-          <Badge variant="outline">Free: 20 seals/min · 100/day · no account</Badge>
+          <Badge variant="outline">Free tier: 20 seals/min · 100/day</Badge>
         </div>
       </header>
 
@@ -141,7 +148,7 @@ const MCP = () => (
       </section>
 
       <section className="mb-14">
-        <h2 className="text-2xl font-bold mb-4">2 · The five tools</h2>
+        <h2 className="text-2xl font-bold mb-4">2 · The tools</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {TOOLS.map((tool) => (
             <Card key={tool.name + tool.to}>
