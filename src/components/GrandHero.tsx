@@ -78,19 +78,24 @@ const GrandHero = () => {
 
         <ActiveSinceClock />
 
-        <div className="mt-7 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <a
-            href="#demo"
-            className="w-full border border-gold bg-gold px-10 py-4 font-mono text-xs font-bold uppercase tracking-[0.3em] text-background transition-colors hover:bg-transparent hover:text-gold sm:w-auto"
-          >
-            Watch It Work
-          </a>
-          <a
-            href="#seal"
-            className="w-full border border-gold/40 px-10 py-4 font-mono text-xs font-bold uppercase tracking-[0.3em] text-gold transition-colors hover:border-gold hover:bg-gold/10 sm:w-auto"
-          >
-            Do It Yourself
-          </a>
+        <p className="mx-auto mt-6 max-w-2xl text-base text-foreground/85 md:text-lg">
+          Put proof on anything. Anyone can check it — no account, no login.
+        </p>
+        <div className="mx-auto mt-6 grid max-w-4xl gap-4 sm:grid-cols-3">
+          {[
+            { to: "/verify", t: "Check something", s: "Paste a code, see the proof", solid: true },
+            { to: "/seal", t: "Make a receipt", s: "Free — takes 10 seconds" },
+            { to: "/mandate", t: "Ask before you act", s: "A receipt an AI signs before it does something" },
+          ].map((b) => (
+            <Link
+              key={b.to}
+              to={b.to}
+              className={`flex flex-col items-center gap-2 border px-6 py-5 transition-colors ${b.solid ? "border-gold bg-gold text-background hover:bg-transparent hover:text-gold" : "border-gold/40 text-gold hover:border-gold hover:bg-gold/10"}`}
+            >
+              <span className="font-mono text-xs font-bold uppercase tracking-[0.25em]">{b.t}</span>
+              <span className={`text-xs ${b.solid ? "" : "text-muted-foreground"}`}>{b.s}</span>
+            </Link>
+          ))}
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           <Link

@@ -10,32 +10,34 @@ import ThemeToggle from "@/components/ThemeToggle";
 import PWAInstallButton from "@/components/PWAInstallButton";
 import apexLogo from "@/assets/apex-logo.png";
 
-const referenceLinks = [
-  { label: "The Reference", href: "/reference", icon: BookOpen, desc: "Public reference for machine-governance records" },
-  { label: "Declaration", href: "/declaration", icon: ScrollText, desc: "The Recomputation Declaration" },
-  { label: "Genesis Zero", href: "/genesis", icon: Hash, desc: "Reference Implementation v1.0, sealed" },
-  { label: "Case 001 — The Worker", href: "/case-001", icon: FileText, desc: "Live record" },
-  { label: "Case 002 — The Money", href: "/case-002", icon: FileText, desc: "Reserved" },
-  { label: "Case 003 — The Regulator", href: "/case-003", icon: FileText, desc: "Reserved" },
-];
-
-const infraLinks = [
-  { label: "HTTP Header Standard", href: "/standard", icon: ScrollText, desc: "draft-singh-psi-http (not yet filed)" },
-  { label: "Live Header Inspector", href: "/header", icon: Hash, desc: "Verify any AI endpoint" },
-  { label: "PSI Foundation", href: "/foundation", icon: Shield, desc: "Governance · in formation" },
-  { label: "Open Source", href: "https://github.com/kawal393/APEX-PSI", icon: GitBranch, desc: "Full protocol on GitHub", external: true },
-  { label: "Verified Registry", href: "/registry", icon: Shield, desc: "Public verified entity ledger" },
-  { label: "Verify Hash", href: "/verify", icon: Hash, desc: "Public SHA-256 verification" },
-  { label: "The Referee", href: "/verify-any", icon: Shield, desc: "Cross-standard seal reader" },
-  { label: "Living Impact Wall", href: "/impact", icon: Globe, desc: "Public testimony, sealed to the ledger" },
-  { label: "FWC 20 Oct", href: "/fwc", icon: FileText, desc: "AI filing verification, Australia" },
-  { label: "Regulation Map", href: "/regulations", icon: Globe, desc: "AI laws in 25+ countries" },
-  { label: "Free Score", href: "/assess", icon: Shield, desc: "Compliance in 2 minutes" },
-  { label: "Trust Badge", href: "/badge", icon: Award, desc: "Embeddable PSI badge" },
-  { label: "Standards Map", href: "/standards", icon: ScrollText, desc: "NIST / ISO / CISA mapping" },
-  { label: "Submission Kit", href: "/submission-kit", icon: FileText, desc: "CEN-CENELEC regulatory package" },
-  { label: "SDK", href: "/sdk", icon: Code, desc: "Developer integration" },
-  { label: "Architecture", href: "/architecture", icon: Layers, desc: "Technical deep-dive" },
+type MoreLink = { label: string; href: string; external?: boolean };
+const moreGroups: { title: string; links: MoreLink[] }[] = [
+  { title: "Technology", links: [
+    { label: "Architecture", href: "/architecture" }, { label: "SDK", href: "/sdk" }, { label: "API", href: "/api" },
+    { label: "MCP", href: "/mcp" }, { label: "Post-Quantum", href: "/quantum" }, { label: "Lattice", href: "/lattice" },
+    { label: "Robustness", href: "/robustness" }, { label: "In-Band", href: "/inband" }, { label: "Hardening", href: "/hardening" },
+    { label: "Engine", href: "/engine" }, { label: "Open Source", href: "https://github.com/kawal393/APEX-PSI", external: true },
+  ]},
+  { title: "Compliance", links: [
+    { label: "EU AI Act", href: "/eu-ai-act" }, { label: "EU Code", href: "/eu-code" }, { label: "Regulations", href: "/regulations" },
+    { label: "Standards", href: "/standards" }, { label: "PSI-05", href: "/standards/psi-05" }, { label: "Portfolio", href: "/portfolio" },
+  ]},
+  { title: "Evidence", links: [
+    { label: "Live Ledger", href: "/live" }, { label: "Registry", href: "/registry" }, { label: "Genesis", href: "/genesis" },
+    { label: "Reference", href: "/reference" }, { label: "Declaration", href: "/declaration" },
+    { label: "Case 001", href: "/case-001" }, { label: "Case 002", href: "/case-002" }, { label: "Case 003", href: "/case-003" },
+    { label: "Challenge", href: "/challenge" }, { label: "Impact", href: "/impact" }, { label: "Witness Wall", href: "/witness-wall" },
+    { label: "Timeline", href: "/timeline" }, { label: "Explorer", href: "/explorer" },
+  ]},
+  { title: "About", links: [
+    { label: "Ecosystem", href: "/ecosystem" }, { label: "Governance", href: "/governance" }, { label: "Foundation", href: "/foundation" },
+    { label: "Founding Members", href: "/founding" }, { label: "Articles", href: "/articles" }, { label: "Partners", href: "/partners" },
+    { label: "Regulator", href: "/regulator" }, { label: "Cite", href: "/cite" },
+  ]},
+  { title: "Legal", links: [
+    { label: "Privacy", href: "/privacy" }, { label: "Terms", href: "/terms" }, { label: "Cookies", href: "/cookies" },
+    { label: "Disclaimers", href: "/disclaimers" }, { label: "Corrections", href: "/corrections" },
+  ]},
 ];
 
 const Navbar = () => {
@@ -58,30 +60,11 @@ const Navbar = () => {
   }, [user]);
 
 const navLinks = [
-    { label: "Declaration", href: "/declaration", isRoute: true },
-    { label: "Impact Wall", href: "/impact", isRoute: true },
-    { label: "Timeline", href: "/timeline", isRoute: true },
-    { label: "Reference", href: "/reference", isRoute: true },
-    { label: "Founding Members", href: "/founding", isRoute: true },
-    { label: "Products", href: "/products", isRoute: true },
-
-    { label: "Overview", href: "/home", isRoute: true },
-    { label: "Engine", href: "/engine", isRoute: true },
-    { label: "Notary", href: "/notary", isRoute: true },
-    { label: "Explorer", href: "/explorer", isRoute: true },
-    { label: "Live", href: "/live", isRoute: true },
     { label: "Verify", href: "/verify", isRoute: true },
-    { label: "The Referee", href: "/verify-any", isRoute: true },
-    { label: "Universal Ledger", href: "/ledger", isRoute: true },
-    { label: "Hello PSI", href: "/hello-psi", isRoute: true },
-    { label: "Enforcement Watch", href: "/enforcement-watch", isRoute: true },
-    { label: "Sealed Memory", href: "/sealed-memory", isRoute: true },
-    { label: "Evidence", href: "/governance", isRoute: true },
-    { label: "Registry", href: "/registry", isRoute: true },
-    { label: "Protocol", href: "/protocol", isRoute: true },
-    { label: "MCP", href: "/mcp", isRoute: true },
-    { label: "ROBUSTNESS", href: "/robustness", isRoute: true },
-    { label: "Disclaimers", href: "/disclaimers", isRoute: true },
+    { label: "Get a Receipt", href: "/seal", isRoute: true },
+    { label: "Authorize", href: "/mandate", isRoute: true },
+    { label: "The Standard", href: "/protocol", isRoute: true },
+    { label: "Pricing", href: "/products", isRoute: true },
   ];
 
   // The tab strip scrolls. Without an affordance it hid 17 of 23 doors behind an
@@ -204,75 +187,34 @@ const navLinks = [
               )
             )}
 
-            {/* The Reference Dropdown */}
+            {/* More library */}
             <div ref={refRef} className="relative">
               <button
                 onClick={() => setRefOpen(!refOpen)}
-                className="px-1.5 py-1.5 text-[11px] text-muted-foreground hover:text-primary rounded-md hover:bg-muted/50 transition-colors bg-transparent border-none cursor-pointer whitespace-nowrap flex items-center gap-1"
+                aria-expanded={refOpen}
+                className="px-2 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-primary rounded-md hover:bg-muted/50 transition-colors bg-transparent border-none cursor-pointer whitespace-nowrap flex items-center gap-1"
               >
-                The Reference
+                More
                 <ChevronDown className={`h-3 w-3 transition-transform ${refOpen ? "rotate-180" : ""}`} />
               </button>
               {refOpen && (
-                <div className="absolute top-full left-0 mt-1 w-72 rounded-lg border border-border bg-background/95 backdrop-blur-xl shadow-xl py-2 z-50">
-                  {referenceLinks.map((tool) => (
-                    <button
-                      key={tool.label}
-                      onClick={() => handleNavClick(tool.href, true)}
-                      className="w-full text-left px-3 py-2.5 flex items-start gap-3 hover:bg-muted/50 transition-colors bg-transparent border-none cursor-pointer group"
-                    >
-                      <tool.icon className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{tool.label}</p>
-                        <p className="text-[11px] text-muted-foreground">{tool.desc}</p>
-                      </div>
-                    </button>
+                <div className="fixed left-1/2 top-16 z-50 mt-1 w-[min(90vw,56rem)] -translate-x-1/2 rounded-lg border border-border bg-background shadow-xl p-6 grid grid-cols-2 md:grid-cols-5 gap-6">
+                  {moreGroups.map((g) => (
+                    <div key={g.title}>
+                      <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-widest text-primary">{g.title}</p>
+                      <ul className="space-y-1">
+                        {g.links.map((l) => (
+                          <li key={l.href}>
+                            {l.external ? (
+                              <a href={l.href} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary">{l.label}</a>
+                            ) : (
+                              <button onClick={() => handleNavClick(l.href, true)} className="text-left text-sm text-muted-foreground hover:text-primary bg-transparent border-none cursor-pointer p-0">{l.label}</button>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
-                </div>
-              )}
-            </div>
-
-            {/* Infrastructure Dropdown */}
-            <div ref={infraRef} className="relative">
-              <button
-                onClick={() => setInfraOpen(!infraOpen)}
-                className="px-1.5 py-1.5 text-[11px] text-muted-foreground hover:text-primary rounded-md hover:bg-muted/50 transition-colors bg-transparent border-none cursor-pointer whitespace-nowrap flex items-center gap-1"
-              >
-                Infra
-                <ChevronDown className={`h-3 w-3 transition-transform ${infraOpen ? "rotate-180" : ""}`} />
-              </button>
-              {infraOpen && (
-                <div className="absolute top-full left-0 mt-1 w-64 rounded-lg border border-border bg-background/95 backdrop-blur-xl shadow-xl py-2 z-50">
-                  {infraLinks.map((tool) =>
-                    (tool as any).external ? (
-                      <a
-                        key={tool.label}
-                        href={tool.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setInfraOpen(false)}
-                        className="w-full text-left px-3 py-2.5 flex items-start gap-3 hover:bg-muted/50 transition-colors cursor-pointer group"
-                      >
-                        <tool.icon className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                        <div>
-                          <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors flex items-center gap-1">{tool.label} <ExternalLink className="h-3 w-3" /></p>
-                          <p className="text-[11px] text-muted-foreground">{tool.desc}</p>
-                        </div>
-                      </a>
-                    ) : (
-                      <button
-                        key={tool.label}
-                        onClick={() => handleNavClick(tool.href, true)}
-                        className="w-full text-left px-3 py-2.5 flex items-start gap-3 hover:bg-muted/50 transition-colors bg-transparent border-none cursor-pointer group"
-                      >
-                        <tool.icon className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                        <div>
-                          <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{tool.label}</p>
-                          <p className="text-[11px] text-muted-foreground">{tool.desc}</p>
-                        </div>
-                      </button>
-                    )
-                  )}
                 </div>
               )}
             </div>
@@ -416,47 +358,20 @@ const navLinks = [
                 </button>
               )
             )}
-            <div className="pt-2 pb-1">
-              <p className="px-3 text-[10px] font-bold text-primary uppercase tracking-widest mb-1">The Reference</p>
-            </div>
-            {referenceLinks.map((tool) => (
-              <button
-                key={tool.label}
-                onClick={() => handleNavClick(tool.href, true)}
-                className="w-full text-left px-3 py-2.5 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-md transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
-              >
-                <tool.icon className="h-3.5 w-3.5 text-primary" />
-                {tool.label}
-              </button>
+            {moreGroups.map((g) => (
+              <div key={g.title} className="pt-3">
+                <p className="px-3 text-[10px] font-bold text-primary uppercase tracking-widest mb-1">{g.title}</p>
+                <div className="grid grid-cols-2">
+                  {g.links.map((l) =>
+                    l.external ? (
+                      <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)} className="px-3 py-2 text-sm text-muted-foreground hover:text-primary">{l.label}</a>
+                    ) : (
+                      <button key={l.href} onClick={() => handleNavClick(l.href, true)} className="text-left px-3 py-2 text-sm text-muted-foreground hover:text-primary bg-transparent border-none cursor-pointer">{l.label}</button>
+                    )
+                  )}
+                </div>
+              </div>
             ))}
-            <div className="pt-2 pb-1">
-              <p className="px-3 text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Infrastructure</p>
-            </div>
-            {infraLinks.map((tool) =>
-              (tool as any).external ? (
-                <a
-                  key={tool.label}
-                  href={tool.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setOpen(false)}
-                  className="w-full text-left px-3 py-2.5 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-md transition-colors flex items-center gap-2"
-                >
-                  <tool.icon className="h-3.5 w-3.5 text-primary" />
-                  {tool.label}
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              ) : (
-                <button
-                  key={tool.label}
-                  onClick={() => handleNavClick(tool.href, true)}
-                  className="w-full text-left px-3 py-2.5 text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-md transition-colors bg-transparent border-none cursor-pointer flex items-center gap-2"
-                >
-                  <tool.icon className="h-3.5 w-3.5 text-primary" />
-                  {tool.label}
-                </button>
-              )
-            )}
             <div className="pt-3 border-t border-border/50 space-y-2">
               {user ? (
                 <Button variant="heroOutline" size="sm" className="w-full justify-center" onClick={() => { setOpen(false); navigate("/dashboard"); }}>
