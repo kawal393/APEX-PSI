@@ -1,0 +1,36 @@
+[
+  {
+    "canonical": "{\"a\":{\"x\":3,\"y\":2},\"b\":1,\"c\":[1,2,3]}",
+    "input": {
+      "a": {
+        "x": 3,
+        "y": 2
+      },
+      "b": 1,
+      "c": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "canonical": "{\"a\":\"world\",\"m\":[true,false,null,42],\"z\":\"hello\"}",
+    "input": {
+      "a": "world",
+      "m": [
+        true,
+        false,
+        null,
+        42
+      ],
+      "z": "hello"
+    }
+  },
+  {
+    "canonical": "{\"only\":\"one\"}",
+    "input": {
+      "only": "one"
+    }
+  }
+]

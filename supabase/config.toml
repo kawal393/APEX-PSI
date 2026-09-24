@@ -139,3 +139,9 @@ verify_jwt = false
 
 [functions.ledger-stats]
 verify_jwt = false
+
+[functions.authorize]
+verify_jwt = false
+
+[functions.verify-action]
+verify_jwt = false
