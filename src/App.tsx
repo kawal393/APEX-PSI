@@ -10,6 +10,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import CryptoCheckout from "./pages/CryptoCheckout";
+import Upgrade from "./pages/Upgrade";
 
 import NotFound from "./pages/NotFound";
 import OAuthConsent from "./pages/OAuthConsent";
@@ -139,6 +140,7 @@ const App = () => (
               <Route path="/products" element={<Products />} />
               <Route path="/crypto" element={<CryptoCheckout />} />
               <Route path="/crypto/:ref" element={<CryptoCheckout />} />
+              <Route path="/upgrade" element={<Upgrade />} />
 
               <Route path="/integrations" element={<Integrations />} />
               <Route path="/ledger" element={<UniversalLedger />} />

@@ -128,6 +128,7 @@ Deno.serve(async (req) => {
         .from("notary_api_keys")
         .select("*")
         .eq("api_key_hash", keyHash)
+        .eq("revoked", false)
         .single();
       if (keyData) {
         tier = keyData.tier;
@@ -138,8 +139,22 @@ Deno.serve(async (req) => {
         if (now.toDateString() !== lastReset.toDateString()) {
           await supabase.from("notary_api_keys").update({ daily_used: 1, last_reset: now.toISOString() }).eq("id", keyData.id);
         } else if (keyData.daily_used >= dailyLimit && dailyLimit !== -1) {
-          return new Response(JSON.stringify({ error: "Daily limit exceeded", tier, limit: dailyLimit }), {
-            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" }
+          // Quiet metered door: a capped machine is told where to raise its own
+          // limit. No human, no email. The public site still shows no price.
+          return new Response(JSON.stringify({
+            error: "Daily limit exceeded",
+            tier,
+            limit: dailyLimit,
+            remaining: 0,
+            upgrade_url: `${Deno.env.get("SITE_URL") ?? "https://ai-governance-standard.com"}/upgrade`,
+          }), {
+            status: 429, headers: {
+              ...corsHeaders,
+              "Content-Type": "application/json",
+              "X-RateLimit-Limit": String(dailyLimit),
+              "X-RateLimit-Remaining": "0",
+              "Retry-After": String(Math.max(1, Math.ceil((function () { const n = new Date(); const m = new Date(n); m.setHours(24, 0, 0, 0); return (m.getTime() - n.getTime()) / 1000; }())))),
+            }
           });
         } else {
           await supabase.from("notary_api_keys").update({ daily_used: keyData.daily_used + 1 }).eq("id", keyData.id);
