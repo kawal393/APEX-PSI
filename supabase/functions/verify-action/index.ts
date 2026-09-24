@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
       .or(`commit_id.eq.${data.anchor_commit_id ?? data.receipt_id},target_hash.eq.${data.merkle_root ?? ""}`)
       .order("created_at", { ascending: false }).limit(1).maybeSingle();
 
-    const functionsBase = (Deno.env.get("SUPABASE_URL") ?? "").replace(".supabase.co", ".functions.supabase.co");
+    const functionsBase = `${supabaseUrl}/functions/v1`;
 
     return new Response(JSON.stringify({
       allowed,

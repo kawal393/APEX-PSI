@@ -17,6 +17,7 @@ import {
   randomReceiptId,
   canonicalActionPayload,
   recomputeLeaf,
+  merkleRootHex,
   isKnownAction,
   ACTION_TYPES,
   PSI_ACT_SCHEMA_ID,
@@ -130,24 +131,16 @@ Deno.serve(async (req) => {
 
     const { commitHash, merkleLeaf } = await recomputeLeaf(canonical, receiptId);
 
-    // Rolling Merkle root over recent action receipts (self-contained tree).
+    // Rolling Merkle root over recent action receipts (self-contained tree),
+    // conforming to PSI-SEAL/1 R8 (raw-byte parents, odd node promoted).
     let merkleRoot: string;
     try {
       const { data: recent } = await supabase.from("notary_action_receipts")
         .select("merkle_leaf_hash").order("created_at", { ascending: false }).limit(255);
-      const leaves = [merkleLeaf, ...(recent?.map((r) => r.merkle_leaf_hash) || [])];
-      let level = [...leaves];
-      while (level.length > 1) {
-        const next: string[] = [];
-        for (let i = 0; i < level.length; i += 2) {
-          const right = i + 1 < level.length ? level[i + 1] : level[i];
-          next.push(await sha256Hex(`${level[i]}|${right}`));
-        }
-        level = next;
-      }
-      merkleRoot = level[0];
+      const leaves = [merkleLeaf, ...(recent?.map((r: { merkle_leaf_hash: string }) => r.merkle_leaf_hash) || [])];
+      merkleRoot = await merkleRootHex(leaves);
     } catch {
-      merkleRoot = await sha256Hex(`${merkleLeaf}|${issuedAt}`);
+      merkleRoot = merkleLeaf;
     }
 
     const signature = await signEd25519(merkleLeaf, supabaseKey);

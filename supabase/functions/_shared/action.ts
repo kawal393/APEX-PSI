@@ -116,7 +116,8 @@ export function stableStringify(v: unknown): unknown {
 /**
  * Recompute the seal chain from the stored canonical payload + receipt_id.
  * Used by BOTH the issuer and the gate so they agree on what was signed.
- * commit = SHA-256(canonical_payload); leaf = SHA-256(receipt_id || '|' || commit).
+ * commit = SHA-256(PSI-MANCHOR/v1: || canonical_payload)
+ * leaf   = SHA-256(PSI-MERKLE/v1: || receipt_id || '|' || commit)
  * The Ed25519 + LMS signatures are taken over `leaf`.
  */
 export async function recomputeLeaf(
@@ -126,6 +127,44 @@ export async function recomputeLeaf(
   const commitHash = await sha256Hex(`${PSI_MANCHOR_DOMAIN}${canonicalPayload}`);
   const merkleLeaf = await sha256Hex(`${PSI_MERKLE_DOMAIN}${receiptId}|${commitHash}`);
   return { commitHash, merkleLeaf };
+}
+
+/**
+ * Merkle root over an ordered list of hex leaf digests, conforming to the
+ * frozen PSI-SEAL/1 rule R8 (see psi-schema.ts + psi-conformance): parent =
+ * SHA-256(left_bytes || right_bytes) over the RAW 32-byte digests, and an odd
+ * trailing node is PROMOTED (carried up), never duplicated or re-hashed.
+ */
+export async function merkleRootHex(leaves: string[]): Promise<string> {
+  if (leaves.length === 0) throw new Error("merkle: at least one leaf required");
+  const toBytes = (h: string): Uint8Array => {
+    const clean = h.replace(/^sha256:/i, "").toLowerCase();
+    const b = new Uint8Array(clean.length / 2);
+    for (let i = 0; i < b.length; i++) b[i] = parseInt(clean.substring(i * 2, i * 2 + 2), 16);
+    return b;
+  };
+  const fromBytes = (b: Uint8Array): string =>
+    Array.from(b).map((x) => x.toString(16).padStart(2, "0")).join("");
+  const shaRaw = async (bytes: Uint8Array): Promise<Uint8Array> => {
+    const d = await crypto.subtle.digest("SHA-256", bytes as unknown as ArrayBuffer);
+    return new Uint8Array(d);
+  };
+  let level = leaves.map(toBytes);
+  while (level.length > 1) {
+    const next: Uint8Array[] = [];
+    for (let i = 0; i < level.length; i += 2) {
+      if (i + 1 === level.length) {
+        next.push(level[i]); // odd node promoted
+      } else {
+        const merged = new Uint8Array(64);
+        merged.set(level[i], 0);
+        merged.set(level[i + 1], 32);
+        next.push(await shaRaw(merged));
+      }
+    }
+    level = next;
+  }
+  return fromBytes(level[0]);
 }
 
 /** Counterparty-facing helper (MIT): decide from a verify-action response. */
