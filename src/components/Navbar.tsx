@@ -198,7 +198,7 @@ const navLinks = [
                 <ChevronDown className={`h-3 w-3 transition-transform ${refOpen ? "rotate-180" : ""}`} />
               </button>
               {refOpen && (
-                <div className="fixed left-1/2 top-16 z-50 mt-1 w-[min(90vw,56rem)] -translate-x-1/2 rounded-lg border border-border bg-background/98 backdrop-blur-xl shadow-xl p-6 grid grid-cols-2 md:grid-cols-5 gap-6">
+                <div className="fixed left-1/2 top-16 z-50 mt-1 w-[min(90vw,56rem)] -translate-x-1/2 rounded-lg border border-border bg-background shadow-xl p-6 grid grid-cols-2 md:grid-cols-5 gap-6">
                   {moreGroups.map((g) => (
                     <div key={g.title}>
                       <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-widest text-primary">{g.title}</p>
