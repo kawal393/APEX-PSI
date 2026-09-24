@@ -12,10 +12,51 @@
   "mcp": {
     "server": {
       "name": "apex-psi",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "title": "APEX PSI"
     },
     "tools": [
+      {
+        "name": "seal",
+        "title": "Seal a decision to the APEX PSI ledger",
+        "description": "Mint a post-quantum verifiable receipt for a machine action or decision. Canonicalises the payload, signs it (SHA-256 + Ed25519 + LMS-W4-SHA256), records it in the append-only ledger, and returns a receipt id that any agent can later re-check with verify_hash. This is the write half of the trust handshake.",
+        "annotations": {
+          "readOnlyHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "decision": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 10000,
+              "description": "The action or decision text to seal — what the machine did."
+            },
+            "model_id": {
+              "description": "Optional identifier of the model or agent that produced the decision.",
+              "type": "string",
+              "maxLength": 200
+            },
+            "context": {
+              "description": "Optional description of the decision environment.",
+              "type": "string",
+              "maxLength": 2000
+            },
+            "predicate": {
+              "description": "Optional predicate id, e.g. EU_ART_50. Defaults to EU_ART_12.",
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "decision"
+          ]
+        },
+        "outputSchema": null
+      },
       {
         "name": "verify_hash",
         "title": "Verify a hash against the APEX PSI ledger",
@@ -37,6 +78,30 @@
           },
           "required": [
             "hash"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "anchor_status",
+        "title": "Bitcoin anchoring status of a sealed receipt",
+        "description": "Report the OpenTimestamps / Bitcoin anchoring state for a sealed receipt: whether its Merkle root has been committed to a real Bitcoin block, the block height, the transaction id and the offline `ots verify` command. Anchoring runs automatically; this reads its result — it does not trigger it.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "commit_id": {
+              "type": "string",
+              "description": "Receipt id returned by `seal`, e.g. APEX-NTR-...."
+            }
+          },
+          "required": [
+            "commit_id"
           ]
         },
         "outputSchema": null

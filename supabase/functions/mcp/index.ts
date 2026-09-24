@@ -5,7 +5,7 @@
 // src/lib/mcp/index.ts
 import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.26.1";
 
-// src/lib/mcp/tools/verify-hash.ts
+// src/lib/mcp/tools/seal.ts
 import { defineTool } from "npm:@lovable.dev/mcp-js@0.26.1";
 import { z } from "npm:zod@^4.4.3";
 
@@ -58,13 +58,52 @@ function supabaseForUser(ctx) {
   });
 }
 
+// src/lib/mcp/tools/seal.ts
+var seal_default = defineTool({
+  name: "seal",
+  title: "Seal a decision to the APEX PSI ledger",
+  description: "Mint a post-quantum verifiable receipt for a machine action or decision. Canonicalises the payload, signs it (SHA-256 + Ed25519 + LMS-W4-SHA256), records it in the append-only ledger, and returns a receipt id that any agent can later re-check with verify_hash. This is the write half of the trust handshake.",
+  inputSchema: {
+    decision: z.string().trim().min(1).max(1e4).describe("The action or decision text to seal \u2014 what the machine did."),
+    model_id: z.string().trim().max(200).optional().describe("Optional identifier of the model or agent that produced the decision."),
+    context: z.string().trim().max(2e3).optional().describe("Optional description of the decision environment."),
+    predicate: z.string().trim().max(100).optional().describe("Optional predicate id, e.g. EU_ART_50. Defaults to EU_ART_12.")
+  },
+  annotations: { readOnlyHint: false, idempotentHint: false, openWorldHint: false },
+  handler: async ({ decision, model_id, context, predicate }, ctx) => {
+    if (!ctx.isAuthenticated()) {
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    }
+    const supabase = supabaseForUser(ctx);
+    const { data, error } = await supabase.functions.invoke("notarize", {
+      body: { decision, model_id, context, predicate }
+    });
+    if (error) {
+      return { content: [{ type: "text", text: error.message }], isError: true };
+    }
+    const receipt = data;
+    if (!receipt || typeof receipt.receipt_id !== "string") {
+      return {
+        content: [{ type: "text", text: JSON.stringify(receipt ?? {}, null, 2) }],
+        isError: true
+      };
+    }
+    return {
+      content: [{ type: "text", text: JSON.stringify(receipt, null, 2) }],
+      structuredContent: { sealed: true, receipt }
+    };
+  }
+});
+
 // src/lib/mcp/tools/verify-hash.ts
-var verify_hash_default = defineTool({
+import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { z as z2 } from "npm:zod@^4.4.3";
+var verify_hash_default = defineTool2({
   name: "verify_hash",
   title: "Verify a hash against the APEX PSI ledger",
   description: "Look up a SHA-256 hash (commit hash or Merkle leaf hash) in the APEX PSI evidence ledger and report whether a matching attestation exists.",
   inputSchema: {
-    hash: z.string().trim().regex(/^[0-9a-fA-F]{64}$/, "Expected a 64-character hex SHA-256 hash").describe("SHA-256 hash to verify, lowercase hex.")
+    hash: z2.string().trim().regex(/^[0-9a-fA-F]{64}$/, "Expected a 64-character hex SHA-256 hash").describe("SHA-256 hash to verify, lowercase hex.")
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ hash }, ctx) => {
@@ -92,16 +131,65 @@ var verify_hash_default = defineTool({
   }
 });
 
+// src/lib/mcp/tools/anchor-status.ts
+import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { z as z3 } from "npm:zod@^4.4.3";
+var anchor_status_default = defineTool3({
+  name: "anchor_status",
+  title: "Bitcoin anchoring status of a sealed receipt",
+  description: "Report the OpenTimestamps / Bitcoin anchoring state for a sealed receipt: whether its Merkle root has been committed to a real Bitcoin block, the block height, the transaction id and the offline `ots verify` command. Anchoring runs automatically; this reads its result \u2014 it does not trigger it.",
+  inputSchema: {
+    commit_id: z3.string().trim().describe("Receipt id returned by `seal`, e.g. APEX-NTR-....")
+  },
+  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  handler: async ({ commit_id }, ctx) => {
+    if (!ctx.isAuthenticated()) {
+      return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
+    }
+    const needle = commit_id.trim();
+    const supabase = supabaseForUser(ctx);
+    const { data, error } = await supabase.from("ots_proofs").select(
+      "commit_id,target_hash,status,calendar_url,bitcoin_block_height,bitcoin_txid,confirmations,created_at"
+    ).eq("commit_id", needle).order("created_at", { ascending: false }).limit(1).maybeSingle();
+    if (error) {
+      return { content: [{ type: "text", text: error.message }], isError: true };
+    }
+    if (!data) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No Bitcoin anchor record found for ${needle}. It may still be queued for the next anchoring pass.`
+          }
+        ],
+        structuredContent: { found: false, commit_id: needle }
+      };
+    }
+    const anchored = data.status === "confirmed" && !!data.bitcoin_txid;
+    return {
+      content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+      structuredContent: {
+        found: true,
+        commit_id: needle,
+        anchored,
+        status: data.status,
+        explorer_url: data.bitcoin_txid ? `https://mempool.space/tx/${data.bitcoin_txid}` : null,
+        anchor: data
+      }
+    };
+  }
+});
+
 // src/lib/mcp/tools/list-attestations.ts
-import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.26.1";
-import { z as z2 } from "npm:zod@^4.4.3";
-var list_attestations_default = defineTool2({
+import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { z as z4 } from "npm:zod@^4.4.3";
+var list_attestations_default = defineTool4({
   name: "list_attestations",
   title: "List recent attestations",
   description: "List the most recent APEX PSI ledger attestations visible to the signed-in user, newest first.",
   inputSchema: {
-    limit: z2.number().int().min(1).max(50).default(10).describe("How many attestations to return."),
-    predicate_id: z2.string().trim().optional().describe("Optional predicate filter, e.g. EU_ART_50.")
+    limit: z4.number().int().min(1).max(50).default(10).describe("How many attestations to return."),
+    predicate_id: z4.string().trim().optional().describe("Optional predicate filter, e.g. EU_ART_50.")
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ limit, predicate_id }, ctx) => {
@@ -123,8 +211,8 @@ var list_attestations_default = defineTool2({
 });
 
 // src/lib/mcp/tools/ledger-stats.ts
-import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.26.1";
-var ledger_stats_default = defineTool3({
+import { defineTool as defineTool5 } from "npm:@lovable.dev/mcp-js@0.26.1";
+var ledger_stats_default = defineTool5({
   name: "ledger_stats",
   title: "APEX PSI ledger statistics",
   description: "Return counts of ledger attestations, non-approved exceptions and public attestations for a quick integrity snapshot.",
@@ -159,8 +247,8 @@ var ledger_stats_default = defineTool3({
 });
 
 // src/lib/mcp/tools/protocol-info.ts
-import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.26.1";
-import { z as z3 } from "npm:zod@^4.4.3";
+import { defineTool as defineTool6 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { z as z5 } from "npm:zod@^4.4.3";
 var SPEC = {
   protocol: "APEX PSI \u2014 Proof of Stateful Integrity",
   canonical_site: "https://ai-governance-standard.com",
@@ -173,12 +261,12 @@ var SPEC = {
   trust_anchor: "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json",
   scope: "Anchors existence and integrity of a record at a point in time \u2014 not the truth of its contents."
 };
-var protocol_info_default = defineTool4({
+var protocol_info_default = defineTool6({
   name: "protocol_info",
   title: "APEX PSI protocol reference",
   description: "Return the APEX PSI protocol reference: canonicalization, hashing, signature suites, IETF drafts, HTTP header and anchoring targets.",
   inputSchema: {
-    section: z3.enum(["all", "signatures", "drafts", "anchoring"]).default("all").describe("Which part of the reference to return.")
+    section: z5.enum(["all", "signatures", "drafts", "anchoring"]).default("all").describe("Which part of the reference to return.")
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: ({ section }) => {
@@ -195,13 +283,13 @@ var projectRef = "qhtntebpcribjiwrdtdd";
 var mcp_default = defineMcp({
   name: "apex-psi",
   title: "APEX PSI",
-  version: "0.1.0",
-  instructions: "Tools for APEX PSI, the cryptographic open-standard evidence protocol for AI governance. Use `verify_hash` to check a SHA-256 hash against the evidence ledger, `list_attestations` to browse recent attestations, `ledger_stats` for an integrity snapshot, and `protocol_info` for the protocol reference (canonicalization, signature suites, IETF drafts, anchoring).",
+  version: "0.2.0",
+  instructions: "Tools for APEX PSI, the cryptographic open-standard evidence protocol for AI governance. Use `seal` to mint a post-quantum receipt for an action (the write half of the trust handshake), `verify_hash` to re-check a SHA-256 hash against the evidence ledger, `anchor_status` to read whether a receipt's Merkle root is committed to Bitcoin, `list_attestations` to browse recent attestations, `ledger_stats` for an integrity snapshot, and `protocol_info` for the protocol reference (canonicalization, signature suites, IETF drafts, anchoring).",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"
   }),
-  tools: [verify_hash_default, list_attestations_default, ledger_stats_default, protocol_info_default]
+  tools: [seal_default, verify_hash_default, anchor_status_default, list_attestations_default, ledger_stats_default, protocol_info_default]
 });
 
 // lovable-mcp-supabase-entry.ts
