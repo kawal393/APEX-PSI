@@ -95,7 +95,50 @@ const Challenge = () => (
           </div>
         </section>
 
-        <div className="h-px bg-primary/20 mb-16" />
+        {/* PROVABLE SILENCE — the mechanic that makes "nobody won it" checkable */}
+        <section className="mb-16 border border-gold/20 rounded-xl bg-gold/[0.03] p-6 sm:p-10">
+          <div className="flex items-center gap-2 mb-4 text-gold text-xs font-semibold tracking-widest uppercase">
+            <Award className="h-4 w-4" /> Provable Silence
+          </div>
+          <h2 className="text-xl sm:text-2xl font-black mb-3 text-foreground">
+            “Nobody won it” is a receipt, not a boast.
+          </h2>
+          <p className="text-sm text-muted-foreground mb-4 max-w-3xl">
+            The weakest part of any standing challenge is the moment it goes quiet. A deleted
+            page proves nothing. So the silence here is recorded as an append-only, sealed
+            attestation chain under
+            <span className="font-mono text-foreground"> PSI-SILENCE/1 </span>
+            &mdash; each period&rsquo;s &ldquo;zero valid contests&rdquo; is sealed and linked to the one
+            before it, and the chain&rsquo;s Merkle root is anchored to Bitcoin. A stranger needs only
+            the public chain and the public anchor to verify, fully offline, that the periods are
+            contiguous and no valid contest was ever recorded. Shutting the challenge down is an
+            anchored <span className="text-foreground">append</span> (a REVOKED record), never a
+            removed page.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-3 mb-5 text-xs">
+            <div className="bg-background/60 border border-border rounded p-3">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Status</div>
+              <code className="text-gold">OPEN</code>
+            </div>
+            <div className="bg-background/60 border border-border rounded p-3">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Accepted contests</div>
+              <code className="text-foreground">0 to date</code>
+            </div>
+            <div className="bg-background/60 border border-border rounded p-3">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Prize if broken</div>
+              <code className="text-foreground">US$10,000</code>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mb-4">
+            Verify the silence yourself, offline &mdash; no account, no server:
+          </p>
+          <div className="rounded-lg bg-background border border-border p-3 font-mono text-[11px] text-primary break-all select-all mb-4">
+            git clone https://github.com/kawal393/APEX-PSI &amp;&amp; cd APEX-PSI &amp;&amp; python challenge/silence.py verify
+          </div>
+          <a href="https://github.com/kawal393/APEX-PSI/tree/main/challenge" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 border border-border rounded px-3 py-1.5 text-xs font-semibold hover:border-gold transition-colors">
+            Read the PSI-SILENCE/1 engine <ExternalLink className="h-3 w-3" />
+          </a>
+        </section>
 
         {/* Hero */}
         <div className="text-center mb-16">
@@ -113,7 +156,7 @@ const Challenge = () => (
           </h1>
 
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
-            APEX PSI is the open standard for verifiable AI governance.
+            APEX PSI is the open verification protocol for verifiable AI governance.
             Open-source. Signed. Anchored. Public.
           </p>
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-10">
