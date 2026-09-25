@@ -19,6 +19,9 @@ import json
 import os
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from psi_jcs import jcs  # real RFC 8785, stdlib-only (see psi_jcs.py)
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 VEC = os.path.join(HERE, "vectors")
 
@@ -31,9 +34,10 @@ def sha256_hex(data) -> str:
 
 
 def jcs_canonicalize(obj) -> str:
-    # RFC 8785 subset: keys sorted by code point (== UTF-16 order for ASCII),
-    # no insignificant whitespace, ints only (no floats) in the test payloads.
-    return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    # R1: RFC 8785 JCS. This is the REAL algorithm (UTF-16 key order, raw
+    # non-ASCII, ECMAScript number form), not an ASCII approximation. Proven
+    # byte-identical to production `canonicalize` npm by jcs_verify.py.
+    return jcs(obj)
 
 
 def psi_leaf(hash_hex: str) -> str:
@@ -71,6 +75,15 @@ CANON_SEEDS = [
     {"b": 1, "a": {"y": 2, "x": 3}, "c": [1, 2, 3]},
     {"z": "hello", "a": "world", "m": [True, False, None, 42]},
     {"only": "one"},
+    # --- non-ASCII / number / ordering vectors (R1 contract) --------------
+    # These FAIL the old json.dumps(ensure_ascii=True) shortcut and PASS only
+    # under real RFC 8785, so a bystander's real-JCS implementation reproduces
+    # them and agrees with production on Unicode evidence.
+    {"café": 1, "naïve": 2},                       # raw UTF-8 keys
+    {"日本語": "ok", "😀": "astral"},              # CJK + emoji (surrogate pair)
+    {"a": -0.0, "b": 1e20, "c": 1e21, "d": 1.5},   # ECMAScript number forms
+    {"e": 1, "\u00fc": 2, "E": 3, "\u0045": 4},     # UTF-16 code-unit key order
+    {"quote\"key": 1, "back\\slash": 2, "tab\there": 3},  # escapes
 ]
 
 

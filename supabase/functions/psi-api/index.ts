@@ -1,12 +1,13 @@
 // ═══════════════════════════════════════════════════════════════════════
 // APEX PSI — Unified Sync API (v1)
-// POST /v1/notarize        — Notarize a decision (scope: notarize:write)
-// GET  /v1/verify/:hash    — Verify a hash against the ledger (scope: verify:read)
-// GET  /v1/verify?hash=…   — Same, query-string form
+// POST /v1/notarize        — Notarize a decision (scope: notarize:write) — KEY REQUIRED
+// GET  /v1/verify/:id      — Verify a hash OR receipt id. NO KEY, NO ACCOUNT.
+// GET  /v1/verify?hash=…   — Same, query-string form. NO KEY, NO ACCOUNT.
 // GET  /v1/health          — Liveness (includes the LMS public key)
 // GET  /v1/pq-public-key   — Current LMS-W4-SHA256 Merkle root (public, no auth)
 //
-// Auth: pass EITHER
+// Reads are free and keyless by doctrine; only the WRITE path is metered.
+// Auth for the write path: pass EITHER
 //   - Authorization: Bearer apex_sk_…  (scoped key from apex_api_keys)
 //   - Authorization: Bearer apex_ntry_… (legacy notary key)
 //   - X-Apex-Api-Key: <key>             (either format)
@@ -225,14 +226,20 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
 async function handleVerify(hash: string | null, supabase: any, auth: AuthResult) {
   if (!auth.scopes?.includes("verify:read"))
     return json({ error: "insufficient_scope", required: "verify:read" }, 403);
-  if (!hash || typeof hash !== "string" || !/^[a-f0-9]{8,128}$/i.test(hash.replace(/^sha256:/, "")))
-    return json({ error: "Invalid or missing hash" }, 400);
+  // Accept a hex digest OR a receipt id (APEX-NTR-…): a buyer holding only a
+  // receipt number must be able to verify it with no key and no account.
+  if (!hash || typeof hash !== "string" || !/^[A-Za-z0-9:._-]{4,128}$/.test(hash))
+    return json({ error: "Invalid or missing hash or receipt id" }, 400);
 
   const clean = hash.replace(/^sha256:/, "");
+  // commit_id is included so a receipt NUMBER resolves, not only a digest. Its
+  // shape is `APEX-NTR-` + 16 uppercase hex, which cannot collide with the
+  // 64-char lowercase-hex digest columns — so this widens the lookup without
+  // introducing ambiguity. (The public verify-hash function already did this.)
   const { data, error } = await supabase
     .from("gallows_ledger")
     .select("*")
-    .or(`commit_hash.eq.${clean},merkle_leaf_hash.eq.${clean},proof_hash.eq.${clean},challenge_hash.eq.${clean}`)
+    .or(`commit_hash.eq.${clean},merkle_leaf_hash.eq.${clean},proof_hash.eq.${clean},challenge_hash.eq.${clean},commit_id.eq.${clean}`)
     .limit(1);
   if (error) return json({ error: "query_failed", detail: error.message }, 500);
 
@@ -311,17 +318,29 @@ Deno.serve(async (req) => {
     catch (e: any) { return json({ error: "pq_state_failed", detail: e?.message }, 500); }
   }
 
+  // KEYLESS READ — /v1/verify
+  //
+  // Verification is a pure read: it adds nothing to the ledger and costs one
+  // indexed lookup. The estate's standing promise is "verification free
+  // forever — no account, no key, no subscription" (see the frozen core spec
+  // and the /challenge + /license pages). Requiring a scoped key here made
+  // that promise false on our own documented API, and it was recorded in the
+  // empire ledger as a live defect. The METERED surface is /v1/notarize (the
+  // write path) — reads are never metered, because a metered read is a tax on
+  // people checking our work, which is the opposite of the doctrine.
+  if (path.startsWith("/v1/verify") && req.method === "GET") {
+    const m = path.match(/^\/v1\/verify\/([A-Za-z0-9:._-]+)$/);
+    const target = m ? m[1] : url.searchParams.get("hash");
+    return await handleVerify(target, supabase, { ok: true, scopes: ["verify:read"] });
+  }
+
+  // Everything else — the write path — is metered and requires a key.
   const auth = await authenticate(req, supabase);
   if (!auth.ok) return json({ error: auth.error }, 401);
 
   try {
     if (path === "/v1/notarize" && req.method === "POST") {
       return await handleNotarize(req, supabase, auth);
-    }
-    if (path.startsWith("/v1/verify") && req.method === "GET") {
-      const m = path.match(/^\/v1\/verify\/([a-f0-9]+)$/i);
-      const hash = m ? m[1] : url.searchParams.get("hash");
-      return await handleVerify(hash, supabase, auth);
     }
     return json({ error: "not_found", path, method: req.method }, 404);
   } catch (e: any) {
