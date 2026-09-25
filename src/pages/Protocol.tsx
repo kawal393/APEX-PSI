@@ -63,6 +63,31 @@ const cryptoSpecs = [
   { algorithm: "MPC (Shamir)", purpose: "Distributed threshold verification", standard: "Shamir's Secret Sharing", strength: "2/3 threshold" },
 ];
 
+// The frozen PSI-SEAL/1 core rule set — the contract a stranger can implement to
+// reproduce every seal bit-for-bit. These are the normative rules, verbatim from
+// src/lib/psi-schema.ts, so the public page and the shipped validator never drift.
+const psiSealRules = [
+  { id: "R1", title: "Canonicalization", text: "RFC 8785 JCS. Output is UTF-8, no BOM." },
+  { id: "R2", title: "seal_id format", text: "^APEX-NTR-[A-Z0-9-]{4,64}$ (commit / receipt id)." },
+  { id: "R3", title: "anchor txid", text: "Bitcoin txid: ^[0-9a-f]{64}$ (lowercase)." },
+  { id: "R4", title: "Hash encoding", text: "Every 32-byte digest is a lowercase 64-char hex string, NO algorithm prefix inside the envelope." },
+  { id: "R5", title: "Hash function", text: "SHA-256 over the raw octets exactly as canonicalized." },
+  { id: "R6", title: "timestamp", text: "RFC 3339 UTC with Z suffix, >= ledger genesis." },
+  { id: "R7", title: "sequence", text: "Non-negative integer, strictly increasing per ledger." },
+  { id: "R8", title: "Merkle tree", text: "Binary Merkle over raw 32-byte leaves; parent = SHA-256(left || right); an odd node is PROMOTED, never duplicated." },
+  { id: "R9", title: "Leaf derivation", text: "merkle.leaf = SHA-256(ASCII 'PSI1:' || hash). Domain separation is mandatory." },
+  { id: "R10", title: "seal_hash", text: "seal_hash = SHA-256(JCS(envelope minus signature and licence))." },
+  { id: "R11", title: "Signature", text: "Ed25519 over the ASCII seal_hash string (64 hex chars) under public_key. A seal MAY also carry a hybrid post-quantum signature (pq_alg LMS-W4-SHA256)." },
+  { id: "R12", title: "schema", text: "Every sealed object carries schema = 'PSI-SEAL/1' and schema_digest. A verifier rejects any seal whose schema is unknown." },
+];
+
+// The standing US$10,000 challenge — the public falsification bet on the protocol.
+const challengeTerms = [
+  "US$10,000 is offered for a REPRODUCIBLE mathematical break of a primitive PSI-SEAL/1 relies on (SHA-256 collision on a sealed value, or an Ed25519 / LMS-W4-SHA256 forgery), verifiable by two independent implementations.",
+  "It is paid only when a break reproduces in BOTH pipelines and survives adversarial review. A confirmed bug in a non-core property earns Public Review credit, not the reward.",
+  "The silence between now and any contest is PROVABLE, not a boast: a sealed, Bitcoin-anchored attestation chain (PSI-SILENCE/1) records each period with zero valid contests; revocation is an anchored append, never a deleted page.",
+];
+
 const changelog = [
   {
     version: "1.2",
@@ -164,7 +189,7 @@ const Protocol = () => {
                 <span className="text-gold-gradient">v{protocolVersion}</span>
               </h1>
               <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
-                The Proof of Sovereign Integrity (PSI) Protocol is an open cryptographic standard
+                The Proof of Sovereign Integrity (PSI) Protocol is an open verification protocol
                 for verifiable AI governance. It enables organizations to prove regulatory compliance
                 without disclosing proprietary model architectures, training data, or inference logic.
               </p>
@@ -355,6 +380,70 @@ const Protocol = () => {
                 </p>
               </div>
             </motion.div>
+          </div>
+        </section>
+
+        {/* PSI-SEAL/1 Core Rule Set + $10,000 Standing Challenge */}
+        <section className="px-4 py-12 sm:py-16">
+          <div className="container mx-auto max-w-5xl">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <h2 className="text-2xl sm:text-3xl font-black mb-2 text-center">
+                <span className="text-chrome-gradient">PSI-SEAL/1</span>{" "}
+                <span className="text-gold-gradient">Core Rule Set</span>
+              </h2>
+              <p className="text-muted-foreground text-center mb-8 text-sm max-w-2xl mx-auto">
+                The frozen, versioned contract. These twelve normative rules are the whole
+                specification of seal formation. Any independent verifier that implements
+                <span className="font-mono text-foreground"> R1&ndash;R12 </span>
+                reproduces every receipt byte-for-byte, offline, with only the public key and the
+                public anchor. Verifier code is MIT; the sealing engine is proprietary.
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-3">
+              {psiSealRules.map((rule, idx) => (
+                <motion.div
+                  key={rule.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 * idx }}
+                  className="rounded-lg border border-border bg-card/80 backdrop-blur-sm p-4 flex gap-3"
+                >
+                  <span className="font-mono text-xs font-bold text-primary shrink-0 mt-0.5 w-8">{rule.id}</span>
+                  <div>
+                    <h3 className="text-sm font-bold text-foreground">{rule.title}</h3>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{rule.text}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* $10,000 standing challenge */}
+            <div className="mt-8 rounded-xl border border-gold/30 bg-gold/5 p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <Shield className="h-5 w-5 text-gold" />
+                <h3 className="text-lg font-bold text-foreground">The US$10,000 Standing Challenge</h3>
+              </div>
+              <ul className="space-y-3">
+                {challengeTerms.map((term, ti) => (
+                  <li key={ti} className="flex items-start gap-2 text-sm text-foreground/85">
+                    <CheckCircle2 className="h-4 w-4 text-gold shrink-0 mt-0.5" />
+                    <span>{term}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-5 flex flex-wrap gap-3 text-xs">
+                <Link to="/challenge" className="inline-flex items-center gap-1.5 border border-gold/40 bg-gold/10 rounded px-3 py-1.5 font-semibold text-gold hover:border-gold transition-colors">
+                  File a contest &rarr; /challenge
+                </Link>
+                <a href="https://github.com/kawal393/apex-psi-verify" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 border border-border rounded px-3 py-1.5 font-semibold hover:border-primary transition-colors">
+                  Offline verifier (MIT) <ExternalLink className="h-3 w-3" />
+                </a>
+                <a href="https://github.com/kawal393/APEX-PSI/tree/main/psi-conformance" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 border border-border rounded px-3 py-1.5 font-semibold hover:border-primary transition-colors">
+                  Conformance vectors <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+            </div>
           </div>
         </section>
 
