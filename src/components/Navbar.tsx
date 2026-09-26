@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import LanguageSelector from "@/components/LanguageSelector";
 import ThemeToggle from "@/components/ThemeToggle";
 import PWAInstallButton from "@/components/PWAInstallButton";
+import EmpireNetworkSwitcher from "@/components/EmpireNetworkSwitcher";
 import apexLogo from "@/assets/apex-logo.png";
 
 type MoreLink = { label: string; href: string; external?: boolean };
@@ -129,6 +130,8 @@ const navLinks = [
   };
 
   return (
+    <>
+    <EmpireNetworkSwitcher />
     <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur-xl">
       <div className="container mx-auto max-w-7xl px-4">
         {/* Desktop */}
@@ -392,6 +395,7 @@ const navLinks = [
         </div>
       )}
     </nav>
+    </>
   );
 };
 
