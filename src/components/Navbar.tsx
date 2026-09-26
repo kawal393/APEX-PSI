@@ -395,6 +395,7 @@ const navLinks = [
         </div>
       )}
     </nav>
+    </>
   );
 };
 
