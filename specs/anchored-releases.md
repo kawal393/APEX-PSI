@@ -40,7 +40,7 @@ at the shelf commit:
 |---|---|---|
 | `specs/README.md` | `e55a3f9b665e82ec740935aac6a86789ea2fdca199cd72c7186b35a2a69a1f20` | pending next anchor run |
 | `specs/psi-seal-1.md` | `4d76cd88024b2f116e68e300e068bef1fdd560da631837bad49729f7b44d7914` | pending next anchor run |
-| `specs/article50-profile-v2.md` | `b8cb4f045f2b21b9b7175d69f89d7629d5c66324ed3665b0c254c7bf781f4046` | pending next anchor run |
+| `specs/article50-profile-v2.md` | `4a0345a246099a0c92033b3e729607f97170f46efdebdf83b03675b7df624f6c` | pending next anchor run |
 | `specs/interop-scitt.md` | `5c9f2fbb7921c4090ebd2b57a65e605a51bf0a788c848ee230684e98b01bf7a2` | pending next anchor run |
 | `specs/interop-c2pa.md` | `426c1ded219f9a9529262bb5587622e95fdeced8358fd629ac9cccca2c75b5af` | pending next anchor run |
 | `specs/agent-envelope-v1.md` | `3a384e6bf639aadb02e7145e464d43427eb025b9b5db0afe9c31c9f4a782c958` | pending next anchor run |
@@ -58,7 +58,7 @@ anchor it does not yet have.
 
 | Artifact | Date | Evidence |
 |---|---|---|
-| IETF Internet-Draft `draft-singh-psi-00` | March 2026 | published on the IETF datatracker; lapsed under the six-month rule on 2026-09-18 — the publication date stands as prior art; re-filing in progress |
+| IETF Internet-Draft `draft-singh-psi` | first public **March 2026** (rev 00) | datatracker: superseded by **rev 01, filed 29 Aug 2026, active — expiry 2027-03-02**; the March 2026 date is the priority date and stands as prior art |
 | Commit `2d3bb1d` — keyless `/v1/verify`, RFC 8785 conformance, provable-silence challenge | 2026 | git history, this repository |
 | Commit `bc47b50` — PSI-SEAL/1 12-rule spec + standing challenge on `/protocol` | 2026 | git history, this repository |
 | Commit `4b672fc` — Provable Silence panel | 2026 | git history, this repository |

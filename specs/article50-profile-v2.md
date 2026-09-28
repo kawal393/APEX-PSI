@@ -11,11 +11,12 @@
 - penalty tier referenced: AI Act Art. 99(4) — up to **€15,000,000 or 3% of
   total worldwide annual turnover**, whichever is higher
 - schema: `PSI-SEAL/1.0.0` (see [`psi-seal-1.md`](psi-seal-1.md))
-- prior art: the PSI specification was first filed publicly as an IETF
-  Internet-Draft in **March 2026**, predating the SCITT Article 50 receipts
-  profile of **May 2026**. The original draft has since lapsed under the
-  IETF six-month rule and is being re-filed under its own revision track;
-  the March 2026 publication date stands as prior art regardless.
+- prior art: the PSI specification was first published publicly as an IETF
+  Internet-Draft (`draft-singh-psi`, rev 00) in **March 2026**, predating the
+  SCITT Article 50 receipts profile of **May 2026**. It was superseded by
+  **rev 01, filed 29 August 2026**, which is active on the IETF datatracker
+  with current expiry **2 March 2027**. The **March 2026** first-publication
+  date is the priority date and stands as prior art.
 
 ## What this profile maps
 
