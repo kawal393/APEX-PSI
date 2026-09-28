@@ -46,7 +46,9 @@ const PrivacyPolicy = () => (
       </ul>
       <h3>3.3 Compliance Platform Data</h3>
       <p>
-        Our platform uses Multi-Party Computation (MPC) and Zero-Knowledge Proof (ZK) technology.
+        Our platform verifies by publishing cryptographic digests only — the original document
+        or model is never uploaded. Verification uses Ed25519 and post-quantum signatures over
+        those digests.
         <strong> We never access, store, or transmit your AI model weights.</strong> Compliance
         verification occurs without disclosure of proprietary model internals.
       </p>
