@@ -28,6 +28,7 @@ const staticEntries: Entry[] = [
   { path: "/verify", priority: "0.9", changefreq: "weekly" },
   { path: "/hello-psi", priority: "0.9", changefreq: "weekly" },
   { path: "/spec", priority: "0.9", changefreq: "monthly" },
+  { path: "/specs", priority: "0.9", changefreq: "monthly" },
   { path: "/articles", priority: "0.9", changefreq: "daily" },
   { path: "/seal", priority: "0.8", changefreq: "weekly" },
   { path: "/forge", priority: "0.8", changefreq: "weekly" },
