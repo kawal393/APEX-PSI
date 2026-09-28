@@ -118,7 +118,7 @@ const PatentPledge = () => (
                 Use of the registered marks <span className="font-semibold text-foreground">APEX</span>, <span className="font-semibold text-foreground">APEX PSI</span>, <span className="font-semibold text-foreground">Proof of Stateful Integrity</span>, or APEX-issued certification seals.
               </li>
               <li>
-                Operation of the APEX-managed Notary, MPC consensus mesh, Bitcoin/Polygon anchoring service, or APEX Lattice infrastructure.
+                Operation of the APEX-managed Notary, verification-node consensus mesh, Bitcoin/Polygon anchoring service, or APEX Lattice infrastructure.
               </li>
               <li>
                 Implementations that materially deviate from the normative protocol such that they break interoperability with other Conformant Implementations.
@@ -150,12 +150,12 @@ const PatentPledge = () => (
               {
                 icon: Scale,
                 who: "Commercial Users of the Hosted Service",
-                what: "Free. The APEX-managed Notary and MPC mesh are free to use, as is the protocol. No royalty, no fee, no plan.",
+                what: "Free. The APEX-managed Notary and verification-node mesh are free to use, as is the protocol. No royalty, no fee, no plan.",
               },
               {
                 icon: ShieldCheck,
                 who: "Forks & Independent Networks",
-                what: "Run your own MPC mesh, your own notary, your own ledger. The protocol travels with you.",
+                what: "Run your own verifier mesh, your own notary, your own ledger. The protocol travels with you.",
               },
             ].map((row) => (
               <div key={row.who} className="flex gap-4">

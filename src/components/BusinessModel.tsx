@@ -7,7 +7,7 @@ const pillars = [
     icon: Shield,
     title: "Institutional Certification Partner",
     subtitle: "Systemic Risk Mitigation",
-    desc: "We deploy our full PSI compliance infrastructure into your enterprise. The protocol is free; the certification, evidence ratification, and managed MPC infrastructure are engagement-based.",
+    desc: "We deploy our full PSI compliance infrastructure into your enterprise. The protocol is free; the certification, evidence ratification, and managed verification-node infrastructure are engagement-based.",
     details: [
       "Full PSI Protocol deployment and integration",
       "Evidence-ratified compliance records",
@@ -25,7 +25,7 @@ const pillars = [
     details: [
       "White-label protocol infrastructure",
       "Custom jurisdictional predicate mapping",
-      "Dedicated MPC node cluster",
+      "Dedicated verifier node cluster",
       "SLA-backed compliance monitoring",
     ],
     cta: "Apply for Licensing",

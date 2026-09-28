@@ -13,13 +13,13 @@ const layers = [
   {
     number: "01",
     title: "Machine Consensus",
-    subtitle: "MPC — 3-Node Automated Verification",
+    subtitle: "3-Node Redundant Automated Verification",
     icon: Zap,
     color: "text-primary",
     borderColor: "border-primary/30",
     bgColor: "bg-primary/5",
     points: [
-      "3-node Multi-Party Computation cluster",
+      "3-node redundant verification cluster",
       "2-of-3 agreement across three nodes, all operated by APEX — software redundancy, not independent institutional consensus",
       "SHA-256 hash chaining with monotonic sequence counters",
       "Ed25519 root signatures for non-repudiation",
@@ -219,7 +219,7 @@ const Governance = () => {
               <h3 className="text-xs font-bold text-muted-foreground mb-4 text-center tracking-[0.15em] uppercase">Verification Flow</h3>
               <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
                 {[
-                  { label: "MPC (3 nodes)", color: "text-primary", bg: "bg-primary/10 border-primary/30" },
+                  { label: "3-Node Quorum", color: "text-primary", bg: "bg-primary/10 border-primary/30" },
                   { label: "→", color: "text-muted-foreground", bg: "" },
                   { label: "Public Attestation", color: "text-gold", bg: "bg-gold/10 border-gold/30" },
                   { label: "→", color: "text-muted-foreground", bg: "" },

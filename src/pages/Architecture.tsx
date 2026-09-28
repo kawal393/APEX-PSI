@@ -255,7 +255,7 @@ function combinePair(a: string, b: string): string {
               <TrioCard
                 name="SHIELD"
                 role="The Lawyer"
-                description="Private compliance layer. MPC-based verification ensures model weights and proprietary data never leave the deployer's environment. Merkle tree commitments prove compliance without exposing internals."
+                description="Private compliance layer. Digest-only verification means model weights and proprietary data never leave the deployer's environment. Merkle tree commitments prove compliance without exposing internals."
                 color="text-engine-approved border-engine-approved/30"
               />
               <TrioCard

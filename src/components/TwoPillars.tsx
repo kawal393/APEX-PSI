@@ -58,7 +58,7 @@ const TwoPillars = () => {
                 { icon: Cpu, text: "SHA-256 + Ed25519 + ML-DSA-65 hybrid signatures" },
                 { icon: Lock, text: "Merkle-anchored, monotonic sequence counter" },
                 { icon: Globe, text: "Compliance-Receipt HTTP header (draft-singh-psi-http — in preparation, not yet filed)" },
-                { icon: FileCheck, text: "MPC lattice attestation, permissionless verification" },
+                { icon: FileCheck, text: "Multi-node lattice attestation, permissionless verification" },
               ].map((item) => (
                 <div key={item.text} className="flex items-start gap-3 text-sm">
                   <item.icon className="h-4 w-4 text-primary shrink-0 mt-0.5" />

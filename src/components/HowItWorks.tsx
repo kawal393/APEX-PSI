@@ -12,7 +12,7 @@ const steps = [
   {
     icon: Lock,
     step: "02",
-    title: "MPC Verification",
+    title: "Distributed Verification",
     description: "Our distributed network verifies compliance without seeing your model.",
   },
   {

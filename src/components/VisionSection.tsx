@@ -53,7 +53,7 @@ const VisionSection = () => {
   const stats = [
     { label: "Predicates", value: "55+" },
     { label: "Jurisdictions", value: "12" },
-    { label: "MPC Nodes", value: "3" },
+    { label: "Verifier Nodes", value: "3" },
     { label: "Artifacts Sealed", value: artifactCount !== null ? artifactCount : "—" },
   ];
 

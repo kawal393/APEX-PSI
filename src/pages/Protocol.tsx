@@ -45,7 +45,7 @@ const legalMapping = [
     requirement: "High-risk AI must be resilient to errors and robust against unauthorized third-party manipulation.",
     psiSolution: [
       "DETERMINISTIC MODE: UNACCEPTABLE/HIGH-risk actions blocked BEFORE commit — no non-compliant action enters the ledger",
-      "MPC (Multi-Party Computation) 3-node consensus with 2/3 threshold verification",
+      "3-node redundant quorum with 2/3 threshold verification (all nodes currently APEX-operated — software redundancy; independent operator seats opening)",
       "Ed25519 digital signatures on every Merkle root for non-repudiation",
       "Experimental BN128 field commitments (not zero-knowledge, no pairing check) demonstrate a privacy path; the production privacy property is that only digests are published",
       "Distributed verification prevents single-point-of-failure attacks",
@@ -60,7 +60,7 @@ const cryptoSpecs = [
   { algorithm: "Ed25519", purpose: "Merkle root digital signatures", standard: "RFC 8032", strength: "~128-bit equivalent" },
   { algorithm: "BN128 field arithmetic", purpose: "Experimental commitments — not zero-knowledge, no pairing check", standard: "alt_bn128 field", strength: "Demonstration only" },
   { algorithm: "JCS", purpose: "JSON canonicalization for deterministic hashing", standard: "RFC 8785", strength: "N/A (format)" },
-  { algorithm: "MPC (Shamir)", purpose: "Distributed threshold verification", standard: "Shamir's Secret Sharing", strength: "2/3 threshold" },
+  { algorithm: "2-of-3 node quorum", purpose: "Redundant verification consensus (multi-signature) — not MPC", standard: "Threshold agreement", strength: "2/3 threshold" },
 ];
 
 // The frozen PSI-SEAL/1 core rule set — the contract a stranger can implement to
@@ -96,7 +96,7 @@ const changelog = [
     changes: [
       "DETERMINISTIC MODE — UNACCEPTABLE/HIGH-risk predicates blocked before commit (Optimistic Flaw eliminated)",
       "Review Panel — 5-party human auditor ratification layer (3-of-5 threshold, Ed25519 signed determinations)",
-      "48-hour SLA auto-escalation — MPC determination stands with REVIEW_TIMEOUT flag if quorum not met",
+      "48-hour SLA auto-escalation — quorum determination stands with REVIEW_TIMEOUT flag if quorum not met",
       "Deterministic pre-flight check exports for SDK integration",
       "Protocol hardened against false-negative attack vector",
     ],
@@ -123,7 +123,7 @@ const changelog = [
       "RFC 8785 JSON Canonicalization Scheme integration",
       "Ed25519 digital signatures for Merkle roots",
       "Monotonic sequence counter with gap detection",
-      "3-node MPC consensus verification",
+      "3-node redundant quorum verification",
       "Experimental BN128 field commitments (not zero-knowledge)",
       "Legal-to-technical mapping for Articles 12, 14, 15",
       "Independent regulator verification portal",

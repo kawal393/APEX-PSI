@@ -23,7 +23,7 @@ const TermsOfService = () => (
         including but not limited to:
       </p>
       <ul>
-        <li><strong>SHIELD Mode</strong> — Private compliance verification using MPC technology</li>
+        <li><strong>SHIELD Mode</strong> — Private compliance verification using digest-only, post-quantum-signed checks</li>
         <li><strong>SWORD Mode</strong> — Public compliance verification with regulatory ledger publication</li>
         <li><strong>JUDGE Mode</strong> — Binding compliance interpretation and legal precedent issuance</li>
       </ul>
@@ -66,7 +66,7 @@ const TermsOfService = () => (
         You may not reproduce, distribute, or create derivative works without express written permission.
       </p>
       <p>
-        <strong>Your IP is protected:</strong> Our MPC and ZK technology ensures your AI model
+        <strong>Your IP is protected:</strong> Our digest-only verification model ensures your AI model
         weights are never disclosed, accessed, or stored by our platform during compliance verification.
       </p>
     </section>

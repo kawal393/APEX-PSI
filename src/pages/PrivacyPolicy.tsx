@@ -106,8 +106,9 @@ const PrivacyPolicy = () => (
       <h2>8. Security</h2>
       <p>
         We implement industry-standard security measures including encryption, access controls,
-        regular security audits, and privacy-by-design principles aligned with our core MPC/ZK
-        technology stack.
+        regular security audits, and privacy-by-design principles: verification runs on
+        cryptographic digests signed with Ed25519 and post-quantum algorithms, so raw model or
+        document data is never required by the verification step.
       </p>
     </section>
 
