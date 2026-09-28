@@ -1,0 +1,3 @@
+# Specification shelf: pin markdown to LF so published digests are
+# reproducible on every platform regardless of a client's core.autocrlf.
+specs/*.md text eol=lf

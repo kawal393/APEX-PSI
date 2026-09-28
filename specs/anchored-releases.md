@@ -3,15 +3,28 @@
 - register: `PSI-RELEASES`
 - opened: **2026-09-28**
 - rule: every document on this shelf is listed here with its SHA-256 digest
-  and publication date. Digests are computed from the committed bytes;
-  recompute them yourself and compare — do not trust this table.
+  and publication date. Digests are of the **committed git blob bytes**
+  (LF-normalised — see the verification note below); recompute them yourself
+  and compare — do not trust this table.
 
 ## How to verify an entry independently
 
+A digest is only meaningful against a defined byte sequence. This repository
+checks out with `core.autocrlf=true`, so a working-tree file on Windows
+carries CRLF while the committed blob is LF — the two hash differently. The
+digests below are of the **canonical committed blob (LF)**, which is the same
+on every platform. Verify against the blob, not a possibly-CRLF working copy:
+
 ```
-sha256sum specs/<file>            # Linux / WSL
-Get-FileHash -Algorithm SHA256 specs\<file>   # Windows PowerShell
+# platform-independent, reads the committed blob directly:
+git cat-file blob HEAD:specs/<file> | sha256sum          # Linux / WSL / Git-Bash
+
+# or from a working copy, normalising CRLF -> LF first:
+python -c "import hashlib;print(hashlib.sha256(open('specs/<file>','rb').read().replace(b'\r\n',b'\n')).hexdigest())"
 ```
+
+A `.gitattributes` pins `specs/*.md` to `eol=lf`, so on any future checkout
+the working files are LF and a plain `sha256sum specs/<file>` also matches.
 
 The digest must match the lower-case hex value below, byte-for-byte, given
 the same git commit. The git history of this repository (remote `origin`,
@@ -20,19 +33,20 @@ branch `main`) is itself the first-tier date proof; Bitcoin anchoring
 
 ## Release register — specification shelf
 
-Published 2026-09-28. SHA-256 digests of the exact committed bytes:
+Published 2026-09-28. SHA-256 digests of the canonical committed (LF) blobs
+at the shelf commit:
 
-| Artifact | Digest (SHA-256) | Anchor status |
+| Artifact | Digest (SHA-256, LF blob) | Anchor status |
 |---|---|---|
-| `specs/README.md` | `cf1e4087cbf888e63798ca1b22e063b5af1a5cec1d1915f534a1cd8bc95371f8` | pending next anchor run |
-| `specs/psi-seal-1.md` | `cb593dd86a47a7e7947b5bf10eab221bb59b23d4020ef6c5eccd18aaf2521e39` | pending next anchor run |
-| `specs/article50-profile-v2.md` | `df932bb70c4a0cec91a420d6e407b669509b736a17d877c83d72450afcc5717e` | pending next anchor run |
-| `specs/interop-scitt.md` | `521dd9f65f575adf5385276d72b8db5416c07bf4cc376ba5fefa38bd05d196b7` | pending next anchor run |
-| `specs/interop-c2pa.md` | `57f2249c73254d803e344517721d1d5fac77c21ddbccec8e6724f08853f98959` | pending next anchor run |
-| `specs/agent-envelope-v1.md` | `54c8fe4f889c007ec3f3d7cd99e37c54c6196dd294e64a94b11f3e8f1952e70b` | pending next anchor run |
-| `specs/discrepancy-score-v1.md` | `52c6c1942d9195334c1373c7a5abb66d46f81194ab0a021459e907024d4c6193` | pending next anchor run |
-| `specs/evidence-package-v1.md` | `a506bd05aaa7f7afdbda09d04350a0c9038b3aa6c09ff000e8e03395ed1242c8` | pending next anchor run |
-| `specs/truth-commons-charter-v1.md` | `8e1611c799e430bd20f8a174efc4a882f05ec92fe5adf5f26a711a212a9a8ff0` | pending next anchor run |
+| `specs/README.md` | `e55a3f9b665e82ec740935aac6a86789ea2fdca199cd72c7186b35a2a69a1f20` | pending next anchor run |
+| `specs/psi-seal-1.md` | `4d76cd88024b2f116e68e300e068bef1fdd560da631837bad49729f7b44d7914` | pending next anchor run |
+| `specs/article50-profile-v2.md` | `b8cb4f045f2b21b9b7175d69f89d7629d5c66324ed3665b0c254c7bf781f4046` | pending next anchor run |
+| `specs/interop-scitt.md` | `5c9f2fbb7921c4090ebd2b57a65e605a51bf0a788c848ee230684e98b01bf7a2` | pending next anchor run |
+| `specs/interop-c2pa.md` | `426c1ded219f9a9529262bb5587622e95fdeced8358fd629ac9cccca2c75b5af` | pending next anchor run |
+| `specs/agent-envelope-v1.md` | `3a384e6bf639aadb02e7145e464d43427eb025b9b5db0afe9c31c9f4a782c958` | pending next anchor run |
+| `specs/discrepancy-score-v1.md` | `2234b2abee94c72a7398a4c211b62038502258940d4e0e7fffebdf7637e52b69` | pending next anchor run |
+| `specs/evidence-package-v1.md` | `0587d7804cd7d0aa387c7290a0d984d71b62e66150d8eebfffcc354a1197397b` | pending next anchor run |
+| `specs/truth-commons-charter-v1.md` | `5e140ae12696d315337483156f613712492fcf8dbd8d5167e8e177ff53b7628e` | pending next anchor run |
 
 "Pending next anchor run" is the honest state: these bytes are dated by the
 git commit that carries them, and they will be sealed and batch-anchored
