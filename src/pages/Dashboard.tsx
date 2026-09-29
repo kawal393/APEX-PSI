@@ -255,7 +255,7 @@ const Dashboard = () => {
                 )}
                 {isFree && (
                   <p className="text-xs text-muted-foreground">
-                    Free — sealing and verification require no payment, account tier or key
+                    Public allowance — 20 hosted receipts per minute and 100 per day; independent verification stays free
                   </p>
                 )}
               </div>

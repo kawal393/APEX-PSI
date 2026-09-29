@@ -8,7 +8,7 @@ import { FREE_ACCESS_STATEMENT } from "@/lib/commerce";
 
 const TITLE = "Payments — Apex PSI";
 const DESCRIPTION =
-  "There is nothing to pay for. The protocol, the verifier, sealing and verification are free, with no account and no key.";
+  "Independent verification is free forever. Higher-volume APEX-hosted products are arranged directly; on-chain checkout is not available.";
 
 const CryptoCheckout = () => (
   <div className="min-h-screen bg-background text-foreground">
@@ -20,16 +20,15 @@ const CryptoCheckout = () => (
     <Navbar />
     <main className="mx-auto max-w-3xl px-6 pb-24 pt-32">
       <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.4em] text-gold">
-        No payment required
+        Direct agreements only
       </p>
       <h1 className="mb-6 text-3xl font-bold leading-tight md:text-5xl">
-        There is nothing here to buy.
+        On-chain checkout is not available.
       </h1>
       <p className="mb-6 text-base leading-relaxed text-muted-foreground">{FREE_ACCESS_STATEMENT}</p>
       <p className="mb-10 text-sm leading-relaxed text-muted-foreground">
-        Card and on-chain payment options have been withdrawn. No invoice is issued, no plan is
-        offered and no address is published. If this ever changes it will be recorded, dated, on the
-        corrections register first.
+        Higher-volume hosted products are arranged directly. No cryptocurrency payment address or
+        self-service checkout is published here.
       </p>
       <div className="flex flex-wrap gap-3">
         <Button variant="hero" size="lg" asChild>
@@ -39,7 +38,7 @@ const CryptoCheckout = () => (
           <Link to="/verify">Verify a hash</Link>
         </Button>
         <Button variant="heroOutline" size="lg" asChild>
-          <Link to="/corrections">Corrections register</Link>
+          <Link to="/products">View products</Link>
         </Button>
       </div>
     </main>

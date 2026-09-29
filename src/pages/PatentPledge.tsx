@@ -150,7 +150,7 @@ const PatentPledge = () => (
               {
                 icon: Scale,
                 who: "Commercial Users of the Hosted Service",
-                what: "Free. The APEX-managed Notary and verification-node mesh are free to use, as is the protocol. No royalty, no fee, no plan.",
+                what: "The public hosted allowance is limited to 20 receipts per minute and 100 per day. Higher-volume operation is arranged separately; the protocol and independent verification remain free.",
               },
               {
                 icon: ShieldCheck,

@@ -11,12 +11,12 @@ const MESSAGES: Record<string, { title: string; description: string }> = {
   verification_limit: {
     title: "Verification Limit Reached",
     description:
-      "This hosted account has used its verifications for this month. Nothing is sold: the verifier source is MIT in the repository, so you can run unlimited verifications locally.",
+      "This hosted account has reached its allowance. Independent verification remains unlimited through the MIT verifier; higher hosted capacity is an operated product.",
   },
   certificate_limit: {
     title: "Certificate Limit Reached",
     description:
-      "This hosted account has used its certificates for this month. There is no paid tier; the limit is a capacity limit on the hosted service.",
+      "This hosted account has reached its receipt allowance. Higher hosted capacity is available through Builder, Scale or Institutional access.",
   },
   mode_locked: {
     title: "Mode Not Available On This Account",

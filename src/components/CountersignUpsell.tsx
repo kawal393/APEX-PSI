@@ -9,8 +9,7 @@ interface CountersignUpsellProps {
 }
 
 /**
- * Sealing and verification are free, with no account and no key. Nothing here
- * is sold; this panel simply describes what a sealed proof contains.
+ * Describes the limited public hosted allowance and what a sealed proof contains.
  */
 const CountersignUpsell = ({ reference, className = "" }: CountersignUpsellProps) => {
   return (
@@ -50,7 +49,7 @@ const CountersignUpsell = ({ reference, className = "" }: CountersignUpsellProps
       </ul>
 
       <p className="text-[11px] text-muted-foreground mt-4">
-        {reference ? `Proof ${reference.slice(0, 12)}…. ` : ""}No payment, no plan, no key.
+        {reference ? `Proof ${reference.slice(0, 12)}…. ` : ""}Public allowance: 20 per minute, 100 per day; no account or key.
       </p>
     </motion.aside>
   );

@@ -8,6 +8,15 @@ const DESCRIPTION =
 
 const ENTRIES = [
   {
+    date: "29 September 2026",
+    said:
+      "The site used blanket language saying every APEX-hosted service was free without limit, while the live receipt API enforced a public allowance.",
+    now:
+      "Independent verification and self-hosted use remain free. The public APEX-hosted allowance is 20 receipts per minute and 100 per day; Builder, Scale and Institutional operated products provide higher capacity by direct agreement.",
+    undertaking:
+      "Licensing freedom and hosted-service capacity are stated separately. A free verifier is never presented as unlimited use of APEX-operated infrastructure.",
+  },
+  {
     date: "3 September 2026",
     said:
       "The founding page published a finder fee: 20% on introductions to litigation funders.",

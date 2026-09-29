@@ -141,7 +141,7 @@ export interface CommonsRow {
 
 export const PSI_COMMONS: CommonsRow[] = [
   { what: "PSI specification (MIT)", who: "Everyone" },
-  { what: "Basic proof creation — browser, CLI, SDK", who: "Everyone" },
+  { what: "Basic proof creation — local browser, CLI and SDK", who: "Everyone" },
   { what: "Independent verification, offline, no API", who: "Everyone" },
   { what: "Reference implementation, auditable source", who: "Everyone" },
   { what: "Self-hosted node — run your own instance", who: "Anyone" },
@@ -160,7 +160,7 @@ export const PSI_OPERATIONS: CommonsRow[] = [
 ];
 
 export const COMMERCE_STATE_LINE =
-  "No prices are published and no purchase is available on this site. Operational services are arranged by direct agreement only. Everything in the commons stays free with no volume limit, no account and no future paywall.";
+  "Independent verification and self-hosted use stay free without a volume limit. The APEX-hosted service includes 20 receipts per minute and 100 per day without an account. Higher-volume operated products are arranged by direct agreement.";
 
 export interface ComplementRow {
   standard: string;
