@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const checkSubscription = async () => {
-    // Commerce is withdrawn: there are no paid plans and no plan backend
+    // The session defaults to public access; operated tiers are provisioned separately.
     // (the check-subscription edge function is deleted). Every signed-in
     // user has full access. This resolves locally - no network call.
     setSubscription({ subscribed: true, tier: "enterprise", subscriptionEnd: null });

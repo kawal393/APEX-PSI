@@ -19,7 +19,7 @@ export type FeeRow = {
 
 export const FEE_SCHEDULE: FeeRow[] = [
   { item: "Self-verification (MIT, local)", price: "FREE forever", note: "Run the verifier yourself. No account, no key." },
-  { item: "Notarise / verify (hosted)", price: "FREE", note: "No charge for issuing or verifying a receipt through the hosted layer." },
+  { item: "Notarise / verify (hosted)", price: "LIMITED FREE USE", note: "Up to 20 receipts per minute and 100 per day; independent verification remains free." },
   { item: "Bitcoin anchor", price: "FREE", note: "No charge for anchored batch inclusion via OpenTimestamps." },
   { item: "Compliance check", price: "FREE", note: "No charge for a predicate evaluated against a record." },
   { item: "Registry seat", price: "FREE", note: "A numbered listing costs nothing. There is no operator or enterprise plan." },
