@@ -18,7 +18,7 @@ const NotaryPricing = () => (
     <div className="container mx-auto max-w-3xl">
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
         <h2 className="text-3xl sm:text-4xl font-black mb-3">
-          <span className="text-chrome-gradient">Free</span>{" "}
+          <span className="text-chrome-gradient">Public</span>{" "}
           <span className="text-gold-gradient">Access</span>
         </h2>
         <p className="text-muted-foreground text-sm max-w-lg mx-auto">{FREE_ACCESS_STATEMENT}</p>
@@ -37,7 +37,7 @@ const NotaryPricing = () => (
           <div>
             <h3 className="text-xs font-bold tracking-widest text-primary uppercase">Notary</h3>
             <div>
-              <span className="text-2xl font-black text-foreground">Free</span>
+              <span className="text-2xl font-black text-foreground">100 / day</span>
               <span className="text-muted-foreground text-sm ml-1">no account, no key</span>
             </div>
           </div>
@@ -51,8 +51,8 @@ const NotaryPricing = () => (
           ))}
         </ul>
         <p className="text-xs text-muted-foreground mb-6">
-          Hosted capacity limits exist to keep the service standing; they are not a paid tier. The
-          verifier source is MIT in the repository, so anyone can run it without limit.
+          Public hosted issuance is limited to 20 receipts per minute and 100 per day. Independent
+          verification remains free and unlimited; higher hosted capacity is available separately.
         </p>
         <Button variant="heroOutline" className="w-full" size="lg" asChild>
           <Link to="#demo">Try the notary</Link>
