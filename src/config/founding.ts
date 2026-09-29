@@ -30,7 +30,7 @@ export const NO_FINDER_FEE_NOTICE =
   "No fee is charged, and none is published, for introducing anyone to a litigation funder, a lawyer or any other third party. Apex holds no Australian Financial Services Licence, and does not arrange, promote, fund or profit from any claim, funding scheme or legal proceeding.";
 
 export const FEE_FOOTNOTE =
-  "The commercial tiers previously published here have been withdrawn: the protocol, the verifier, sealing and verification are free, with no account and no key. Nothing on this site is sold.";
+  "Independent verification and self-hosted use remain free. The APEX-hosted service has a limited public allowance; higher-volume operated products are arranged separately.";
 
 /** §6 — verbatim. Never paraphrase, never reorder. */
 export const ACKNOWLEDGEMENT_CLAUSES: string[] = [

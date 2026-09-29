@@ -73,7 +73,7 @@ const GrandHero = () => {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground md:text-sm">
-          The Proof Layer of the AI Economy. Open sourced. Free forever.
+          The Proof Layer of the AI Economy. Independent verification. Free forever.
         </p>
 
         <ActiveSinceClock />
@@ -84,7 +84,7 @@ const GrandHero = () => {
         <div className="mx-auto mt-6 grid max-w-4xl gap-4 sm:grid-cols-3">
           {[
             { to: "/verify", t: "Check something", s: "Paste a code, see the proof", solid: true },
-            { to: "/seal", t: "Make a receipt", s: "Free — takes 10 seconds" },
+            { to: "/seal", t: "Make a receipt", s: "Included in the public allowance" },
             { to: "/mandate", t: "Ask before you act", s: "A receipt an AI signs before it does something" },
           ].map((b) => (
             <Link

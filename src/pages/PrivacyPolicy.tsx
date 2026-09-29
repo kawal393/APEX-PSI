@@ -35,7 +35,7 @@ const PrivacyPolicy = () => (
       <ul>
         <li>Name, email, phone number (via contact/demo request forms)</li>
         <li>Company name, role, and jurisdiction</li>
-        <li>No payment or billing information is collected — nothing is sold and no payment processor exists</li>
+        <li>Billing information for operated services arranged by direct agreement</li>
       </ul>
       <h3>3.2 Automatically Collected Information</h3>
       <ul>
@@ -59,7 +59,7 @@ const PrivacyPolicy = () => (
       <ul>
         <li>To provide, operate, and maintain our services</li>
         <li>To respond to inquiries and demo requests</li>
-        <li>To process transactions and send billing information</li>
+        <li>To administer operated-service agreements and send billing information</li>
         <li>To personalise your experience (e.g., displaying local time and city)</li>
         <li>To send relevant compliance updates, with your consent</li>
         <li>To comply with legal obligations under Australian and international law</li>

@@ -18,8 +18,8 @@ type KeyRow = {
 };
 
 const PLANS = [
-  { tier: "builder", label: "Builder", price: "$11", cadence: "/mo", limit: "2,000 seals / day" },
-  { tier: "scale", label: "Scale", price: "$55", cadence: "/mo", limit: "20,000 seals / day" },
+  { tier: "builder", label: "Builder", limit: "Up to 2,000 hosted receipts / day" },
+  { tier: "scale", label: "Scale", limit: "Up to 20,000 hosted receipts / day" },
 ];
 
 const Upgrade = () => {
@@ -43,21 +43,6 @@ const Upgrade = () => {
   async function loadKeys() {
     const { data } = await supabase.functions.invoke("api-keys", { body: { action: "list" } });
     if (data?.keys) setKeys(data.keys as KeyRow[]);
-  }
-
-  async function buy(tier: string) {
-    setBusy(tier);
-    setErr(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", { body: { tier } });
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
-      else setErr("Checkout unavailable right now.");
-    } catch (e) {
-      setErr(String((e as Error)?.message || e));
-    } finally {
-      setBusy(null);
-    }
   }
 
   async function createKey() {
@@ -86,7 +71,7 @@ const Upgrade = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
         <title>API access — Apex PSI</title>
-        <meta name="description" content="Sealing and verification stay free. Paid API keys only raise the daily cap for heavy machine use." />
+        <meta name="description" content="Independent verification stays free. Builder, Scale and Institutional products provide higher APEX-hosted capacity by direct agreement." />
         <link rel="canonical" href={`${SITE_URL}/upgrade`} />
         <meta name="robots" content="noindex" />
       </Helmet>
@@ -97,21 +82,21 @@ const Upgrade = () => {
           The protocol is free. This only raises the cap.
         </h1>
         <p className="mb-8 text-sm leading-relaxed text-muted-foreground">
-          Sealing, verification and the public commons stay free forever — 100 seals a day, no account,
-          no key. A paid key exists only for agents that need more volume. It changes the daily limit and
-          nothing else.
+          Independent verification and self-hosted use stay free. The public APEX-hosted allowance is
+          20 receipts per minute and 100 per day without an account or key. Operated products raise hosted
+          capacity and add service commitments; they do not change verification results.
         </p>
 
         {status === "success" && (
           <div className="mb-8 rounded-lg border border-gold/40 bg-gold/5 p-4 text-sm">
-            Payment received. Create your API key below — it will carry your new limit.
+            Your request was received. Managed access is activated only after direct confirmation.
           </div>
         )}
         {err && <div className="mb-6 rounded-lg border border-red-500/40 bg-red-500/5 p-3 text-sm text-red-300">{err}</div>}
 
         {signedIn === false && (
           <div className="mb-10 rounded-lg border border-border bg-card p-6 text-sm">
-            <p className="mb-4 text-muted-foreground">Sign in to buy a key or manage your existing ones.</p>
+            <p className="mb-4 text-muted-foreground">Sign in to manage an existing API key.</p>
             <Button variant="hero" asChild><Link to="/auth">Sign in</Link></Button>
           </div>
         )}
@@ -123,10 +108,9 @@ const Upgrade = () => {
                 <Card key={p.tier}>
                   <CardContent className="p-6">
                     <div className="mb-1 text-sm font-semibold">{p.label}</div>
-                    <div className="mb-3 text-3xl font-bold">{p.price}<span className="text-base font-normal text-muted-foreground">{p.cadence}</span></div>
-                    <div className="mb-5 text-sm text-muted-foreground">{p.limit}</div>
-                    <Button className="w-full" variant="hero" disabled={busy === p.tier} onClick={() => buy(p.tier)}>
-                      {busy === p.tier ? "Loading…" : `Choose ${p.label}`}
+                    <div className="mb-5 mt-3 text-sm text-muted-foreground">{p.limit}</div>
+                    <Button className="w-full" variant="hero" asChild>
+                      <a href={`mailto:apexinfrastructure369@gmail.com?subject=APEX%20PSI%20${p.label}`}>Contact sales</a>
                     </Button>
                   </CardContent>
                 </Card>
