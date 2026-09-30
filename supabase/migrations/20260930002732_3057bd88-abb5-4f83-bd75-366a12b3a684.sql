@@ -1,0 +1,1 @@
+CREATE POLICY "Service may manage public notary quota" ON public.notary_public_usage FOR ALL TO service_role USING (true) WITH CHECK (true);
