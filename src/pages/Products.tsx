@@ -15,6 +15,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { SITE_URL } from "@/lib/site";
+import HostedTiers from "@/components/HostedTiers";
 import { FREE_ACCESS_STATEMENT, TRANSPARENCY_RECEIPT_LABEL } from "@/lib/commerce";
 
 type Capability = {
@@ -29,40 +30,6 @@ type Capability = {
   featured?: boolean;
 };
 
-const hostedProducts = [
-  {
-    name: "Public",
-    audience: "Individuals, evaluators and small integrations",
-    capacity: "20 receipts / minute · 100 / day",
-    access: "No account or API key",
-    cta: "Start free",
-    href: "/seal",
-  },
-  {
-    name: "Builder",
-    audience: "Applications moving beyond the public allowance",
-    capacity: "Up to 2,000 hosted receipts / day",
-    access: "Managed API key",
-    cta: "Contact sales",
-    href: "mailto:apexinfrastructure369@gmail.com?subject=APEX%20PSI%20Builder",
-  },
-  {
-    name: "Scale",
-    audience: "Production services with sustained volume",
-    capacity: "Up to 20,000 hosted receipts / day",
-    access: "Managed API key",
-    cta: "Contact sales",
-    href: "mailto:apexinfrastructure369@gmail.com?subject=APEX%20PSI%20Scale",
-  },
-  {
-    name: "Institutional",
-    audience: "Regulated operators requiring service commitments",
-    capacity: "Custom volume and operating terms",
-    access: "Direct agreement",
-    cta: "Contact sales",
-    href: "mailto:apexinfrastructure369@gmail.com?subject=APEX%20PSI%20Institutional",
-  },
-];
 
 const capabilities: Capability[] = [
   {
@@ -296,33 +263,10 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
               <h2 className="text-3xl font-bold md:text-5xl">Start within the public allowance. Scale when needed.</h2>
               <p className="mx-auto mt-4 max-w-3xl text-sm text-muted-foreground">
                 These limits apply to infrastructure operated by APEX. Offline verification and self-hosted use remain free and independent.
+                The same products are available here and on external marketplaces — buy through whichever channel you already use.
               </p>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              {hostedProducts.map((product) => {
-                const external = product.href.startsWith("mailto:");
-                const content = (
-                  <>
-                    <span className="text-sm font-bold">{product.cta}</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </>
-                );
-                return (
-                  <article key={product.name} className="flex flex-col rounded-lg border border-border bg-card p-6">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold">APEX hosted</p>
-                    <h3 className="mt-2 text-2xl font-black">{product.name}</h3>
-                    <p className="mt-2 min-h-10 text-sm text-muted-foreground">{product.audience}</p>
-                    <p className="mt-6 text-sm font-bold text-foreground">{product.capacity}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{product.access}</p>
-                    {external ? (
-                      <a href={product.href} className="mt-6 inline-flex items-center gap-2 text-gold hover:underline">{content}</a>
-                    ) : (
-                      <Link to={product.href} className="mt-6 inline-flex items-center gap-2 text-gold hover:underline">{content}</Link>
-                    )}
-                  </article>
-                );
-              })}
-            </div>
+            <HostedTiers />
           </div>
         </section>
 
