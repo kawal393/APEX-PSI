@@ -30,40 +30,6 @@ type Capability = {
   featured?: boolean;
 };
 
-const hostedProducts = [
-  {
-    name: "Public",
-    audience: "Individuals, evaluators and small integrations",
-    capacity: "20 receipts / minute · 100 / day",
-    access: "No account or API key",
-    cta: "Start free",
-    href: "/seal",
-  },
-  {
-    name: "Builder",
-    audience: "Applications moving beyond the public allowance",
-    capacity: "Up to 2,000 hosted receipts / day",
-    access: "Managed API key",
-    cta: "Contact sales",
-    href: "mailto:apexinfrastructure369@gmail.com?subject=APEX%20PSI%20Builder",
-  },
-  {
-    name: "Scale",
-    audience: "Production services with sustained volume",
-    capacity: "Up to 20,000 hosted receipts / day",
-    access: "Managed API key",
-    cta: "Contact sales",
-    href: "mailto:apexinfrastructure369@gmail.com?subject=APEX%20PSI%20Scale",
-  },
-  {
-    name: "Institutional",
-    audience: "Regulated operators requiring service commitments",
-    capacity: "Custom volume and operating terms",
-    access: "Direct agreement",
-    cta: "Contact sales",
-    href: "mailto:apexinfrastructure369@gmail.com?subject=APEX%20PSI%20Institutional",
-  },
-];
 
 const capabilities: Capability[] = [
   {
