@@ -77,6 +77,11 @@ Deno.serve(async (req) => {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
     }
+    if (decisions.some((item) => !(typeof item === "string" ? item : item?.decision)?.trim?.())) {
+      return new Response(JSON.stringify({ error: "Every decision must be non-empty text" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -100,10 +105,31 @@ Deno.serve(async (req) => {
         .from("notary_api_keys")
         .select("*")
         .eq("api_key_hash", keyHash)
+        .eq("revoked", false)
         .single();
       if (keyData) {
         tier = keyData.tier;
         userId = keyData.user_id;
+      }
+    }
+
+    if (tier === "free") {
+      const clientIP = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+      const visitorDigest = await hashSHA256(`${supabaseKey}|${clientIP}`);
+      const { data: reserved, error: quotaError } = await supabase.rpc("reserve_public_notary_quota", {
+        p_visitor_digest: visitorDigest, p_count: decisions.length,
+        p_daily_limit: 100, p_minute_limit: 20,
+      });
+      if (quotaError) {
+        console.error("[Notary-Batch] Quota check failed:", quotaError);
+        return new Response(JSON.stringify({ error: "Public capacity temporarily unavailable" }), {
+          status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+      if (!reserved) {
+        return new Response(JSON.stringify({ error: "Public allowance reached", daily_limit: 100, minute_limit: 20 }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" }
+        });
       }
     }
 

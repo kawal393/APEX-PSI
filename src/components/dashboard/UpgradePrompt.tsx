@@ -11,12 +11,12 @@ const MESSAGES: Record<string, { title: string; description: string }> = {
   verification_limit: {
     title: "Hosted Daily Cap Reached",
     description:
-      "This hosted account has used its verifications for the period. Checking any published receipt is always free and needs no account - use /verify. A paid key on /upgrade raises the hosted daily cap, and the verifier source stays free to run yourself.",
+      "This hosted account has reached its allowance. Independent verification remains unlimited through the MIT verifier; higher hosted capacity is an operated product.",
   },
   certificate_limit: {
     title: "Certificate Cap Reached",
     description:
-      "This hosted account has used its certificates for this month. A paid key on /upgrade raises the daily sealing cap. No price buys a finding, a result or a removal.",
+      "This hosted account has reached its receipt allowance. Higher hosted capacity is available through Pro, Ultra or Institutional access. No price buys a finding, a result or a removal.",
   },
   mode_locked: {
     title: "Mode Not Available On This Account",

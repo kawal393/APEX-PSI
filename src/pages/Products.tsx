@@ -15,6 +15,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { SITE_URL } from "@/lib/site";
+import HostedTiers from "@/components/HostedTiers";
 import { FREE_ACCESS_STATEMENT, TRANSPARENCY_RECEIPT_LABEL } from "@/lib/commerce";
 
 type Capability = {
@@ -29,6 +30,7 @@ type Capability = {
   featured?: boolean;
 };
 
+
 const capabilities: Capability[] = [
   {
     id: "protocol",
@@ -37,7 +39,7 @@ const capabilities: Capability[] = [
     name: "PSI Protocol — Open Access",
     who: "Every developer, lab, auditor and reader.",
     summary:
-      "The protocol itself is public-good infrastructure. Seal, hash, sign and verify without an account, a key or an invoice.",
+      "The protocol itself is public-good infrastructure. Create proofs locally and verify independently without an account, key or invoice.",
     features: [
       "Full verification engine; verifier source is MIT in the repository",
       "Client-side SHA-256 sealing of any file (/seal, /pramaan)",
@@ -51,18 +53,18 @@ const capabilities: Capability[] = [
   {
     id: "receipt",
     icon: Stamp,
-    eyebrow: "Free",
+    eyebrow: "Public allowance",
     name: TRANSPARENCY_RECEIPT_LABEL,
     who: "Anyone who needs a signed technical receipt for an audit, client or internal record.",
     summary:
-      "Sealing is free, and so is the receipt: your hash signed by the APEX PSI published trust anchor, submitted for timestamping, and issued as a verifiable record.",
+      "The public hosted allowance issues your hash as a signed, timestamped and verifiable record, subject to the published capacity limit.",
     features: [
       "Signed by the APEX PSI trust anchor",
       "Ed25519 + LMS-W4-SHA256 hybrid signature",
       "Bitcoin anchoring via OpenTimestamps (.ots included)",
       "Technical receipt with an Article 50 control reference",
       "Public receipt page at /r/<hash>, subject to service availability",
-      "No account, no key, no payment",
+      "No account or key for up to 20 receipts per minute and 100 per day",
     ],
     cta: { label: "Seal and read the receipt", href: "/seal" },
     featured: true,
@@ -74,9 +76,9 @@ const capabilities: Capability[] = [
     name: "PSI Prover API",
     who: "Teams shipping AI features that must produce evidence continuously.",
     summary:
-      "The notary API is open. Batch notarisation, anchoring and webhook delivery are documented and free to call.",
+      "The notary API is open for limited public use. Higher-volume issuance, anchoring and delivery are operated products.",
     features: [
-      "Notary API — no plan and no paid key",
+      "Public API allowance — 20 receipts per minute, 100 per day",
       "Batch notarization up to 100 decisions per call",
       "Anchoring queue via OpenTimestamps",
       "Signed technical evidence record — not legal certification",
@@ -110,14 +112,15 @@ const capabilities: Capability[] = [
     name: "Protocol Infrastructure",
     who: "Enterprises, governments and regulated operators keeping their own evidence.",
     summary:
-      "The protocol, the schema and the verifier are published so any institution can run this itself. Use is free; what is licensed, in writing, is the APEX name on it.",
+      "The protocol and verifier remain independently usable. APEX also operates managed infrastructure for institutions that need volume and service commitments. Use of the protocol and the
+    verifier stays free; the APEX name is licensed in writing, never a finding.",
     features: [
       "Signed, verifiable records with Merkle proofs",
       "Self-hostable verification — the source is in the repository",
       "Documented consensus node roles (all current nodes operated by APEX)",
       "Evidence exports",
       "Open specification, individual IETF submission",
-      "No contract, no invoice, no plan",
+      "Managed operation arranged by direct agreement",
     ],
     cta: { label: "Read the specification", href: "/spec" },
   },
@@ -149,8 +152,9 @@ const CapabilityCard = ({ p, index }: { p: Capability; index: number }) => {
       </div>
 
       <div className="mb-3">
-        <span className="text-2xl font-black text-foreground tracking-tight">Free</span>
-        <span className="text-muted-foreground text-sm ml-1.5">no account, no key</span>
+        <span className="text-2xl font-black text-foreground tracking-tight">
+          {p.id === "protocol" ? "Open" : p.id === "receipt" || p.id === "registry" ? "Limited free use" : "Operated"}
+        </span>
       </div>
 
       <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Who it is for</p>
@@ -208,13 +212,13 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
         <title>What Apex PSI Provides — Universal Verification Protocol</title>
         <meta
           name="description"
-          content="APEX PSI is an open AI governance evidence protocol. The protocol, the verifier, sealing and verification are free, with no account and no key."
+          content="Independent PSI verification is free forever. Public hosted issuance includes 20 receipts per minute and 100 per day, with higher-volume operated products available."
         />
         <link rel="canonical" href={`${SITE_URL}/products`} />
         <meta property="og:title" content="What Apex PSI Provides — Universal Verification Protocol" />
         <meta
           property="og:description"
-          content="Sealing and verification are free, with no account and no key. Nothing on this site is sold."
+          content="Free independent verification, limited public hosted issuance, and higher-volume operated products for builders and institutions."
         />
         <meta property="og:url" content={`${SITE_URL}/products`} />
         <meta property="og:type" content="website" />
@@ -252,6 +256,20 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
             </motion.div>
           </div>
         </header>
+
+        <section className="px-4 pb-16" id="hosted-products">
+          <div className="container mx-auto max-w-7xl">
+            <div className="mb-8 text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gold">Hosted products</p>
+              <h2 className="text-3xl font-bold md:text-5xl">Start within the public allowance. Scale when needed.</h2>
+              <p className="mx-auto mt-4 max-w-3xl text-sm text-muted-foreground">
+                These limits apply to infrastructure operated by APEX. Offline verification and self-hosted use remain free and independent.
+                The same products are available here and on external marketplaces — buy through whichever channel you already use.
+              </p>
+            </div>
+            <HostedTiers />
+          </div>
+        </section>
 
         <section className="px-4 pb-16">
           <div className="container mx-auto max-w-7xl grid md:grid-cols-3 gap-4">
@@ -296,12 +314,9 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
             </div>
 
             <p className="text-xs text-muted-foreground text-center mt-8 max-w-3xl mx-auto">
-              The commercial tiers previously published here — per-unit prices, outcome-priced
-              products and subscriptions — were withdrawn. What remains is a free public commons and
-              a paid API key that raises the daily sealing cap, on{" "}
-              <Link to="/upgrade" className="text-gold hover:underline">/upgrade</Link>. Every
-              withdrawal is dated on the{" "}
-              <Link to="/corrections" className="text-gold hover:underline">corrections register</Link>.
+              Independent verification is not a product and remains free forever. APEX-hosted capacity
+              beyond the public allowance is an operated product, arranged directly. Historical changes
+              remain dated on the <Link to="/corrections" className="text-gold hover:underline">corrections register</Link>.
             </p>
           </div>
         </section>

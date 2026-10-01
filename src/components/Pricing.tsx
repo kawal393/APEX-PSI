@@ -6,7 +6,8 @@ import { FREE_ACCESS_STATEMENT } from "@/lib/commerce";
 
 const included = [
   "Client-side SHA-256 sealing of any file (/seal, /pramaan)",
-  "Public hash verification portal and REST API",
+  "Public hosted issuance: 20 receipts per minute, 100 per day",
+  "Independent verification: unlimited and free forever",
   "Verifier source — MIT, TypeScript and Python, in the repository",
   "Compliance-Receipt HTTP header (draft-singh-psi-http — in preparation, not yet filed)",
   "Vendor transparency console (/registry/check)",
@@ -27,7 +28,7 @@ const Pricing = () => {
             Access to the standard
           </p>
           <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
-            The Standard is <span className="text-gold-gradient">Free</span>. Forever.
+            Verification is <span className="text-gold-gradient">Free</span>. Forever.
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             {FREE_ACCESS_STATEMENT}
@@ -50,6 +51,9 @@ const Pricing = () => {
             </Button>
             <Button variant="heroOutline" size="lg" asChild>
               <Link to="/verify">Verify a hash</Link>
+            </Button>
+            <Button variant="heroOutline" size="lg" asChild>
+              <Link to="/products">View hosted products</Link>
             </Button>
           </div>
         </div>

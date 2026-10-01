@@ -42,6 +42,13 @@ const ENTRIES = [
       "The components are deleted, the affiliate disclaimer is replaced by a plain statement that no referral, affiliate or commission programme exists, and the deployment cards no longer offer white-label infrastructure or describe Apex as a certifier. The operator wall is empty by design and fills only when a published receipt recomputes.",
     undertaking:
       "A removal is recorded here only when it is live, not when it is written. Until a change is deployed it is described as pending.",
+    date: "29 September 2026",
+    said:
+      "The site used blanket language saying every APEX-hosted service was free without limit, while the live receipt API enforced a public allowance.",
+    now:
+      "Independent verification and self-hosted use remain free. The public APEX-hosted allowance is 20 receipts per minute and 100 per day; Builder, Scale and Institutional operated products provide higher capacity by direct agreement.",
+    undertaking:
+      "Licensing freedom and hosted-service capacity are stated separately. A free verifier is never presented as unlimited use of APEX-operated infrastructure.",
   },
   {
     date: "3 September 2026",

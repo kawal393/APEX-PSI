@@ -972,6 +972,36 @@ export type Database = {
         }
         Relationships: []
       }
+      notary_public_usage: {
+        Row: {
+          created_at: string
+          receipts_used: number
+          updated_at: string
+          usage_day: string
+          visitor_digest: string
+          window_start: string
+          window_used: number
+        }
+        Insert: {
+          created_at?: string
+          receipts_used?: number
+          updated_at?: string
+          usage_day: string
+          visitor_digest: string
+          window_start?: string
+          window_used?: number
+        }
+        Update: {
+          created_at?: string
+          receipts_used?: number
+          updated_at?: string
+          usage_day?: string
+          visitor_digest?: string
+          window_start?: string
+          window_used?: number
+        }
+        Relationships: []
+      }
       ots_proofs: {
         Row: {
           bitcoin_block_height: number | null
@@ -2330,6 +2360,15 @@ export type Database = {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
+        }
+        Returns: boolean
+      }
+      reserve_public_notary_quota: {
+        Args: {
+          p_count: number
+          p_daily_limit?: number
+          p_minute_limit?: number
+          p_visitor_digest: string
         }
         Returns: boolean
       }

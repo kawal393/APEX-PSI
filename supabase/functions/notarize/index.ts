@@ -9,19 +9,6 @@ const corsHeaders = {
 
 const RATE_LIMIT_PER_MINUTE = 20;
 const FREE_DAILY_LIMIT = 100;
-const rateLimitCache = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(key: string, limit: number): { allowed: boolean; remaining: number } {
-  const now = Date.now();
-  const record = rateLimitCache.get(key);
-  if (!record || now > record.resetAt) {
-    rateLimitCache.set(key, { count: 1, resetAt: now + 60000 });
-    return { allowed: true, remaining: limit - 1 };
-  }
-  if (record.count >= limit) return { allowed: false, remaining: 0 };
-  record.count++;
-  return { allowed: true, remaining: limit - record.count };
-}
 
 async function hashSHA256(data: string): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(data));
@@ -83,14 +70,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const clientIP = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-    const rl = checkRateLimit(clientIP, RATE_LIMIT_PER_MINUTE);
-    if (!rl.allowed) {
-      return new Response(JSON.stringify({ error: "Rate limit exceeded", retry_after_seconds: 60 }), {
-        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" }
-      });
-    }
-
     const body = await req.json();
     const { decision, model_id, context, predicate } = body;
 
@@ -160,6 +139,26 @@ Deno.serve(async (req) => {
           await supabase.from("notary_api_keys").update({ daily_used: keyData.daily_used + 1 }).eq("id", keyData.id);
         }
         userId = keyData.user_id;
+      }
+    }
+
+    if (tier === "free") {
+      const clientIP = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+      const visitorDigest = await hashSHA256(`${supabaseKey}|${clientIP}`);
+      const { data: reserved, error: quotaError } = await supabase.rpc("reserve_public_notary_quota", {
+        p_visitor_digest: visitorDigest, p_count: 1,
+        p_daily_limit: FREE_DAILY_LIMIT, p_minute_limit: RATE_LIMIT_PER_MINUTE,
+      });
+      if (quotaError) {
+        console.error("[Notary] Quota check failed:", quotaError);
+        return new Response(JSON.stringify({ error: "Public capacity temporarily unavailable" }), {
+          status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      }
+      if (!reserved) {
+        return new Response(JSON.stringify({ error: "Public allowance reached", daily_limit: FREE_DAILY_LIMIT, minute_limit: RATE_LIMIT_PER_MINUTE }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" }
+        });
       }
     }
 

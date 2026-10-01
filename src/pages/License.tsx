@@ -26,7 +26,7 @@ const License = () => {
         <title>PSI Licence — Free to Verify, Free to Seal — Apex PSI — Universal Verification Protocol</title>
         <meta
           name="description"
-          content="APEX PSI licensing: the verifier is MIT and free forever; sealing is free for all use including commercial and institutional, at any scale. Reserved: the APEX marks and building a competing seal generator."
+          content="APEX PSI licensing: independent verification and self-hosted sealing are free; the public APEX-hosted service has a limited allowance. Reserved: the APEX marks and building a competing seal generator."
         />
         <link rel="canonical" href="https://ai-governance-standard.com/license" />
       </Helmet>
@@ -42,7 +42,8 @@ const License = () => {
           </h1>
           <p className="mt-6 max-w-2xl text-muted-foreground">
             The rules of verification belong to everyone, and so does the engine.
-            Anyone may verify a PSI seal, and anyone may produce one, anywhere, forever, at no cost.
+            Anyone may verify a PSI seal, and anyone may produce one independently, anywhere, forever,
+            at no cost. Use of APEX-operated infrastructure is a separate hosted service with capacity limits.
             What stays reserved is the APEX marks and the right to build a competing seal generator on the schema.
           </p>
         </section>
@@ -88,7 +89,8 @@ const License = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               {[
                 "Free for personal, educational, journalistic and research sealing",
-                "Commercial, government and institutional sealing: free - no royalty, no fee",
+                "Commercial, government and institutional self-hosted sealing: free — no royalty or fee",
+                "APEX-hosted issuance: 20 receipts per minute and 100 per day in the public allowance",
                 "Click-through acceptance at the point of use — recorded inside every seal",
                 "Outputs are AS-IS mathematical statements, never a certification of fact",
               ].map((t) => (
@@ -207,7 +209,8 @@ verified, not asserted; trust the math, not the maker.`}
               (in formation) as perpetual steward, on the binding condition that verification remains MIT
               and free forever, that sealing remains free for all use at any scale, that the schema is
               never narrowed in a way that breaks existing seals, and that the APEX marks remain reserved
-              and may not be applied to any product without a written licence. The terms survive the author.
+              and may not be applied to any product without a written licence. These licence rights do not
+              promise unlimited use of APEX-hosted infrastructure. The terms survive the author.
             </p>
             <Link to="/foundation" className="text-gold text-sm hover:underline mt-3 inline-block">
               Foundation charter →
