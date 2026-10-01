@@ -15,6 +15,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { SITE_URL } from "@/lib/site";
+import HostedTiers from "@/components/HostedTiers";
 import { FREE_ACCESS_STATEMENT, TRANSPARENCY_RECEIPT_LABEL } from "@/lib/commerce";
 
 type Capability = {
