@@ -126,6 +126,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] text-muted-foreground font-mono">
             <Link to="/registry" className="hover:text-gold">Registry</Link>
             <span className="text-border">·</span>
+            <Link to="/verticals" className="hover:text-gold">Verticals</Link>
             <Link to="/ecosystem" className="hover:text-gold">Ecosystem</Link>
             <span className="text-border">·</span>
             <Link to="/operate" className="hover:text-gold">Operate at scale</Link>

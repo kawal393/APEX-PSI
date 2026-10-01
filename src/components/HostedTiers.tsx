@@ -26,7 +26,7 @@ const HostedTiers = ({ currentTier }: { currentTier?: string }) => {
       if (error) throw error;
       if (data?.error) throw new Error(String(data.error));
       if (data?.url) {
-        window.open(data.url as string, "_blank", "noopener,noreferrer");
+        window.location.href = data.url as string;
       } else {
         throw new Error("Checkout could not be started.");
       }

@@ -33,7 +33,7 @@ const moreGroups: { title: string; links: MoreLink[] }[] = [
     { label: "Timeline", href: "/timeline" }, { label: "Explorer", href: "/explorer" },
   ]},
   { title: "About", links: [
-    { label: "Ecosystem", href: "/ecosystem" }, { label: "Governance", href: "/governance" }, { label: "Foundation", href: "/foundation" },
+    { label: "Verticals", href: "/verticals" }, { label: "Ecosystem", href: "/ecosystem" }, { label: "Governance", href: "/governance" }, { label: "Foundation", href: "/foundation" },
     { label: "Founding Members", href: "/founding" }, { label: "Articles", href: "/articles" }, { label: "Partners", href: "/partners" },
     { label: "Regulator", href: "/regulator" }, { label: "Cite", href: "/cite" },
   ]},
