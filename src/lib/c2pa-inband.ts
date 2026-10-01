@@ -113,8 +113,14 @@ function u32le(n: number): Uint8Array {
 }
 
 export async function sha256Hex(bytes: Uint8Array | ArrayBuffer): Promise<string> {
-  const buf = bytes instanceof Uint8Array ? (bytes.slice().buffer as ArrayBuffer) : bytes;
-  const d = await crypto.subtle.digest("SHA-256", buf);
+  // Copy byte by byte into a buffer this module allocated. `instanceof` is unreliable across
+  // realms (CI runs these paths under jsdom, where the caller's typed array comes from another
+  // realm), and handing that foreign buffer to SubtleCrypto makes digest() reject it.
+  const source = bytes instanceof ArrayBuffer ? new Uint8Array(bytes) : (bytes as Uint8Array);
+  const length = source.length ?? 0;
+  const copy = new Uint8Array(length);
+  for (let i = 0; i < length; i++) copy[i] = source[i] & 255;
+  const d = await crypto.subtle.digest("SHA-256", copy);
   return Array.from(new Uint8Array(d)).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
