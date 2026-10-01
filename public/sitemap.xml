@@ -51,6 +51,11 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/conformance</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -244,6 +249,11 @@
     <loc>https://ai-governance-standard.com/partner</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/partners</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ai-governance-standard.com/pledge</loc>
