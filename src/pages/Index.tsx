@@ -27,6 +27,7 @@ import EnforcementStrip from "@/components/EnforcementStrip";
 import UniversalTicker from "@/components/UniversalTicker";
 import HomeSealStrip from "@/components/HomeSealStrip";
 import MelbourneTestPlaque from "@/components/MelbourneTestPlaque";
+import PlainLanguageIntro from "@/components/PlainLanguageIntro";
 import VerticalsMatrix from "@/components/VerticalsMatrix";
 import GrandHero from "@/components/GrandHero";
 import ConstitutionLaws from "@/components/ConstitutionLaws";
@@ -91,6 +92,7 @@ const Index = () => {
         <Navbar />
         <div id="top" />
         <GrandHero />
+        <PlainLanguageIntro />
         <InstantSeal />
         <CoreDeclaration />
         <Hero />

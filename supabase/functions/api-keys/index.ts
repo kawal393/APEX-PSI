@@ -25,11 +25,12 @@ Deno.serve(async (req) => {
     if (userErr || !user) return json({ error: "Authentication required" }, 401);
 
     const supabase = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const { action } = await req.json().catch(() => ({ action: "list" } as Record<string, string>));
+    const body = (await req.json().catch(() => ({}))) as Record<string, unknown>;
+    const action = typeof body.action === "string" ? body.action : "list";
 
     if (action === "revoke") {
-      const { id } = await req.json().catch(() => ({}) as Record<string, string>);
-      if (!id) return json({ error: "Missing key id" }, 400);
+      const id = typeof body.id === "string" ? body.id : "";
+      if (!/^[0-9a-f-]{36}$/i.test(id)) return json({ error: "Missing key id" }, 400);
       const { error } = await supabase
         .from("notary_api_keys")
         .update({ revoked: true })

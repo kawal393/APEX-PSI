@@ -13,29 +13,32 @@ import apexLogo from "@/assets/apex-logo.png";
 
 type MoreLink = { label: string; href: string; external?: boolean };
 const moreGroups: { title: string; links: MoreLink[] }[] = [
-  { title: "Technology", links: [
-    { label: "Architecture", href: "/architecture" }, { label: "SDK", href: "/sdk" }, { label: "API", href: "/api" },
-    { label: "MCP", href: "/mcp" }, { label: "Post-Quantum", href: "/quantum" }, { label: "Lattice", href: "/lattice" },
-    { label: "Robustness", href: "/robustness" }, { label: "In-Band", href: "/inband" }, { label: "Hardening", href: "/hardening" },
-    { label: "Engine", href: "/engine" }, { label: "Open Source", href: "https://github.com/kawal393/APEX-PSI", external: true },
+  { title: "Standard & Protocol", links: [
+    { label: "Protocol", href: "/protocol" }, { label: "Verticals", href: "/verticals" }, { label: "Standard", href: "/standard" },
+    { label: "Spec Shelf", href: "/specs" }, { label: "Architecture", href: "/architecture" }, { label: "Post-Quantum", href: "/quantum" },
+    { label: "Conformance", href: "/conformance" }, { label: "Open Source", href: "https://github.com/kawal393/APEX-PSI", external: true },
+  ]},
+  { title: "Verify & Evidence", links: [
+    { label: "Verify", href: "/verify" }, { label: "Explorer", href: "/explorer" }, { label: "Live Ledger", href: "/live" },
+    { label: "Registry", href: "/registry" }, { label: "Genesis", href: "/genesis" }, { label: "Reference", href: "/reference" },
+    { label: "Declaration", href: "/declaration" }, { label: "Case 001", href: "/case-001" }, { label: "Case 002", href: "/case-002" },
+    { label: "Case 003", href: "/case-003" }, { label: "Challenge", href: "/challenge" }, { label: "Timeline", href: "/timeline" },
+    { label: "Impact", href: "/impact" }, { label: "Witness Wall", href: "/witness-wall" },
+  ]},
+  { title: "Developers", links: [
+    { label: "API", href: "/api" }, { label: "SDK", href: "/sdk" }, { label: "MCP", href: "/mcp" }, { label: "Engine", href: "/engine" },
+    { label: "Lattice", href: "/lattice" }, { label: "Robustness", href: "/robustness" }, { label: "In-Band", href: "/inband" },
+    { label: "Hardening", href: "/hardening" }, { label: "Plans", href: "/products" },
   ]},
   { title: "Compliance", links: [
     { label: "EU AI Act", href: "/eu-ai-act" }, { label: "EU Code", href: "/eu-code" }, { label: "Regulations", href: "/regulations" },
     { label: "Standards", href: "/standards" }, { label: "PSI-05", href: "/standards/psi-05" }, { label: "Portfolio", href: "/portfolio" },
-    { label: "Spec Shelf", href: "/specs" }, { label: "Conformance", href: "/conformance" },
-    { label: "Operators", href: "/partners" },
+    { label: "Regulator", href: "/regulator" },
   ]},
-  { title: "Evidence", links: [
-    { label: "Live Ledger", href: "/live" }, { label: "Registry", href: "/registry" }, { label: "Genesis", href: "/genesis" },
-    { label: "Reference", href: "/reference" }, { label: "Declaration", href: "/declaration" },
-    { label: "Case 001", href: "/case-001" }, { label: "Case 002", href: "/case-002" }, { label: "Case 003", href: "/case-003" },
-    { label: "Challenge", href: "/challenge" }, { label: "Impact", href: "/impact" }, { label: "Witness Wall", href: "/witness-wall" },
-    { label: "Timeline", href: "/timeline" }, { label: "Explorer", href: "/explorer" },
-  ]},
-  { title: "About", links: [
-    { label: "Verticals", href: "/verticals" }, { label: "Ecosystem", href: "/ecosystem" }, { label: "Governance", href: "/governance" }, { label: "Foundation", href: "/foundation" },
-    { label: "Founding Members", href: "/founding" }, { label: "Articles", href: "/articles" }, { label: "Partners", href: "/partners" },
-    { label: "Regulator", href: "/regulator" }, { label: "Cite", href: "/cite" },
+  { title: "Organisation", links: [
+    { label: "Ecosystem", href: "/ecosystem" }, { label: "Governance", href: "/governance" }, { label: "Foundation", href: "/foundation" },
+    { label: "Founding Members", href: "/founding" }, { label: "Operators & Partners", href: "/partners" }, { label: "Articles", href: "/articles" },
+    { label: "Cite", href: "/cite" },
   ]},
   { title: "Legal", links: [
     { label: "Privacy", href: "/privacy" }, { label: "Terms", href: "/terms" }, { label: "Cookies", href: "/cookies" },
