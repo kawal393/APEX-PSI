@@ -112,8 +112,7 @@ const capabilities: Capability[] = [
     name: "Protocol Infrastructure",
     who: "Enterprises, governments and regulated operators keeping their own evidence.",
     summary:
-      "The protocol and verifier remain independently usable. APEX also operates managed infrastructure for institutions that need volume and service commitments. Use of the protocol and the
-    verifier stays free; the APEX name is licensed in writing, never a finding.",
+      "The protocol and verifier remain independently usable. APEX also operates managed infrastructure for institutions that need volume and service commitments. Use of the protocol and the verifier stays free; the APEX name is licensed in writing, never a finding.",
     features: [
       "Signed, verifiable records with Merkle proofs",
       "Self-hostable verification — the source is in the repository",

@@ -532,7 +532,7 @@ const Paper = () => {
                   A Cryptographic Protocol for Verifiable
                   AI Regulatory Compliance},
   year         = {2026},
-  howpublished = {\url{https://ai-governance-standard.com/paper}},
+  howpublished = {\\url{https://ai-governance-standard.com/paper}},
   publisher    = {Self-published technical preprint},
   note         = {Not peer reviewed. No DOI issued.
                   Companion IETF draft: draft-singh-psi,
