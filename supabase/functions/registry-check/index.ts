@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
       present: !!receiptHeader,
       detail: receiptHeader
         ? `Header present: ${receiptHeader.slice(0, 180)}`
-        : "No Compliance-Receipt header on the root response (draft-singh-psi-http-01).",
+        : "No Compliance-Receipt header on the root response (specification draft-singh-psi-http, not yet filed).",
     });
 
     // 3. Trust anchor

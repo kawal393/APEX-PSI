@@ -25,7 +25,8 @@ npx -y apex-psi-mcp
 
 ## Standards
 RFC 8785 (JCS), SHA-256 (FIPS 180-4), Ed25519 (RFC 8032), ML-DSA-65 (FIPS 204),
-LMS-W4-SHA256 (NIST SP 800-208), draft-singh-psi-00, draft-singh-psi-http-01.
+LMS-W4-SHA256 (NIST SP 800-208). IETF Internet-Draft draft-singh-psi rev 01 (Informational, not a standard);
+draft-singh-psi-http is in preparation and has not been filed. Canonical seal schema: PSI-SEAL/1.0.0.
 
 ## Trust anchor
 https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json

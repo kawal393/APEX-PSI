@@ -8,6 +8,42 @@ const DESCRIPTION =
 
 const ENTRIES = [
   {
+    date: "1 October 2026",
+    said:
+      "The preprint and the research pages presented an arXiv identifier, a DOI, peer review and third-party validation that do not exist, and quoted O(1) tamper detection, a 3-node MPC and zero-knowledge commitments as live capability.",
+    now:
+      "The paper is labelled a self-hosted preprint, not peer reviewed, with no identifier and no conference submission. Tamper detection is stated as a chain recompute. The quorum is described as redundant nodes operated by Apex, not multi-party computation. Every endorsement sentence in the source list is deleted and the list is retitled Sources & Related Reading, with an explicit note that none of those sources reviewed, tested or adopted APEX PSI.",
+    undertaking:
+      "No capability, citation, identifier or third-party endorsement appears on this site unless the artefact resolves and the code that implements it can be pointed to.",
+  },
+  {
+    date: "1 October 2026",
+    said:
+      "The specification page published a normative-looking receipt structure with fields (receipt_id, payload.context, signature.suite, inclusion.path) that no emitter or verifier in the repository produces or reads.",
+    now:
+      "The published structure is the real one: the PSI-SEAL/1.0.0 seal envelope, with the field set the code actually builds and checks, and a note that action receipts returned by /v1/notarize carry a smaller different field set.",
+    undertaking:
+      "Every public schema example on this site is taken from the shipped code that generates it, not written to describe the idea.",
+  },
+  {
+    date: "1 October 2026",
+    said:
+      "Fourteen public surfaces, including the machine-readable /.well-known/apex-protocol.json, described draft-singh-psi-http-01 as a filed IETF draft and pointed at a datatracker record that returns 404. Others cited draft-singh-psi-00, which revision 01 superseded.",
+    now:
+      "The Compliance-Receipt header is everywhere labelled a working specification in preparation that has not been filed, with no datatracker link. The filed document is named correctly: draft-singh-psi revision 01, individual submission, Informational, expiring 3 March 2027, not an approved standard. Citations were rebuilt to match.",
+    undertaking:
+      "A draft is called filed only when its datatracker URL returns 200, and that is re-checked before any revision is published.",
+  },
+  {
+    date: "1 October 2026",
+    said:
+      "The deployed build still carried a referral and commission programme, an unlock-by-inviting gate, a partner earnings and white-label console, and a marketing card offering white-label protocol infrastructure, after this page recorded their removal.",
+    now:
+      "The components are deleted, the affiliate disclaimer is replaced by a plain statement that no referral, affiliate or commission programme exists, and the deployment cards no longer offer white-label infrastructure or describe Apex as a certifier. The operator wall is empty by design and fills only when a published receipt recomputes.",
+    undertaking:
+      "A removal is recorded here only when it is live, not when it is written. Until a change is deployed it is described as pending.",
+  },
+  {
     date: "3 September 2026",
     said:
       "The founding page published a finder fee: 20% on introductions to litigation funders.",
@@ -119,6 +155,51 @@ const ENTRIES = [
       "All use of the sealing engine is free of charge, at any scale, in perpetuity - personal, commercial, government or institutional. The royalty tiers are withdrawn, the gate records free terms, the seven payment functions are deleted from the repository, and the privacy policy states that no payment information is collected because no payment processor exists. What remains reserved is copyright in the schema (no competing seal generator) and the APEX marks. No charge was ever made under any of the withdrawn terms.",
     undertaking:
       "If a licence file and a page ever disagree about money, the page is treated as wrong until the licence file is changed, and the change is listed here with its date.",
+  },
+  {
+    date: "30 September 2026",
+    said:
+      "The correction of 3 September 2026 closed with the sentence \u201cNo price, tier, subscription, purchase offer or checkout appears anywhere on the site.\u201d",
+    now:
+      "That sentence stopped being true when the metered door opened. /upgrade offers two paid API keys (Builder $11/mo, Scale $55/mo) that raise the daily sealing cap from the free 100 to 2,000 and 20,000. Checking any published receipt stays free for everyone, with no account and no key, and the verifier, the schema and the specification stay free. Nothing that changes a finding, a result or a record is sold.",
+    undertaking:
+      "The withdrawal of 3 September was of outcome-priced and per-proof commerce, and it stands. Any future price is described on the day it ships, in the same words on every page, and never announced as an absence.",
+  },
+  {
+    date: "30 September 2026",
+    said:
+      "This site carried a partner programme promising \u201cEarn 50% Commission on Every Subscription\u201d, a referral link with commission tracking, a payout-email setting and a white-label portal for restyling the platform.",
+    now:
+      "The commission programme, the referral payouts and the white-label portal are withdrawn and removed from the code. A partner takes an operator reference, which attributes their own seals to them and pays nothing. White-labelling is refused on principle: altering the presentation of a receipt breaks what the receipt is for. The badge and the APEX names are licensed as published, in writing.",
+    undertaking:
+      "No one is paid to speak for this protocol, and no one is paid to route traffic to it. Promotion is earned by a checkable receipt, never by a share of revenue.",
+  },
+  {
+    date: "1 October 2026",
+    said:
+      "The correction of 4 September 2026 stated that \u201cEvery install instruction now clones the repository and installs from the local path, and each package is marked \u2018not published\u2019\u201d.",
+    now:
+      "That sentence was not true when it was published, and it stayed untrue for twenty-seven days. Six live surfaces still told developers to install packages that no registry serves: /verify showed two registry cards for @apex/psi-verifier and psi-verifier (PyPI) captioned \u201cFree forever. MIT. No permission required\u201d, /how-to-use printed npm i @apex/psi-hono, /license and /pramaan named @apex/psi-verifier as an installable package, /universal-seal put the dead package name inside machine-readable JSON that a partner's tool would parse, and the parity widget on /verify told visitors to reproduce its columns with require('@apex/psi-verifier'). All nine npm and PyPI names were re-probed against the registries on 1 October 2026: every @apex/* name, psi-verifier and apex-psi return 404. The only thing that resolves is the source in the repository and apex-psi-mcp on npm. Each of the six surfaces now clones from the repository or names what actually installs, and /sdk says in its own description that the SDKs are source and not published.",
+    undertaking:
+      "An undertaking recorded here is executed the same day it is written, or it is not written. Before any install command ships, it is run against the public registry, and the registry's own answer \u2014 not this site \u2014 decides whether the sentence appears.",
+  },
+  {
+    date: "1 October 2026",
+    said:
+      "The cross-language parity widget on /verify compared two columns under the heading \u201cVerified, not asserted\u201d, implying both sides had just been computed.",
+    now:
+      "Only the left column is computed in your browser. The right column is a recorded Python result stored as a string in the page: no Python ran there, and no Apex package was installed to make it run. The columns are now labelled \u201cTypeScript \u2014 recomputed live in this browser\u201d and \u201cPython \u2014 recorded output, not run here\u201d, and the widget says plainly that agreement between them is not proof a Python process ran just now. The reproducible version of the claim lives at /conformance, which fetches the same golden vectors the Python suite produced and recomputes every digest in the visitor's browser, showing expected against got on any mismatch rather than hiding it.",
+    undertaking:
+      "A widget shows what it actually does at the moment you look at it. A recording is labelled a recording. If a claim needs a second machine to be true, the page says so or the claim comes off.",
+  },
+  {
+    date: "1 October 2026",
+    said:
+      "The correction of 4 September 2026 said the protocol's zero-knowledge claims were fixed by labelling the BN128 code experimental everywhere.",
+    now:
+      "The pages were fixed; the machine layer behind them was not. Found and corrected on 1 October: the chat assistant's own instructions told it that PSI uses \u201cZero-Knowledge proofs\u201d and a \u201cZK-Oracle\u201d, so it was answering visitors with a capability that does not exist - those lines now state the implemented stack and instruct it to deny any ZK capability if asked; the lead follow-up email carried a \u201cZero-Knowledge - Prove compliance without revealing your models\u201d bullet, now replaced by what the record actually does; /sdk documented a zk_mode parameter on POST /prove-action, and the endpoint's source accepts only commit_id, so the parameter, its description and its dedicated feature card are gone; /auth said \u201cProtected by zero-knowledge cryptographic verification\u201d, which was never true of a password form; and the same overclaim sat in three unused components still readable in the public repository. Also corrected the same day in the same mail: a \u201cdeadline is August 2, 2026 - act now\u201d line written after that date had passed, a \u201cPlans start at $499/mo\u201d price that exists nowhere on this site, an unsubstantiated \u201cWe've helped companies across finance, healthcare and tech\u201d, JUDGE mode described as \u201csimulating regulatory inspection\u201d, and a \u201cReply STOP to unsubscribe\u201d instruction with no system behind it. The site's own pages (Architecture, Protocol, Paper, IETF draft, Engine) were already correct: this was the copy nobody reads aloud, where the old claims had survived.",
+    undertaking:
+      "A withdrawn claim is searched for in the whole repository, including edge functions, mail templates, assistant instructions and unused components - not just the pages that were edited last time. The grep, not the memory, decides whether a claim is gone.",
   },
 ];
 

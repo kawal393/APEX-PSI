@@ -63,10 +63,13 @@ APEX PSI records and verifies technical evidence about declared AI actions. It s
 ### Core Technology: PSI (Provable Stateful Integrity)
 PSI is built on three technical pillars:
 1. **Policy Compiler (LDSL)** — Legal Domain-Specific Language that translates EU AI Act articles into mathematical compliance predicates
-2. **Context Oracle (ZK-Oracle)** — Tamper-proof data feeds using Zero-Knowledge proofs, proving compliance without revealing proprietary AI models
+2. **Context Oracle** — Tamper-evident data feeds: each input is hashed, signed and recorded, so the context behind a verdict can be checked later
 3. **Commit Layer** — Records state changes and their evidence through the Commit-Challenge-Prove protocol
 
-PSI combines Merkle Trees (tamper-proof audit trails), Zero-Knowledge Proofs (privacy-preserving verification), and the Commit-Challenge-Prove Protocol (three-phase verification: commit state → random challenge → prove compliance).
+PSI combines Merkle Trees (tamper-evident audit trails) and the Commit-Challenge-Prove Protocol (three-phase verification: commit state → random challenge → prove compliance). The cryptography is SHA-256 hashing, Ed25519 signatures and Merkle inclusion proofs.
+
+### What PSI is NOT
+There is no zero-knowledge system here: no ZK-SNARK, no ZKML, no circuit, no trusted setup. If a user asks about zero-knowledge proofs, say plainly that this protocol does not use them and that the BN128 components in the repository are an experimental demonstration, not a privacy guarantee. Never claim a capability that is not implemented.
 
 ### TRIO Verification Modes
 - **SHIELD Mode** — Defensive compliance monitoring. Continuous background checks. Best for maintaining compliance.

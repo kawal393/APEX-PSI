@@ -8,17 +8,17 @@ const pillars = [
     subtitle: "LDSL",
     headline: "Legal Domain-Specific Language",
     description:
-      "Translates regulatory requirements into mathematically verifiable compliance rules. Legal text becomes executable code.",
-    features: ["Mathematical Compliance Rules", "Regulatory Text → Executable Code", "Automated Policy Validation", "Article-Level Precision"],
+      "Translates regulatory requirements into machine-checkable compliance rules. Legal text becomes executable checks.",
+    features: ["Rule-Based Checks", "Regulatory Text → Executable Rules", "Automated Policy Validation", "Article-Level Mapping"],
   },
   {
     icon: Eye,
     title: "CONTEXT ORACLE",
-    subtitle: "ZK-Oracle",
+    subtitle: "Oracle Feed",
     headline: "Tamper-Evident Data Feeds",
     description:
-      "Provides verified, tamper-evident contextual data to the compliance engine. Every input is cryptographically attested.",
-    features: ["Cryptographic Attestation", "Tamper-Evident Data Feeds", "Real-Time Context Verification", "Zero-Knowledge Compatible"],
+      "Provides signed, dated contextual data to the compliance engine, so the context behind a verdict can be checked later.",
+    features: ["Signed Inputs", "Tamper-Evident Data Feeds", "Dated Context", "Publicly Re-checkable"],
   },
   {
     icon: Layers,

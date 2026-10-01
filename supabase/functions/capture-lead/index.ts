@@ -56,7 +56,7 @@ function packEmail(name: string | null): { subject: string; html: string } {
           <li><strong>Public trust anchor</strong> — verify our signatures offline: <a href="${SITE}/.well-known/apex-psi-trust-anchor.json">trust anchor JSON</a></li>
           <li><strong>Seal a file yourself</strong> (client-side, nothing uploaded): <a href="${SITE}/pramaan">${SITE}/pramaan</a></li>
         </ul>
-        <p>The protocol is MIT open source and published as IETF draft-singh-psi-00. If you want to route your own systems through it, the API docs are at <a href="${SITE}/api">${SITE}/api</a>.</p>
+        <p>The verification code is MIT-licensed and readable in the public repository; the sealing engine is free to use under the APEX engine licence. The protocol is described in IETF Internet-Draft <strong>draft-singh-psi</strong>, revision 01 — an individual submission, not an approved standard. If you want to route your own systems through it, the API docs are at <a href="${SITE}/api">${SITE}/api</a>.</p>
         <p style="color:#666;font-size:13px">You received this because you requested the pack at ${SITE}. Reply "remove" and you will not hear from us again.</p>
       </div>`,
   };

@@ -9,24 +9,24 @@ interface UpgradePromptProps {
 
 const MESSAGES: Record<string, { title: string; description: string }> = {
   verification_limit: {
-    title: "Verification Limit Reached",
+    title: "Hosted Daily Cap Reached",
     description:
-      "This hosted account has used its verifications for this month. Nothing is sold: the verifier source is MIT in the repository, so you can run unlimited verifications locally.",
+      "This hosted account has used its verifications for the period. Checking any published receipt is always free and needs no account - use /verify. A paid key on /upgrade raises the hosted daily cap, and the verifier source stays free to run yourself.",
   },
   certificate_limit: {
-    title: "Certificate Limit Reached",
+    title: "Certificate Cap Reached",
     description:
-      "This hosted account has used its certificates for this month. There is no paid tier; the limit is a capacity limit on the hosted service.",
+      "This hosted account has used its certificates for this month. A paid key on /upgrade raises the daily sealing cap. No price buys a finding, a result or a removal.",
   },
   mode_locked: {
     title: "Mode Not Available On This Account",
     description:
-      "SHIELD mode is available here. SWORD and JUDGE modes are not enabled for this account. There is no purchase that changes this.",
+      "SHIELD mode is available here. SWORD and JUDGE modes are not enabled for this account. No purchase changes what a sealed record says.",
   },
   monitoring: {
     title: "Continuous Monitoring — Not Enabled",
     description:
-      "Automated daily compliance scans are not enabled for this account. This is a capacity setting, not a paid feature.",
+      "Automated daily compliance scans are not enabled for this account. This is a capacity setting; a key on /upgrade raises the sealing cap, never the outcome.",
   },
   audit_export: {
     title: "Signed Export — Not Enabled",

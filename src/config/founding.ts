@@ -82,14 +82,14 @@ export const CHARTER_LINES = [
 ];
 
 export const PUBLIC_PLAN = [
-  { when: "NOW", line: "The wall opens. Applications are reviewed personally." },
-  { when: "AT FIRST REVENUE", line: "The on-chain mirror completes certification." },
+  { when: "NOW", line: "The wall is open to any operator whose published receipt recomputes. Nothing is granted by application." },
+  { when: "AT FIRST REVENUE", line: "Every receipt issued stays resolvable. No revenue buys a finding and no mirror certifies anything." },
   { when: "AT FOUNDATION FORMATION", line: "Stewards are drawn from founding seats by sealed seniority." },
 ];
 
 export const DISCLAIMERS = [
   "Founding membership confers status and fee rights \u2014 not equity, not ownership, not a transferable right, not an expectation of return. The empire behind the standard remains independently owned and operated.",
-  "Referral commissions are disclosed affiliate fees earned only when a referred customer pays.",
+  "There is no referral, affiliate or commission programme. An operator reference earns nothing on anyone else's business.",
   "Timestamping cryptographic digests on public blockchains is a neutral recording act, not a financial service. Apex does not issue tokens, ever.",
 ];
 

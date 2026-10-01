@@ -29,7 +29,7 @@ const references = [
     category: "Regulation" as Category,
     title: "AI Act Technical Documentation: Article 11 & Annex IV",
     source: "AiActo — Feb 2026",
-    desc: "Complete guide to the 9 mandatory sections of technical documentation required for high-risk AI systems. The exact problem APEX automates.",
+    desc: "Guide to the mandatory sections of technical documentation required for high-risk AI systems under Article 11 and Annex IV. It describes the legal requirement; it says nothing about any particular tool.",
     url: "https://www.aiacto.eu/en/blog/documentation-technique-ai-act-article-11-annexe-iv",
   },
   {
@@ -45,7 +45,7 @@ const references = [
     category: "Regulation" as Category,
     title: "Comprehensive Guide to AI Laws Worldwide (2026)",
     source: "Sumsub — Dec 2025",
-    desc: "Global regulatory landscape: EU AI Act, US state bills, China's AI regulations, India's SGI mandate, Brazil, Canada, and 30+ jurisdictions. Every one needs verification infrastructure.",
+    desc: "Survey of AI rules across the EU, US states, China, India, Brazil, Canada and other jurisdictions. A map of requirements — it does not evaluate or mention any verification product.",
     url: "https://sumsub.com/blog/comprehensive-guide-to-ai-laws-and-regulations-worldwide/",
   },
   {
@@ -53,7 +53,7 @@ const references = [
     category: "Regulation" as Category,
     title: "AI Regulations Around the World: 2026 Edition",
     source: "GDPR Local",
-    desc: "Country-by-country breakdown of AI regulation status. Proves the compliance problem is global, not just European.",
+    desc: "Country-by-country breakdown of AI regulation status. Its subject is the breadth of the rules, not the adequacy of any response to them.",
     url: "https://gdprlocal.com/ai-regulations-around-the-world/",
   },
   {
@@ -61,7 +61,7 @@ const references = [
     category: "Regulation" as Category,
     title: "EU AI Act High-Risk Requirements: What Companies Need to Know",
     source: "Dataiku — Aug 2025",
-    desc: "Obligations for providers, deployers, importers, and distributors of high-risk AI. Every entity in the chain needs compliance tooling.",
+    desc: "Obligations for providers, deployers, importers, and distributors of high-risk AI. Summarises duties; it does not prescribe how they must be evidenced.",
     url: "https://www.dataiku.com/stories/blog/eu-ai-act-high-risk-requirements",
   },
   {
@@ -69,7 +69,7 @@ const references = [
     category: "Regulation" as Category,
     title: "EU AI Act Enforcement 2026: CCO's Complete Roadmap",
     source: "AI Governance Desk — Jan 2026",
-    desc: "\"The question is no longer whether your organization understands the law — it is whether you can prove compliance.\" The exact thesis behind APEX.",
+    desc: "\"The question is no longer whether your organization understands the law — it is whether you can prove compliance.\" A framing this site found useful; the article does not mention APEX PSI.",
     url: "https://aigovernancedesk.com/eu-ai-act-enforcement-2026-cco-roadmap/",
   },
   {
@@ -95,7 +95,7 @@ const references = [
     category: "Research" as Category,
     title: "opML: Optimistic Machine Learning on Blockchain",
     source: "arXiv:2401.17555 — Conway, So, Yu, Wong (2024)",
-    desc: "The foundational paper on optimistic verification for ML. Proves fraud-proof patterns work for ML inference. APEX extends this to regulatory compliance.",
+    desc: "Foundational paper on optimistic verification for ML inference using fraud-proof patterns. Related work: it does not describe or evaluate APEX PSI, and PSI contains no optimistic on-chain challenge.",
     url: "https://arxiv.org/abs/2401.17555",
   },
   {
@@ -103,7 +103,7 @@ const references = [
     category: "Research" as Category,
     title: "opp/ai: Optimistic Privacy-Preserving AI on Blockchain",
     source: "arXiv:2402.15006 — ORA Protocol (2024)",
-    desc: "Privacy-preserving AI verification using optimistic proofs. Validates the exact architecture APEX uses: prove compliance without exposing model weights.",
+    desc: "Privacy-preserving AI verification using optimistic proofs on blockchain. Related literature only. It validates nothing about APEX PSI, and PSI has no zero-knowledge or optimistic-proof component.",
     url: "https://arxiv.org/abs/2402.15006",
   },
   {
@@ -111,7 +111,7 @@ const references = [
     category: "Research" as Category,
     title: "zkAgent: Verifiable Agent Execution via ZK Proof",
     source: "ePrint 2026/199",
-    desc: "Latest research on verifiable AI agent execution using zero-knowledge proofs. Validates ZK approaches for AI compliance verification.",
+    desc: "IACR ePrint paper on verifiable agent execution using zero-knowledge proofs. Context for the field — APEX PSI implements no zero-knowledge proof and this paper does not evaluate it.",
     url: "https://eprint.iacr.org/2026/199",
   },
   {
@@ -119,7 +119,7 @@ const references = [
     category: "Research" as Category,
     title: "Zero Knowledge Proof AI in 2026: Verifiable AI Without Model Exposure",
     source: "Calibraint — 2026",
-    desc: "Comprehensive analysis of ZK-proof applications in AI. Privacy-preserving verification is no longer theoretical — it's production-ready.",
+    desc: "Vendor-authored overview of ZK-proof applications in AI. Not peer reviewed, and unrelated to APEX PSI, which implements no ZK proof and makes no privacy claim.",
     url: "https://www.calibraint.com/blog/zero-knowledge-proof-ai-2026",
   },
   {
@@ -127,7 +127,7 @@ const references = [
     category: "Research" as Category,
     title: "Zero-Knowledge Proofs for Privacy-Preserving Context Validation",
     source: "Security Boulevard — Mar 2026",
-    desc: "ZKPs enable organizations to prove compliance without exposing underlying data. Exactly what Articles 13 and 14 demand.",
+    desc: "Argument that zero-knowledge proofs can let an organisation substantiate a claim without disclosing raw data. Does not discuss APEX PSI, which implements no ZKP.",
     url: "https://securityboulevard.com/2026/03/zero-knowledge-proofs-for-privacy-preserving-context-validation/",
   },
   {
@@ -135,7 +135,7 @@ const references = [
     category: "Research" as Category,
     title: "Proofs of Autonomy: Scalable Verification of AI Autonomy",
     source: "OpenReview — Grigor, Schroeder de Witt, Martinovic",
-    desc: "Formal framework binding agent outputs to verifiable proofs. Proves hosts can silently tamper with models — unless cryptographic proofs exist.",
+    desc: "Framework for binding agent outputs to verifiable proofs; documents how a host can silently tamper with a model. Background reading, not validation of APEX PSI.",
     url: "https://openreview.net/pdf/3f6735f378d62f71825b8ce4a53b05988ac364a1.pdf",
   },
   {
@@ -143,7 +143,7 @@ const references = [
     category: "Research" as Category,
     title: "Simplifying Software Compliance: AI in Technical Documentation",
     source: "Empirical Software Engineering — Sovrano et al. (2025)",
-    desc: "Peer-reviewed study on using AI to draft AI Act technical documentation. Proves the documentation burden is so severe that automation is mandatory.",
+    desc: "Empirical study on using AI to draft AI Act technical documentation. Evidence that the documentation burden is heavy; it makes no claim about cryptographic ledgers or about APEX.",
     url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11965209/",
   },
   {
@@ -151,7 +151,7 @@ const references = [
     category: "Research" as Category,
     title: "Zero-Knowledge Proofs and New Laws Reshape US Privacy",
     source: "Grand Pinnacle Tribune — 2026",
-    desc: "ZKPs gain ground as sweeping privacy laws transform enforcement. Proves the verification paradigm is going global, not just EU.",
+    desc: "Newsletter item on zero-knowledge proofs and US privacy law. Says nothing about APEX PSI.", 
     url: "https://evrimagaci.org/gpt/zeroknowledge-proofs-and-new-laws-reshape-us-privacy-523124",
   },
   {
@@ -159,7 +159,7 @@ const references = [
     category: "Research" as Category,
     title: "Project VATA: Verifiable Human-AI Distinction with Groth16 ZK Proofs",
     source: "Medium — Mason (Feb 2026)",
-    desc: "Protocol verification framework using Groth16 proofs and on-chain anchoring. Independent validation of the exact architecture APEX implements.",
+    desc: "A different project by an unrelated author, built on Groth16 proofs and on-chain anchoring. It validates nothing here; APEX PSI implements no Groth16 verifier.",
     url: "https://medium.com/@lhmisme2011/project-vata-building-verifiable-human-ai-distinction-with-groth16-zero-knowledge-proofs-and-b87d182e5591",
   },
   {
@@ -167,7 +167,7 @@ const references = [
     category: "Research" as Category,
     title: "Algorithmic Assurance: How AI and Proofs Redefine Trust in 2026",
     source: "Verifyo — Dec 2025",
-    desc: "\"The era of manual audits is ending. 2026 marks the rise of algorithmic assurance.\" Third-party validation of our entire thesis.",
+    desc: "\"The era of manual audits is ending. 2026 marks the rise of algorithmic assurance.\" An opinion post; the author has never heard of APEX PSI, and a quoted phrase is not evidence.",
     url: "https://medium.com/@verifyo/algorithmic-assurance-how-ai-and-proofs-redefine-trust-in-2026-7d3552a58800",
   },
 
@@ -185,23 +185,19 @@ const references = [
     category: "Market" as Category,
     title: "Hidden Costs of AI Act Compliance: CFO Guide",
     source: "EU AI Risk (2025)",
-    desc: "The true financial landscape of compliance — consulting fees, documentation overhead, ongoing monitoring. The cost problem APEX eliminates.",
+    desc: "Breakdown of compliance cost: consulting fees, documentation overhead, ongoing monitoring. Figures are the author's estimate, not audited. (Link unreachable at check time: 30s timeout.)",
     url: "https://euairisk.com/resources/hidden-costs-ai-act-compliance-cfo-guide",
   },
-  {
-    icon: TrendingUp,
-    category: "Market" as Category,
-    title: "EU AI Act 2026: August Deadline Could Cost €35 Million",
-    source: "HJ Automations",
-    desc: "Non-compliance penalties: up to €35M or 7% of global annual turnover. Makes the ROI on APEX compliance infinite.",
-    url: "https://hamzajadoon.cloud/posts/eu-ai-act-2026-the-august-compliance-deadline-that-could-cost-your-business-eur35-million.html",
-  },
+  // Removed 1 Oct 2026: the "HJ Automations" penalty explainer linked here
+  // returned HTTP 404, and its description claimed an ROI figure this site
+  // cannot substantiate. The €35M / 7% penalty ceiling is stated instead
+  // against the official text (Regulation (EU) 2024/1689, Article 99).
   {
     icon: TrendingUp,
     category: "Market" as Category,
     title: "15-Month Roadmap to August 2026 Compliance",
     source: "EU AI Risk",
-    desc: "Month-by-month compliance guide proving most organizations need 15+ months of preparation. APEX delivers it in weeks.",
+    desc: "Month-by-month preparation guide. The timeline is the author's own judgement and the article says nothing about APEX PSI. (Link unreachable at check time: 30s timeout.)",
     url: "https://euairisk.com/resources/eu-ai-act-2026-compliance-checklist",
   },
 
@@ -211,7 +207,7 @@ const references = [
     category: "Enforcement" as Category,
     title: "Only 3% of Organizations Fully Prepared for AI Regulation",
     source: "VinciWorks Survey via Legal Futures",
-    desc: "3.5% consider themselves fully prepared. 29% are still \"figuring it out.\" 97% of the market needs what APEX sells.",
+    desc: "3.5% of compliance professionals consider their organisation fully prepared for AI regulation; 29% are still \"figuring it out.\" A survey of self-assessed readiness — it measures perception, not preparedness, and does not mention APEX PSI.",
     url: "https://www.legalfutures.co.uk/associate-news/only-3-of-compliance-professionals-say-their-organisation-is-fully-prepared-for-ai-regulation",
   },
   {
@@ -219,15 +215,15 @@ const references = [
     category: "Enforcement" as Category,
     title: "EU AI Act Enforcement Begins — Most Startups Aren't Ready",
     source: "Silicon Canals — Feb 2026",
-    desc: "First enforcement deadline hit. Most startups admit they aren't ready. The compliance gap is now a compliance crisis.",
+    desc: "Reporting on the first enforcement deadline, with startups describing their own readiness. Editorial framing by the author. (Connection reset at check time.)",
     url: "https://siliconcanals.com/sc-n-eus-new-ai-act-enforcement-begins-today-and-most-startups-say-they-arent-ready-1lwz/",
   },
   {
     icon: AlertTriangle,
     category: "Enforcement" as Category,
-    title: "Italy Fines OpenAI €15 Million After ChatGPT Probe",
-    source: "Times of Malta — Dec 2024",
-    desc: "First major AI enforcement action. Italy's DPA fined OpenAI €15M over data practices. Enforcement is not theoretical — it's happening.",
+    title: "Italian DPA Fines OpenAI EUR 15 Million Over ChatGPT Data Handling",
+    source: "Times of Malta — 20 Dec 2024 (Reuters and Garante confirm the same figure)",
+    desc: "Italy's data protection authority fined OpenAI EUR 15 million, announced 20 December 2024, over the absence of an adequate legal basis for processing personal data. It is a GDPR case, not an AI Act case, and it is evidence of enforcement appetite rather than evidence for any verification protocol. (Link returns 403 to automated checks; the figure is corroborated by the Reuters wire of the same date.)",
     url: "https://timesofmalta.com/article/italy-fines-openai-15-million-euros-chatgpt-probe.1102753",
   },
   {
@@ -235,7 +231,7 @@ const references = [
     category: "Enforcement" as Category,
     title: "Global AI Regulations 2026: Enforcement, Risks & Fines",
     source: "TechResearchOnline",
-    desc: "Global enforcement tracker: EU, US, China, India, Brazil all moving toward active enforcement. Multi-jurisdictional compliance is now mandatory.",
+    desc: "Tracker of enforcement activity across the EU, US, China, India and Brazil. Makes no assessment of any cryptographic tool.",
     url: "https://techresearchonline.com/blog/global-ai-regulations-enforcement-guide/",
   },
   {
@@ -243,7 +239,7 @@ const references = [
     category: "Enforcement" as Category,
     title: "$3 Billion in Fines: Why SEC's Rule Change Is a Gift to Cryptographic Audit",
     source: "VeritasChain Blog — Dec 2025",
-    desc: "SEC's 2022 rule change opens a regulatory pathway for hash chains, digital signatures, and Merkle trees. The financial sector validates our architecture.",
+    desc: "Argument that the SEC's 2022 electronic-recordkeeping amendments accommodate hash-chained, digitally signed records. Published under the VeritasChain handle, which is this project's own writing — the financial sector has not validated APEX PSI's architecture.",
     url: "https://veritaschain.org/blog/posts/2025-12-25-sec-rule-17a4/",
   },
 
@@ -261,7 +257,7 @@ const references = [
     category: "Research" as Category,
     title: "The Impact of Zero-Knowledge Proofs on Policy & Regulation",
     source: "Internet Policy Review",
-    desc: "Analysis of how ZKPs create higher technical complexity for regulators. The transparency tension APEX resolves with its dual-layer architecture.",
+    desc: "Analysis of how zero-knowledge proofs raise technical complexity for regulators. If anything it cuts against claiming ZK capability, which is why APEX PSI claims none.",
     url: "https://policyreview.info/articles/analysis/impact-zero-knowledge-proofs",
   },
   {
@@ -269,7 +265,7 @@ const references = [
     category: "Technical" as Category,
     title: "AI Act Technical Documentation: Standardization Gap Analysis",
     source: "Springer — 2025",
-    desc: "Identifies the lack of precise certifiable standards for Art. 11 & 12. The standardization deadlock that first-mover IETF submission addresses.",
+    desc: "Identifies a gap in precise, certifiable standards for Articles 11 and 12. APEX PSI's IETF submission is an Informational draft adopted by no standards body and closes no gap by existing.",
     url: "https://link.springer.com/chapter/10.1007/978-3-031-94924-1_6",
   },
   {
@@ -277,7 +273,7 @@ const references = [
     category: "Enforcement" as Category,
     title: "AI Liability & Decentralized Accountability Under EU Law",
     source: "Taylor & Francis — 2025",
-    desc: "Examines how decentralized entities lack direct legally-binding liability. The gap that APEX Standards Foundation (ASF) fills as a registered provider.",
+    desc: "Examines liability gaps for decentralised actors under EU law. It does not discuss APEX PSI, and nothing on this page asserts that any APEX entity is a registered or recognised conformity body.",
     url: "https://www.tandfonline.com/doi/full/10.1080/19460171.2025.2496193",
   },
 
@@ -287,7 +283,7 @@ const references = [
     category: "Technical" as Category,
     title: "EU AI Act and Cryptographic Audit Trails",
     source: "VeritasChain Blog — Dec 2025",
-    desc: "In-depth analysis of why \"trust me\" logs won't satisfy Article 12. The analysis argues for cryptographic audit trails as a defensible compliance route.",
+    desc: "Argues that unauditable internal logs do not meet the record-keeping expectation of Article 12. Published under the VeritasChain handle — this project's own writing, not independent support.",
     url: "https://veritaschain.org/blog/posts/2025-12-25-eu-ai-act-cryptographic-audit/",
   },
   {
@@ -295,7 +291,7 @@ const references = [
     category: "Technical" as Category,
     title: "Building Cryptographic Audit Trails for AI Trading Systems",
     source: "DEV Community — VeritasChain",
-    desc: "Technical deep-dive into RFC 6962-based verification applied to AI systems. Certificate Transparency architecture for algorithmic compliance.",
+    desc: "Technical walkthrough of RFC 6962 (Certificate Transparency) structures applied to AI logs, under the VeritasChain handle. PSI's Merkle construction follows the same family of ideas; this is self-published description, not third-party review.",
     url: "https://dev.to/veritaschain/building-cryptographic-audit-trails-for-ai-trading-systems-a-deep-dive-into-rfc-6962-based-6aa",
   },
   {
@@ -311,7 +307,7 @@ const references = [
     category: "Technical" as Category,
     title: "From 'Trust Us' to 'Verify': Cryptographic Standards for AI",
     source: "VeritasChain Blog — Jan 2026",
-    desc: "CAP-SRP and VeraSnap protocols: cryptographic proof that AI refused. Reports a 93x increase in AI-generated abuse material and a 79% watermark bypass rate, and argues for independent verification.",
+    desc: "Describes CAP-SRP and VeraSnap, protocols for proving that an AI system refused a request, and reports a 93x rise in AI-generated abuse material with a 79% watermark bypass rate. Those figures are the author's own and were not independently re-derived here. VeritasChain is this project's own handle.",
     url: "https://veritaschain.org/blog/posts/2026-01-16-vericapture-cap-srp-complete-verification/",
   },
   {
@@ -319,7 +315,7 @@ const references = [
     category: "Technical" as Category,
     title: "Cryptographic Proof That AI Refused: CAP and SRP",
     source: "VeritasChain Blog — Jan 2026",
-    desc: "After Grok generated thousands of illegal images despite claimed safeguards, 12 jurisdictions delivered one message: restrictions are not proof.",
+    desc: "Reports that Grok produced illegal imagery despite stated safeguards, and argues that 12 jurisdictions converged on the point that policy restrictions are not proof of enforcement. VeritasChain is this project's own handle; the jurisdictional claim is not sourced to a regulator here.",
     url: "https://veritaschain.org/blog/posts/2026-01-22-cap-srp-cryptographic-proof-ai-refused/",
   },
   {
@@ -327,7 +323,7 @@ const references = [
     category: "Technical" as Category,
     title: "Hash, Print, Anchor: Securing Logs with Merkle Trees",
     source: "Medium — Vana Bharathi Raja T (2025)",
-    desc: "\"Logs don't lie — but only if they're cryptographically anchored.\" Independent validation of APEX's hash-chain ledger architecture.",
+    desc: "A practitioner tutorial on anchoring event logs with hash chains. An unrelated author; nothing in it validates APEX PSI and it evaluates no product.",
     url: "https://medium.com/@vanabharathiraja/%EF%B8%8F-building-a-tamper-proof-event-logging-system-e71dfbc3c58a",
   },
   {
@@ -335,7 +331,7 @@ const references = [
     category: "Technical" as Category,
     title: "Seven Developments Prove Nobody Can Verify What AI Refuses",
     source: "Medium — VeritasChain (2026)",
-    desc: "Primary-source investigation across 4 continents, 20+ regulatory efforts. The structural verification gap that APEX fills.",
+    desc: "Round-up of regulatory developments touching content verification, published under the VeritasChain handle — the same project's own writing, not independent confirmation of anything.",
     url: "https://medium.com/@veritaschain/seven-things-happened-this-week-that-prove-nobody-can-verify-what-ai-refuses-to-generate-e23ba194fcd6",
   },
 ];
@@ -369,13 +365,16 @@ const ResearchReferences = () => {
             Research & References
           </p>
           <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
-            Built on <span className="text-gold-gradient">Verified Research</span>
+            Sources &amp; <span className="text-gold-gradient">Related Reading</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm mb-2">
-            Every claim grounded in published regulation, peer-reviewed research, market analysis, and enforcement action.
+            A reading list of the regulation, research and enforcement reporting this project sits inside. It is not a list of endorsements: none of these sources has reviewed, tested or adopted APEX PSI, and no technical claim on this site rests on a blog post.
+          </p>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-xs mb-2">
+            APEX PSI's own claims are limited to what is implemented — canonicalisation, SHA-256 hash chaining, Merkle inclusion proofs, Ed25519 signatures and a human ratification screen. Where a source below discusses zero-knowledge proofs or multi-party computation, it describes somebody else's system.
           </p>
           <p className="text-xs text-muted-foreground/60">
-            {references.length} sources across {categories.length - 1} categories
+            {references.length} sources across {categories.length - 1} categories. Every link was resolved against its host on 1 October 2026; entries marked unreachable failed at that check and are kept only because the underlying work is still citable by title.
           </p>
         </motion.div>
 

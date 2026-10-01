@@ -26,9 +26,9 @@ const STEPS = [
     icon: "⚡",
   },
   {
-    title: "Share & Refer",
-    description: "Use your referral code to invite others and earn rewards. Your compliance record can be shared publicly.",
-    icon: "🎁",
+    title: "Publish Your Receipt",
+    description: "Add the one-line badge to your own site so every record you seal has a public page anyone can recompute. Referring others earns nothing - the checkable receipt is the promotion.",
+    icon: "🔍",
   },
 ];
 

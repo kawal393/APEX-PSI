@@ -2,7 +2,7 @@
  * @apex/psi-openai
  *
  * Wraps an OpenAI client so every chat.completions.create call produces a
- * Compliance-Receipt (draft-singh-psi-http-01) by notarizing the request +
+ * Compliance-Receipt (draft-singh-psi-http, a working specification not
  * response with the APEX PSI Notary.
  */
 

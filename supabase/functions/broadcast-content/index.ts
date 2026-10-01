@@ -31,7 +31,7 @@ const TOPICS = [
   "EU AI Act Article 50 marking and detection obligations",
   "Ed25519 signatures for AI audit trails",
   "Bitcoin-anchored proofs for AI governance",
-  "IETF draft-singh-psi-00 verifiable AI compliance",
+  "IETF draft-singh-psi verifiable AI compliance",
   "Post-quantum signatures for AI systems (ML-DSA and LMS)",
   "SHA-256 Merkle trees for tamper-evident AI logs",
   "NIST AI RMF vs EU AI Act comparison",
@@ -82,7 +82,7 @@ Return JSON: {"title":"<60 char SEO title with primary keyword","description":"<
     "You are an expert AI governance journalist writing for developers, regulators, and CIOs. Output raw markdown only — no JSON, no code fences around the whole doc.",
     `Write a 900-1200 word factually accurate article titled "${meta.title}".
 
-CONTEXT: APEX PSI is the open-source verifiable AI compliance protocol — SHA-256 hashing, Ed25519 signatures, Merkle trees, IETF draft-singh-psi-00, MIT-licensed. It provides cryptographic evidence that an AI decision existed at a specific time. Available at ${SITE_ORIGIN}.
+CONTEXT: APEX PSI is a verifiable AI compliance protocol — SHA-256 hashing over RFC 8785 canonicalised input, Ed25519 signatures, Merkle trees, seal schema PSI-SEAL/1.0.0. Verification code is MIT; the sealing engine is proprietary but free to use. It is described in IETF Internet-Draft draft-singh-psi revision 01, an individual Informational submission and not an approved standard. It provides cryptographic evidence that a recorded artefact existed at a specific time; it does not prove the artefact is true, lawful or compliant. There is no zero-knowledge component and no multi-party computation. Available at ${SITE_ORIGIN}. Write only what is stated here; do not invent adoption, customers, endorsements or regulatory approval.
 
 STRUCTURE:
 - Start with a single H1 matching the title

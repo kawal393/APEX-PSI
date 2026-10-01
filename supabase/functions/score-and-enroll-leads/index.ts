@@ -61,7 +61,7 @@ async function sendCustomEmail(
   const html = `
 <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px;background:#0a0b0f;color:#e8e0d0;">
   <h1 style="color:#d4a017;font-size:22px;margin:0 0 8px;">APEX PSI</h1>
-  <p style="color:#8a7a5a;font-size:12px;margin:0 0 24px;">Verifiable AI Compliance · IETF draft-singh-psi-00</p>
+  <p style="color:#8a7a5a;font-size:12px;margin:0 0 24px;">Verifiable AI Compliance · IETF draft-singh-psi rev 01 (Informational)</p>
   <p style="color:#e8e0d0;">Hi ${name || "there"},</p>
   <p style="color:#a89878;line-height:1.7;">
     I saw your conversation with our system about ${company || "your organization"}.

@@ -178,10 +178,11 @@ export class ApexEngine {
     // Step 3: Challenge
     const challengeResp = await this._fetch('challenge-action', { commit_id: commitResult.commitId });
 
-    // Step 4: Prove (with MPC consensus)
+    // Step 4: Prove (best-effort 2-of-3 quorum check)
     const proveResp = await this._fetch('prove-action', { commit_id: commitResult.commitId });
 
-    // Step 5: MPC verification (optional, for distributed consensus)
+    // Step 5: Optional 2-of-3 quorum check on APEX-operated nodes. This is
+    // redundant verification, not multi-party computation and no secret sharing.
     let mpcConsensus;
     try {
       const mpcResp = await this._fetch('mpc-coordinator', { commit_id: commitResult.commitId });
@@ -193,7 +194,7 @@ export class ApexEngine {
         };
       }
     } catch {
-      // MPC is best-effort
+      // The quorum check is best-effort
     }
 
     return {

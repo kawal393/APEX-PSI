@@ -36,7 +36,7 @@ Deno.serve(async () => {
     <title>APEX PSI — Verifiable AI Governance</title>
     <link>${SITE}</link>
     <atom:link href="${SITE}/feed.xml" rel="self" type="application/rss+xml"/>
-    <description>Cryptographic evidence for AI compliance. IETF draft-singh-psi-00.</description>
+    <description>Cryptographic evidence for AI compliance. IETF draft-singh-psi rev 01 (Informational, not a standard).</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>${items}
   </channel>

@@ -8,7 +8,7 @@ const included = [
   "Client-side SHA-256 sealing of any file (/seal, /pramaan)",
   "Public hash verification portal and REST API",
   "Verifier source — MIT, TypeScript and Python, in the repository",
-  "Compliance-Receipt HTTP header (draft-singh-psi-http-01)",
+  "Compliance-Receipt HTTP header (draft-singh-psi-http — in preparation, not yet filed)",
   "Vendor transparency console (/registry/check)",
   "Public receipt pages at /r/<hash>",
 ];

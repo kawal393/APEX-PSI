@@ -18,7 +18,7 @@ const CHARTER = `APEX PSI FOUNDATION — FOUNDING CHARTER (v0.1 — in formation
 
 ARTICLE 1 — MISSION
 The Foundation stewards the Proof of Stateful Integrity (PSI) Protocol and the
-Compliance-Receipt HTTP header standard (draft-singh-psi-http-01) as public-good
+Compliance-Receipt HTTP header specification (draft-singh-psi-http, in preparation and not yet filed) as public-good
 infrastructure for verifiable AI governance. The Foundation does not own any
 implementation; it owns the specification, the public verification keys, and the
 registry of conformant implementers.
@@ -38,7 +38,7 @@ ARTICLE 4 — OPENNESS
 The PSI Protocol specification and the Compliance-Receipt header standard are
 maintained under MIT and CC-BY-4.0 respectively. Any party may implement,
 fork, distribute, or commercialize implementations. No patent is claimed or
-asserted over any implementation of draft-singh-psi-http-01.
+asserted over any implementation of the Compliance-Receipt header specification.
 
 ARTICLE 5 — VERIFIER NETWORK
 The Foundation operates the canonical issuer key (apex-psi-2026) and publishes
@@ -195,7 +195,7 @@ const Foundation = () => {
         <section className="px-4 py-8">
           <div className="container mx-auto max-w-5xl grid md:grid-cols-3 gap-4">
             {[
-              { icon: Shield, title: "Spec stewardship", body: "Maintains draft-singh-psi-http-01 and the PSI Protocol v1.2 under MIT / CC-BY-4.0." },
+              { icon: Shield, title: "Spec stewardship", body: "Maintains the Compliance-Receipt header specification (draft-singh-psi-http, in preparation and not yet filed) and the PSI Protocol v1.2 under MIT / CC-BY-4.0." },
               { icon: Server, title: "Verifier lattice", body: "Coordinates independent verifier nodes under a t-of-n threshold signing arrangement." },
               { icon: Scale, title: "Patent pledge v2", body: "No patents are claimed or asserted over any conformant implementation. Implementation is free, permanently." },
             ].map((c) => (

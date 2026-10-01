@@ -203,7 +203,7 @@ const UniversalSeal = () => {
       },
       verify_url: VERIFY_URL,
       verify_instructions:
-        "Verify with the MIT-licensed @apex/psi-verifier, or POST { hash: '<your file hash>' } to verify_url.",
+        "Verify at verify_url (free, no key), or recompute locally with the MIT verifier source at https://github.com/kawal393/APEX-PSI/tree/main/packages/psi-verifier.",
       issuer: "apex.psi.universal.seal",
       conformance: `Only ${PSI_SCHEMA_ID}-conformant seals are considered PSI-compliant.`,
     };

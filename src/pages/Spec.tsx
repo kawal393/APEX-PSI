@@ -113,8 +113,9 @@ const Spec = () => (
         <Section id="assert" n="01" title="What the protocol asserts">
           <p className="text-muted-foreground mb-5 leading-relaxed">
             APEX PSI is a <strong className="text-foreground">provenance and integrity</strong> protocol. It produces a
-            portable receipt binding four things together: a byte-exact digest of a payload, a declared context
-            (predicates, model identity, actor), a timestamp, and a signature from a named key.
+            portable receipt binding things together: a byte-exact digest of a payload, a subject descriptor, a timestamp,
+            the Merkle leaf and (for institutional seals) a root and inclusion path, and a signature from a named key.
+            Predicate and actor context is carried on the action-receipt surface, not on the canonical image seal.
           </p>
           <div className="grid md:grid-cols-2 gap-3">
             <Status state="live">
@@ -172,43 +173,50 @@ root        = fold(parent, leaves)   // odd tail promoted unchanged`}
           </div>
         </Section>
 
-        <Section id="receipt" n="04" title="Receipt structure">
+        <Section id="receipt" n="04" title="Seal envelope structure (PSI-SEAL/1.0.0)">
           <p className="text-muted-foreground mb-5">
-            The receipt is a ~2 KB JSON object. It is self-contained: a verifier needs the receipt, the payload, and the
-            trust anchor. No network call to APEX is required, ever.
+            The canonical seal is a small JSON envelope. It is self-contained: a verifier needs the envelope, the payload
+            digest, and the trust anchor. No network call to APEX is required to check one. The field set below is exactly
+            what <span className="font-mono text-foreground">verifySealConformance</span> accepts — rule R2 rejects any unknown
+            top-level field, and rule R3 fixes the order.
           </p>
           <pre className="overflow-x-auto rounded-lg border border-border bg-background/80 p-4 text-xs font-mono text-foreground/80">
 {`{
-  "spec": "draft-singh-psi-00",
-  "receipt_id": "psi_01J...",
-  "payload": {
-    "digest": "sha256:9f2c...",
-    "bytes": 4194304,
+  "schema": "PSI-SEAL/1.0.0",
+  "schema_digest": "3b0f...c1a2",
+  "sealed_at": "2026-07-30T11:04:22.000Z",
+  "subject": {
+    "name": "decision-2026-07-30.jpg",
+    "size_bytes": 4194304,
     "media_type": "image/jpeg"
   },
-  "context": {
-    "predicates": ["EU_ART_50", "EU_ART_14"],
-    "actor": "urn:apex-psi:issuer:root-1",
-    "model": null,
-    "captured_at": "2026-07-30T11:04:22Z",
-    "geo": { "lat": -33.868, "lon": 151.209, "accuracy_m": 12 }
+  "hash": "9f2c...e7b1",
+  "merkle": {
+    "leaf": "5d31...a9c4",
+    "root": "41ab...7fe0",
+    "proof": ["0c1d...b3aa", "77fe...1d99"]
   },
   "signature": {
-    "suite": "Ed25519+ML-DSA-65",
-    "ed25519": { "pk": "5930...", "sig": "a71f..." },
-    "mldsa65": { "pk": "c04b...", "sig": "9d3e..." },
-    "message_hash": "sha256:9f2c...",
-    "signed_at": "2026-07-30T11:04:23Z"
+    "alg": "Ed25519",
+    "value": "a71f...4e0b",
+    "seal_hash": "6b40...c2d7",
+    "pq_alg": "LMS-W4-SHA256",
+    "pq_value": "MEQEH3..."
   },
-  "inclusion": {
-    "merkle_root": "sha256:41ab...",
-    "path": ["sha256:0c1d...", "sha256:77fe..."],
-    "index": 3
+  "licence": {
+    "engine": "APEX PSI Sealing Engine v1",
+    "tier": "personal",
+    "terms": "APEX PSI Sealing Engine Licence v2 ...",
+    "accepted_at": "2026-07-30T11:04:22.000Z"
   }
 }`}
           </pre>
           <p className="text-xs text-muted-foreground mt-3 font-mono">
-            Fields with no value are emitted as null, never omitted — omission would change the canonical form.
+            All digests are 64-character lowercase hex with no <span className="text-foreground">sha256:</span> prefix inside the envelope (R4).
+            <span className="text-foreground"> merkle.root</span>, <span className="text-foreground"> merkle.proof</span>,
+            <span className="text-foreground"> signature</span> and <span className="text-foreground"> licence</span> are optional and are omitted entirely when absent — an action receipt
+            returned by <span className="font-mono">POST /v1/notarize</span> carries a different, smaller field set (receipt_id, decision_hash,
+            merkle_leaf, merkle_root, predicate_applied) and is the artefact the ledger API issues.
           </p>
         </Section>
 
@@ -238,7 +246,8 @@ root        = fold(parent, leaves)   // odd tail promoted unchanged`}
         <Section id="http" n="06" title="Transport: the Compliance-Receipt header">
           <p className="text-muted-foreground mb-5">
             For AI systems that emit text rather than files, the receipt travels as an HTTP response header. This is
-            specified in <span className="font-mono text-foreground">draft-singh-psi-http-01</span> and is the mechanism
+            specified in <span className="font-mono text-foreground">draft-singh-psi-http</span> — a working
+            draft that has not been filed with the IETF — and is the mechanism
             we expect to matter most at scale — it requires no change to payload formats.
           </p>
           <pre className="overflow-x-auto rounded-lg border border-border bg-background/80 p-4 text-xs font-mono text-foreground/80">
@@ -357,7 +366,7 @@ Compliance-Receipt: v=1; id=psi_01J...; alg=Ed25519+ML-DSA-65;
           <ul className="space-y-2.5 text-sm text-foreground/85">
             {[
               "The IETF drafts are individual submissions. They are not adopted by a working group and are not standards.",
-              "Zero-knowledge components are Groth16-compatible over BN128 and are demonstrative, not a production privacy guarantee.",
+              "A BN128 field-arithmetic demonstration exists in the repository. It is not a zero-knowledge system: there is no circuit compiler, no pairing check and no trusted setup, and it does not appear in the sealing path.",
               "Bitcoin anchoring is via OpenTimestamps and inherits its calendar-server trust and confirmation latency.",
               "The APEX PSI Foundation is in formation. It is not an incorporated legal entity and holds no assets.",
               "There is no notified-body assessment, no ETSI/CEN-CENELEC harmonised-standard status, and no regulator endorsement.",

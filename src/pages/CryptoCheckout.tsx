@@ -8,7 +8,7 @@ import { FREE_ACCESS_STATEMENT } from "@/lib/commerce";
 
 const TITLE = "Payments — Apex PSI";
 const DESCRIPTION =
-  "There is nothing to pay for. The protocol, the verifier, sealing and verification are free, with no account and no key.";
+  "Checking a receipt costs nothing, forever. The only thing a card is asked for is an API key that raises your daily sealing cap.";
 
 const CryptoCheckout = () => (
   <div className="min-h-screen bg-background text-foreground">
@@ -20,16 +20,18 @@ const CryptoCheckout = () => (
     <Navbar />
     <main className="mx-auto max-w-3xl px-6 pb-24 pt-32">
       <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.4em] text-gold">
-        No payment required
+        No payment required to check
       </p>
       <h1 className="mb-6 text-3xl font-bold leading-tight md:text-5xl">
-        There is nothing here to buy.
+        Verification is not for sale.
       </h1>
       <p className="mb-6 text-base leading-relaxed text-muted-foreground">{FREE_ACCESS_STATEMENT}</p>
       <p className="mb-10 text-sm leading-relaxed text-muted-foreground">
-        Card and on-chain payment options have been withdrawn. No invoice is issued, no plan is
-        offered and no address is published. If this ever changes it will be recorded, dated, on the
-        corrections register first.
+        On-chain payment is not offered and no wallet address is published. The single card door on
+        this site is <Link to="/upgrade" className="text-gold hover:underline">/upgrade</Link>, where
+        a paid key raises the daily sealing cap and nothing else. No finding, no result, no removal
+        and no priority in the ledger is for sale at any price. If that ever changes it will be
+        recorded, dated, on the <Link to="/corrections" className="text-gold hover:underline">corrections register</Link> first.
       </p>
       <div className="flex flex-wrap gap-3">
         <Button variant="hero" size="lg" asChild>

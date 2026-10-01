@@ -12,9 +12,9 @@ const YEAR = new Date().getFullYear();
 const bibtex = `@techreport{singh${YEAR}apexpsi,
   author      = {Singh, Kawaljeet},
   title       = {{APEX PSI: Proof of Stateful Integrity for Verifiable AI Governance}},
-  institution = {APEX PSI Foundation (in formation)},
-  type        = {Internet-Draft},
-  number      = {draft-singh-psi-http-01},
+  institution = {Apex Intelligence Empire (individual submission)},
+  type        = {Internet-Draft (Informational, work in progress)},
+  number      = {draft-singh-psi-01},
   year        = {${YEAR}},
   url         = {https://ai-governance-standard.com/standard},
   note        = {Hybrid Ed25519 + ML-DSA-65 signatures; SHA-256 evidence}
@@ -23,19 +23,19 @@ const bibtex = `@techreport{singh${YEAR}apexpsi,
 const ris = `TY  - RPRT
 AU  - Singh, Kawaljeet
 TI  - APEX PSI: Proof of Stateful Integrity for Verifiable AI Governance
-IN  - APEX PSI Foundation (in formation)
-M3  - Internet-Draft
-M1  - draft-singh-psi-http-01
+IN  - Apex Intelligence Empire (individual submission)
+M3  - Internet-Draft (Informational, work in progress)
+M1  - draft-singh-psi rev. 01
 PY  - ${YEAR}
 UR  - https://ai-governance-standard.com/standard
 ER  -`;
 
 const ietf = `[APEX-PSI]  Singh, K., "APEX PSI: Proof of Stateful Integrity",
             Work in Progress, Internet-Draft,
-            draft-singh-psi-http-01, ${YEAR},
+            draft-singh-psi-01 (Informational, work in progress, not filed as a standard), ${YEAR},
             <https://ai-governance-standard.com/standard>.`;
 
-const apa = `Singh, K. (${YEAR}). APEX PSI: Proof of stateful integrity for verifiable AI governance (Internet-Draft draft-singh-psi-http-01). APEX PSI Foundation. https://ai-governance-standard.com/standard`;
+const apa = `Singh, K. (${YEAR}). APEX PSI: Proof of stateful integrity for verifiable AI governance (Internet-Draft draft-singh-psi, revision 01; Informational, individual submission, not an approved standard). Apex Intelligence Empire. https://ai-governance-standard.com/standard`;
 
 function Block({ title, body }: { title: string; body: string }) {
   return (
@@ -85,7 +85,7 @@ export default function Cite() {
             <div className="font-bold mb-2">Canonical URLs</div>
             <ul className="text-sm text-muted-foreground space-y-1">
               <li>Specification — <a className="underline" href="/standard">/standard</a></li>
-              <li>IETF draft — <a className="underline" href="/ietf/draft-singh-psi-http-01.txt">draft-singh-psi-http-01.txt</a></li>
+              <li>IETF draft — <a className="underline" href="/ietf/draft-singh-psi-http-01.txt">Compliance-Receipt header working text (not filed with the IETF)</a></li>
               <li>Protocol overview — <a className="underline" href="/protocol">/protocol</a></li>
               <li>Foundation — <a className="underline" href="/foundation">/foundation</a></li>
             </ul>

@@ -47,7 +47,7 @@ const Auth = () => {
         </div>
 
         <p className="text-center text-[10px] text-muted-foreground/50">
-          Protected by zero-knowledge cryptographic verification
+          Verification here is hashing and signatures - SHA-256, Ed25519. No zero-knowledge system is used.
         </p>
       </div>
     </div>

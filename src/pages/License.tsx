@@ -57,8 +57,8 @@ const License = () => {
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground">
               {[
-                "@apex/psi-verifier — zero dependencies, browser / Node / Deno / Bun / workers",
-                "Publishable and vendorable anywhere: npm, PyPI, CDN bundles, AI framework adapters",
+                "packages/psi-verifier (TypeScript) and packages/psi-verifier-py (Python) — zero dependencies, browser / Node / Deno / Bun / workers",
+                "Delivered as source in the repository. Not published to npm or PyPI; vendor, bundle or mirror it yourself",
                 "No key, no account, no rate limit, no permission",
                 "Byte-exact conformance checks against PSI-SEAL/1",
               ].map((t) => (

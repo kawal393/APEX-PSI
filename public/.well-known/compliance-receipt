@@ -1,6 +1,6 @@
 {
   "issuer": "https://ai-governance-standard.com",
-  "spec": "draft-singh-psi-http-01",
+  "spec": "draft-singh-psi-http (working specification, not filed with the IETF)",
   "version": 1,
   "public_keys": [
     {

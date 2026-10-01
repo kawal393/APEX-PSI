@@ -1,9 +1,21 @@
-import { UserPlus, Share2, DollarSign } from "lucide-react";
+import { UserPlus, FileCheck2, Gauge } from "lucide-react";
 
 const steps = [
-  { icon: UserPlus, title: "Sign Up", desc: "Create your free account and activate your partnership in one click." },
-  { icon: Share2, title: "Share Your Link", desc: "Get a unique referral link. Share it with your network, audience, or clients." },
-  { icon: DollarSign, title: "Earn 50%", desc: "Every paying customer you refer earns you 50% commission. No cap, no limits." },
+  {
+    icon: UserPlus,
+    title: "Take a reference",
+    desc: "Create a free account and activate an operator reference in one click. No application, no sales call, no agreement to sign first.",
+  },
+  {
+    icon: FileCheck2,
+    title: "Seal and publish",
+    desc: "Seal your own records and embed the one-line badge. Every record you publish gets a permanent public receipt page that anyone can recompute.",
+  },
+  {
+    icon: Gauge,
+    title: "Raise the cap, not the stakes",
+    desc: "The commons is free at 100 seals a day. A paid key raises that daily cap and nothing else - no result, no priority, no finding is for sale.",
+  },
 ];
 
 const PartnerHowItWorks = () => (

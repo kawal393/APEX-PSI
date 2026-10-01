@@ -12,7 +12,7 @@ const TRIGGERS: ProactiveTrigger[] = [
   { route: "/engine", delayMs: 30000, message: "🔧 Testing the Engine engine? I can explain how the Commit-Challenge-Prove protocol works." },
   { route: "/assess", delayMs: 20000, message: "📊 Need help with your compliance assessment? I can guide you through the process." },
   { route: "/compare", delayMs: 25000, message: "⚖️ Comparing compliance solutions? Ask me how APEX differs from traditional audit firms." },
-  { route: "/architecture", delayMs: 35000, message: "🏗️ Deep-diving into PSI architecture? I can answer technical questions about our ZK-Oracle and Commit Layer." },
+  { route: "/architecture", delayMs: 35000, message: "🏗️ Deep-diving into PSI architecture? I can answer technical questions about the oracle feed and the Commit Layer." },
 ];
 
 const PROACTIVE_SHOWN_KEY = "apex_proactive_shown";

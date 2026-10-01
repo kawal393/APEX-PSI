@@ -30,8 +30,8 @@ const features = [
   },
   {
     icon: Cpu,
-    title: "ZK-Ready Architecture",
-    desc: "Designed for future Zero-Knowledge integration. As ZK technology matures, PSI seamlessly upgrades from optimistic to full ZK verification.",
+    title: "No Zero-Knowledge Claim",
+    desc: "Verification today is SHA-256 hashing, Ed25519 signatures and Merkle inclusion. The ZK ideas in the repository are experimental demonstrations, and if any of them ever ships it gets its own dated page.",
   },
 ];
 

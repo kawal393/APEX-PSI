@@ -158,7 +158,7 @@ const API = () => (
           <li>SHA-256 over RFC 8785 (JCS) canonical JSON for every decision.</li>
           <li>Ed25519 signature over every Merkle leaf.</li>
           <li>Binary Merkle root recomputed from the latest 255 ledger leaves on every commit.</li>
-          <li>Receipts conform to IETF <code>draft-singh-psi-00</code>.</li>
+          <li>Seals carry the <code>PSI-SEAL/1.0.0</code> schema identifier; the filed IETF text is <code>draft-singh-psi</code> revision 01 (Informational, not an approved standard).</li>
           <li>Root anchoring to Bitcoin (via OpenTimestamps) and Polygon — see <Link to="/protocol" className="text-primary underline">/protocol</Link>.</li>
         </ul>
       </section>

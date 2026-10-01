@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a professional translator. Translate the following JSON object values from English to ${target_lang}. Keep all JSON keys exactly the same. Only translate the values. Return ONLY valid JSON, no markdown, no explanation. Maintain the same JSON structure. Keep brand names (APEX, APEX PSI, PSI, ZKML, EU AI Act, MiFID II, DORA, SHIELD, SWORD, JUDGE) untranslated.`,
+            content: `You are a professional translator. Translate the following JSON object values from English to ${target_lang}. Keep all JSON keys exactly the same. Only translate the values. Return ONLY valid JSON, no markdown, no explanation. Maintain the same JSON structure. Keep brand names (APEX, APEX PSI, PSI, EU AI Act, MiFID II, DORA, SHIELD, SWORD, JUDGE) untranslated.`,
           },
           {
             role: "user",

@@ -4,16 +4,23 @@
   "canonical_domain": "https://ai-governance-standard.com",
   "ietf_drafts": [
     {
-      "name": "draft-singh-psi-00",
+      "name": "draft-singh-psi",
+      "revision": "01",
+      "category": "Informational",
+      "submission": "individual",
+      "status": "filed",
       "title": "Proof of Stateful Integrity (PSI) for Verifiable AI Governance",
       "url": "https://datatracker.ietf.org/doc/draft-singh-psi/",
-      "expires": "2026-12-31"
+      "expires": "2027-03-03"
     },
     {
-      "name": "draft-singh-psi-http-01",
+      "name": "draft-singh-psi-http",
+      "category": "Informational",
+      "submission": "individual",
+      "status": "not filed",
+      "note": "Working specification text held at this domain only. It has not been submitted to the IETF and has no datatracker record.",
       "title": "The Compliance-Receipt HTTP Header Field",
-      "url": "https://datatracker.ietf.org/doc/draft-singh-psi-http/",
-      "expires": "2027-02-28"
+      "url": "https://ai-governance-standard.com/ietf/draft-singh-psi-http-01.txt"
     },
     {
       "name": "draft-singh-apex-psi-04",
@@ -31,8 +38,8 @@
     }
   ],
   "standards": [
-    { "id": "psi-00", "title": "Proof of Stateful Integrity Core", "status": "filed", "draft": "draft-singh-psi-00", "jurisdiction": "Global / IETF", "description": "Core protocol: canonicalisation, hash chain, signature suites and receipt formats." },
-    { "id": "psi-01", "title": "Compliance-Receipt HTTP Header Field", "status": "filed", "draft": "draft-singh-psi-http-01", "jurisdiction": "Global / IETF", "description": "In-band transport of a PSI receipt over HTTP responses." },
+    { "id": "psi-00", "title": "Proof of Stateful Integrity Core", "status": "filed", "draft": "draft-singh-psi rev 01 (Informational, not an approved standard)", "jurisdiction": "Global / IETF", "description": "Core protocol: canonicalisation, hash chain, signature suites and receipt formats." },
+    { "id": "psi-01", "title": "Compliance-Receipt HTTP Header Field", "status": "in preparation, not filed", "draft": "draft-singh-psi-http", "jurisdiction": "Global / IETF", "description": "In-band transport of a PSI receipt over HTTP responses." },
     { "id": "psi-02", "title": "Predicate Registry Governance", "status": "ready", "jurisdiction": "Global / IETF", "description": "Registration procedures and versioning rules for compliance predicates." },
     { "id": "psi-03", "title": "Post-Quantum Signature Profile", "status": "ready", "jurisdiction": "Global / NIST-aligned", "description": "Hybrid Ed25519 + ML-DSA-65 / LMS-W4-SHA256 profile for long-lived evidence." },
     { "id": "psi-04", "title": "APEX PSI Predicate Registry and Proof Formats", "status": "filed", "draft": "draft-singh-apex-psi-04", "jurisdiction": "Global / IETF", "description": "Predicate identifiers, proof envelopes and verdict semantics." },

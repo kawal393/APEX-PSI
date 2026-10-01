@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { Shield, Eye, Scale, Lock, Globe } from "lucide-react";
 
 const indicators = [
-  { icon: Shield, label: "Privacy-Preserving" },
-  { icon: Eye, label: "Zero-Knowledge" },
-  { icon: Scale, label: "EU AI Act Ready" },
-  { icon: Lock, label: "End-to-End Encrypted" },
+  { icon: Shield, label: "Hash-Sealed" },
+  { icon: Eye, label: "Publicly Verifiable" },
+  { icon: Scale, label: "EU AI Act Mapping" },
+  { icon: Lock, label: "Ed25519 Signed" },
   { icon: Globe, label: "Jurisdiction-Agnostic" },
 ];
 
@@ -23,7 +23,7 @@ const TrustSection = () => {
             Built For The AI Industry
           </p>
           <p className="text-muted-foreground text-sm mb-10">
-            The compliance infrastructure modern AI companies depend on
+            A tamper-evident record for AI decisions, checkable by anyone with no account
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 md:gap-8">

@@ -1,11 +1,22 @@
 Network Working Group                                          K. Singh
-Internet-Draft                            Apex Intelligence Empire / PSI
-Intended status: Standards Track                          November 2025
-Expires: May 2026
+Working Text                              Apex Intelligence Empire / PSI
+Intended status: Informational        NOT SUBMITTED TO THE IETF (no record)
+Expires: 
 
 
    The Compliance-Receipt HTTP Header for Verifiable AI Responses
                      draft-singh-psi-http-01
+
+   STATUS OF THIS TEXT
+
+      This document is a local working draft held at
+      ai-governance-standard.com. It has NOT been submitted to the IETF,
+      has no datatracker record, is not an Internet-Draft in the sense of
+      RFC 7841, and carries no Standards Track status. It describes no
+      IANA registration that has been requested. The only PSI document
+      actually filed with the IETF is draft-singh-psi, revision 01, an
+      individual submission in the Informational category, which is a
+      different document.
 
 Abstract
 

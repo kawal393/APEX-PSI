@@ -10,7 +10,7 @@ const corsHeaders = {
 const NODE_CONFIG = {
   id: "apex-psi",
   name: "APEX PSI",
-  role: "Compliance Engine & Zero-Knowledge Audit Layer",
+  role: "Compliance Engine & Verification Layer",
   projectId: "qhtntebpcribjiwrdtdd",
 };
 

@@ -240,7 +240,7 @@ const Tribunal = () => {
                             <Badge className={`font-mono text-[10px] border-0 ${
                               commit.status === "APPROVED" ? "bg-green-500/15 text-green-400" : "bg-destructive/15 text-destructive"
                             }`}>
-                              MPC: {commit.status}
+                              QUORUM: {commit.status}
                             </Badge>
                             {isRatified && (
                               <Badge className="bg-primary/15 text-primary font-mono text-[10px] border-0">

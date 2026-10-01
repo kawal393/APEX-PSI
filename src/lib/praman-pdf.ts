@@ -300,7 +300,7 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
   setText(doc, MUTED);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
-  doc.text("Ed25519 · JCS RFC 8785 · IETF draft-singh-psi-00", 62, footY + 40);
+  doc.text("Ed25519 · JCS RFC 8785 · IETF draft-singh-psi rev 01", 62, footY + 40);
 
   setText(doc, MUTED);
   doc.setFont("helvetica", "normal");

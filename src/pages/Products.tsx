@@ -43,7 +43,7 @@ const capabilities: Capability[] = [
       "Client-side SHA-256 sealing of any file (/seal, /pramaan)",
       "Ed25519 plus documented post-quantum signature options",
       "Public hash verification portal and REST API",
-      "Compliance-Receipt HTTP header (draft-singh-psi-http-01)",
+      "Compliance-Receipt HTTP header (draft-singh-psi-http — in preparation, not yet filed)",
       "Vendor transparency console (/registry/check)",
     ],
     cta: { label: "Use the protocol", href: "/seal" },
@@ -110,7 +110,7 @@ const capabilities: Capability[] = [
     name: "Protocol Infrastructure",
     who: "Enterprises, governments and regulated operators keeping their own evidence.",
     summary:
-      "The protocol, the schema and the verifier are published so any institution can run this itself. Nothing is sold and nothing is licensed for a fee.",
+      "The protocol, the schema and the verifier are published so any institution can run this itself. Use is free; what is licensed, in writing, is the APEX name on it.",
     features: [
       "Signed, verifiable records with Merkle proofs",
       "Self-hostable verification — the source is in the repository",
@@ -285,7 +285,7 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
                 What is provided
               </p>
               <h2 className="text-3xl md:text-5xl font-bold">
-                Free to use. <span className="text-gold-gradient">Nothing is sold.</span>
+                Free to check. <span className="text-gold-gradient">Only volume is billed.</span>
               </h2>
             </div>
 
@@ -296,9 +296,12 @@ const Products = ({ embedded = false }: { embedded?: boolean }) => {
             </div>
 
             <p className="text-xs text-muted-foreground text-center mt-8 max-w-3xl mx-auto">
-              The commercial tiers previously published here have been withdrawn. There is no price,
-              no plan, no checkout and no sales process on this site. Every withdrawal is dated on
-              the <Link to="/corrections" className="text-gold hover:underline">corrections register</Link>.
+              The commercial tiers previously published here — per-unit prices, outcome-priced
+              products and subscriptions — were withdrawn. What remains is a free public commons and
+              a paid API key that raises the daily sealing cap, on{" "}
+              <Link to="/upgrade" className="text-gold hover:underline">/upgrade</Link>. Every
+              withdrawal is dated on the{" "}
+              <Link to="/corrections" className="text-gold hover:underline">corrections register</Link>.
             </p>
           </div>
         </section>

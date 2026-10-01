@@ -61,8 +61,8 @@ export default function Regulator() {
           <div className="grid md:grid-cols-3 gap-4 mb-10">
             <a href="/ietf/draft-singh-psi-http-01.txt" target="_blank" rel="noreferrer">
               <Card className="p-5 h-full hover:border-primary/40 transition-colors cursor-pointer">
-                <div className="text-xs text-muted-foreground mb-1">IETF Draft</div>
-                <div className="font-bold mb-2">draft-singh-psi-http-01</div>
+                <div className="text-xs text-muted-foreground mb-1">Working draft — not filed with the IETF</div>
+                <div className="font-bold mb-2">draft-singh-psi-http</div>
                 <div className="text-xs text-muted-foreground flex items-center gap-1">Read full text <ExternalLink className="h-3 w-3" /></div>
               </Card>
             </a>

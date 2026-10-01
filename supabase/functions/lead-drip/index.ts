@@ -19,12 +19,12 @@ const DRIP_EMAILS = [
           <p style="color:#8a7a5a;font-size:12px;margin-top:4px;">Provable Stateful Integrity</p>
         </div>
         <h2 style="color:#e8e0d0;font-size:20px;">Welcome${name ? `, ${name}` : ""}!</h2>
-        <p style="color:#a89878;line-height:1.7;">Thank you for your interest in APEX. The EU AI Act deadline is <strong style="color:#d4a017;">August 2, 2026</strong>, and companies like${company ? ` ${company}` : " yours"} need to act now.</p>
+        <p style="color:#a89878;line-height:1.7;">Thank you for your interest in APEX. EU AI Act obligations phase in: prohibited-practice rules have applied since 2 February 2025, general-purpose model rules since 2 August 2025, and most high-risk duties from 2 August 2026, with some embedded-product deadlines at 2 August 2027${company ? ` - relevant to ${company}` : ""}.</p>
         <p style="color:#a89878;line-height:1.7;">Here's what sets APEX apart:</p>
         <ul style="color:#a89878;line-height:2;">
-          <li><strong style="color:#e8e0d0;">Cryptographic Proof</strong> — Not just audits. Mathematical certainty.</li>
-          <li><strong style="color:#e8e0d0;">Real-Time Monitoring</strong> — Continuous compliance, not annual checkups.</li>
-          <li><strong style="color:#e8e0d0;">Zero-Knowledge</strong> — Prove compliance without revealing your models.</li>
+          <li><strong style="color:#e8e0d0;">Cryptographic Evidence</strong> — Not just audits: a hash, a signature and a Merkle proof you can check yourself.</li>
+          <li><strong style="color:#e8e0d0;">Continuous Record</strong> — Every sealing is appended to a tamper-evident ledger; nothing is quietly edited.</li>
+          <li><strong style="color:#e8e0d0;">Free to Check</strong> — Anyone can verify a published receipt with no account, no key and no payment.</li>
         </ul>
         <div style="text-align:center;margin:32px 0;">
           <a href="https://ai-governance-standard.com/assess" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Get Your Free Compliance Score →</a>
@@ -45,10 +45,10 @@ const DRIP_EMAILS = [
         <h2 style="color:#e8e0d0;font-size:20px;">${name ? `${name}, ` : ""}Did you know?</h2>
         <div style="background:#111118;border:1px solid #1a1a2e;border-radius:12px;padding:24px;margin:20px 0;">
           <p style="color:#ff4444;font-size:28px;font-weight:bold;margin:0;text-align:center;">€35,000,000</p>
-          <p style="color:#a89878;text-align:center;margin-top:8px;">Maximum fine for EU AI Act non-compliance<br><span style="color:#666;">or 7% of global annual revenue</span></p>
+          <p style="color:#a89878;text-align:center;margin-top:8px;">Maximum penalty under the EU AI Act's top tier (prohibited practices)<br><span style="color:#666;">or 7% of global annual revenue, whichever is higher</span></p>
         </div>
         <p style="color:#a89878;line-height:1.7;">Most companies are using <strong style="color:#e8e0d0;">annual audits</strong> — checking compliance once a year. That's like checking your smoke alarm once a year and hoping nothing burns down in between.</p>
-        <p style="color:#a89878;line-height:1.7;">APEX uses <strong style="color:#d4a017;">Provable Stateful Integrity (PSI)</strong> to verify compliance <em>continuously</em> and <em>cryptographically</em>. Every state change is committed, challenged, and proven.</p>
+        <p style="color:#a89878;line-height:1.7;">APEX uses <strong style="color:#d4a017;">Provable Stateful Integrity (PSI)</strong> to record evidence of compliance <em>cryptographically</em>: every state change is committed and anchored, and full evidence is produced when a record is challenged.</p>
         <div style="text-align:center;margin:32px 0;">
           <a href="https://ai-governance-standard.com/engine" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Try the Free Verification Engine →</a>
         </div>
@@ -59,14 +59,14 @@ const DRIP_EMAILS = [
   },
   {
     delayMs: 259200000, // 72 hours
-    subject: "Last chance: Schedule your compliance demo",
+    subject: "What the three modes actually do",
     html: (name: string, company: string) => `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:32px;background:#0a0b0f;color:#e8e0d0;">
         <div style="text-align:center;margin-bottom:24px;">
           <h1 style="color:#d4a017;margin:0;font-size:24px;">APEX PSI</h1>
         </div>
         <h2 style="color:#e8e0d0;font-size:20px;">${name ? `${name}, ` : ""}Ready to get compliant?</h2>
-        <p style="color:#a89878;line-height:1.7;">We've helped companies across finance, healthcare, and tech achieve verifiable EU AI Act compliance. Here's what our customers get:</p>
+        <p style="color:#a89878;line-height:1.7;">No sales call sits between you and the record. What the platform offers:</p>
         <table style="width:100%;border-collapse:collapse;margin:20px 0;">
           <tr>
             <td style="padding:12px;border-bottom:1px solid #1a1a2e;">
@@ -83,16 +83,16 @@ const DRIP_EMAILS = [
           <tr>
             <td style="padding:12px;">
               <strong style="color:#d4a017;">JUDGE Mode</strong><br>
-              <span style="color:#a89878;font-size:13px;">Full adversarial audit simulating regulatory inspection</span>
+              <span style="color:#a89878;font-size:13px;">Adversarial technical review. It is not a regulatory inspection and Apex is not a regulator.</span>
             </td>
           </tr>
         </table>
-        <p style="color:#a89878;line-height:1.7;">Plans start at <strong style="color:#e8e0d0;">$499/mo</strong>. Every day you wait is another day of unverified compliance risk.</p>
+        <p style="color:#a89878;line-height:1.7;">Sealing is free up to 100 records a day. API keys that raise the cap cost <strong style="color:#e8e0d0;">$11 or $55 a month</strong>. Checking any published receipt is free for everyone, forever. Nothing that changes a finding, a result or a record is for sale.</p>
         <div style="text-align:center;margin:32px 0;">
-          <a href="https://ai-governance-standard.com/auth" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Start Your Free Trial →</a>
+          <a href="https://ai-governance-standard.com/engine" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Run the free verification engine →</a>
         </div>
         <hr style="border:none;border-top:1px solid #1a1a2e;margin:32px 0;">
-        <p style="color:#555;font-size:11px;text-align:center;">APEX PSI · EU AI Act Compliance Platform<br>Reply STOP to unsubscribe</p>
+        <p style="color:#555;font-size:11px;text-align:center;">APEX PSI · ai-governance-standard.com<br>This sequence is three emails and then silence. To stop it sooner, write "unsubscribe" to apexinfrastructure369@gmail.com.</p>
       </div>
     `,
   },

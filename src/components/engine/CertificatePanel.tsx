@@ -106,10 +106,10 @@ const CertificatePanel = ({ certificate }: CertificatePanelProps) => {
             ))}
           </div>
 
-          {/* MPC Consensus */}
+          {/* 2-of-3 quorum check */}
           {certificate.mpcConsensus && (
             <div className="p-2 rounded bg-engine-bg border border-engine-border">
-              <span className="text-[10px] font-mono text-engine-muted block mb-1">MPC DISTRIBUTED CONSENSUS</span>
+              <span className="text-[10px] font-mono text-engine-muted block mb-1">2-OF-3 QUORUM CHECK (APEX-OPERATED NODES)</span>
               <div className="flex items-center gap-3 text-[11px] font-mono">
                 <span className="text-engine-approved">{certificate.mpcConsensus.nodesResponded}/3 nodes</span>
                 <span className="text-engine-muted">•</span>
@@ -126,7 +126,7 @@ const CertificatePanel = ({ certificate }: CertificatePanelProps) => {
             <div className="p-2 rounded bg-engine-bg border border-engine-border">
               <span className="text-[10px] font-mono text-engine-muted block mb-1">BN128 COMMITMENT (EXPERIMENTAL — NOT ZERO-KNOWLEDGE)</span>
               <div className="text-[11px] font-mono text-engine-text space-y-0.5">
-                <div>Protocol: <span className="text-engine-approved">Groth16</span> • Curve: <span className="text-engine-approved">BN128</span></div>
+                <div>Protocol: <span className="text-engine-approved">BN128 field arithmetic only (no circuit, no Groth16 proof)</span> • Curve: <span className="text-engine-approved">BN128</span></div>
                 <div>Privacy: <span className="text-engine-approved">Action content hidden</span></div>
               </div>
             </div>

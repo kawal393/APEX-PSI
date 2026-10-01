@@ -70,6 +70,7 @@ import Forge from "./pages/Forge";
 import Standard from "./pages/Standard";
 import Spec from "./pages/Spec";
 import Specs from "./pages/Specs";
+import Conformance from "./pages/Conformance";
 import License from "./pages/License";
 import Header from "./pages/Header";
 import Foundation from "./pages/Foundation";
@@ -256,6 +257,7 @@ const App = () => (
               <Route path="/standard" element={<Standard />} />
               <Route path="/spec" element={<Spec />} />
               <Route path="/specs" element={<Specs />} />
+              <Route path="/conformance" element={<Conformance />} />
               <Route path="/license" element={<License />} />
               <Route path="/header" element={<Header />} />
               <Route path="/foundation" element={<Foundation />} />

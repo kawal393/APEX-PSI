@@ -162,7 +162,7 @@ const Pramaan = () => {
       licence: {
         engine: "APEX PSI Sealing Engine v1",
         terms: ENGINE_LICENCE_TERMS,
-        verifier: "MIT — @apex/psi-verifier",
+        verifier: "MIT — packages/psi-verifier (source in the repository; not published to a registry)",
       },
       sealed_at: current.ts,
       file: { name: current.fileName, size_bytes: current.size },
@@ -531,14 +531,15 @@ const Pramaan = () => {
             </Card>
             <Card className="p-4 bg-background/60 border-border">
               <p className="text-emerald-400 mb-2">DEVELOPERS · SDK</p>
-              <pre className="text-[10px]">{`import { seal } from
- "@apex/pramaan-sdk";
-const r = await seal(file);`}</pre>
+              <pre className="text-[10px]">{`# source in the repository, not npm
+git clone https://github.com/kawal393/APEX-PSI
+npm install ./APEX-PSI/packages/psi-sdk`}</pre>
             </Card>
             <Card className="p-4 bg-background/60 border-border">
               <p className="text-emerald-400 mb-2">PIPELINES · API</p>
-              <pre className="text-[10px]">{`POST /pramaan/seal
-{ "sha256": "..." }`}</pre>
+              <pre className="text-[10px]">{`POST functions/v1/notarize
+{ "decision": "...", "model_id": "..." }
+header: x-apex-api-key`}</pre>
             </Card>
           </div>
           <div className="mt-6 flex flex-wrap gap-3">

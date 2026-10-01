@@ -21,7 +21,7 @@ const CHANNELS = [
   },
   {
     title: "Compliance-Receipt HTTP header",
-    body: "A transport-level marking any server can emit and any client can check offline, per draft-singh-psi-http-01.",
+    body: "A transport-level marking any server can emit and any client can check offline, specified in draft-singh-psi-http — in preparation, not yet filed with the IETF.",
     to: "/header",
     cta: "Inspect a header",
   },
@@ -63,7 +63,7 @@ const ROADMAP = [
     items: [
       "Adapter coverage for every major model SDK",
       "Public receipt pages indexed for every seal",
-      "Partner referral program with revenue share",
+      "Operator references and the one-line verification badge",
     ],
   },
   {
@@ -71,7 +71,7 @@ const ROADMAP = [
     items: [
       "IETF working-group adoption of the header draft",
       "Independent verifier nodes operated by third parties",
-      "Turnkey white-label deployment for auditors and law firms",
+      "Conformance packs for auditors and legal teams",
     ],
   },
   {
@@ -87,13 +87,13 @@ const ROADMAP = [
 const Integrations = () => (
   <div className="min-h-screen bg-background text-foreground">
     <Helmet>
-      <title>Integrations & Partner Program — Apex PSI — Universal Verification Protocol</title>
+      <title>Integrations &amp; Operators — Apex PSI — Universal Verification Protocol</title>
       <meta
         name="description"
         content="Every way to wire APEX PSI into your stack: REST API, model SDK adapters, the Compliance-Receipt HTTP header, MCP agent access, embeddable widgets, CI/CD gates and the procurement registry."
       />
       <link rel="canonical" href={`${SITE_URL}/integrations`} />
-      <meta property="og:title" content="Integrations & Partner Program — APEX PSI" />
+      <meta property="og:title" content="Integrations & Operators — APEX PSI" />
       <meta
         property="og:description"
         content="APIs, SDK adapters, HTTP headers, MCP agent access and embeddable widgets for verifiable AI governance evidence."
@@ -163,8 +163,8 @@ const Integrations = () => (
                 to: "/registry",
               },
               {
-                t: "Referral partner",
-                b: "Resellers, auditors and consultancies earn revenue share on services they introduce.",
+                t: "Operator reference",
+                b: "Run the protocol under your own operator reference and publish receipts in your name. No revenue share is taken and none is paid - you charge for your own work.",
                 to: "/partner",
               },
               {

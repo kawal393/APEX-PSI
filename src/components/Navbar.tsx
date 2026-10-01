@@ -22,7 +22,8 @@ const moreGroups: { title: string; links: MoreLink[] }[] = [
   { title: "Compliance", links: [
     { label: "EU AI Act", href: "/eu-ai-act" }, { label: "EU Code", href: "/eu-code" }, { label: "Regulations", href: "/regulations" },
     { label: "Standards", href: "/standards" }, { label: "PSI-05", href: "/standards/psi-05" }, { label: "Portfolio", href: "/portfolio" },
-    { label: "Spec Shelf", href: "/specs" },
+    { label: "Spec Shelf", href: "/specs" }, { label: "Conformance", href: "/conformance" },
+    { label: "Operators", href: "/partners" },
   ]},
   { title: "Evidence", links: [
     { label: "Live Ledger", href: "/live" }, { label: "Registry", href: "/registry" }, { label: "Genesis", href: "/genesis" },

@@ -1,6 +1,6 @@
 # @apex/psi-openai
 
-One line. Every OpenAI response carries a `Compliance-Receipt` (draft-singh-psi-http-01).
+One line. Every OpenAI response carries a `Compliance-Receipt` (draft-singh-psi-http — working specification, not filed with the IETF).
 
 ```ts
 import OpenAI from "openai";

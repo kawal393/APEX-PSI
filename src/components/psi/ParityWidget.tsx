@@ -198,8 +198,8 @@ const ParityWidget = () => {
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         {[
-          { title: "@apex/psi-verifier (TypeScript)", body: tsOutput },
-          { title: "psi-verifier (Python)", body: fixture.python },
+          { title: "TypeScript — recomputed live in this browser", body: tsOutput },
+          { title: "Python — recorded output, not run here", body: fixture.python },
         ].map((col) => (
           <div key={col.title} className="flex h-full flex-col rounded-md border border-border bg-background/60">
             <div className="border-b border-border px-4 py-2 text-[11px] font-mono uppercase tracking-[0.15em] text-muted-foreground">
@@ -213,8 +213,11 @@ const ParityWidget = () => {
       </div>
 
       <p className="mt-4 font-mono text-[11px] text-muted-foreground break-all">
-        Compare this digest against the package output: <code>node -e "require('@apex/psi-verifier')"</code> or{" "}
-        <code>python -c "import psi_verifier"</code>. Verified, not asserted.
+        The left column is computed in this page, from source bundled out of <code>packages/psi-verifier</code> — no
+        registry install is involved, and no Apex package is published to npm or PyPI. The right column is a recorded
+        Python result, reproduced by running <code>python psi-conformance/conformance.py test</code> after cloning
+        <code> https://github.com/kawal393/APEX-PSI</code>. Match here means the two recordings agree; it is not proof
+        that a Python process ran just now.
       </p>
     </Card>
   );

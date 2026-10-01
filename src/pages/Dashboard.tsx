@@ -8,7 +8,6 @@ import apexLogo from "@/assets/apex-logo.png";
 import ComplianceStatus from "@/components/dashboard/ComplianceStatus";
 import TrioModeSelector from "@/components/dashboard/TrioModeSelector";
 import ComplianceLedger from "@/components/dashboard/ComplianceLedger";
-import ReferralCard from "@/components/dashboard/ReferralCard";
 import ComplianceQuestionnaire from "@/components/dashboard/ComplianceQuestionnaire";
 import ComplianceCertificate from "@/components/dashboard/ComplianceCertificate";
 import ScoreBreakdown from "@/components/dashboard/ScoreBreakdown";
@@ -32,7 +31,7 @@ const TIER_LABELS: Record<string, string> = {
   goliath: "GOLIATH",
 };
 
-const FREE_VERIFICATION_LIMIT = 3;
+const FREE_VERIFICATION_LIMIT = 100; // matches FREE_DAILY_LIMIT in the metered-door tiers
 
 function calculateBreakdown(qData: any) {
   if (!qData) return null;
@@ -154,7 +153,7 @@ const Dashboard = () => {
         if (errorBody?.error === "verification_limit") {
           setUpgradeReason("verification_limit");
           setUsageInfo({ used: errorBody.used, limit: errorBody.limit });
-          toast.error("Verification limit reached — upgrade for more");
+          toast.error("Daily cap reached — a paid key raises the cap. Checking a published receipt stays free.");
           setVerifying(false);
           return;
         }
@@ -355,7 +354,6 @@ const Dashboard = () => {
                   <ComplianceLedger verifications={verifications} />
                   <MonitoringToggle />
                   <WebhookConfig />
-                  <ReferralCard referralCode={compliance.referral_code || ""} referralCount={compliance.referral_count} />
                 </div>
               </div>
             ) : (

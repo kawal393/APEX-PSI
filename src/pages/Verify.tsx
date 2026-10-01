@@ -400,22 +400,24 @@ const Verify = () => {
             <RosetteTest />
             <div className="grid gap-3 sm:grid-cols-2">
               <a
-                href="https://www.npmjs.com/package/@apex/psi-verifier"
+                href="https://github.com/kawal393/APEX-PSI/tree/main/packages/psi-verifier"
                 target="_blank"
                 rel="noreferrer"
                 className="flex flex-col justify-center rounded-md border border-border bg-card/40 px-5 py-4 transition-colors hover:border-primary/40"
               >
-                <span className="font-mono text-sm font-bold text-foreground">@apex/psi-verifier (npm)</span>
-                <span className="mt-1 text-xs text-muted-foreground">Free forever. MIT. No permission required.</span>
+                <span className="font-mono text-sm font-bold text-foreground">packages/psi-verifier (source)</span>
+                <span className="mt-1 text-xs text-muted-foreground">
+                  MIT, free forever - TypeScript and Python. Not published to a registry yet; build from the repository.
+                </span>
               </a>
               <a
-                href="https://pypi.org/project/psi-verifier/"
+                href="https://www.npmjs.com/package/apex-psi-mcp"
                 target="_blank"
                 rel="noreferrer"
                 className="flex flex-col justify-center rounded-md border border-border bg-card/40 px-5 py-4 transition-colors hover:border-primary/40"
               >
-                <span className="font-mono text-sm font-bold text-foreground">psi-verifier (PyPI)</span>
-                <span className="mt-1 text-xs text-muted-foreground">Free forever. MIT. No permission required.</span>
+                <span className="font-mono text-sm font-bold text-foreground">apex-psi-mcp (npm)</span>
+                <span className="mt-1 text-xs text-muted-foreground">Published on npm. Install: npx -y apex-psi-mcp</span>
               </a>
             </div>
           </div>

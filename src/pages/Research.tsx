@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FileText, ExternalLink, Github, BookOpen, Globe, Award } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -23,61 +24,61 @@ interface Publication {
 const defaultPubs: Publication[] = [
   {
     id: "ietf",
-    title: "draft-singh-psi-00: Provable Safety Invariants for AI Systems",
-    authors: "R. Singh",
-    publication_date: "2026-03",
+    title: "draft-singh-psi, revision 01: Proof of Sovereign Integrity (PSI) - A Cryptographic Protocol for Verifiable AI Regulatory Compliance",
+    authors: "K. Singh",
+    publication_date: "2026-08",
     pub_type: "ietf",
     source_name: "IETF Datatracker",
     url: "https://datatracker.ietf.org/doc/draft-singh-psi/",
-    description: "Internet-Draft defining the PSI Protocol — a framework for mathematically verifiable AI compliance using commit-prove-verify pipelines and independent review-panel governance.",
+    description: "Internet-Draft defining the PSI Protocol - a framework for cryptographic evidence of AI regulatory compliance using commit-prove-verify pipelines and independent review-panel governance. The filed revision 01 (submitted 30 August 2026, expires 3 March 2027) states zero-knowledge commitments and multi-party computation as the mechanism; no such system is implemented here. What the deployed reference implementation actually provides is SHA-256 hashing over RFC 8785 canonicalised input, Ed25519 signatures and Merkle inclusion proofs, specified as the PSI-SEAL/1.0.0 schema. A revision withdrawing the unused claims has been written; until it appears on the datatracker record, the filed text is what a third party will cite, and this page describes the filed text rather than improving it.",
     is_own: true,
     featured: true,
   },
   {
-    id: "arxiv",
-    title: "Verifiable AI Governance: From Self-Reported Compliance to Cryptographic Proof",
-    authors: "R. Singh",
+    id: "whitepaper",
+    title: "PSI: Proof of Stateful Integrity — A Cryptographic Protocol",
+    authors: "K. Singh",
     publication_date: "2026-03",
-    pub_type: "arxiv",
-    source_name: "arXiv",
-    url: "https://arxiv.org/",
-    description: "Technical paper establishing the mathematical foundations of PSI Protocol including cryptographic commitment schemes, Merkle audit trees, and multi-node verification for compliance verification.",
+    pub_type: "preprint",
+    source_name: "Self-hosted preprint (/paper)",
+    url: "https://ai-governance-standard.com/paper",
+    description: "The full technical write-up of the protocol as hosted on this site. It is a preprint: it has not been peer reviewed, it is not indexed by arXiv, and no DOI has been issued for it. Any statement on this page or in the preprint that implies a venue, an index or a persistent identifier is superseded by this line.",
     is_own: true,
     featured: true,
   },
   {
     id: "github",
-    title: "APEX Infrastructure — PSI Protocol Reference Implementation",
-    authors: "APEX Team",
+    title: "APEX-PSI — PSI Protocol Reference Implementation",
+    authors: "kawal393/APEX-PSI",
     publication_date: "2026-03",
     pub_type: "github",
     source_name: "GitHub",
-    url: "https://github.com/",
-    description: "Open-source reference implementation featuring the PSI verification engine, multi-node consensus layer, and public verification portal.",
+    url: "https://github.com/kawal393/APEX-PSI",
+    description: "Publicly readable reference implementation: the seal schema, the TypeScript and Python verifiers, and the byte-level conformance vectors under psi-conformance/vectors. Verification code is MIT; the generation engine is not open source, so \"reference implementation\" means readable and checkable, not freely reusable. There is no consensus layer — the three verification endpoints re-run the same checks on the same input.",
     is_own: true,
     featured: true,
   },
   {
     id: "medium",
     title: "Seven Things That Prove Nobody Can Verify What AI Refuses to Generate",
-    authors: "R. Singh",
+    authors: "VeritasChain (@veritaschain)",
     publication_date: "2026-03",
     pub_type: "article",
     source_name: "Medium",
     url: "https://medium.com/@veritaschain/seven-things-happened-this-week-that-prove-nobody-can-verify-what-ai-refuses-to-generate-e23ba194fcd6",
-    description: "Analysis of the verification gap in AI safety — why self-reported assurance is hard to test and how cryptographic audit trails offer a verifiable alternative.",
-    is_own: true,
+    description: "Third-party commentary on the verification gap in AI safety, listed here as related reading, not as an evaluation of this protocol. It is published under the VeritasChain handle, a separate project from APEX PSI; it says nothing about PSI-SEAL conformance and does not endorse this work. The link returns 403 to automated checks, so its continued existence is taken from the sites that cite it rather than from a successful fetch.",
+    is_own: false,
     featured: false,
   },
   {
     id: "zenodo-1",
-    title: "Deterministic Invariant Enforcement in AI Governance",
+    title: "Living AI Governance Standard v1.0 — A Formal Structural Framework for Governed Intelligent Systems",
     authors: "Ondřej Škultety",
     publication_date: "2026",
     pub_type: "zenodo",
     source_name: "Zenodo",
-    url: "https://zenodo.org/",
-    description: "Academic framework exploring structural governance, authority constraints, and non-bypass guarantees — validating the necessity of deterministic enforcement that PSI Protocol operationalises.",
+    url: "https://doi.org/10.5281/zenodo.18798197",
+    description: "Independent third-party work on structural governance, resolved against the Zenodo record API on 1 October 2026. It is listed as related literature. It does not mention PSI Protocol, does not evaluate it, and provides no endorsement of it — any sentence claiming that it validates this protocol was written here and is withdrawn.",
     is_own: false,
     featured: false,
   },
@@ -85,6 +86,7 @@ const defaultPubs: Publication[] = [
 
 const typeIcons: Record<string, typeof FileText> = {
   ietf: Globe,
+  preprint: BookOpen,
   arxiv: BookOpen,
   github: Github,
   article: FileText,
@@ -94,6 +96,7 @@ const typeIcons: Record<string, typeof FileText> = {
 
 const typeBadgeColors: Record<string, string> = {
   ietf: "bg-primary/10 text-primary border-primary/20",
+  preprint: "bg-gold/10 text-gold border-gold/20",
   arxiv: "bg-destructive/10 text-destructive border-destructive/20",
   github: "bg-foreground/10 text-foreground border-foreground/20",
   article: "bg-psi-blue/10 text-psi-blue border-psi-blue/20",
@@ -124,10 +127,10 @@ const Research = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Research & Publications | PSI Protocol — IETF draft-singh-psi-00 — Apex PSI — Universal Verification Protocol</title>
+        <title>Research & Publications | PSI Protocol — IETF draft-singh-psi rev 01 — Apex PSI — Universal Verification Protocol</title>
         <meta
           name="description"
-          content="IETF drafts, arXiv papers, and institutional citations — the authoritative research behind the Open Protocol for Verifiable AI Governance."
+          content="The filed IETF Internet-Draft, our self-hosted preprint and reference implementation, and third-party literature we consider relevant — each entry linked to the record that actually resolves."
         />
       </Helmet>
       <Navbar />
@@ -145,8 +148,15 @@ const Research = () => {
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
               Research & Publications
             </h1>
-            <p className="text-muted-foreground max-w-xl mx-auto mb-6">
-              From IETF Internet-Drafts to peer-reviewed papers — the mathematical and institutional foundations of PSI Protocol.
+            <p className="text-muted-foreground max-w-xl mx-auto mb-4">
+              The filed standards record, our own technical writing, and third-party work we consider relevant — kept
+              apart, because they carry different weight.
+            </p>
+            <p className="text-xs text-muted-foreground/70 max-w-2xl mx-auto mb-6">
+              Every link on this page was resolved against its registry on 1 October 2026. Entries describe what the
+              linked record actually says. Where an earlier version of this page cited a paper that no registry carries,
+              the citation has been removed rather than reworded, and the correction is recorded in
+              {" "}<Link to="/corrections" className="text-gold underline">Corrections</Link>.
             </p>
             <ShareEngine />
           </motion.div>

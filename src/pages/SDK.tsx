@@ -83,8 +83,7 @@ const response = await fetch(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      commit_id: 'APEX-A1B2C3D4-E5F6',
-      zk_mode: true  // Optional: Enable zero-knowledge proof mode
+      commit_id: 'APEX-A1B2C3D4-E5F6'
     })
   }
 );
@@ -134,32 +133,31 @@ const result = await response.json();
 //   }
 // }`;
 
-  const sdkExample = `import { ApexEngine } from '@apex/psi-sdk';
+  const sdkExample = `// not on npm - build from source:
+// git clone https://github.com/kawal393/APEX-PSI
+// npm install ./APEX-PSI/packages/psi-sdk
+import { ApexEngine } from '@apex/psi-sdk';
 
 // Initialize SDK
 const engine = new ApexEngine({
-  projectId: 'qhtntebpcribjiwrdtdd',
-  apiKey: process.env.APEX_API_KEY
+  endpoint: 'https://ai-governance-standard.com',
+  apiKey: process.env.APEX_API_KEY,
+  mode: 'blocking'          // 'blocking' halts the response, 'monitoring' logs only
 });
 
 // Runtime blocking middleware for Express/Node.js
-app.use(engine.middleware({
-  predicates: ['EU_ART_14', 'EU_ART_50', 'MIFID_ART_17'],
-  mode: 'blocking',       // 'blocking' | 'audit-only'
-  zkMode: true,           // Privacy-preserving verification
-  onViolation: (action, predicate, violation) => {
-    console.error(\`Blocked: \${violation} under \${predicate}\`);
-    return { blocked: true, reason: violation };
+app.use('/api/ai', engine.middleware({
+  predicates: ['EU_ART_14', 'EU_ART_50'],
+  mode: 'blocking',
+  onViolation: (result, req, res) => {
+    console.error(\`Blocked: \${result.violationFound} under \${result.predicateId}\`);
+    res.status(403).json({ blocked: true, reason: result.violationFound });
   }
 }));
 
 // Inline usage in your code
 async function generateAIResponse(prompt: string) {
-  const result = await engine.verify({
-    action: \`Generate response: \${prompt}\`,
-    predicates: ['EU_ART_50', 'EU_ART_52'],
-    blocking: true
-  });
+  const result = await engine.verify(\`Generate response: \${prompt}\`, 'EU_ART_50');
 
   if (result.status === 'BLOCKED') {
     throw new Error(\`Compliance violation: \${result.violationFound}\`);
@@ -182,10 +180,10 @@ async function generateAIResponse(prompt: string) {
     <>
       <Helmet>
         <title>SDKs & Integrations — Apex PSI — Universal Verification Protocol</title>
-        <meta name="description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/psi-sdk runtime pattern cache." />
+        <meta name="description" content="SDK source for OpenAI, Anthropic, Vercel AI and Hono, built from the repository — not published to npm. CI/CD guides and the psi-sdk runtime pattern cache." />
         <link rel="canonical" href="https://ai-governance-standard.com/sdk" />
         <meta property="og:title" content="SDKs & Integrations — APEX PSI" />
-        <meta property="og:description" content="Drop-in SDKs for OpenAI, Anthropic, Vercel AI, Hono. CI/CD guides and the @apex/psi-sdk runtime pattern cache." />
+        <meta property="og:description" content="SDK source for OpenAI, Anthropic, Vercel AI and Hono, built from the repository — not published to npm. CI/CD guides and the psi-sdk runtime pattern cache." />
         <meta property="og:url" content="https://ai-governance-standard.com/sdk" />
         <meta property="og:type" content="website" />
       </Helmet>
@@ -435,8 +433,9 @@ const batch = await response.json();
               </CardHeader>
               <CardContent>
                 <p className="text-engine-muted text-sm mb-4">
-                  Generate a Merkle inclusion proof and run compliance verification. Optionally enable
-                  <span className="text-engine-approved"> zk_mode</span> for privacy-preserving verification.
+                  Generate a Merkle inclusion proof for a committed action. The endpoint takes a
+                  commit id and returns the proof path and the recorded verdict; there is no
+                  zero-knowledge option, because nothing here is a zero-knowledge proof.
                 </p>
                 <div className="relative">
                   <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
@@ -480,17 +479,19 @@ const batch = await response.json();
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="font-mono text-base">
-                    Runtime SDK (Coming Soon)
+                    Runtime SDK (source, not published)
                   </CardTitle>
                   <Badge className="bg-engine-muted/20 text-engine-muted border-engine-muted/30">
-                    Roadmap
+                    Build from source
                   </Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <p className="text-engine-muted text-sm mb-4">
-                  The SDK will provide middleware integration, automatic blocking, and privacy-preserving
-                  verification with ZK proofs. Contact us for early access.
+                  The code above is the current source API of packages/psi-sdk: local pattern checks,
+                  blocking middleware and hash commits. It is built from the repository, not installed
+                  from npm, and there is no zero-knowledge layer in it — verification is SHA-256 hashing,
+                  Merkle inclusion and Ed25519 signing, all of which you can run yourself at /conformance.
                 </p>
                 <div className="relative">
                   <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
@@ -538,35 +539,38 @@ const batch = await response.json();
           </CardContent>
         </Card>
 
-        {/* ZK Mode */}
+        {/* What stays private */}
         <Card className="bg-gradient-to-br from-engine-surface to-engine-bg border-engine-border mb-8">
           <CardHeader>
             <CardTitle className="font-mono text-lg flex items-center gap-2">
               <Lock className="h-5 w-5 text-engine-approved" />
-              Zero-Knowledge Mode
+              What Stays Private - and Why
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-engine-muted text-sm mb-4">
-              Enable <code className="text-engine-approved">zk_mode: true</code> in prove requests
-              to verify compliance without revealing the original action content. The proof demonstrates
-              that your action passes predicate checks without exposing proprietary information.
+              A receipt publishes a digest, not a document: the ledger entry carries the SHA-256 of
+              the record, the predicate, the verdict and the Merkle proof. Sealing in your browser
+              sends the digest only, and the content never leaves the device. Sending an action to
+              the sealing endpoint for a verdict does store the text server-side, so the check can be
+              reproduced - it is stored, not published. None of this is zero-knowledge: a SHA-256 of
+              short, guessable text can be brute-forced, so never treat a hash as encryption.
             </p>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <div className="bg-engine-bg/50 border border-engine-border rounded p-3">
-                <span className="text-engine-approved font-mono text-xs">What's proven:</span>
+                <span className="text-engine-approved font-mono text-xs">Published in the receipt:</span>
                 <ul className="mt-2 space-y-1 text-engine-muted text-xs">
-                  <li>• Action satisfies predicate requirements</li>
-                  <li>• Hash is included in Merkle tree</li>
-                  <li>• Verification completed within SLA</li>
+                  <li>• SHA-256 digest of the committed record</li>
+                  <li>• Predicate id, phase and verdict</li>
+                  <li>• Merkle inclusion path and anchor</li>
                 </ul>
               </div>
               <div className="bg-engine-bg/50 border border-engine-border rounded p-3">
-                <span className="text-engine-blocked font-mono text-xs">What's hidden:</span>
+                <span className="text-engine-blocked font-mono text-xs">Not in the receipt:</span>
                 <ul className="mt-2 space-y-1 text-engine-muted text-xs">
-                  <li>• Original action content</li>
                   <li>• Model weights or parameters</li>
                   <li>• Business logic details</li>
+                  <li>• Action text, unless you post it for a verdict</li>
                 </ul>
               </div>
             </div>
@@ -695,7 +699,7 @@ GET /verify-status?action=stats
             <p className="text-engine-muted text-xs mt-2">
               Wrap your AI runtime in one line. Every response carries a signed{" "}
               <code className="text-engine-approved">Compliance-Receipt</code> header
-              (<Link to="/standard" className="text-engine-approved underline">draft-singh-psi-http-01</Link>).
+              (<Link to="/standard" className="text-engine-approved underline">draft-singh-psi-http — working draft, not filed</Link>).
             </p>
           </CardHeader>
           <CardContent>
