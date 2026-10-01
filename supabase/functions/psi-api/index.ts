@@ -291,7 +291,7 @@ Deno.serve(async (req) => {
 
   const url = new URL(req.url);
   // strip /functions/v1/psi-api prefix
-  let path = url.pathname.replace(/^.*\/psi-api/, "") || "/";
+  const path = url.pathname.replace(/^.*\/psi-api/, "") || "/";
   if (path === "" || path === "/") return json({
     engine: "APEX PSI Unified API v1",
     endpoints: {

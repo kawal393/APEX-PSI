@@ -50,7 +50,7 @@ interface PredicateResult { verdict: Verdict; evidence: Record<string, unknown>;
 
 const PII_PATTERNS = [
   { name: "email", re: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i },
-  { name: "phone_e164", re: /\+?\d{1,3}[\s\-]?\(?\d{2,4}\)?[\s\-]?\d{3,4}[\s\-]?\d{3,4}/ },
+  { name: "phone_e164", re: /\+?\d{1,3}[\s-]?\(?\d{2,4}\)?[\s-]?\d{3,4}[\s-]?\d{3,4}/ },
   { name: "ssn_us", re: /\b\d{3}-\d{2}-\d{4}\b/ },
   { name: "credit_card", re: /\b(?:\d[ -]?){13,16}\b/ },
   { name: "ipv4", re: /\b(?:\d{1,3}\.){3}\d{1,3}\b/ },

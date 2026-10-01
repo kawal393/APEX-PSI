@@ -240,8 +240,8 @@ Deno.serve(async (req) => {
       throw new Error("AI gateway error");
     }
 
-    let data = await aiResp.json();
-    let choice = data.choices?.[0];
+    const data = await aiResp.json();
+    const choice = data.choices?.[0];
 
     // Handle tool calls
     if (choice?.message?.tool_calls && choice.message.tool_calls.length > 0) {

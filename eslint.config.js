@@ -5,7 +5,15 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  {
+    ignores: [
+      "dist",
+      // Cloud-generated, byte-pinned deployed artifact (see EMPIRE_STATE.md pin for
+      // supabase/functions/mcp/index.ts). Editing it to satisfy browser-targeted lint
+      // rules would break the published digest, so it is excluded rather than rewritten.
+      "supabase/functions/mcp/index.ts",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
