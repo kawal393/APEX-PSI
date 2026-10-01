@@ -27,6 +27,7 @@ import EnforcementStrip from "@/components/EnforcementStrip";
 import UniversalTicker from "@/components/UniversalTicker";
 import HomeSealStrip from "@/components/HomeSealStrip";
 import MelbourneTestPlaque from "@/components/MelbourneTestPlaque";
+import VerticalsMatrix from "@/components/VerticalsMatrix";
 import GrandHero from "@/components/GrandHero";
 import ConstitutionLaws from "@/components/ConstitutionLaws";
 import GenesisAnchor from "@/components/GenesisAnchor";
@@ -105,6 +106,7 @@ const Index = () => {
           </a>
         </p>
         <MelbourneTestPlaque />
+        <VerticalsMatrix />
         <UniversalTicker />
         <ConnectAIPill />
         <Article50Banner />
