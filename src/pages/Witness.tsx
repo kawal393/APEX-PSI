@@ -9,9 +9,12 @@ type Row = { id: string; source: string; source_id: string; title: string; sourc
 export default function Witness() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [err, setErr] = useState(false);
+  const [changes, setChanges] = useState<Change[]>([]);
   useEffect(() => {
     (supabase as any).from("public_witness_records").select("*").order("observed_at", { ascending: false }).limit(100)
       .then(({ data, error }: { data: Row[] | null; error: unknown }) => { if (error) setErr(true); else setRows(data ?? []); });
+    (supabase as any).from("witness_contradictions").select("*").order("created_at", { ascending: false }).limit(50)
+      .then(({ data }: { data: Change[] | null }) => setChanges(data ?? []));
   }, []);
 
   return (
