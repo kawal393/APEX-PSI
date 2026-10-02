@@ -145,3 +145,6 @@ verify_jwt = false
 
 [functions.verify-action]
 verify_jwt = false
+
+[functions.autonomous-witness]
+verify_jwt = false
