@@ -276,6 +276,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-cryptographic-evidence-h84mge</loc>
+    <lastmod>2026-10-02T00:06:53.099Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/cryptographic-truth-proving-what-ai-actually-did-mji1u0</loc>
+    <lastmod>2026-10-02T00:06:53.099Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/c2pa-content-credentials-for-ai-outputs-jzuyqj</loc>
+    <lastmod>2026-10-02T00:06:53.099Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/ietf-draft-singh-psi-00-verifiable-ai-compliance-8x6z2g</loc>
     <lastmod>2026-09-29T09:06:58.504Z</lastmod>
     <changefreq>weekly</changefreq>
