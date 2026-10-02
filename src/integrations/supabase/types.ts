@@ -945,6 +945,8 @@ export type Database = {
           id: string
           last_reset: string
           name: string
+          revoked: boolean
+          stripe_subscription_id: string | null
           tier: string
           user_id: string
         }
@@ -956,6 +958,8 @@ export type Database = {
           id?: string
           last_reset?: string
           name?: string
+          revoked?: boolean
+          stripe_subscription_id?: string | null
           tier?: string
           user_id: string
         }
@@ -967,6 +971,8 @@ export type Database = {
           id?: string
           last_reset?: string
           name?: string
+          revoked?: boolean
+          stripe_subscription_id?: string | null
           tier?: string
           user_id?: string
         }
@@ -999,6 +1005,45 @@ export type Database = {
           visitor_digest?: string
           window_start?: string
           window_used?: number
+        }
+        Relationships: []
+      }
+      notary_subscriptions: {
+        Row: {
+          created_at: string
+          daily_limit: number
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier: string
+          updated_at: string
+          user_id: string
+          welcome_sent_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          daily_limit?: number
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string
+          user_id: string
+          welcome_sent_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          daily_limit?: number
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string
+          user_id?: string
+          welcome_sent_at?: string | null
         }
         Relationships: []
       }

@@ -77,6 +77,37 @@ Deno.serve(async (req) => {
       updated_at: new Date().toISOString(),
     }, { onConflict: "user_id" });
 
+    // One-time thank-you / payment confirmation email for a paid plan.
+    if (tier !== "free") {
+      const { data: row } = await supabase.from("notary_subscriptions")
+        .select("welcome_sent_at").eq("user_id", user.id).maybeSingle();
+      const resendKey = Deno.env.get("RESEND_API_KEY");
+      if (row && !row.welcome_sent_at && resendKey) {
+        const label = TIER_LABEL[tier] ?? tier;
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: "APEX PSI <onboarding@resend.dev>",
+            to: [user.email],
+            subject: `Thank you — your APEX PSI ${label} plan is active`,
+            html: `<div style="font-family:Arial,sans-serif;max-width:560px">
+<h2>Thank you for your payment.</h2>
+<p>Your <strong>${label}</strong> plan is active. Your hosted daily allowance is now <strong>${dailyLimit.toLocaleString()}</strong> receipts per day.</p>
+<p>Create your API key here: <a href="https://ai-governance-standard.com/upgrade">ai-governance-standard.com/upgrade</a></p>
+<p>Your Stripe receipt is sent separately by Stripe. Independent verification remains free forever.</p>
+<p style="color:#888;font-size:12px">Operated by ROCKYFILMS888 PTY LTD trading as Apex Intelligence Empire (ABN 71 672 237 795).</p></div>`,
+          }),
+        });
+        if (res.ok) {
+          await supabase.from("notary_subscriptions")
+            .update({ welcome_sent_at: new Date().toISOString() }).eq("user_id", user.id);
+        } else {
+          console.error("welcome email failed", res.status, await res.text());
+        }
+      }
+    }
+
     // Keep existing keys aligned with what the user is actually entitled to.
     await supabase.from("notary_api_keys")
       .update({ tier, daily_limit: dailyLimit, stripe_subscription_id: subscriptionId || null })
