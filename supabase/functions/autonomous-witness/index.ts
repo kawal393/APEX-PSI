@@ -75,7 +75,27 @@ Deno.serve(async (req) => {
       .upsert(batch, { onConflict: "source,source_id,content_hash", ignoreDuplicates: true }).select("id");
     if (error) throw error;
     inserted = Math.min(data?.length ?? 0, MAX_PER_RUN * 2);
-    const result = { seen, inserted };
+
+    // Change records: a new fingerprint for an already-seen record keeps both.
+    let changes = 0;
+    const newIds = new Set((data ?? []).map((d: { id: string }) => d.id));
+    if (newIds.size) {
+      const { data: fresh } = await db.from("public_witness_records").select("*").in("id", [...newIds]);
+      for (const f of fresh ?? []) {
+        const { data: prior } = await db.from("public_witness_records").select("content_hash,observed_at")
+          .eq("source", f.source).eq("source_id", f.source_id).neq("content_hash", f.content_hash)
+          .lt("observed_at", f.observed_at).order("observed_at", { ascending: false }).limit(1);
+        const p = prior?.[0];
+        if (!p) continue;
+        const contradiction_hash = await sha(canonicalize({ source: f.source, source_id: f.source_id, earlier: p.content_hash, later: f.content_hash })!);
+        const { error: ce } = await db.from("witness_contradictions").upsert({
+          source: f.source, source_id: f.source_id, earlier_hash: p.content_hash, later_hash: f.content_hash,
+          earlier_observed_at: p.observed_at, later_observed_at: f.observed_at, contradiction_hash,
+        }, { onConflict: "contradiction_hash", ignoreDuplicates: true });
+        if (!ce) changes++;
+      }
+    }
+    const result = { seen, inserted, changes };
     await db.from("witness_job_state").update({ locked_until: null, last_run_at: new Date().toISOString(), last_result: result }).eq("id", "autonomous-witness");
     return json(result);
   } catch (e) {
