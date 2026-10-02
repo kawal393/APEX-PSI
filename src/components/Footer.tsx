@@ -127,6 +127,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <Link to="/registry" className="hover:text-gold">Registry</Link>
             <span className="text-border">·</span>
             <Link to="/verticals" className="hover:text-gold">Verticals</Link>
+            <Link to="/witness" className="hover:text-gold">Public Witness</Link>
             <Link to="/ecosystem" className="hover:text-gold">Ecosystem</Link>
             <span className="text-border">·</span>
             <Link to="/operate" className="hover:text-gold">Operate at scale</Link>
