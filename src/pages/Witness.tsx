@@ -62,6 +62,17 @@ export default function Witness() {
             </div>
           )}
         </div>
+        <h2 className="mt-14 text-2xl font-bold uppercase tracking-tight">Change Records</h2>
+        <p className="mt-2 max-w-3xl text-sm text-muted-foreground">When a record already observed comes back with a different fingerprint, both versions are kept here, with both times. A change is a fact about the record, not a judgement about why it changed.</p>
+        <div className="mt-4 border border-border">
+          {changes.length === 0 ? <p className="p-6 font-mono text-sm">No changes observed yet.</p> : changes.map((c) => (
+            <div key={c.id} className="p-4 border-b border-border/50 font-mono text-xs space-y-1">
+              <p className="text-gold uppercase">{c.source} · {c.source_id}</p>
+              <p className="break-all">EARLIER {c.earlier_observed_at.slice(0, 16).replace("T", " ")} · {c.earlier_hash}</p>
+              <p className="break-all">LATER {c.later_observed_at.slice(0, 16).replace("T", " ")} · {c.later_hash}</p>
+            </div>
+          ))}
+        </div>
       </main>
       <Footer />
     </div>
