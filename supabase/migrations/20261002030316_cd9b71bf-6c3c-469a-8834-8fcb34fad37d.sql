@@ -1,0 +1,1 @@
+DROP POLICY "Signed-in users read auditor roster" ON public.tribunal_auditors;
