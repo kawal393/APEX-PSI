@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
 type Row = { id: string; source: string; source_id: string; title: string; source_url: string; content_hash: string; observed_at: string };
+type Change = { id: string; source: string; source_id: string; earlier_hash: string; later_hash: string; earlier_observed_at: string; later_observed_at: string };
 
 export default function Witness() {
   const [rows, setRows] = useState<Row[] | null>(null);
