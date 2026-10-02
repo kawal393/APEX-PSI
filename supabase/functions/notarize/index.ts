@@ -156,8 +156,22 @@ Deno.serve(async (req) => {
         });
       }
       if (!reserved) {
-        return new Response(JSON.stringify({ error: "Public allowance reached", daily_limit: FREE_DAILY_LIMIT, minute_limit: RATE_LIMIT_PER_MINUTE }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" }
+        const site = Deno.env.get("SITE_URL") ?? "https://ai-governance-standard.com";
+        return new Response(JSON.stringify({
+          error: "Public allowance reached",
+          tier: "free",
+          daily_limit: FREE_DAILY_LIMIT,
+          minute_limit: RATE_LIMIT_PER_MINUTE,
+          remaining: 0,
+          retry_after: 60,
+          upgrade_url: `${site}/upgrade`,
+          offline_verification: "Verification is always free and offline; only hosted issuance is metered.",
+        }), {
+          status: 429, headers: {
+            ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60",
+            "X-RateLimit-Limit": String(FREE_DAILY_LIMIT), "X-RateLimit-Remaining": "0",
+            "Access-Control-Expose-Headers": "Retry-After, X-RateLimit-Limit, X-RateLimit-Remaining",
+          }
         });
       }
     }
