@@ -2149,6 +2149,42 @@ export type Database = {
         }
         Relationships: []
       }
+      witness_contradictions: {
+        Row: {
+          contradiction_hash: string
+          created_at: string
+          earlier_hash: string
+          earlier_observed_at: string
+          id: string
+          later_hash: string
+          later_observed_at: string
+          source: string
+          source_id: string
+        }
+        Insert: {
+          contradiction_hash: string
+          created_at?: string
+          earlier_hash: string
+          earlier_observed_at: string
+          id?: string
+          later_hash: string
+          later_observed_at: string
+          source: string
+          source_id: string
+        }
+        Update: {
+          contradiction_hash?: string
+          created_at?: string
+          earlier_hash?: string
+          earlier_observed_at?: string
+          id?: string
+          later_hash?: string
+          later_observed_at?: string
+          source?: string
+          source_id?: string
+        }
+        Relationships: []
+      }
       witness_job_state: {
         Row: {
           id: string

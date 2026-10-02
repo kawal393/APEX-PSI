@@ -18,6 +18,8 @@ const DOCS = [
   DOC("interop-scitt.md", "SCITT interop note", "How a SCITT / COSE receipt maps into a PSI seal — we sit underneath."),
   DOC("interop-c2pa.md", "C2PA interop note", "How a PSI seal rides inside a C2PA assertion — we sit within."),
   DOC("agent-envelope-v1.md", "Agent envelope v1", "The machine-to-machine envelope for autonomous agents and settlement rails."),
+  DOC("apex-intent-v0.md", "APEX-INTENT v0 (draft)", "Pre-action mandate: what an automated system was authorised to do, signed before it acts."),
+  DOC("apex-settle-v0.md", "APEX-SETTLE v0 (draft)", "Release on receipt: a condition other systems may check before releasing. APEX holds no funds."),
   DOC("discrepancy-score-v1.md", "Discrepancy score v1", "Spec for the claim-versus-recomputed-truth score."),
   DOC("evidence-package-v1.md", "Evidence package v1", "Structured, independently verifiable evidence bundle format."),
   DOC("truth-commons-charter-v1.md", "Truth Commons Charter v1", "Procedural rules for versioned, public predicate governance."),

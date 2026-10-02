@@ -5,13 +5,17 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
 type Row = { id: string; source: string; source_id: string; title: string; source_url: string; content_hash: string; observed_at: string };
+type Change = { id: string; source: string; source_id: string; earlier_hash: string; later_hash: string; earlier_observed_at: string; later_observed_at: string };
 
 export default function Witness() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [err, setErr] = useState(false);
+  const [changes, setChanges] = useState<Change[]>([]);
   useEffect(() => {
     (supabase as any).from("public_witness_records").select("*").order("observed_at", { ascending: false }).limit(100)
       .then(({ data, error }: { data: Row[] | null; error: unknown }) => { if (error) setErr(true); else setRows(data ?? []); });
+    (supabase as any).from("witness_contradictions").select("*").order("created_at", { ascending: false }).limit(50)
+      .then(({ data }: { data: Change[] | null }) => setChanges(data ?? []));
   }, []);
 
   return (
@@ -57,6 +61,17 @@ export default function Witness() {
               </table>
             </div>
           )}
+        </div>
+        <h2 className="mt-14 text-2xl font-bold uppercase tracking-tight">Change Records</h2>
+        <p className="mt-2 max-w-3xl text-sm text-muted-foreground">When a record already observed comes back with a different fingerprint, both versions are kept here, with both times. A change is a fact about the record, not a judgement about why it changed.</p>
+        <div className="mt-4 border border-border">
+          {changes.length === 0 ? <p className="p-6 font-mono text-sm">No changes observed yet.</p> : changes.map((c) => (
+            <div key={c.id} className="p-4 border-b border-border/50 font-mono text-xs space-y-1">
+              <p className="text-gold uppercase">{c.source} · {c.source_id}</p>
+              <p className="break-all">EARLIER {c.earlier_observed_at.slice(0, 16).replace("T", " ")} · {c.earlier_hash}</p>
+              <p className="break-all">LATER {c.later_observed_at.slice(0, 16).replace("T", " ")} · {c.later_hash}</p>
+            </div>
+          ))}
         </div>
       </main>
       <Footer />
