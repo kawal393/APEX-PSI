@@ -1268,6 +1268,36 @@ export type Database = {
         }
         Relationships: []
       }
+      public_witness_records: {
+        Row: {
+          content_hash: string
+          id: string
+          observed_at: string
+          source: string
+          source_id: string
+          source_url: string
+          title: string
+        }
+        Insert: {
+          content_hash: string
+          id?: string
+          observed_at?: string
+          source: string
+          source_id: string
+          source_url: string
+          title: string
+        }
+        Update: {
+          content_hash?: string
+          id?: string
+          observed_at?: string
+          source?: string
+          source_id?: string
+          source_url?: string
+          title?: string
+        }
+        Relationships: []
+      }
       quarantine_events: {
         Row: {
           action: string
@@ -2119,6 +2149,30 @@ export type Database = {
         }
         Relationships: []
       }
+      witness_job_state: {
+        Row: {
+          id: string
+          last_result: Json | null
+          last_run_at: string | null
+          locked_until: string | null
+          paused_reason: string | null
+        }
+        Insert: {
+          id: string
+          last_result?: Json | null
+          last_run_at?: string | null
+          locked_until?: string | null
+          paused_reason?: string | null
+        }
+        Update: {
+          id?: string
+          last_result?: Json | null
+          last_run_at?: string | null
+          locked_until?: string | null
+          paused_reason?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       compliance_pulse: {
@@ -2336,6 +2390,7 @@ export type Database = {
       }
     }
     Functions: {
+      acquire_witness_lock: { Args: { p_seconds: number }; Returns: boolean }
       get_assessment_by_share_id: {
         Args: { p_share_id: string }
         Returns: {
