@@ -1,4 +1,4 @@
-# Changelog — @apex/psi-verifier / psi-verifier (Python)
+# Changelog — @apex12333/psi-verifier / psi-verifier (Python)
 
 All notable changes to the MIT-licensed PSI verifier. Verification is, and
 remains, free forever.
