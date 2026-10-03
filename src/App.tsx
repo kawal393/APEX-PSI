@@ -94,9 +94,6 @@ import Gallery from "./pages/Gallery";
 import Integrations from "./pages/Integrations";
 import UniversalLedger from "./pages/UniversalLedger";
 import Witness from "./pages/Witness";
-import AgentReceipts from "./pages/AgentReceipts";
-import EvidenceConsole from "./pages/EvidenceConsole";
-import MediaProvenance from "./pages/MediaProvenance";
 import Partners from "./pages/Partners";
 import ConnectAI from "./pages/ConnectAI";
 import LiveStream from "./pages/LiveStream";
@@ -153,9 +150,6 @@ const App = () => (
               <Route path="/integrations" element={<Integrations />} />
               <Route path="/ledger" element={<UniversalLedger />} />
               <Route path="/witness" element={<Witness />} />
-              <Route path="/agent" element={<AgentReceipts />} />
-              <Route path="/console" element={<EvidenceConsole />} />
-              <Route path="/media" element={<MediaProvenance />} />
               <Route path="/ledger/*" element={<UniversalLedger />} />
               <Route path="/partners" element={<Partners />} />
               <Route path="/home" element={<Index />} />

@@ -22,9 +22,6 @@ npx -y apex-psi-mcp
 - /integrations — integration surfaces
 - /ledger — company recomputation ledger
 - /partners — verified, integrated and powered-by programmes
-- /agent — AI agent run sealed as a step-by-step hash chain (sign-in)
-- /media — browser-side file fingerprint sealing with an informative C2PA-shaped hash record
-- /console — signed-in list, search and JSONL export of your own receipts
 
 ## Standards
 RFC 8785 (JCS), SHA-256 (FIPS 180-4), Ed25519 (RFC 8032), ML-DSA-65 (FIPS 204),

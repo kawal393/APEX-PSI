@@ -148,6 +148,3 @@ verify_jwt = false
 
 [functions.autonomous-witness]
 verify_jwt = false
-
-[functions.agent-receipts]
-verify_jwt = false

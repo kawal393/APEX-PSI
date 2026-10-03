@@ -127,9 +127,6 @@ const navLinks = [
         const el = document.getElementById(href.slice(1));
         if (el) {
           el.scrollIntoView({ behavior: "smooth" });
-        } else if (href === "#contact") {
-          window.location.hash = "explore";
-          window.setTimeout(() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }), 100);
         } else if (href === "#top") {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
@@ -146,9 +143,8 @@ const navLinks = [
         <div className="hidden lg:flex items-center justify-between h-16 gap-6">
           <button
             onClick={() => handleNavClick("#top")}
-            className="flex items-center gap-2 bg-transparent border-none cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer shrink-0"
           >
-            <img src={apexLogo} alt="APEX company logo" className="h-8 w-8 object-contain glow-gold" />
             <span className="flex flex-col items-start leading-none">
               <span className="text-sm font-black tracking-tight">
                 <span className="text-gold-gradient">APEX</span>{" "}
@@ -290,7 +286,7 @@ const navLinks = [
             onClick={() => handleNavClick("#top")}
             className="flex items-center gap-2 bg-transparent border-none cursor-pointer shrink-0"
           >
-            <img src={apexLogo} alt="APEX company logo" className="h-7 w-7 object-contain glow-gold" />
+            <img src={apexLogo} alt="APEX" className="h-7 w-7 object-contain glow-gold" />
             <span className="text-sm font-bold text-gold-gradient">APEX PSI</span>
           </button>
           <div className="flex items-center gap-2">
@@ -325,7 +321,7 @@ const navLinks = [
             onClick={() => handleNavClick("#top")}
             className="flex items-center gap-2 bg-transparent border-none cursor-pointer"
           >
-            <img src={apexLogo} alt="APEX company logo" className="h-7 w-7 object-contain glow-gold" />
+            <img src={apexLogo} alt="APEX" className="h-7 w-7 object-contain glow-gold" />
             <span className="text-sm font-bold text-gold-gradient">APEX PSI</span>
           </button>
           <div className="flex items-center gap-2">

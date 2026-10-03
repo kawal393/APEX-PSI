@@ -50,19 +50,3 @@ This note describes interoperability, not endorsement. PSI does not claim
 SCITT conformance implies PSI conformance or vice versa; each check has its
 own result. The specification texts of both efforts remain independently
 implementable.
-
-## Live bridge output (2026-10-03)
-
-`POST /notarize` accepts an optional `format` field:
-
-| `format` | Response |
-|---|---|
-| `psi` (default) | native PSI receipt, unchanged |
-| `scitt` | `{ receipt_id, scitt_statement }` |
-| `both` | native PSI receipt plus `scitt_statement` |
-
-`scitt_statement` (profile `PSI-INTOP-SCITT-1/json`) is a JSON view shaped
-like an RFC 9943 signed statement: protected header (`alg: EdDSA`, issuer,
-subject, `iat`), the PSI leaf digest as payload, and the Ed25519 signature.
-It is **not** a COSE_Sign1 encoding and claims no SCITT conformance; register
-it with a SCITT transparency service of your choice to obtain a SCITT receipt.
