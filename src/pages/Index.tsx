@@ -37,10 +37,22 @@ import PsiNamespaces from "@/components/PsiNamespaces";
 import EconomicDivide from "@/components/EconomicDivide";
 import ComplementsStandards from "@/components/ComplementsStandards";
 import LiveCaseStudy from "@/components/LiveCaseStudy";
-import InstantSeal from "@/components/InstantSeal";
+import ProblemSection from "@/components/ProblemSection";
+import HomeViewSwitcher, { type HomeView, viewFromHash } from "@/components/HomeViewSwitcher";
+import HomeExploreDirectory from "@/components/HomeExploreDirectory";
+import HomeLiveSeal from "@/components/HomeLiveSeal";
 import { Helmet } from "react-helmet-async";
+import { useEffect, useState } from "react";
 
 const Index = () => {
+  const [activeView, setActiveView] = useState<HomeView>(() => viewFromHash());
+
+  useEffect(() => {
+    const syncView = () => setActiveView(viewFromHash());
+    window.addEventListener("hashchange", syncView);
+    return () => window.removeEventListener("hashchange", syncView);
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -91,53 +103,69 @@ const Index = () => {
         <EUCodeBanner />
         <Navbar />
         <div id="top" />
-        <GrandHero />
-        <PlainLanguageIntro />
-        <InstantSeal />
-        <CoreDeclaration />
-        <Hero />
-        <LiveCaseStudy />
-        <HomeSealStrip />
-        <p className="-mt-8 mb-4 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-          The ledger does not judge. It remembers.
-        </p>
-        <p className="mb-16 text-center text-[11px] md:text-xs uppercase tracking-wider text-foreground/80">
-          "Who was first" used to be a story. Now it is a receipt.{" "}
-          <a href="/impact#challenge" className="text-gold underline underline-offset-2">
-            Read the receipt
-          </a>
-        </p>
-        <MelbourneTestPlaque />
-        <VerticalsMatrix />
-        <UniversalTicker />
-        <ConnectAIPill />
-        <Article50Banner />
+        <HomeViewSwitcher active={activeView} onChange={setActiveView} />
 
-        <Declaration />
-        <ConstitutionLaws />
-        <GenesisAnchor />
-        <WhatItIsAndIsnt />
-        <PsiNamespaces />
-        <EconomicDivide />
-        <ComplementsStandards />
-        <TwoPillars />
-        <Products embedded />
-        <LeadCaptureOffer />
+        <main id={`home-view-${activeView}`} role="tabpanel">
+          {activeView === "what" && (
+            <>
+              <GrandHero />
+              <PlainLanguageIntro />
+              <CoreDeclaration />
+              <WhatItIsAndIsnt />
+              <HomeSealStrip />
+              <p className="-mt-8 mb-4 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                The ledger does not judge. It remembers.
+              </p>
+              <p className="mb-16 text-center text-[11px] uppercase tracking-wider text-foreground/80 md:text-xs">
+                &quot;Who was first&quot; used to be a story. Now it is a receipt.{" "}
+                <a href="/impact#challenge" className="text-gold underline underline-offset-2">Read the receipt</a>
+              </p>
+              <MelbourneTestPlaque />
+            </>
+          )}
 
+          {activeView === "why" && (
+            <>
+              <ProblemSection />
+              <Article50Banner />
+              <ComplianceClock />
+              <RegulatoryAlignment />
+              <VerticalsMatrix />
+              <EconomicDivide />
+              <LiveCaseStudy />
+              <AdversarialReview />
+            </>
+          )}
 
-        <HowToUse />
-        <SovereignSealStrip />
-        <ComplianceClock />
-        <RegulatoryAlignment />
-        <EcosystemStrip />
-        <OpenSourceGateway />
-        <TechSpecs />
+          {activeView === "explore" && (
+            <>
+              <HomeExploreDirectory />
+              <Hero />
+              <UniversalTicker />
+              <ConnectAIPill />
+              <Declaration />
+              <ConstitutionLaws />
+              <GenesisAnchor />
+              <PsiNamespaces />
+              <ComplementsStandards />
+              <TwoPillars />
+              <Products embedded />
+              <LeadCaptureOffer />
+              <HowToUse />
+              <SovereignSealStrip />
+              <EcosystemStrip />
+              <OpenSourceGateway />
+              <TechSpecs />
+              <FAQ />
+              <ContactSection />
+              <VerifiedByApexSection />
+              <ThreeLayers />
+              <EnforcementStrip />
+            </>
+          )}
 
-        <FAQ />
-        <ContactSection />
-        <VerifiedByApexSection />
-        <ThreeLayers />
-        <EnforcementStrip />
+          {activeView === "seal" && <HomeLiveSeal />}
+        </main>
         <Footer />
       </div>
     </>
