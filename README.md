@@ -27,6 +27,34 @@
 
 ---
 
+## Quick start (60 seconds)
+
+Seal a decision (free public allowance: 20/minute, 100/day):
+
+```bash
+curl -X POST https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize \
+  -H "Content-Type: application/json" \
+  -d '{"decision":"Model v3 approved loan #123","format":"both"}'
+```
+
+`format` is `psi` (default), `scitt` (an informative RFC 9943-shaped JSON view) or `both`.
+Verify offline, forever, for free:
+
+```bash
+npm i @apex/psi-verifier      # or: pip install psi-verifier
+```
+
+| Try it live | What it does |
+|---|---|
+| [/agent](https://ai-governance-standard.com/agent) | Runs a small AI agent and seals a hash chain of every step |
+| [/media](https://ai-governance-standard.com/media) | Fingerprints a file in your browser and seals it, with a C2PA-shaped hash record |
+| [/console](https://ai-governance-standard.com/console) | Lists, searches and exports every receipt you sealed |
+| [/verify](https://ai-governance-standard.com/verify) | Checks any hash against the public ledger |
+
+If this is useful, a star helps other developers find it.
+
+---
+
 ## What This Is
 
 **APEX PSI (Proof of Stateful Integrity)** is a commit-and-challenge evidence protocol. It

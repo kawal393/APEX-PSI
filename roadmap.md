@@ -13,3 +13,9 @@
 - [x] Interop note updated with the live bridge output.
 - [x] API page documents the bridge.
 - [x] Deployed and tested live.
+
+# Product surfaces
+- [x] Agent receipts (/agent)
+- [x] Evidence console (/console)
+- [x] Media provenance bridge (/media)
+- [x] Developer launch kit (README quick start, llms.txt, sitemap)
