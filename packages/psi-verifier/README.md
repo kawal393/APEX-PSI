@@ -1,11 +1,11 @@
-# @apex/psi-verifier
+# apex-psi-verifier
 
 > Apex PSI is not a tool and not a product. It is the verification substrate — the layer beneath proof. It does not judge. It does not certify. It only remembers.
 
 **MIT. Free forever.** Verify any APEX PSI seal, anywhere — browser, Node, Deno, Bun, workers, CI. Zero dependencies.
 
 ```ts
-import { verifySeal } from "@apex/psi-verifier";
+import { verifySeal } from "apex-psi-verifier";
 
 const result = await verifySeal(JSON.parse(receiptJson));
 // { conformant: true, schema_id: "PSI-SEAL/1.0.0", schema_digest_match: true,
@@ -41,7 +41,7 @@ Schema: © 2026 APEX Infrastructure. Specification: <https://ai-governance-stand
 no pipeline accepts malformed evidence by accident:
 
 ```ts
-import { verify, PsiSealInvalidError } from "@apex/psi-verifier";
+import { verify, PsiSealInvalidError } from "apex-psi-verifier";
 
 try {
   await verify(seal);                    // enforce: true by default
