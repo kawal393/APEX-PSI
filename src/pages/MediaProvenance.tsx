@@ -80,7 +80,7 @@ export default function MediaProvenance() {
 
         {bridge && (
           <section className="mt-10 border border-border p-6 font-mono text-xs space-y-3">
-            <p>Sealed as <Link className="text-gold underline" to={`/receipt/${receipt!.receipt_id}`}>{receipt!.receipt_id}</Link></p>
+            <p>Sealed as <Link className="text-gold underline" to={`/r/${receipt!.merkle_leaf.replace("sha256:", "")}`}>{receipt!.receipt_id}</Link></p>
             <pre className="whitespace-pre-wrap break-all text-muted-foreground">{JSON.stringify(bridge, null, 2)}</pre>
             <Button variant="outline" onClick={download}>Download provenance file</Button>
           </section>

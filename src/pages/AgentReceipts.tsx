@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
 type Link_ = { index: number; kind: string; detail: unknown; event_hash: string; link: string };
-type Result = { answer: string; chain: Link_[]; chain_head: string; receipt: { receipt_id: string } | null; seal_error: string | null };
+type Result = { answer: string; chain: Link_[]; chain_head: string; receipt: { receipt_id: string; merkle_leaf: string } | null; seal_error: string | null };
 
 export default function AgentReceipts() {
   const { user } = useAuth();
@@ -66,7 +66,7 @@ export default function AgentReceipts() {
             <div className="border border-border p-6 font-mono text-xs">
               <p className="text-gold">RECEIPT</p>
               {res.receipt ? (
-                <p className="mt-2">Sealed as <Link className="underline" to={`/receipt/${res.receipt.receipt_id}`}>{res.receipt.receipt_id}</Link> · chain head sha256:{res.chain_head}</p>
+                <p className="mt-2">Sealed as <Link className="underline" to={`/r/${res.receipt.merkle_leaf.replace("sha256:", "")}`}>{res.receipt.receipt_id}</Link> · chain head sha256:{res.chain_head}</p>
               ) : (
                 <p className="mt-2 text-destructive">Not sealed: {res.seal_error}</p>
               )}

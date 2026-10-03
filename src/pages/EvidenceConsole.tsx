@@ -79,7 +79,7 @@ export default function EvidenceConsole() {
                       {shown.map((r) => (
                         <tr key={r.commit_id} className="border-b border-border/50">
                           <td className="p-3 whitespace-nowrap">{r.created_at.slice(0, 16).replace("T", " ")}</td>
-                          <td className="p-3"><Link to={`/receipt/${r.commit_id}`} className="text-gold hover:underline">{r.commit_id}</Link></td>
+                          <td className="p-3"><Link to={`/r/${r.merkle_leaf_hash}`} className="text-gold hover:underline">{r.commit_id}</Link></td>
                           <td className="p-3">{r.predicate_id}</td>
                           <td className="p-3 text-xs text-muted-foreground max-w-md truncate">{r.action}</td>
                         </tr>
