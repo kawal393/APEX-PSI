@@ -19,3 +19,9 @@
 - [x] Evidence console (/console)
 - [x] Media provenance bridge (/media)
 - [x] Developer launch kit (README quick start, llms.txt, sitemap)
+
+# Four-view homepage
+- [x] Preserve the existing APEX visual identity and keep the company logo visible in navigation.
+- [x] Divide the homepage into What is APEX, Why APEX, Explore APEX, and Live Seal views.
+- [x] Keep every existing deep page and route available through the Explore view.
+- [x] Add a real local-file fingerprinting and public-receipt workflow with media preview.
