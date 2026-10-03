@@ -294,7 +294,7 @@ Deno.serve(async (req) => {
 
     const projectId = Deno.env.get("SUPABASE_URL")?.match(/\/\/([^.]+)/)?.[1] || "";
 
-    return new Response(JSON.stringify({
+    const psiReceipt = {
       receipt_id: receiptId,
       timestamp,
       decision_hash: `sha256:${decisionHash}`,
@@ -312,7 +312,39 @@ Deno.serve(async (req) => {
       receipt_version: "PSI-1.2",
       tier,
       engine: "APEX NOTARY v1.0 — Signed",
-    }), {
+    };
+
+    // SCITT bridge (PSI-INTOP-SCITT-1): a JSON view of the same evidence shaped
+    // like an RFC 9943 signed statement. It is NOT a COSE_Sign1 object and makes
+    // no SCITT conformance claim; it lets SCITT tooling register the PSI digest.
+    const scittStatement = {
+      profile: "PSI-INTOP-SCITT-1/json",
+      conformance: "informative bridge — not a COSE_Sign1 encoding; register via your SCITT transparency service",
+      protected_header: {
+        alg: "EdDSA",
+        content_type: "application/vnd.apex.psi-receipt+json",
+        issuer: "https://ai-governance-standard.com",
+        subject: receiptId,
+        iat: Math.floor(new Date(timestamp).getTime() / 1000),
+      },
+      payload_hash_alg: "SHA-256",
+      payload: `sha256:${merkleLeaf}`,
+      signature: signature,
+      psi_claims: {
+        decision_hash: `sha256:${decisionHash}`,
+        merkle_root: `sha256:${merkleRoot}`,
+        predicate: predicateId,
+      },
+    };
+
+    const format = body.format === "scitt" || body.format === "both" ? body.format : "psi";
+    const responseBody = format === "psi"
+      ? psiReceipt
+      : format === "scitt"
+        ? { receipt_id: receiptId, format, scitt_statement: scittStatement }
+        : { ...psiReceipt, format, scitt_statement: scittStatement };
+
+    return new Response(JSON.stringify(responseBody), {
       status: 201,
       headers: { ...corsHeaders, "Content-Type": "application/json" }
     });
