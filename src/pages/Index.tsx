@@ -37,6 +37,7 @@ import PsiNamespaces from "@/components/PsiNamespaces";
 import EconomicDivide from "@/components/EconomicDivide";
 import ComplementsStandards from "@/components/ComplementsStandards";
 import LiveCaseStudy from "@/components/LiveCaseStudy";
+import AdversarialReview from "@/components/AdversarialReview";
 import ProblemSection from "@/components/ProblemSection";
 import HomeViewSwitcher, { type HomeView, viewFromHash } from "@/components/HomeViewSwitcher";
 import HomeExploreDirectory from "@/components/HomeExploreDirectory";

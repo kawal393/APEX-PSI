@@ -127,6 +127,9 @@ const navLinks = [
         const el = document.getElementById(href.slice(1));
         if (el) {
           el.scrollIntoView({ behavior: "smooth" });
+        } else if (href === "#contact") {
+          window.location.hash = "explore";
+          window.setTimeout(() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }), 100);
         } else if (href === "#top") {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
