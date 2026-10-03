@@ -100,6 +100,11 @@ const API = () => (
   "receipt_version": "PSI-1.2",
   "engine": "APEX PSI v1 — Unified API"
 }`}</Code>
+        <p className="text-muted-foreground text-sm mt-3">
+          Optional <code>"format"</code>: <code>"psi"</code> (default), <code>"scitt"</code>, or <code>"both"</code>. The SCITT
+          option adds a JSON view shaped like an RFC 9943 signed statement (profile <code>PSI-INTOP-SCITT-1/json</code>) that you can
+          register with any SCITT transparency service. It is an informative bridge, not a COSE encoding.
+        </p>
       </section>
 
       <section className="mb-12">

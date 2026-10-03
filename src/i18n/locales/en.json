@@ -13,6 +13,37 @@
     "dashboard": "Dashboard",
     "getStarted": "Get Started"
   },
+  "homeViews": {
+    "label": "APEX main views",
+    "what": "What is APEX?",
+    "why": "Why APEX?",
+    "explore": "Explore APEX",
+    "seal": "Live Seal"
+  },
+  "homeExplore": {
+    "eyebrow": "The complete APEX system",
+    "title": "Explore the protocol and network",
+    "intro": "Every public tool, specification, implementation path and evidence surface remains available. Choose the part of APEX you need.",
+    "groups": { "verify": "Verify and inspect", "build": "Build and connect", "standard": "Read the standard", "operate": "Operate and engage" },
+    "links": {
+      "verifyReceipt": "Verify a receipt", "explorer": "Receipt explorer", "liveLedger": "Live ledger", "registry": "Public registry", "evidenceConsole": "Evidence console", "publicWitness": "Public witness",
+      "api": "Unified API", "sdk": "Developer SDK", "mcp": "MCP server", "integrations": "Integrations", "agentReceipts": "AI agent receipts", "mediaProvenance": "Media provenance",
+      "protocol": "Protocol", "specifications": "Specifications", "architecture": "Architecture", "conformance": "Conformance suite", "verticals": "Domain profiles", "research": "Research",
+      "plans": "Hosted plans", "operateAtScale": "Operate at scale", "partners": "Operators and partners", "foundation": "Foundation", "governance": "Governance", "contact": "Contact APEX"
+    }
+  },
+  "homeSeal": {
+    "eyebrow": "Universal compliance sandbox",
+    "title": "Put a verifiable seal on any file.",
+    "intro": "Choose a video, photo, audio file or document. APEX calculates its fingerprint on your device, then records that fingerprint in the public evidence ledger. The file itself is never uploaded.",
+    "factLocal": "Local fingerprint · only the digest leaves your device",
+    "factLong": "Streaming mode · suitable for long video and large files",
+    "factLimits": "Integrity and time evidence · not a judgement about content",
+    "workspace": "Live sealing workspace", "live": "Engine live", "drop": "Drop any file here", "formats": "Video · photo · audio · document · archive", "choose": "Choose file",
+    "hashing": "Fingerprinting locally", "copy": "Copy digest", "copied": "Digest copied", "sealNow": "Seal this fingerprint", "sealed": "Receipt created", "sealedToast": "The fingerprint is sealed.",
+    "download": "Download receipt", "verify": "Open verification", "another": "Choose another file", "apexSealed": "APEX sealed", "hashError": "This file could not be fingerprinted.", "sealError": "The receipt could not be created.",
+    "honesty": "An APEX receipt proves that these exact bytes were recorded at a stated time and can reveal later changes. It does not prove authorship, authenticity, legality or factual truth. The downloadable C2PA-shaped JSON is an informative bridge, not a signed C2PA manifest."
+  },
   "hero": {
     "psiVersion": "PSI Protocol v1.0",
     "headline1": "APEX PSI:",
