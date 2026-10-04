@@ -8,6 +8,13 @@
       "when": 1791099275579,
       "tag": "0000_action_gate_table",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791099298461,
+      "tag": "0001_tribunal_grants",
+      "breakpoints": true
     }
   ]
 }
