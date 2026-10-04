@@ -82,8 +82,8 @@ const FREE_VS_PAID = [
   {
     head: "Paid (volume only)",
     lines: [
-      "Builder — $11/mo, 2,000 seals per day",
-      "Scale — $55/mo, 20,000 seals per day",
+      "Pro — 2,000 seals per day",
+      "Ultra — 20,000 seals per day",
       "A paid key raises the daily cap and nothing else",
       "Government & enterprise by direct agreement",
     ],

@@ -8,6 +8,7 @@ const VIEWS: HomeView[] = ["what", "why", "explore", "seal"];
 
 const viewFromHash = (): HomeView => {
   const value = window.location.hash.replace("#", "") as HomeView;
+  if ((value as string) === "contact") return "explore";
   return VIEWS.includes(value) ? value : "what";
 };
 

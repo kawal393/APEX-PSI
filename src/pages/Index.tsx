@@ -49,7 +49,16 @@ const Index = () => {
   const [activeView, setActiveView] = useState<HomeView>(() => viewFromHash());
 
   useEffect(() => {
-    const syncView = () => setActiveView(viewFromHash());
+    const scrollToContact = () => {
+      if (window.location.hash === "#contact") {
+        window.setTimeout(() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }), 150);
+      }
+    };
+    const syncView = () => {
+      setActiveView(viewFromHash());
+      scrollToContact();
+    };
+    scrollToContact();
     window.addEventListener("hashchange", syncView);
     return () => window.removeEventListener("hashchange", syncView);
   }, []);

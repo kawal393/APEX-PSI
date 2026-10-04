@@ -936,6 +936,81 @@ export type Database = {
         }
         Relationships: []
       }
+      notary_action_receipts: {
+        Row: {
+          action_type: string
+          agent_id: string
+          anchor_commit_id: string | null
+          canonical_payload: string
+          commit_hash: string
+          created_at: string
+          ed25519_signature: string | null
+          expires_at: string | null
+          id: string
+          issued_at: string
+          merkle_leaf_hash: string
+          merkle_root: string | null
+          policy_ref: string
+          pq_algorithm: string | null
+          pq_public_key: string | null
+          pq_signature: Json | null
+          predicate_id: string
+          receipt_id: string
+          revoked_at: string | null
+          schema_id: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          agent_id: string
+          anchor_commit_id?: string | null
+          canonical_payload: string
+          commit_hash: string
+          created_at?: string
+          ed25519_signature?: string | null
+          expires_at?: string | null
+          id?: string
+          issued_at?: string
+          merkle_leaf_hash: string
+          merkle_root?: string | null
+          policy_ref?: string
+          pq_algorithm?: string | null
+          pq_public_key?: string | null
+          pq_signature?: Json | null
+          predicate_id?: string
+          receipt_id: string
+          revoked_at?: string | null
+          schema_id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          agent_id?: string
+          anchor_commit_id?: string | null
+          canonical_payload?: string
+          commit_hash?: string
+          created_at?: string
+          ed25519_signature?: string | null
+          expires_at?: string | null
+          id?: string
+          issued_at?: string
+          merkle_leaf_hash?: string
+          merkle_root?: string | null
+          policy_ref?: string
+          pq_algorithm?: string | null
+          pq_public_key?: string | null
+          pq_signature?: Json | null
+          predicate_id?: string
+          receipt_id?: string
+          revoked_at?: string | null
+          schema_id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       notary_api_keys: {
         Row: {
           api_key_hash: string

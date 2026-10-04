@@ -113,6 +113,13 @@ Deno.serve(async (req) => {
       }
     }
 
+    if (tier === "free" && decisions.length > 20) {
+      return new Response(JSON.stringify({
+        error: "Public batches are limited to 20 decisions (the public per-minute allowance). Use an API key for batches up to 100.",
+        public_batch_limit: 20, keyed_batch_limit: 100,
+      }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     if (tier === "free") {
       const clientIP = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
       const visitorDigest = await hashSHA256(`${supabaseKey}|${clientIP}`);
