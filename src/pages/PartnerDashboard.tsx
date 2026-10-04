@@ -131,7 +131,7 @@ const PartnerDashboard = () => {
         <div className="grid md:grid-cols-3 gap-4">
           <Link to="/upgrade" className="rounded-xl border border-border bg-card/60 p-5 hover:border-primary/50 transition-colors">
             <h3 className="text-sm font-semibold mb-1">Raise the daily cap</h3>
-            <p className="text-xs text-muted-foreground">Pro and Ultra keys. Caps only - never a finding.
+            <p className="text-xs text-muted-foreground">Pro and Ultra keys. Caps only - never a finding.</p>
           </Link>
           <Link to="/conformance" className="rounded-xl border border-border bg-card/60 p-5 hover:border-primary/50 transition-colors">
             <h3 className="text-sm font-semibold mb-1">Pass the conformance check</h3>
