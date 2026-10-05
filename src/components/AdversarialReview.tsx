@@ -6,57 +6,57 @@ const critiques = [
   {
     id: "oracle",
     icon: AlertTriangle,
-    critiqueTitle: "The Oracle Problem",
+    critiqueTitle: "\"A hash cannot prove truth\"",
     critique:
-      "SHA-256 hashing provides data integrity — proof a file hasn't changed — but it cannot provide data veracity. If a provider inputs a fake report, the math will perfectly notarize that lie.",
-    responseTitle: "We Notarize Attestations, Not Truth",
+      "SHA-256 proves a record has not changed. It cannot prove the record was true when it was written. A false input gets sealed just as faithfully as a true one.",
+    responseTitle: "Correct — and that is the design",
     response:
-      "Exactly like a legal notary. A notary doesn't verify the truthfulness of a document — they verify who signed it, when, and that it hasn't been altered. APEX's PSI Protocol does the same thing cryptographically: it creates a tamper-evident, timestamped, signed record of what was attested. If the attestation is later proven fraudulent, the notarized record becomes evidence against the attester — not a shield for them. The ledger is the courtroom exhibit.",
+      "PSI proves existence, integrity and order: what was recorded, when, and that it was never altered. It does not judge content. A false attestation, once sealed, becomes permanent evidence against whoever made it. The ledger does not judge. It remembers.",
     sources: [
-      { label: "Oracle Problem in Hashing", url: "http://psasir.upm.edu.my/id/eprint/118206/1/118206.pdf" },
-      { label: "Data Integrity vs Veracity", url: "http://www.jatit.org/volumes/Vol103No2/1Vol103No2.pdf" },
+      { label: "PSI Spec — Scope", url: "https://ai-governance-standard.com/spec" },
+      { label: "IETF draft-singh-psi", url: "https://datatracker.ietf.org/doc/draft-singh-psi/" },
     ],
   },
   {
     id: "zkp",
     icon: Shield,
-    critiqueTitle: "ZKP vs. Article 14 Transparency",
+    critiqueTitle: "\"The ZK / MPC claims outrun the code\"",
     critique:
-      "Zero-Knowledge Proofs create technical complexity. A ZKP 'pass/fail' receipt may satisfy a technical check but doesn't provide the traceability and interpretability that lawyers and regulators need under Article 14 (Human Oversight).",
-    responseTitle: "ZKPs Protect Weights — The Ledger Is Fully Transparent",
+      "Zero-knowledge and multi-party signing are described, but a reviewer cannot find them as production primitives. Claims ahead of code are a liability.",
+    responseTitle: "V1 is live. ZK / MPC is a labelled research track",
     response:
-      "The ZKP layer protects only proprietary model weights during verification — it proves compliance properties without exposing trade secrets. The compliance ledger itself is fully transparent: every commit hash, Merkle root, challenge, and proof is publicly auditable. Article 14 requires human oversight of the AI system's behavior — our ledger provides exactly that. The ZKP proves the math checked out; the ledger shows what was checked and when.",
+      "Production today: RFC 8785 canonical JSON, SHA-256, Ed25519 signatures, Merkle roots and Bitcoin anchoring via OpenTimestamps — all reproducible with the MIT verifier. Zero-knowledge and MPC are an experimental V2 research track and are marked as such. Nothing experimental is required to verify a receipt.",
     sources: [
-      { label: "EU AI Act Article 14", url: "https://artificialintelligenceact.eu/article/14/" },
-      { label: "ZKP Policy Impact Analysis", url: "https://policyreview.info/articles/analysis/impact-zero-knowledge-proofs" },
+      { label: "Conformance vectors", url: "https://ai-governance-standard.com/conformance" },
+      { label: "MIT verifier", url: "https://github.com/kawal393/apex-psi-verify" },
     ],
   },
   {
-    id: "standard",
+    id: "trust",
     icon: Globe,
-    critiqueTitle: "The Standardization Deadlock",
+    critiqueTitle: "\"You are a single operator — why trust you?\"",
     critique:
-      "Submitting to the IETF is standard practice, but if the European Commission issues its own standardization requests (Art. 40) that differ from PSI, the protocol could become a 'Legacy Island.' Being first isn't the same as being mandated.",
-    responseTitle: "First-Mover + MIT License = Anti-Fragile",
+      "One company runs the hosted notary and holds the signing key. If it disappears or misbehaves, what happens to the evidence?",
+    responseTitle: "You never have to trust us",
     response:
-      "The PSI Protocol is MIT-licensed. If the EU mandates a different standard, PSI adapts — the math is portable. But being the first formally submitted cryptographic compliance protocol to IETF creates gravitational pull: standards committees reference existing work. The protocol's canonical JSON (RFC 8785), Ed25519 signatures, and Merkle trees use zero proprietary primitives. Any future EU standard will use the same building blocks — because there are no others.",
+      "Every receipt verifies offline with the MIT verifier, without contacting APEX. The public key is published, Merkle roots are anchored to Bitcoin, and anyone can self-host. If APEX vanished tomorrow, every receipt ever issued would still verify. The math must survive its maker.",
     sources: [
-      { label: "IETF PSI Protocol Draft", url: "https://datatracker.ietf.org/doc/draft-singh-psi/" },
-      { label: "AI Act Art. 11 & 12 Standards", url: "https://link.springer.com/chapter/10.1007/978-3-031-94924-1_6" },
+      { label: "Trust anchor", url: "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json" },
+      { label: "Verify a receipt", url: "https://ai-governance-standard.com/verify" },
     ],
   },
   {
     id: "liability",
     icon: Gavel,
-    critiqueTitle: "The Liability Trap of Decentralization",
+    critiqueTitle: "\"This is not legal compliance\"",
     critique:
-      "The EU AI Act places compliance burdens on specific 'AI providers' and 'importers.' Decentralized entities lack direct, legally-binding ways to handle impact assessments. If the protocol fails, there's no 'High-Risk Provider' to sue.",
-    responseTitle: "ASF Is the Legal Entity — The Protocol Is the Evidence",
+      "Laws like the EU AI Act place duties on providers and deployers. A cryptographic receipt does not make anyone compliant.",
+    responseTitle: "Evidence, not certification",
     response:
-      "The APEX Standards Foundation (ASF) serves as the legal entity under Article 3(3) — a registered, accountable provider. The Open Evidence Protocol doesn't replace legal liability; it adds a public verification layer on top of it. Think of it as an evidence system: the institution (ASF) holds liability, the protocol provides independent, mathematically verifiable evidence. If a verdict is wrong, the institution is still accountable. Decentralization of evidence ≠ decentralization of liability.",
+      "Agreed. PSI is not a conformity assessment, certification or legal advice. The duty stays with the provider. PSI gives that provider tamper-evident records of what their system did and when — the evidence that human oversight and record-keeping obligations ask for. The APEX PSI Foundation is in formation and is not yet a legal entity.",
     sources: [
-      { label: "EU AI Act Risk Framework", url: "https://artificialintelligenceact.eu/high-level-summary/" },
-      { label: "AI Liability & Accountability", url: "https://www.tandfonline.com/doi/full/10.1080/19460171.2025.2496193" },
+      { label: "EU AI Act Article 12", url: "https://artificialintelligenceact.eu/article/12/" },
+      { label: "EU AI Act Article 14", url: "https://artificialintelligenceact.eu/article/14/" },
     ],
   },
 ];
