@@ -6,3 +6,4 @@
 - Agent runs and media sealing reuse the notarize service (agent chain head and file digest are sealed as ordinary receipts) and the C2PA output is an informative JSON view, never a signed manifest. This keeps one quota, one ledger and honest interop claims.
 - Agent runs require sign-in and run server-side only, so AI cost cannot be triggered anonymously.
 - Organize the root experience as four switchable views while keeping deep routes independent and the APEX company logo visible in global navigation. This makes the large public system understandable without removing any existing surface.
+- Founding Member referral fees are computed only from paid Stripe invoices on subscriptions carrying the member's ref code, recorded idempotently per invoice and settled manually each month. This keeps payouts tied to real customer revenue, never recruitment.
