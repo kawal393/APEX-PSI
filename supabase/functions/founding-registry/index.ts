@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const TOTAL_SEATS = 100;
+const TOTAL_SEATS = 10;
 const LAPSE_DAYS = 90;
 
 const json = (body: unknown, status = 200) =>

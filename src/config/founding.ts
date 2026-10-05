@@ -2,7 +2,7 @@
 // Single source of truth for the fee schedule, flags and the verbatim
 // acknowledgement text rendered on /founding.
 
-export const TOTAL_SEATS = 100;
+export const TOTAL_SEATS = 10;
 export const LAPSE_DAYS = 90;
 
 /** Config flags — nothing claims to be live unless the flag says so. */
