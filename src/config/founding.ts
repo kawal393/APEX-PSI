@@ -22,7 +22,8 @@ export const FEE_SCHEDULE: FeeRow[] = [
   { item: "Notarise / verify (hosted)", price: "LIMITED FREE USE", note: "Up to 20 receipts per minute and 100 per day; independent verification remains free." },
   { item: "Bitcoin anchor", price: "FREE", note: "No charge for anchored batch inclusion via OpenTimestamps." },
   { item: "Compliance check", price: "FREE", note: "No charge for a predicate evaluated against a record." },
-  { item: "Registry seat", price: "FREE", note: "A numbered listing costs nothing. There is no operator or enterprise plan." },
+  { item: "Registry seat", price: "FREE", note: "A numbered listing costs nothing. Ten seats, by invitation and operator approval." },
+  { item: "Founding Member referral fee", price: "25% of net revenue", note: "Paid to a Founding Member on revenue APEX actually receives from a customer they directly referred, for that customer's first 12 months. Settled monthly. No fee for recruiting members.", status: "active" },
 ];
 
 /** Printed verbatim beneath the fee schedule. */
@@ -35,7 +36,7 @@ export const FEE_FOOTNOTE =
 /** §6 — verbatim. Never paraphrase, never reorder. */
 export const ACKNOWLEDGEMENT_CLAUSES: string[] = [
   "I apply for a numbered registry listing (\u201cseat\u201d) in the Apex PSI Founding Member registry, operated by ROCKYFILMS888 PTY LTD trading as Apex Intelligence Empire (ABN 71 672 237 795) (\u201cApex\u201d).",
-  "A seat confers only: (a) a numbered listing and a sealed record of earliness; (b) eligibility for disclosed referral fees per the published fee schedule; (c) published fee discounts and early-access privileges. It confers no other right.",
+  "A seat confers only: (a) a numbered listing and a sealed record of earliness; (b) a disclosed referral fee of 25% of net revenue actually received by Apex from customers I directly refer, for each such customer\u2019s first 12 months, per the published fee schedule; (c) published fee discounts and early-access privileges. It confers no other right.",
   "I acquire no equity, shares, ownership, profit share, voting right, governance right, intellectual-property interest, or beneficial interest of any kind in Apex, the APEX PSI protocol, the ledger, the genesis root, the brand, or any revenue \u2014 now, at maturity of the standard, or ever. No claim arises from my contribution, activity, seniority, referrals, or stewardship, or from the passage of time.",
   "No partnership, joint venture, employment, agency, or fiduciary relationship exists between me and Apex.",
   "Any stewardship or custodian role, if ever offered, is an unpaid, revocable duty conferring no property, control, or tenure.",
@@ -54,12 +55,12 @@ export const HOLDINGS = [
   {
     title: "SEALED SEAT",
     clause: "\u00a76.2(a)",
-    body: "A numbered listing #001\u2013#100 and a sealed record of earliness. Assigned in order, never reissued, never sold.",
+    body: "A numbered listing #001\u2013#010 and a sealed record of earliness. Assigned in order, never reissued, never sold.",
   },
   {
     title: "DISCLOSED REFERRAL FEES",
     clause: "\u00a76.2(b), \u00a76.8",
-    body: "Eligibility for referral fees per the published fee schedule. Paid only when a referred customer pays. Not a profit distribution.",
+    body: "25% of net revenue received from customers you directly refer, for their first 12 months. Paid only when a referred customer pays. Not a profit distribution.",
   },
   {
     title: "LIFETIME FEE RIGHTS + FIRST ACCESS",
@@ -89,7 +90,7 @@ export const PUBLIC_PLAN = [
 
 export const DISCLAIMERS = [
   "Founding membership confers status and fee rights \u2014 not equity, not ownership, not a transferable right, not an expectation of return. The empire behind the standard remains independently owned and operated.",
-  "There is no referral, affiliate or commission programme. An operator reference earns nothing on anyone else's business.",
+  "The only payment a Founding Member can receive is the disclosed 25% referral fee on revenue Apex actually receives from customers they directly referred, for 12 months. Nothing is paid for recruiting members, for adoption, or from Apex's other revenue. Members are independent and cannot bind or represent Apex.",
   "Timestamping cryptographic digests on public blockchains is a neutral recording act, not a financial service. Apex does not issue tokens, ever.",
 ];
 
