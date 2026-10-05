@@ -28,8 +28,8 @@ const MANIFEST_EXAMPLE = `APEXPSI-C2PA-V1 | uint32be(length) | UTF-8 JSON
           "alg": "sha256", "hash": "<pre-embed digest>",
           "exclusions": [{ "box": "APEXPSI-C2PA-V1" }] } },
       { "label": "psi.watermark", "data": {
-          "method": "psi.lsb-spread-v1", "channels": "RGB-LSB",
-          "payload": "sync16+sha256" } }
+          "method": "psi.dct-qim-v2", "channels": "Y-DCT-8x8",
+          "payload": "sync32+sha256-128" } }
     ],
     "hard_binding": { "alg": "sha256", "pre_embed_sha256": "…", "size_bytes": 0 },
     "verify_url": "https://ai-governance-standard.com/verify?h=…"

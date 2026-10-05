@@ -99,6 +99,7 @@ const Robustness = () => (
           <ul className="space-y-2 text-xs text-foreground/75">
             <li>• The mark is designed for raster images. Audio and video keyframe marking is not yet claimed as robust; for those media the in-band signed manifest is the marker.</li>
             <li>• Recovery degrades once a crop removes more than roughly three quarters of the area, because fewer complete payload tiles remain for the majority vote.</li>
+            <li>• Recovery is all-or-nothing on purpose. A channel can show 99% bit accuracy and a full sync lock and still be marked not recovered, because one wrong bit in the 128-bit digest means a different asset. The detector reports a rejection rather than guess a near-match, so a partial survival never becomes a false positive.</li>
             <li>• Heavy generative editing, aggressive denoising or re-rendering of an image is expected to destroy the mark. No watermark in public literature survives arbitrary regeneration.</li>
             <li>• The watermark indicates that an asset was sealed. It does not assert that the content of the asset is true.</li>
             <li>• Results shown are produced by your device in real time; hardware-dependent JPEG encoders can move per-channel numbers by small margins.</li>
