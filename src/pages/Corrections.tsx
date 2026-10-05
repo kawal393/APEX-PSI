@@ -8,6 +8,16 @@ const DESCRIPTION =
 
 const ENTRIES = [
   {
+    date: "6 October 2026",
+    said:
+      "The corrections of 4 September and 30 September 2026 said that sealing carries no charge because no payment processor exists, and that referral payouts were withdrawn and removed from the code.",
+    now:
+      "Both statements are now out of date, and this entry replaces them. The protocol, the specification, the schema and the MIT verifier are free forever, and checking any receipt needs no account. Hosted sealing above the free allowance is a paid API service processed by Stripe. The ten-seat Founding Member registry pays a disclosed referral commission of 25% of the net revenue APEX actually receives from a customer the member personally referred, for that customer's first 12 months. Nothing is paid for recruiting members, joining costs nothing, and the right to a commission cannot be transferred, sold or tokenised. The earlier entries stay below unchanged, so the record keeps its shape.",
+    undertaking:
+      "When a pricing or payment statement on this page stops being true, a new dated entry says so here on the same day the change ships.",
+  },
+
+  {
     date: "1 October 2026",
     said:
       "The preprint and the research pages presented an arXiv identifier, a DOI, peer review and third-party validation that do not exist, and quoted O(1) tamper detection, a 3-node MPC and zero-knowledge commitments as live capability.",
