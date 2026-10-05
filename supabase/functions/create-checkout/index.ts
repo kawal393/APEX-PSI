@@ -38,6 +38,8 @@ Deno.serve(async (req) => {
       return json({ error: `Unknown self-serve tier: ${tier}` }, 400);
     }
 
+    const rawRef = String(body?.ref ?? "").toLowerCase();
+    const ref_code = /^[a-z0-9]{6,16}$/.test(rawRef) ? rawRef : "";
     const priceId = TIER_PRICE_ID[tier];
     if (!priceId) return json({ error: `Price not configured for tier ${tier}` }, 500);
 
@@ -55,8 +57,8 @@ Deno.serve(async (req) => {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       client_reference_id: user.id,
-      metadata: { user_id: user.id, tier },
-      subscription_data: { metadata: { user_id: user.id, tier } },
+      metadata: { user_id: user.id, tier, ref_code },
+      subscription_data: { metadata: { user_id: user.id, tier, ref_code } },
       success_url: `${origin}/upgrade?status=success&tier=${tier}`,
       cancel_url: `${origin}/upgrade?status=cancelled`,
       allow_promotion_codes: true,

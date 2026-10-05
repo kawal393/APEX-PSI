@@ -43,6 +43,41 @@ Deno.serve(async (req) => {
   );
 
   try {
+    // Founding Member referral fee: 25% of each paid invoice for 12 months from the first one.
+    if (event.type === "invoice.paid") {
+      const inv = event.data.object as any;
+      const subId = inv?.parent?.subscription_details?.subscription || inv?.subscription || "";
+      if (subId && inv.amount_paid > 0) {
+        const sub = await stripe.subscriptions.retrieve(String(subId));
+        const ref = String(sub.metadata?.ref_code || "");
+        const buyer = String(sub.metadata?.user_id || "");
+        const withinYear = Date.now() / 1000 - sub.created < 366 * 86400;
+        if (ref && withinYear) {
+          const { data: partner } = await supabase.from("partners").select("id,user_id").eq("partner_code", ref).maybeSingle();
+          if (partner && partner.user_id !== buyer) {
+            const { data: owner } = await supabase.auth.admin.getUserById(partner.user_id);
+            const email = owner?.user?.email?.toLowerCase();
+            const { data: seat } = email
+              ? await supabase.from("founding_applications").select("status").eq("email", email).in("status", ["RESERVED", "INSCRIBED"]).maybeSingle()
+              : { data: null };
+            if (seat) {
+              // Net = amount paid minus tax; Stripe fees are not deducted here and are reconciled at monthly settlement.
+              const net = Math.max(0, (inv.amount_paid - (inv.tax ?? 0)) / 100);
+              await supabase.from("partner_referrals").upsert({
+                partner_id: partner.id,
+                referred_user_id: buyer || null,
+                referred_email: String(inv.customer_email || ""),
+                status: "pending",
+                gross_amount: net,
+                currency: inv.currency,
+                commission_amount: Math.round(net * 25) / 100,
+                stripe_ref: String(inv.id),
+              }, { onConflict: "stripe_ref", ignoreDuplicates: true });
+            }
+          }
+        }
+      }
+    }
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
       if (session.mode === "subscription" && session.metadata?.user_id) {

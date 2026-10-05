@@ -161,7 +161,29 @@ Deno.serve(async (req) => {
           .maybeSingle();
         member = m;
       }
-      return json({ application: record, member });
+      let referral = null;
+      if (record.status === "RESERVED" || record.status === "INSCRIBED") {
+        const { userId } = await callerEmail(req);
+        if (userId) {
+          let { data: p } = await db.from("partners").select("id, partner_code").eq("user_id", userId).maybeSingle();
+          if (!p) {
+            const code = crypto.randomUUID().replace(/-/g, "").slice(0, 10);
+            const { data: created } = await db.from("partners").insert({ user_id: userId, partner_code: code, status: "active" }).select("id, partner_code").maybeSingle();
+            p = created;
+          }
+          if (p) {
+            const { data: rows } = await db.from("partner_referrals").select("status, commission_amount, referred_email").eq("partner_id", p.id);
+            const list = rows ?? [];
+            referral = {
+              code: p.partner_code,
+              earned: list.filter((r: any) => r.status === "paid").reduce((a: number, r: any) => a + Number(r.commission_amount), 0),
+              pending: list.filter((r: any) => r.status === "pending").reduce((a: number, r: any) => a + Number(r.commission_amount), 0),
+              customers: new Set(list.map((r: any) => r.referred_email)).size,
+            };
+          }
+        }
+      }
+      return json({ application: record, member, referral });
     }
 
     // ---------- FIRST WITNESS ACT ----------
