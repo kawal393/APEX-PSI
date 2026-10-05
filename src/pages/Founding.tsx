@@ -27,7 +27,7 @@ import {
 
 const TITLE = "Founding Members — Apex PSI Registry";
 const DESCRIPTION =
-  "One hundred numbered seats in the Apex PSI registry. Free forever, never reissued, sealed in the public ledger and independently verifiable.";
+  "Ten invitation-only seats. Free to hold, never reissued, sealed in the public ledger. Members earn 25% of net revenue APEX receives from customers they directly refer, for 12 months.";
 
 const sha256Hex = async (text: string) => {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -48,6 +48,7 @@ const Founding = () => {
   const [reservedSeats, setReservedSeats] = useState<number[]>([]);
   const [application, setApplication] = useState<Application | null>(null);
   const [member, setMember] = useState<WallMember | null>(null);
+  const [referral, setReferral] = useState<{ code: string; earned: number; pending: number; customers: number } | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   const [name, setName] = useState("");
@@ -76,6 +77,7 @@ const Founding = () => {
     const { data } = await supabase.functions.invoke("founding-registry", { body: { action: "my-status" } });
     setApplication(data?.application ?? null);
     setMember(data?.member ?? null);
+    setReferral(data?.referral ?? null);
   }, [user]);
 
   useEffect(() => {
@@ -144,10 +146,10 @@ const Founding = () => {
               className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.05] mb-5"
               style={{ fontFamily: "Georgia, serif" }}
             >
-              THE FIRST 100 FOUNDING MEMBERS OF THE APEX PSI REGISTRY
+              THE TEN APEX FOUNDING MEMBERS
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed mb-4">
-              One hundred seats in the record of the AI economy. Free forever. Never reissued. Earn what you
+              Ten seats. Selected by hand. Free to hold. 25% of net revenue from every customer you directly bring, for their first 12 months. Earn what you
               bring. Carry the record, and the record carries you.
             </p>
             <p className="text-lg sm:text-xl text-gold max-w-3xl" style={{ fontFamily: "Georgia, serif" }}>
@@ -170,7 +172,7 @@ const Founding = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="flex flex-wrap items-baseline justify-between gap-3 mb-6">
               <h2 className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-                Genesis wall · seats #001–#100
+                Genesis wall · seats #001–#010
               </h2>
               <span className="font-mono text-[11px] text-muted-foreground">
                 {loaded ? `${inscribedCount}/${TOTAL_SEATS} inscribed` : "loading registry"}
@@ -288,6 +290,31 @@ const Founding = () => {
                     Verify your seal
                   </a>
                 )}
+                {referral && (
+                  <div className="border border-gold/40 p-4 space-y-2">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold">Your referral link</p>
+                    <div className="flex gap-2">
+                      <input
+                        readOnly
+                        value={`https://ai-governance-standard.com/?ref=${referral.code}`}
+                        className="flex-1 bg-background border border-border p-2 font-mono text-xs"
+                      />
+                      <button
+                        onClick={() => navigator.clipboard.writeText(`https://ai-governance-standard.com/?ref=${referral.code}`)}
+                        className="border border-gold px-3 font-mono text-[10px] uppercase tracking-[0.2em] text-gold"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <p className="font-mono text-xs text-muted-foreground">
+                      {referral.customers} paying customers · accrued {referral.pending.toFixed(2)} · paid {referral.earned.toFixed(2)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      25% of net revenue APEX actually receives from customers who first sign up through your link,
+                      for their first 12 months. Settled monthly. Nothing is paid for recruiting other members.
+                    </p>
+                  </div>
+                )}
                 {application.status === "RESERVED" && (
                   <>
                     <p className="text-xs text-muted-foreground">
@@ -305,7 +332,7 @@ const Founding = () => {
               </div>
             ) : wallFull ? (
               <p className="text-sm text-muted-foreground">
-                Applications are closed. All one hundred seats are inscribed.
+                Applications are closed. All ten seats are inscribed.
               </p>
             ) : submittedId ? (
               <div className="border border-border p-5 bg-card/30 space-y-2">

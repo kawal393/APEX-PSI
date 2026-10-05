@@ -22,7 +22,7 @@ const HostedTiers = ({ currentTier }: { currentTier?: string }) => {
         window.location.href = `/auth?next=${encodeURIComponent("/upgrade")}`;
         return;
       }
-      const { data, error } = await supabase.functions.invoke("create-checkout", { body: { tier } });
+      const { data, error } = await supabase.functions.invoke("create-checkout", { body: { tier, ref: (() => { try { const r = JSON.parse(localStorage.getItem("apex_ref") || "null"); return r && Date.now() - r.at < 90 * 864e5 ? r.code : undefined; } catch { return undefined; } })() } });
       if (error) throw error;
       if (data?.error) throw new Error(String(data.error));
       if (data?.url) {

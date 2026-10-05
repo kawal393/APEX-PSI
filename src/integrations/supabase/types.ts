@@ -1174,29 +1174,38 @@ export type Database = {
         Row: {
           commission_amount: number
           created_at: string
+          currency: string | null
+          gross_amount: number
           id: string
           partner_id: string
           referred_email: string
           referred_user_id: string | null
           status: string
+          stripe_ref: string | null
         }
         Insert: {
           commission_amount?: number
           created_at?: string
+          currency?: string | null
+          gross_amount?: number
           id?: string
           partner_id: string
           referred_email: string
           referred_user_id?: string | null
           status?: string
+          stripe_ref?: string | null
         }
         Update: {
           commission_amount?: number
           created_at?: string
+          currency?: string | null
+          gross_amount?: number
           id?: string
           partner_id?: string
           referred_email?: string
           referred_user_id?: string | null
           status?: string
+          stripe_ref?: string | null
         }
         Relationships: [
           {
