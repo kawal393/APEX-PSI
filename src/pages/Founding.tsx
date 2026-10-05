@@ -290,6 +290,31 @@ const Founding = () => {
                     Verify your seal
                   </a>
                 )}
+                {referral && (
+                  <div className="border border-gold/40 p-4 space-y-2">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold">Your referral link</p>
+                    <div className="flex gap-2">
+                      <input
+                        readOnly
+                        value={`https://ai-governance-standard.com/?ref=${referral.code}`}
+                        className="flex-1 bg-background border border-border p-2 font-mono text-xs"
+                      />
+                      <button
+                        onClick={() => navigator.clipboard.writeText(`https://ai-governance-standard.com/?ref=${referral.code}`)}
+                        className="border border-gold px-3 font-mono text-[10px] uppercase tracking-[0.2em] text-gold"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <p className="font-mono text-xs text-muted-foreground">
+                      {referral.customers} paying customers · accrued {referral.pending.toFixed(2)} · paid {referral.earned.toFixed(2)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      25% of net revenue APEX actually receives from customers who first sign up through your link,
+                      for their first 12 months. Settled monthly. Nothing is paid for recruiting other members.
+                    </p>
+                  </div>
+                )}
                 {application.status === "RESERVED" && (
                   <>
                     <p className="text-xs text-muted-foreground">
