@@ -92,6 +92,7 @@ export const DISCLAIMERS = [
   "Founding membership confers status and fee rights \u2014 not equity, not ownership, not a transferable right, not an expectation of return. The empire behind the standard remains independently owned and operated.",
   "The only payment a Founding Member can receive is the disclosed 25% referral fee on revenue Apex actually receives from customers they directly referred, for 12 months. Nothing is paid for recruiting members, for adoption, or from Apex's other revenue. Members are independent and cannot bind or represent Apex.",
   "Timestamping cryptographic digests on public blockchains is a neutral recording act, not a financial service. Apex does not issue tokens, ever.",
+  "What this is not: membership costs nothing to join or keep; no fee is ever paid for recruiting another member; the fee right cannot be transferred, sold, pooled or tokenised; and it is never an investment, a return, passive income or guaranteed income \u2014 only a referral commission on paying customers a member brings.",
 ];
 
 export const OPERATOR_LINE =
