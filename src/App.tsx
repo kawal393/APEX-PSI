@@ -24,6 +24,7 @@ import Partner from "./pages/Partner";
 import PartnerDashboard from "./pages/PartnerDashboard";
 import Engine from "./pages/Engine";
 import Corrections from "./pages/Corrections";
+import Licensing from "./pages/Licensing";
 import Disclaimers from "./pages/Disclaimers";
 import Architecture from "./pages/Architecture";
 import SDK from "./pages/SDK";
@@ -251,6 +252,7 @@ const App = () => (
               <Route path="/enforcement-watch" element={<EnforcementWatch />} />
               <Route path="/sealed-memory" element={<SealedMemory />} />
               <Route path="/founding" element={<Founding />} />
+              <Route path="/licensing" element={<Licensing />} />
               <Route path="/founding/admin" element={<ProtectedRoute><FoundingAdmin /></ProtectedRoute>} />
               <Route path="/founding/*" element={<Navigate to="/founding" replace />} />
               <Route path="/reference" element={<Reference />} />

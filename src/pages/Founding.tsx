@@ -27,7 +27,7 @@ import {
 
 const TITLE = "Founding Members — Apex PSI Registry";
 const DESCRIPTION =
-  "Ten invitation-only seats. Free to hold, never reissued, sealed in the public ledger. Members earn 25% of net revenue APEX receives from customers they directly refer, for 12 months.";
+  "Ten invitation-only seats. Free to hold, never reissued, sealed in the public ledger. Members earn 50% of net revenue APEX receives from customers they directly refer, for 12 months, with a 5-year term after a successful annual review.";
 
 const sha256Hex = async (text: string) => {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -149,7 +149,7 @@ const Founding = () => {
               THE TEN APEX FOUNDING MEMBERS
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed mb-4">
-              Ten seats. Selected by hand. Free to hold. 25% of net revenue from every customer you directly bring, for their first 12 months. Earn what you
+              Ten seats. Selected by hand. Free to hold. 50% of net revenue from every customer you directly bring, for their first 12 months. Meet the annual benchmark and the 50% term extends to 5 years. Earn what you
               bring. Carry the record, and the record carries you.
             </p>
             <p className="text-lg sm:text-xl text-gold max-w-3xl" style={{ fontFamily: "Georgia, serif" }}>
@@ -310,7 +310,7 @@ const Founding = () => {
                       {referral.customers} paying customers · accrued {referral.pending.toFixed(2)} · paid {referral.earned.toFixed(2)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      25% of net revenue APEX actually receives from customers who first sign up through your link,
+                      50% of net revenue APEX actually receives from customers who first sign up through your link,
                       for their first 12 months. Settled monthly. Nothing is paid for recruiting other members.
                     </p>
                   </div>

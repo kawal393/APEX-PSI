@@ -23,7 +23,7 @@ export const FEE_SCHEDULE: FeeRow[] = [
   { item: "Bitcoin anchor", price: "FREE", note: "No charge for anchored batch inclusion via OpenTimestamps." },
   { item: "Compliance check", price: "FREE", note: "No charge for a predicate evaluated against a record." },
   { item: "Registry seat", price: "FREE", note: "A numbered listing costs nothing. Ten seats, by invitation and operator approval." },
-  { item: "Founding Member referral fee", price: "25% of net revenue", note: "Paid to a Founding Member on revenue APEX actually receives from a customer they directly referred, for that customer's first 12 months. Settled monthly. No fee for recruiting members.", status: "active" },
+  { item: "Founding Member referral fee", price: "50% of net revenue", note: "Paid to a Founding Member on revenue APEX actually receives from a customer they directly referred, for that customer's first 12 months. After a 12-month review, members who meet the published benchmark move to a 5-year 50% term; others keep their seat and move to a 20% fee on new customers. Settled monthly. No fee for recruiting members.", status: "active" },
 ];
 
 /** Printed verbatim beneath the fee schedule. */
@@ -36,7 +36,7 @@ export const FEE_FOOTNOTE =
 /** §6 — verbatim. Never paraphrase, never reorder. */
 export const ACKNOWLEDGEMENT_CLAUSES: string[] = [
   "I apply for a numbered registry listing (\u201cseat\u201d) in the Apex PSI Founding Member registry, operated by ROCKYFILMS888 PTY LTD trading as Apex Intelligence Empire (ABN 71 672 237 795) (\u201cApex\u201d).",
-  "A seat confers only: (a) a numbered listing and a sealed record of earliness; (b) a disclosed referral fee of 25% of net revenue actually received by Apex from customers I directly refer, for each such customer\u2019s first 12 months, per the published fee schedule; (c) published fee discounts and early-access privileges. It confers no other right.",
+  "A seat confers only: (a) a numbered listing and a sealed record of earliness; (b) a disclosed referral fee of 50% of net revenue actually received by Apex from customers I directly refer, for each such customer\u2019s first 12 months, subject to an annual review under which a member meeting the published benchmark moves to a 5-year term at 50% and any other member keeps the seat with a 20% fee on newly referred customers, per the published fee schedule; (c) published fee discounts and early-access privileges. It confers no other right.",
   "I acquire no equity, shares, ownership, profit share, voting right, governance right, intellectual-property interest, or beneficial interest of any kind in Apex, the APEX PSI protocol, the ledger, the genesis root, the brand, or any revenue \u2014 now, at maturity of the standard, or ever. No claim arises from my contribution, activity, seniority, referrals, or stewardship, or from the passage of time.",
   "No partnership, joint venture, employment, agency, or fiduciary relationship exists between me and Apex.",
   "Any stewardship or custodian role, if ever offered, is an unpaid, revocable duty conferring no property, control, or tenure.",
@@ -60,7 +60,7 @@ export const HOLDINGS = [
   {
     title: "DISCLOSED REFERRAL FEES",
     clause: "\u00a76.2(b), \u00a76.8",
-    body: "25% of net revenue received from customers you directly refer, for their first 12 months. Paid only when a referred customer pays. Not a profit distribution.",
+    body: "50% of net revenue received from customers you directly refer, for their first 12 months. Meet the annual benchmark and the 50% term extends to 5 years; otherwise your seat stays and the fee on new customers becomes 20%. Paid only when a referred customer pays. Not a profit distribution.",
   },
   {
     title: "LIFETIME FEE RIGHTS + FIRST ACCESS",
@@ -90,7 +90,7 @@ export const PUBLIC_PLAN = [
 
 export const DISCLAIMERS = [
   "Founding membership confers status and fee rights \u2014 not equity, not ownership, not a transferable right, not an expectation of return. The empire behind the standard remains independently owned and operated.",
-  "The only payment a Founding Member can receive is the disclosed 25% referral fee on revenue Apex actually receives from customers they directly referred, for 12 months. Nothing is paid for recruiting members, for adoption, or from Apex's other revenue. Members are independent and cannot bind or represent Apex.",
+  "The only payment a Founding Member can receive is the disclosed referral fee (50%, or 20% after a below-benchmark annual review) on revenue Apex actually receives from customers they directly referred, for 12 months. Nothing is paid for recruiting members, for adoption, or from Apex's other revenue. Members are independent and cannot bind or represent Apex.",
   "Timestamping cryptographic digests on public blockchains is a neutral recording act, not a financial service. Apex does not issue tokens, ever.",
   "What this is not: membership costs nothing to join or keep; no fee is ever paid for recruiting another member; the fee right cannot be transferred, sold, pooled or tokenised; and it is never an investment, a return, passive income or guaranteed income \u2014 only a referral commission on paying customers a member brings.",
 ];
