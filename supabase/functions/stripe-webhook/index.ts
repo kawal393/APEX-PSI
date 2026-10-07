@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
   );
 
   try {
-    // Founding Member referral fee: 25% of each paid invoice for 12 months from the first one.
+    // Founding Member referral fee: 50% of each paid invoice for 12 months from the first one.
     if (event.type === "invoice.paid") {
       const inv = event.data.object as any;
       const subId = inv?.parent?.subscription_details?.subscription || inv?.subscription || "";
@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
                 status: "pending",
                 gross_amount: net,
                 currency: inv.currency,
-                commission_amount: Math.round(net * 25) / 100,
+                commission_amount: Math.round(net * 50) / 100,
                 stripe_ref: String(inv.id),
               }, { onConflict: "stripe_ref", ignoreDuplicates: true });
             }
