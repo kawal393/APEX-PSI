@@ -92,7 +92,7 @@ const DRIP_EMAILS = [
           <a href="https://ai-governance-standard.com/engine" style="display:inline-block;padding:14px 32px;background:#d4a017;color:#0a0b0f;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Run the free verification engine →</a>
         </div>
         <hr style="border:none;border-top:1px solid #1a1a2e;margin:32px 0;">
-        <p style="color:#555;font-size:11px;text-align:center;">APEX PSI · ai-governance-standard.com<br>This sequence is three emails and then silence. To stop it sooner, write "unsubscribe" to apexinfrastructure369@gmail.com.</p>
+        <p style="color:#555;font-size:11px;text-align:center;">APEX PSI · ai-governance-standard.com<br>This sequence is three emails and then silence. To stop it sooner, write "unsubscribe" to business@apex-infrastructure.com.</p>
       </div>
     `,
   },

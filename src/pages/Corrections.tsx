@@ -249,7 +249,7 @@ const Corrections = () => (
           {[
             "If a product or fee is withdrawn while any customer holds it, every purchaser is refunded in full — asked or unasked.",
             "If a public claim of ours is found unsourced or wrong, it is corrected or removed and the change is listed here with its date.",
-            "Anyone may report an error at apexinfrastructure369@gmail.com. We aim to reply within 24–48 hours.",
+            "Anyone may report an error at business@apex-infrastructure.com. We aim to reply within 24–48 hours.",
             "Feedback changes the record, not the math: a sealed figure moves only when the arithmetic moves.",
             "Dissent is welcome on the impact wall and is sealed exactly like agreement.",
           ].map((l) => (
@@ -286,7 +286,7 @@ const Corrections = () => (
       </div>
 
       <p className="mt-12 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        Found something we got wrong? Write to apexinfrastructure369@gmail.com. If you are right,
+        Found something we got wrong? Write to business@apex-infrastructure.com. If you are right,
         it appears above with your date and our name on it — and the ledger keeps the old version
         too, because nothing here deletes.
       </p>

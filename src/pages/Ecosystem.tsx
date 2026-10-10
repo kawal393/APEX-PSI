@@ -73,7 +73,7 @@ const Ecosystem = () => (
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href="mailto:apexinfrastructure369@gmail.com?subject=PSI%20implementation%20listing"
+                href="mailto:business@apex-infrastructure.com?subject=PSI%20implementation%20listing"
                 className="border border-gold/50 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-gold hover:bg-gold/10 transition-colors"
               >
                 Tell us what you built — we will list it
