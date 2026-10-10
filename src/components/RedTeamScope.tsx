@@ -80,7 +80,7 @@ const RedTeamScope = () => (
 
       <div className="mt-10 flex flex-wrap gap-3">
         <a
-          href="mailto:apexinfrastructure369@gmail.com?subject=PSI%20Red%20Team%20submission"
+          href="mailto:business@apex-infrastructure.com?subject=PSI%20Red%20Team%20submission"
           className="border border-gold/50 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-gold hover:bg-gold/10 transition-colors"
         >
           Submit a finding

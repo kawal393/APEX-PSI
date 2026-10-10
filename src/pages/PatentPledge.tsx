@@ -173,7 +173,7 @@ const PatentPledge = () => (
 
         <footer className="text-center pt-8 border-t border-border">
           <p className="text-xs text-muted-foreground mb-2">
-            Legal correspondence: <a href="mailto:apexinfrastructure369@gmail.com" className="text-gold hover:underline">apexinfrastructure369@gmail.com</a>
+            Legal correspondence: <a href="mailto:business@apex-infrastructure.com" className="text-gold hover:underline">business@apex-infrastructure.com</a>
           </p>
           <p className="text-[11px] text-muted-foreground">
             APEX Intelligence Empire · Victoria, Australia · ABN 71 672 237 795

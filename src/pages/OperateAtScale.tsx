@@ -86,7 +86,7 @@ const OperateAtScale = () => (
                 ))}
               </ul>
               <a
-                href="mailto:apexinfrastructure369@gmail.com?subject=Operating%20PSI%20at%20scale"
+                href="mailto:business@apex-infrastructure.com?subject=Operating%20PSI%20at%20scale"
                 className="mt-5 inline-block font-mono text-[11px] uppercase tracking-[0.2em] text-gold underline underline-offset-4"
               >
                 Contact sales →
