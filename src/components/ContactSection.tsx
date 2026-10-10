@@ -38,7 +38,7 @@ const ContactSection = forwardRef<HTMLElement>((_, ref) => {
       toast.success("Petition received. The registry will respond at its own cadence.");
       form.reset();
     } catch {
-      toast.error("Something went wrong. Please email apexinfrastructure369@gmail.com directly.");
+      toast.error("Something went wrong. Please email business@apex-infrastructure.com directly.");
     } finally {
       setSending(false);
     }
@@ -65,8 +65,8 @@ const ContactSection = forwardRef<HTMLElement>((_, ref) => {
               <div className="space-y-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-3">
                   <Mail className="h-4 w-4 text-gold flex-shrink-0" />
-                  <a href="mailto:apexinfrastructure369@gmail.com" className="hover:text-gold transition-colors">
-                    apexinfrastructure369@gmail.com
+                  <a href="mailto:business@apex-infrastructure.com" className="hover:text-gold transition-colors">
+                    business@apex-infrastructure.com
                   </a>
                 </div>
                 <div className="flex items-center gap-3">

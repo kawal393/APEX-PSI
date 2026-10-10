@@ -84,7 +84,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
           <div>
             <h4 className="text-sm font-semibold text-foreground mb-3">Connect</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="mailto:apexinfrastructure369@gmail.com" className="hover:text-gold transition-colors">apexinfrastructure369@gmail.com</a></li>
+              <li><a href="mailto:business@apex-infrastructure.com" className="hover:text-gold transition-colors">business@apex-infrastructure.com</a></li>
               <li><a href="https://apex-infrastructure.com" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors inline-flex items-center gap-1">apex-infrastructure.com <ExternalLink className="h-3 w-3" /></a></li>
               <li><a href="https://github.com/kawal393/APEX-PSI" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors inline-flex items-center gap-1"><Github className="h-3 w-3" /> GitHub <ExternalLink className="h-3 w-3" /></a></li>
             </ul>

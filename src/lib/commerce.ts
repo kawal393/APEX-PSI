@@ -22,7 +22,7 @@ export const HOSTED_RATE_LIMIT = 20;
 export const RAPIDAPI_URL = "https://rapidapi.com/apex-psi-apex-psi-default/api/apex-psi/pricing";
 
 /** Direct contact used for Institutional agreements. */
-export const SALES_EMAIL = "apexinfrastructure369@gmail.com";
+export const SALES_EMAIL = "business@apex-infrastructure.com";
 
 export const salesMailto = (tier: string) =>
   `mailto:${SALES_EMAIL}?subject=APEX%20PSI%20${encodeURIComponent(tier)}`;
