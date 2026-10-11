@@ -240,7 +240,7 @@ const Verify = () => {
       { label: "JCS Canonicalize Event", status: "pending" },
       { label: "Recompute SHA-256 Commit Hash", status: "pending" },
       { label: "Recompute Merkle Leaf Hash", status: "pending" },
-      { label: "Verify Merkle Inclusion Proof", status: "pending" },
+      { label: "Verify Merkle Root Attestation", status: "pending" },
       { label: "Verify Ed25519 Signature", status: "pending" },
     ];
 
@@ -297,7 +297,7 @@ const Verify = () => {
       // Step 5: Merkle proof verification
       if (bundle.merkleProof && bundle.merkleRoot) {
         const merkleValid = await verifyMerkleProof(bundle.merkleLeafHash, bundle.merkleProof, bundle.merkleRoot);
-        updateStep(4, merkleValid ? "pass" : "fail", merkleValid ? `Root: ${bundle.merkleRoot.substring(0, 24)}... ✓ VERIFIED` : "Merkle inclusion proof failed");
+        updateStep(4, merkleValid ? "pass" : "fail", merkleValid ? `Root: ${bundle.merkleRoot.substring(0, 24)}... ✓ VERIFIED` : "Merkle root attestation failed");
       } else {
         updateStep(4, "fail", "No Merkle proof in bundle");
       }
