@@ -139,7 +139,7 @@
     "q1": "What is Proof of Stateful Integrity (PSI)?",
     "a1": "PSI is an evidence architecture that records declared context, hashes, signatures and challenge results. Experimental ZK components can add selective proofs, but the protocol does not assume or certify legal compliance.",
     "q2": "How is this different from ZKML systems?",
-    "a2": "PSI is not a zero-knowledge system and contains no ZK-SNARK or ZKML circuit. It records signed SHA-256 digests and Merkle inclusion proofs, and produces full evidence only for challenged records.",
+    "a2": "PSI is not a zero-knowledge system and contains no ZK-SNARK or ZKML circuit. It records signed SHA-256 digests and Merkle root attestations, and produces full evidence only for challenged records.",
     "q3": "What is the EU AI Act enforcement date?",
     "a3": "The Act uses a phased application timeline. Article 50 became applicable on 2 August 2026; penalty tiers depend on the breached provision and entity.",
     "q4": "Do I need to disclose my model weights?",
