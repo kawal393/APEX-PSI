@@ -12,6 +12,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { lmsSignInstitutional, LMS_ALGORITHM } from "../_shared/pq_lms.ts";
+import { signEd25519Strict, reserveLmsSlots } from "../_shared/psi_core.ts";
 import {
   sha256Hex,
   randomReceiptId,
@@ -46,22 +47,7 @@ function checkRateLimit(key: string, limit: number): boolean {
   return true;
 }
 
-async function signEd25519(data: string, serviceKey: string): Promise<string> {
-  try {
-    const keyMaterial = await sha256Hex(`APEX-SIGNING-KEY-${serviceKey}`);
-    const seed = new Uint8Array(32);
-    for (let i = 0; i < 32; i++) seed[i] = parseInt(keyMaterial.substring(i * 2, i * 2 + 2), 16);
-    const pkcs8Header = new Uint8Array([0x30, 0x2e, 0x02, 0x01, 0x00, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x70, 0x04, 0x22, 0x04, 0x20]);
-    const pkcs8 = new Uint8Array(48);
-    pkcs8.set(pkcs8Header);
-    pkcs8.set(seed, 16);
-    const cryptoKey = await crypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, false, ["sign"]);
-    const sig = await crypto.subtle.sign("Ed25519", cryptoKey, new TextEncoder().encode(data));
-    return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
-  } catch {
-    return await sha256Hex(`HMAC-FALLBACK|${data}|${Date.now()}`);
-  }
-}
+const signEd25519 = signEd25519Strict;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -150,9 +136,8 @@ Deno.serve(async (req) => {
     let pqSignature: Record<string, unknown> | null = null;
     let pqPublicKey: string | null = null;
     try {
-      const { count } = await supabase.from("notary_action_receipts")
-        .select("id", { count: "exact", head: true }).not("pq_signature", "is", null);
-      const sig = await lmsSignInstitutional(new TextEncoder().encode(merkleLeaf), count ?? 0);
+      const slot = await reserveLmsSlots(supabase, 1);
+      const sig = await lmsSignInstitutional(new TextEncoder().encode(merkleLeaf), slot);
       pqSignature = sig as unknown as Record<string, unknown>;
       pqPublicKey = sig.public_key;
     } catch (e) {

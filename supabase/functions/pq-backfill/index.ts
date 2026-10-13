@@ -19,6 +19,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+import { reserveLmsSlots } from "../_shared/psi_core.ts";
 import {
   lmsSignInstitutional,
   lmsInstitutionalPublicKey,
@@ -73,7 +74,9 @@ Deno.serve(async (req) => {
 
     if (error) return json({ error: error.message }, 500);
 
-    let counter = signedCount ?? 0;
+    void signedCount;
+    const targets = (rows ?? []).filter((r: { merkle_leaf_hash: string | null }) => r.merkle_leaf_hash);
+    let counter = targets.length ? await reserveLmsSlots(supabase, targets.length) : 0;
     let signed = 0;
     const failures: string[] = [];
 

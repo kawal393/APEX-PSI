@@ -13,6 +13,7 @@
 //   - X-Apex-Api-Key: <key>             (either format)
 // ═══════════════════════════════════════════════════════════════════════
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { rfc6962Root, reserveLmsSlots } from "../_shared/psi_core.ts";
 import { lmsSignInstitutional, lmsInstitutionalPublicKey, LMS_ALGORITHM, LMS_STANDARD, LMS_LEAVES } from "../_shared/pq_lms.ts";
 
 const corsHeaders = {
@@ -160,11 +161,12 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
     const { data: recent } = await supabase
       .from("gallows_ledger")
       .select("merkle_leaf_hash")
-      .order("created_at", { ascending: false })
+      .order("sequence_number", { ascending: false })
       .limit(255);
-    merkleRoot = await computeMerkleRoot([merkleLeaf, ...(recent?.map((r: any) => r.merkle_leaf_hash) ?? [])]);
+    const prior = (recent?.map((r: any) => r.merkle_leaf_hash) ?? []).reverse();
+    merkleRoot = await rfc6962Root([...prior, merkleLeaf]);
   } catch {
-    merkleRoot = await sha256Hex(`${merkleLeaf}|${timestamp}`);
+    merkleRoot = await rfc6962Root([merkleLeaf]);
   }
 
   const signature = await signEd25519(merkleLeaf, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "psi");
@@ -173,11 +175,8 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
   let pqSignature: any = null;
   let pqPublicKey: string | null = null;
   try {
-    const { count } = await supabase
-      .from("gallows_ledger")
-      .select("id", { count: "exact", head: true })
-      .not("pq_signature", "is", null);
-    const sig = await lmsSignInstitutional(new TextEncoder().encode(merkleLeaf), count ?? 0);
+    const slot = await reserveLmsSlots(supabase, 1);
+    const sig = await lmsSignInstitutional(new TextEncoder().encode(merkleLeaf), slot);
     pqSignature = sig;
     pqPublicKey = sig.public_key;
   } catch (e) {
