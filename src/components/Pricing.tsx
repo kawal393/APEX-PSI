@@ -61,7 +61,7 @@ const Pricing = () => {
         <p className="text-center text-xs text-muted-foreground mt-10 max-w-2xl mx-auto">
           The PSI Protocol is a public-good standard. The MIT licence covers the verifier and the
           recomputation engine source — not the hosted platform, and not the findings ledger. The
-          specification (<span className="font-mono">draft-singh-psi (rev 01)</span>) is an
+          specification (<span className="font-mono">draft-singh-psi (rev 02)</span>) is an
           individual submission to the IETF.
         </p>
       </div>

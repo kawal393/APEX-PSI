@@ -90,7 +90,7 @@ const Specs = () => {
               live ledger. Nothing is paraphrased — open the source.
             </p>
             <div className="mt-8 flex flex-wrap gap-2">
-              {["PSI-SEAL/1.0.0", "IETF draft-singh-psi (rev 01)", "EU AI Act Article 50", "RFC 8785 (JCS)", "Free to verify"].map((c) => (
+              {["PSI-SEAL/1.0.0", "IETF draft-singh-psi (rev 02)", "EU AI Act Article 50", "RFC 8785 (JCS)", "Free to verify"].map((c) => (
                 <span
                   key={c}
                   className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground border border-border/60 rounded-full px-3 py-1"

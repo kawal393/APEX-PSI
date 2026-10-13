@@ -8,8 +8,8 @@ interface ShareEngineProps {
 }
 
 const shareStatements: Record<string, string> = {
-  "/": "AI compliance stops being self-reported. Every sealing produces a receipt anyone can recompute — SHA-256, Ed25519, Merkle proofs. Filed as IETF draft-singh-psi (rev 01).",
-  "/protocol": "Read the protocol that replaces 'Trust Us' with cryptographic proof. IETF draft-singh-psi (rev 01) is live.",
+  "/": "AI compliance stops being self-reported. Every sealing produces a receipt anyone can recompute — SHA-256, Ed25519, Merkle proofs. Filed as IETF draft-singh-psi (rev 02).",
+  "/protocol": "Read the protocol that replaces 'Trust Us' with cryptographic proof. IETF draft-singh-psi (rev 02) is live.",
   "/engine": "The APEX PSI engine: every AI output carries a receipt that anyone can recompute.",
   "/verify": "Verify an AI decision receipt in real time. No login required.",
   "/research": "The evidence behind verifiable AI governance: the filed IETF draft, the reference implementation, and the regulation we are pointing at.",
