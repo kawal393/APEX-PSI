@@ -140,21 +140,6 @@ const CommitPanel = ({ onCommit, isProcessing, paused }: CommitPanelProps) => {
           </AnimatePresence>
         </div>
 
-        {/* ZK Privacy Mode Toggle */}
-        <div className="flex items-center justify-between p-3 rounded bg-engine-bg border border-engine-border">
-          <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-engine-highlight" />
-            <div>
-              <span className="text-xs font-mono text-engine-text block">BN128 COMMITMENT (EXPERIMENTAL — NOT ZERO-KNOWLEDGE)</span>
-              <span className="text-[10px] font-mono text-engine-muted">BN128 field commitment — hides action content</span>
-            </div>
-          </div>
-          <Switch
-            checked={zkMode}
-            onCheckedChange={setZkMode}
-            className="data-[state=checked]:bg-engine-highlight"
-          />
-        </div>
 
         <motion.div
           whileHover={{ scale: paused || isProcessing || !action.trim() ? 1 : 1.02 }}
