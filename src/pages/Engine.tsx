@@ -250,7 +250,7 @@ const Engine = () => {
     } finally {
       setIsProcessing(false);
     }
-  }, [zkResult]);
+  }, []);
 
   const handlePause = useCallback(() => {
     const result = toggleProtocolPause();

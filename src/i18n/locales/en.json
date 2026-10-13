@@ -137,7 +137,7 @@
     "badge": "FAQ",
     "headline": "Frequently Asked Questions",
     "q1": "What is Proof of Stateful Integrity (PSI)?",
-    "a1": "PSI is an evidence architecture that records declared context, hashes, signatures and challenge results. Experimental ZK components can add selective proofs, but the protocol does not assume or certify legal compliance.",
+    "a1": "PSI is an evidence architecture that records declared context, hashes, signatures and challenge results. The protocol does not assume or certify legal compliance.",
     "q2": "How is this different from ZKML systems?",
     "a2": "PSI is not a zero-knowledge system and contains no ZK-SNARK or ZKML circuit. It records signed SHA-256 digests and Merkle root attestations, and produces full evidence only for challenged records.",
     "q3": "What is the EU AI Act enforcement date?",
