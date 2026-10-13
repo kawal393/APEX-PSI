@@ -1,0 +1,58 @@
+name: "APEX PSI Attest"
+description: "Seal a build artifact digest into the APEX PSI ledger and output a verifiable receipt."
+author: "APEX Infrastructure"
+branding:
+  icon: "shield"
+  color: "yellow"
+inputs:
+  path:
+    description: "File to hash (SHA-256). Ignored if 'digest' is set."
+    required: false
+  digest:
+    description: "Precomputed SHA-256 hex digest."
+    required: false
+  api-key:
+    description: "Optional APEX Notary key (apex_ntry_...). Without it the free public allowance applies (20/min, 100/day)."
+    required: false
+  endpoint:
+    description: "Notary endpoint."
+    required: false
+    default: "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize"
+outputs:
+  receipt-id:
+    description: "Receipt identifier"
+    value: ${{ steps.seal.outputs.receipt_id }}
+  verify-url:
+    description: "Public verification URL"
+    value: ${{ steps.seal.outputs.verify_url }}
+runs:
+  using: "composite"
+  steps:
+    - id: seal
+      shell: bash
+      env:
+        IN_PATH: ${{ inputs.path }}
+        IN_DIGEST: ${{ inputs.digest }}
+        API_KEY: ${{ inputs.api-key }}
+        ENDPOINT: ${{ inputs.endpoint }}
+      run: |
+        set -euo pipefail
+        if [ -n "$IN_DIGEST" ]; then D="$IN_DIGEST";
+        elif [ -n "$IN_PATH" ]; then D=$(sha256sum "$IN_PATH" | cut -d' ' -f1);
+        else echo "::error::Provide 'path' or 'digest'"; exit 1; fi
+        echo "$D" | grep -Eq '^[a-f0-9]{64}$' || { echo "::error::Invalid SHA-256 digest"; exit 1; }
+        BODY=$(jq -nc --arg d "artifact sha256:$D" --arg r "$GITHUB_REPOSITORY@$GITHUB_SHA" \
+          '{decision:$d, model_id:"github-actions", context:{repository:$r, run:env.GITHUB_RUN_ID}}')
+        HDR=(-H "Content-Type: application/json")
+        [ -n "$API_KEY" ] && HDR+=(-H "x-apex-api-key: $API_KEY")
+        RES=$(curl -sS -w '\n%{http_code}' -X POST "$ENDPOINT" "${HDR[@]}" -d "$BODY")
+        CODE=$(echo "$RES" | tail -n1); JSON=$(echo "$RES" | sed '$d')
+        if [ "$CODE" = "429" ]; then
+          echo "::error::Free allowance reached. Upgrade: https://ai-governance-standard.com/upgrade"; exit 1; fi
+        [ "$CODE" -ge 300 ] && { echo "::error::Notary returned $CODE: $JSON"; exit 1; }
+        RID=$(echo "$JSON" | jq -r '.receipt_id // .receipt.receipt_id // .commit_id // empty')
+        echo "receipt_id=$RID" >> "$GITHUB_OUTPUT"
+        echo "verify_url=https://ai-governance-standard.com/verify?hash=$D" >> "$GITHUB_OUTPUT"
+        echo "### APEX PSI receipt" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Digest: \`$D\`" >> "$GITHUB_STEP_SUMMARY"
+        echo "- Receipt: \`$RID\`" >> "$GITHUB_STEP_SUMMARY"
