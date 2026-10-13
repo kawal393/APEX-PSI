@@ -32,22 +32,22 @@ const GAPS = [
   {
     filed: '"Groth16-compatible zero-knowledge commitments over BN128 fields"',
     live: "No circuit, no SNARK, no pairing check and no trusted setup exists in the deployment. The seal layer is SHA-256 over RFC 8785 canonical input, signed with Ed25519.",
-    fix: "Section 4.4 of revision 02 states normatively that no zero-knowledge proof system is specified, and that implementations describing PSI as input-hiding are non-conformant.",
+    fix: "Revision 02 removes every zero-knowledge, Groth16 and BN128 claim. No proving system is part of PSI.",
   },
   {
     filed: '"3-node Multi-Party Computation (MPC) consensus mechanism with 2/3 threshold verification"',
-    live: "Three verification endpoints re-run the same checks on the same input, which they receive in the clear. No secret sharing, garbled circuit, oblivious transfer or threshold decryption. All three nodes are operated by one entity.",
-    fix: 'Revision 02 renames the layer "Redundant Verification Quorum" and records that it detects faults and raises availability; it does not distribute trust or protect confidentiality.',
+    live: "Three verification endpoints re-run the same checks on the same input, which they receive in the clear. All three are operated by one entity.",
+    fix: "Revision 02 removes the MPC claim and states that a single issuer is a central operator.",
   },
   {
-    filed: '"Immutable logging" (Article 12 mapping)',
-    live: "Records are append-only and alteration is detectable. Nothing is unchangeable by construction.",
-    fix: 'Revision 02 uses "append-only, tamper-evident" and states that "immutable" is the wrong word for what anchoring achieves.',
+    filed: '"Immutable logging" and "prove compliance with AI regulations"',
+    live: "Records are append-only and alteration is detectable. Verification reports integrity only, never compliance.",
+    fix: "Revision 02 states that PSI shows integrity, origin and ordering only, not truth, legality or compliance.",
   },
   {
-    filed: "Merkle construction described with leaf duplication for odd counts and lexicographically sorted sibling pairs",
-    live: "Those two rules contradict each other, and neither matches the published schema: leaves are combined in submission order over raw 32-byte digests and an odd node is promoted unchanged.",
-    fix: "Revision 02 makes rule R8 of the PSI-SEAL/1.0.0 schema normative and corrects the description.",
+    filed: "Merkle construction with leaf duplication for odd counts, sorted sibling pairs, and inclusion proofs",
+    live: "New receipts use the RFC 6962 profile: chronological leaves, 0x00/0x01 prefixes, no duplication.",
+    fix: "Revision 02 specifies the RFC 6962 profile and the merkle_profile field, and no longer claims inclusion proofs.",
   },
 ];
 
