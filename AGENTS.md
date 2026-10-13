@@ -7,3 +7,5 @@
 - Agent runs require sign-in and run server-side only, so AI cost cannot be triggered anonymously.
 - Organize the root experience as four switchable views while keeping deep routes independent and the APEX company logo visible in global navigation. This makes the large public system understandable without removing any existing surface.
 - Founding Member referral fees are computed only from paid Stripe invoices on subscriptions carrying the member's ref code, recorded idempotently per invoice and settled manually each month. This keeps payouts tied to real customer revenue, never recruitment.
+- Post-quantum LMS one-time slots come only from the atomic `next_lms_slot` database counter shared by every signer, and signing fails loudly instead of falling back. This prevents concurrent requests from reusing a one-time key or issuing pseudo-signatures.
+- New ledger Merkle roots use the RFC 6962 profile (chronological leaf order, 0x00/0x01 prefixes) and receipts declare `merkle_profile`. This keeps roots consistent and verifiable by standard transparency-log tooling.

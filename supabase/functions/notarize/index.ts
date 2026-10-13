@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { lmsSignInstitutional, LMS_ALGORITHM } from "../_shared/pq_lms.ts";
+import { rfc6962Root, signEd25519Strict, reserveLmsSlots, MERKLE_PROFILE } from "../_shared/psi_core.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,44 +22,12 @@ async function generateReceiptId(): Promise<string> {
   return `APEX-NTR-${hex.toUpperCase()}`;
 }
 
-async function signEd25519(data: string, serviceKey: string): Promise<string> {
-  try {
-    const keyMaterial = await hashSHA256(`APEX-SIGNING-KEY-${serviceKey}`);
-    const seed = new Uint8Array(32);
-    for (let i = 0; i < 32; i++) {
-      seed[i] = parseInt(keyMaterial.substring(i * 2, i * 2 + 2), 16);
-    }
-    const pkcs8Header = new Uint8Array([
-      0x30, 0x2e, 0x02, 0x01, 0x00, 0x30, 0x05, 0x06,
-      0x03, 0x2b, 0x65, 0x70, 0x04, 0x22, 0x04, 0x20
-    ]);
-    const pkcs8 = new Uint8Array(48);
-    pkcs8.set(pkcs8Header);
-    pkcs8.set(seed, 16);
-    const cryptoKey = await crypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, false, ["sign"]);
-    const sig = await crypto.subtle.sign("Ed25519", cryptoKey, new TextEncoder().encode(data));
-    return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
-  } catch {
-    return await hashSHA256(`HMAC-FALLBACK|${data}|${Date.now()}`);
-  }
-}
+const signEd25519 = signEd25519Strict;
 
-async function computeBinaryMerkleRoot(leaves: string[]): Promise<string> {
-  if (leaves.length === 0) return await hashSHA256("EMPTY_TREE");
-  if (leaves.length === 1) return leaves[0];
-
-  // Pad to power of 2
-  let level = [...leaves];
-  while (level.length > 1) {
-    const next: string[] = [];
-    for (let i = 0; i < level.length; i += 2) {
-      const left = level[i];
-      const right = i + 1 < level.length ? level[i + 1] : left;
-      next.push(await hashSHA256(`${left}|${right}`));
-    }
-    level = next;
-  }
-  return level[0];
+async function hmacSHA256(secret: string, body: string): Promise<string> {
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(body));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
 Deno.serve(async (req) => {
@@ -199,14 +168,14 @@ Deno.serve(async (req) => {
       const { data: recentLeaves } = await supabase
         .from("gallows_ledger")
         .select("merkle_leaf_hash")
-        .order("created_at", { ascending: false })
+        .order("sequence_number", { ascending: false })
         .limit(255);
 
-      const leaves = [merkleLeaf, ...(recentLeaves?.map(r => r.merkle_leaf_hash) || [])];
-      merkleRoot = await computeBinaryMerkleRoot(leaves);
+      // Chronological order (oldest first), new leaf appended last.
+      const prior = (recentLeaves?.map(r => r.merkle_leaf_hash) || []).reverse();
+      merkleRoot = await rfc6962Root([...prior, merkleLeaf]);
     } catch {
-      // Fallback: single-leaf root if query fails
-      merkleRoot = await hashSHA256(`${merkleLeaf}|${timestamp}`);
+      merkleRoot = await rfc6962Root([merkleLeaf]);
     }
 
     const signature = await signEd25519(merkleLeaf, supabaseKey);
@@ -217,11 +186,8 @@ Deno.serve(async (req) => {
     let pqSignature: Record<string, unknown> | null = null;
     let pqPublicKey: string | null = null;
     try {
-      const { count } = await supabase
-        .from("gallows_ledger")
-        .select("id", { count: "exact", head: true })
-        .not("pq_signature", "is", null);
-      const sig = await lmsSignInstitutional(new TextEncoder().encode(merkleLeaf), count ?? 0);
+      const slot = await reserveLmsSlots(supabase, 1);
+      const sig = await lmsSignInstitutional(new TextEncoder().encode(merkleLeaf), slot);
       pqSignature = sig as unknown as Record<string, unknown>;
       pqPublicKey = sig.public_key;
     } catch (e) {
@@ -279,7 +245,7 @@ Deno.serve(async (req) => {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
-                      "X-Apex-Signature": await hashSHA256(`${JSON.stringify(webhookPayload)}${wh.secret}`),
+                      "X-Apex-Signature": `sha256=${await hmacSHA256(wh.secret, JSON.stringify(webhookPayload))}`,
                       "X-Apex-Event": "notarization.created",
                     },
                     body: JSON.stringify(webhookPayload),
@@ -300,6 +266,7 @@ Deno.serve(async (req) => {
       decision_hash: `sha256:${decisionHash}`,
       merkle_leaf: `sha256:${merkleLeaf}`,
       merkle_root: `sha256:${merkleRoot}`,
+      merkle_profile: MERKLE_PROFILE,
       ed25519_signature: signature,
       pq_signature: pqSignature,
       pq_public_key: pqPublicKey,

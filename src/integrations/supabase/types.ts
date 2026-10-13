@@ -2583,6 +2583,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      next_lms_slot: { Args: { p_count?: number }; Returns: number }
       reserve_public_notary_quota: {
         Args: {
           p_count: number

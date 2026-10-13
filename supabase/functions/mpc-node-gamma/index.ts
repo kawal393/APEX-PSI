@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════════
 // APEX ENGINE — MPC Node Gamma
-// Independent verification node (3 of 3) for distributed consensus
+// Rule-ensemble validator (NOT cryptographic MPC / threshold signing). Node (3 of 3) for distributed consensus
 // ═══════════════════════════════════════════════════════════════════════
 
 const corsHeaders = {
@@ -27,6 +27,18 @@ async function verifyCommitHash(action: string, predicateId: string, timestamp: 
 async function verifyMerkleLeaf(commitId: string, commitHash: string, expectedLeaf: string): Promise<boolean> {
   const computed = await hashSHA256(`${commitId}|${commitHash}`);
   return computed === expectedLeaf;
+}
+
+function matchesPattern(text: string, pattern: string): boolean {
+  const esc = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+  const re = new RegExp(`\\b${esc}\\b`, "g");
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    // Skip mentions that are negated or mitigated just before the match.
+    const before = text.slice(Math.max(0, m.index - 40), m.index);
+    if (!/\b(prevent(ed|s|ing)?|mitigat\w*|avoid\w*|prohibit\w*|block(ed|s)?|fix(ed|es)?|remediat\w*|risk of|instead of|no longer)\s+(the\s+)?(risk\s+of\s+)?$/.test(before)) return true;
+  }
+  return false;
 }
 
 function checkCompliance(action: string, predicateId: string): { compliant: boolean; violationFound?: string } {
@@ -58,7 +70,7 @@ function checkCompliance(action: string, predicateId: string): { compliant: bool
   if (!pats) return { compliant: true };
   const lower = action.toLowerCase();
   for (const p of pats) {
-    if (lower.includes(p)) return { compliant: false, violationFound: p };
+    if (matchesPattern(lower, p)) return { compliant: false, violationFound: p };
   }
   return { compliant: true };
 }
