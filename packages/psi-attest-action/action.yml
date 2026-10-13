@@ -52,7 +52,7 @@ runs:
         [ "$CODE" -ge 300 ] && { echo "::error::Notary returned $CODE: $JSON"; exit 1; }
         RID=$(echo "$JSON" | jq -r '.receipt_id // .receipt.receipt_id // .commit_id // empty')
         echo "receipt_id=$RID" >> "$GITHUB_OUTPUT"
-        echo "verify_url=https://ai-governance-standard.com/verify?hash=$D" >> "$GITHUB_OUTPUT"
+        echo "verify_url=https://ai-governance-standard.com/verify?hash=$(echo "$JSON" | jq -r .decision_hash)" >> "$GITHUB_OUTPUT"
         echo "### APEX PSI receipt" >> "$GITHUB_STEP_SUMMARY"
         echo "- Digest: \`$D\`" >> "$GITHUB_STEP_SUMMARY"
         echo "- Receipt: \`$RID\`" >> "$GITHUB_STEP_SUMMARY"
