@@ -62,8 +62,9 @@ async function signEd25519(data: string, seedSrc: string): Promise<string> {
     const key = await crypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, false, ["sign"]);
     const sig = await crypto.subtle.sign("Ed25519", key, new TextEncoder().encode(data));
     return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
-  } catch {
-    return await sha256Hex(`HMAC|${data}|${seedSrc}`);
+  } catch (e) {
+    // Never issue a pseudo-signature: fail loudly.
+    throw new Error(`Ed25519 signing failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 }
 

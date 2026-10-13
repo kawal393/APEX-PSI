@@ -260,6 +260,7 @@ Deno.serve(async (req) => {
       decision_hash: `sha256:${decisionHash}`,
       merkle_leaf: `sha256:${merkleLeaf}`,
       merkle_root: `sha256:${merkleRoot}`,
+      merkle_profile: MERKLE_PROFILE,
       ed25519_signature: signature,
       pq_signature: pqSignature,
       pq_public_key: pqPublicKey,
