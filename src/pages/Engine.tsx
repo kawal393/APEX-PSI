@@ -27,7 +27,6 @@ import {
   type LedgerEntry 
 } from "@/lib/engine-persistence";
 import { generateCertificate, type ComplianceCertificate } from "@/lib/engine-certificate";
-import { generateZKProof, type ZKProofResult } from "@/lib/engine-zk";
 import TrafficNoticeBanner from "@/components/TrafficNoticeBanner";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -44,7 +43,6 @@ const Engine = () => {
   const [persistedCount, setPersistedCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [externalAnchoring, setExternalAnchoring] = useState<{ success: boolean; ots_url?: string } | null>(null);
-  const [zkResult, setZkResult] = useState<ZKProofResult | null>(null);
 
   const refreshState = () => {
     setCommitLog(getCommitLog());
@@ -95,31 +93,12 @@ const Engine = () => {
     setError(null);
     setCertificate(null);
     setExternalAnchoring(null);
-    setZkResult(null);
     try {
       // Create local record first (for immediate UI feedback)
       const record = await commitAction(action, predicateId);
       setCurrentRecord(record);
       refreshState();
 
-      // Generate ZK proof if enabled
-      let zkProofResult: ZKProofResult | null = null;
-      if (zkMode) {
-        try {
-          zkProofResult = await generateZKProof({
-            actionHash: record.commitHash,
-            predicateId,
-            complianceStatus: true,
-            timestamp: Date.now(),
-          });
-          setZkResult(zkProofResult);
-          toast.success("BN128 commitment generated (experimental, not zero-knowledge)", {
-            description: `BN128 field arithmetic • ${zkProofResult.generationTimeMs}ms • ${zkProofResult.privacyLevel}`,
-          });
-        } catch (e: any) {
-          console.warn("[Engine] ZK proof generation failed:", e.message);
-        }
-      }
 
       // Persist via server-side Edge Function (hashes verified server-side)
       const result = await persistCommit(record);
@@ -197,7 +176,7 @@ const Engine = () => {
       // Call server-side prove endpoint
       const result = await proveCommitServer(commitId);
       
-      // Call MPC coordinator in parallel (best-effort)
+      // Rule-ensemble cross-check (best-effort; three rule checkers, not cryptographic MPC)
       let mpcData: any = null;
       try {
         const { data } = await supabase.functions.invoke('mpc-coordinator', {
@@ -205,12 +184,12 @@ const Engine = () => {
         });
         if (data?.success) {
           mpcData = data;
-          toast.success("MPC consensus reached", {
-            description: `${data.nodes_responded}/3 nodes • ${data.threshold} threshold • ${data.total_time_ms}ms`,
+          toast.success("Rule ensemble agreed", {
+            description: `${data.nodes_responded}/3 rule checkers • ${data.total_time_ms}ms`,
           });
         }
       } catch {
-        // MPC is best-effort
+        // best-effort
       }
       
       if (result.success) {
@@ -237,15 +216,6 @@ const Engine = () => {
                 nodesResponded: mpcData.nodes_responded,
                 threshold: mpcData.threshold,
                 consensusSignature: mpcData.consensus_signature,
-              };
-            }
-            // Attach ZK proof data
-            if (zkResult) {
-              cert.zkProof = {
-                protocol: zkResult.proof.protocol,
-                curve: zkResult.proof.curve,
-                proofHash: zkResult.proofHash,
-                privacyLevel: zkResult.privacyLevel,
               };
             }
             setCertificate(cert);
@@ -279,7 +249,7 @@ const Engine = () => {
     } finally {
       setIsProcessing(false);
     }
-  }, [zkResult]);
+  }, []);
 
   const handlePause = useCallback(() => {
     const result = toggleProtocolPause();

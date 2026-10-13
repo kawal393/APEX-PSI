@@ -87,9 +87,10 @@ const Standard = () => {
                 <span className="text-gold-gradient">Every AI Response.</span>
               </h1>
               <p className="text-sm sm:text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
-                The <code className="text-primary font-mono">Compliance-Receipt</code> header is a proposed
-                IETF standard that lets any AI response carry a signed, publicly verifiable proof of
-                regulatory compliance — the way every HTTPS response carries a TLS certificate.
+                The <code className="text-primary font-mono">Compliance-Receipt</code> header is a working
+                specification (Internet-Draft, individual submission — not an IETF standard) that lets any AI
+                response carry a signed, publicly verifiable receipt of what was declared — integrity and
+                provenance, not proof of legal compliance.
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <Button variant="hero" size="sm" onClick={() => copy(HEADER_EXAMPLE, "Header")}>
