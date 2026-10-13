@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:conformance": "vitest run src/test/psi-conformance.vectors.test.ts && python3 psi-conformance/conformance.py && python3 packages/apex-psi-python/tests/test_offline.py",
     "test:watch": "vitest"
   },
   "dependencies": {
