@@ -152,7 +152,7 @@ Deno.serve(async (req) => {
     // Set root on all rows and receipts
     for (let i = 0; i < ledgerRows.length; i++) {
       ledgerRows[i].merkle_root = batchMerkleRoot;
-      receipts[i].merkle_root = `sha256:${batchMerkleRoot}`;
+      (receipts[i] as Record<string, unknown>).merkle_root = `sha256:${batchMerkleRoot}`;
     }
 
     // Bulk insert
