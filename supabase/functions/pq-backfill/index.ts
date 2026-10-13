@@ -85,9 +85,9 @@ Deno.serve(async (req) => {
       try {
         const sig = await lmsSignInstitutional(
           new TextEncoder().encode(row.merkle_leaf_hash),
-          counter,
+          counter++, // slot consumed even if the write fails: never reuse
         );
-        const pub = await lmsInstitutionalPublicKey(counter);
+        const pub = sig.public_key;
         const { error: upErr } = await supabase
           .from("gallows_ledger")
           .update({
@@ -101,7 +101,6 @@ Deno.serve(async (req) => {
           failures.push(`${row.id}: ${upErr.message}`);
           continue;
         }
-        counter += 1;
         signed += 1;
       } catch (e) {
         failures.push(`${row.id}: ${e instanceof Error ? e.message : String(e)}`);
