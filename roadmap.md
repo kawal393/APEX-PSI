@@ -25,3 +25,10 @@
 - [x] Divide the homepage into What is APEX, Why APEX, Explore APEX, and Live Seal views.
 - [x] Keep every existing deep page and route available through the Explore view.
 - [x] Add a real local-file fingerprinting and public-receipt workflow with media preview.
+
+# Technical 10/10
+- [x] Python add-on (decorator + LangChain handler), live-tested
+- [x] ML-DSA-65 on every new receipt, verified against trust anchor
+- [x] Public inclusion-proof lookup, verified live
+- [x] One-command conformance check (npm run test:conformance)
+- [ ] Peripheral IETF drafts (merkle-00, agent-00, http) — next pass; needs user's email confirmations

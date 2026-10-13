@@ -66,3 +66,38 @@ export async function reserveLmsSlots(supabase: any, count = 1): Promise<number>
   if (error || data === null || data === undefined) throw new Error(`LMS slot reservation failed: ${error?.message ?? "no slot"}`);
   return Number(data);
 }
+
+/**
+ * RFC 6962 / RFC 9162 audit path for leaf `index` in a tree of `leavesHex`
+ * (oldest → newest). Siblings are listed bottom-up. Matches rfc6962Root.
+ */
+export async function rfc6962AuditPath(leavesHex: string[], index: number): Promise<string[]> {
+  async function mth(ls: Uint8Array[]): Promise<Uint8Array> {
+    if (ls.length === 1) return ls[0];
+    let k = 1; while (k * 2 < ls.length) k *= 2;
+    return h(0x01, await mth(ls.slice(0, k)), await mth(ls.slice(k)));
+  }
+  async function path(m: number, ls: Uint8Array[]): Promise<Uint8Array[]> {
+    if (ls.length <= 1) return [];
+    let k = 1; while (k * 2 < ls.length) k *= 2;
+    return m < k
+      ? [...(await path(m, ls.slice(0, k))), await mth(ls.slice(k))]
+      : [...(await path(m - k, ls.slice(k))), await mth(ls.slice(0, k))];
+  }
+  const hashed = await Promise.all(leavesHex.map((l) => h(0x00, hexToBytes(l))));
+  return (await path(index, hashed)).map(toHex);
+}
+
+/**
+ * ML-DSA-65 (NIST FIPS 204) signing under the published institutional
+ * trust-anchor key (same seed derivation as pqc-sign). Throws on failure.
+ */
+export async function signMlDsa65Strict(message: string): Promise<{ sig: string; pk: string }> {
+  const { ml_dsa65 } = await import("https://esm.sh/@noble/post-quantum@0.6.1/ml-dsa");
+  const src = Deno.env.get("APEX_PSI_SIGNING_SEED") || Deno.env.get("APEX_LATTICE_KEY");
+  if (!src) throw new Error("ML-DSA seed unavailable");
+  const d = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`APEX-PSI-PQC|mldsa|${src}`)));
+  const keys = ml_dsa65.keygen(d);
+  const sig = ml_dsa65.sign(new TextEncoder().encode(message), keys.secretKey);
+  return { sig: toHex(sig), pk: toHex(keys.publicKey) };
+}

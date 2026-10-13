@@ -638,6 +638,7 @@ export type Database = {
           merkle_leaf_hash: string
           merkle_proof: Json | null
           merkle_root: string | null
+          mldsa65_signature: string | null
           phase: string
           pq_algorithm: string | null
           pq_public_key: string | null
@@ -667,6 +668,7 @@ export type Database = {
           merkle_leaf_hash: string
           merkle_proof?: Json | null
           merkle_root?: string | null
+          mldsa65_signature?: string | null
           phase?: string
           pq_algorithm?: string | null
           pq_public_key?: string | null
@@ -696,6 +698,7 @@ export type Database = {
           merkle_leaf_hash?: string
           merkle_proof?: Json | null
           merkle_root?: string | null
+          mldsa65_signature?: string | null
           phase?: string
           pq_algorithm?: string | null
           pq_public_key?: string | null

@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { lmsSignInstitutional, LMS_ALGORITHM } from "../_shared/pq_lms.ts";
-import { rfc6962Root, signEd25519Strict, reserveLmsSlots, MERKLE_PROFILE } from "../_shared/psi_core.ts";
+import { rfc6962Root, signEd25519Strict, reserveLmsSlots, MERKLE_PROFILE, signMlDsa65Strict } from "../_shared/psi_core.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -179,6 +179,8 @@ Deno.serve(async (req) => {
     }
 
     const signature = await signEd25519(merkleLeaf, supabaseKey);
+    // Stateless post-quantum signature (FIPS 204). Fails loudly: no receipt without it.
+    const mldsa = await signMlDsa65Strict(merkleLeaf);
 
     // Post-quantum: LMS-W4-SHA256 over the same content hash.
     // The one-time leaf index comes from the count of PQ-sealed ledger rows,
@@ -210,6 +212,7 @@ Deno.serve(async (req) => {
       pq_signature: pqSignature,
       pq_public_key: pqPublicKey,
       pq_algorithm: pqSignature ? LMS_ALGORITHM : null,
+      mldsa65_signature: mldsa.sig,
     });
 
 
@@ -270,8 +273,11 @@ Deno.serve(async (req) => {
       ed25519_signature: signature,
       pq_signature: pqSignature,
       pq_public_key: pqPublicKey,
-      post_quantum: !!pqSignature,
-      algorithm: pqSignature ? "SHA-256 + Ed25519 + LMS-W4-SHA256" : "SHA-256 + Ed25519",
+      mldsa65_signature: mldsa.sig,
+      mldsa65_public_key: mldsa.pk,
+      post_quantum: true,
+      algorithm: pqSignature ? "SHA-256 + Ed25519 + ML-DSA-65 + LMS-W4-SHA256" : "SHA-256 + Ed25519 + ML-DSA-65",
+      proof_url: `https://${projectId}.supabase.co/functions/v1/merkle-proof?receipt_id=${receiptId}`,
       signed_payload: `sha256:${merkleLeaf}`,
       verify_url: `https://${projectId}.supabase.co/functions/v1/verify-hash`,
       pdf_url: `https://${projectId}.supabase.co/functions/v1/generate-receipt-pdf`,

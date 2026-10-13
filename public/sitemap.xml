@@ -286,6 +286,42 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-requirements-ea2ds2</loc>
+    <lastmod>2026-10-13T06:06:50.639Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/what-is-ai-governance-technical-definition-for-2026-eqbe6v</loc>
+    <lastmod>2026-10-13T06:06:50.639Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-cryptographic-evidence-h2y4eh</loc>
+    <lastmod>2026-10-13T06:06:50.639Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-header-lh1l4a</loc>
+    <lastmod>2026-10-13T03:06:34.217Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-wbfoun</loc>
+    <lastmod>2026-10-13T03:06:34.217Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-8s5mrj</loc>
+    <lastmod>2026-10-13T03:06:34.217Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-exdgu1</loc>
     <lastmod>2026-10-13T00:06:39.061Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6246,42 +6282,6 @@
   <url>
     <loc>https://ai-governance-standard.com/articles/ai-accountability-why-logs-alone-aren-t-evidence-faqgck</loc>
     <lastmod>2026-08-08T09:06:02.603Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-http-header-mr2ooi</loc>
-    <lastmod>2026-08-08T09:06:02.603Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-http-header-gqnri2</loc>
-    <lastmod>2026-08-08T06:06:02.422Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/ai-governance-technical-definition-for-2026-9o5dc7</loc>
-    <lastmod>2026-08-08T06:06:02.422Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-security-hvlp3d</loc>
-    <lastmod>2026-08-08T06:06:02.422Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/ai-compliance-automation-what-can-cannot-be-automated-n1htcc</loc>
-    <lastmod>2026-08-08T03:05:58.780Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-http-header-zyjjyt</loc>
-    <lastmod>2026-08-08T03:05:58.780Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
