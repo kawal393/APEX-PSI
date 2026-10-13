@@ -24,6 +24,12 @@ async function generateReceiptId(): Promise<string> {
 
 const signEd25519 = signEd25519Strict;
 
+async function hmacSHA256(secret: string, body: string): Promise<string> {
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(body));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") {
@@ -239,7 +245,7 @@ Deno.serve(async (req) => {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
-                      "X-Apex-Signature": await hashSHA256(`${JSON.stringify(webhookPayload)}${wh.secret}`),
+                      "X-Apex-Signature": `sha256=${await hmacSHA256(wh.secret, JSON.stringify(webhookPayload))}`,
                       "X-Apex-Event": "notarization.created",
                     },
                     body: JSON.stringify(webhookPayload),

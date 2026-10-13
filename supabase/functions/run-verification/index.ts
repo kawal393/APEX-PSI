@@ -24,16 +24,9 @@ const TIER_MODES: Record<string, string[]> = {
   goliath: ["SHIELD", "SWORD", "JUDGE"],
 };
 
-function generateMerkleHash(data: string): string {
-  let hash = 0;
-  for (let i = 0; i < data.length; i++) {
-    const char = data.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  const hex = Math.abs(hash).toString(16).padStart(8, '0');
-  const timestamp = Date.now().toString(16);
-  return `0x${hex}${timestamp}`.slice(0, 42).padEnd(42, '0');
+async function generateMerkleHash(data: string): Promise<string> {
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(data));
+  return Array.from(new Uint8Array(d)).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 function runShieldVerification(questionnaire: any, article: string) {
@@ -173,7 +166,7 @@ serve(async (req) => {
         default: result = runShieldVerification(qRes.data, article);
       }
 
-      const merkleHash = result.pass ? generateMerkleHash(`${user.id}-${article}-${mode}-${Date.now()}`) : null;
+      const merkleHash = result.pass ? await generateMerkleHash(`${user.id}-${article}-${mode}-${Date.now()}`) : null;
 
       await supabaseClient
         .from("verification_history")

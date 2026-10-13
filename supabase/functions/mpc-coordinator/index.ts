@@ -1,6 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════════
 // APEX ENGINE — MPC Coordinator
-// Orchestrates 3-node verification network with 2-of-3 threshold
+// Orchestrates a 3-validator rule ensemble with 2-of-3 agreement.
+// Honest scope: redundant heuristic validators on one operator, not
+// cryptographic MPC or threshold signatures (see RFC 9591 FROST for that).
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";

@@ -3,7 +3,7 @@
 - note id: `PSI-INTOP-SCITT-1`
 - published: **2026-09-28**
 - counterpart: IETF SCITT (Supply Chain Integrity, Transparency and Trust) —
-  architecture `draft-ietf-scitt-architecture`, COSE receipts, SCRAPI
+  architecture **RFC 9943** (Standards Track, June 2026; formerly `draft-ietf-scitt-architecture`), COSE receipts, SCRAPI
   registration API, and its May 2026 EU AI Act Article 50 receipts profile
 - posture: **compatible, not subordinate**. Neither system judges the other.
 

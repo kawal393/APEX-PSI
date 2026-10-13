@@ -72,11 +72,13 @@
   "mcp": {
     "server_json": "https://ai-governance-standard.com/.well-known/mcp/server.json",
     "endpoint": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp",
-    "tools": ["verify_hash", "list_attestations", "ledger_stats", "protocol_info"]
+    "tools": ["seal", "verify_hash", "anchor_status", "list_attestations", "ledger_stats", "protocol_info"]
   },
   "trust_anchor": "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json",
   "compliance_receipt": "https://ai-governance-standard.com/.well-known/compliance-receipt",
   "security_txt": "https://ai-governance-standard.com/.well-known/security.txt",
+  "interop": ["IETF RFC 9943 (SCITT architecture) — JSON bridge view, not COSE conformance", "C2PA — informative view, not a signed manifest"],
+  "merkle_profile": "RFC6962-SHA256 (0x00 leaf / 0x01 node prefixes, chronological leaf order) for receipts issued from 2026-10-13",
   "regulatory_scope": ["EU AI Act Article 50", "EU AI Act Articles 11-15", "C2PA 2.1", "NIST SP 800-208"],
   "ecosystem": {
     "business": "https://apex-infrastructure.com",
