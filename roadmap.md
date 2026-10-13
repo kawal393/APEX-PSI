@@ -31,4 +31,5 @@
 - [x] ML-DSA-65 on every new receipt, verified against trust anchor
 - [x] Public inclusion-proof lookup, verified live
 - [x] One-command conformance check (npm run test:conformance)
-- [ ] Peripheral IETF drafts (merkle-00, agent-00, http) — next pass; needs user's email confirmations
+- [x] IETF merkle-01, agent-01, http-00 uploaded (awaiting user email confirmation); 05/06 left to lapse
+- [x] ML-DSA-65 on batch and API sealing too
