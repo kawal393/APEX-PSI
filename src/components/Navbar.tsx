@@ -167,7 +167,7 @@ const navLinks = [
             className="hidden xl:inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-[9px] font-bold text-primary tracking-widest uppercase hover:bg-primary/10 transition-colors cursor-pointer shrink-0"
           >
             <FileText className="h-2.5 w-2.5" />
-            IETF draft-singh-psi (rev 01)
+            IETF draft-singh-psi (rev 02)
           </a>
 
           <div className="relative flex-1 min-w-0">

@@ -50,7 +50,7 @@ const TwoPillars = () => {
 
             <p className="text-lg sm:text-xl font-bold text-foreground mb-2">Prove what AI did.</p>
             <p className="text-sm text-muted-foreground mb-6">
-              Cryptographic evidence for every model decision. IETF draft-singh-psi (rev 01). EU AI Act Articles 12, 14, 15.
+              Cryptographic evidence for every model decision. IETF draft-singh-psi (rev 02). EU AI Act Articles 12, 14, 15.
             </p>
 
             <div className="space-y-3 mb-8">
@@ -158,7 +158,7 @@ const TwoPillars = () => {
           className="text-center mt-10"
         >
           <p className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.3em] text-muted-foreground/80">
-            Both pillars share one cryptographic root · Ed25519 · SHA-256 · IETF draft-singh-psi (rev 01)
+            Both pillars share one cryptographic root · Ed25519 · SHA-256 · IETF draft-singh-psi (rev 02)
           </p>
         </motion.div>
       </div>

@@ -12,18 +12,18 @@ import { Helmet } from "react-helmet-async";
 // Registry facts, verified against the IETF datatracker API and the IETF archive
 // on 1 October 2026. This page serves the FILED text, not a rewrite of it.
 const DOC_NAME = "draft-singh-psi";
-const FILED_FILE = "draft-singh-psi-01";
-const ARCHIVE_URL = "https://www.ietf.org/archive/id/draft-singh-psi-01.txt";
+const FILED_FILE = "draft-singh-psi-02";
+const ARCHIVE_URL = "https://www.ietf.org/archive/id/draft-singh-psi-02.txt";
 const TRACKER_URL = "https://datatracker.ietf.org/doc/draft-singh-psi/";
 const LOCAL_COPY = `/ietf/${FILED_FILE}.txt`;
 
 const META = [
   { label: "Document", value: DOC_NAME },
-  { label: "Revision on file", value: "01 (7 pages)" },
+  { label: "Revision on file", value: "02" },
   { label: "Intended status", value: "Informational" },
-  { label: "Submitted", value: "29 Aug 2026 (header 30 Aug 2026)" },
-  { label: "Expires", value: "3 March 2027" },
-  { label: "Next revision", value: "02 — written, not yet filed" },
+  { label: "Submitted", value: "13 Oct 2026" },
+  { label: "Expires", value: "16 April 2027" },
+  { label: "Replaces", value: "Revision 01 (29 Aug 2026)" },
 ];
 
 // Filed text versus deployed code. Stated side by side because the filed text is
@@ -32,22 +32,22 @@ const GAPS = [
   {
     filed: '"Groth16-compatible zero-knowledge commitments over BN128 fields"',
     live: "No circuit, no SNARK, no pairing check and no trusted setup exists in the deployment. The seal layer is SHA-256 over RFC 8785 canonical input, signed with Ed25519.",
-    fix: "Section 4.4 of revision 02 states normatively that no zero-knowledge proof system is specified, and that implementations describing PSI as input-hiding are non-conformant.",
+    fix: "Revision 02 removes every zero-knowledge, Groth16 and BN128 claim. No proving system is part of PSI.",
   },
   {
     filed: '"3-node Multi-Party Computation (MPC) consensus mechanism with 2/3 threshold verification"',
-    live: "Three verification endpoints re-run the same checks on the same input, which they receive in the clear. No secret sharing, garbled circuit, oblivious transfer or threshold decryption. All three nodes are operated by one entity.",
-    fix: 'Revision 02 renames the layer "Redundant Verification Quorum" and records that it detects faults and raises availability; it does not distribute trust or protect confidentiality.',
+    live: "Three verification endpoints re-run the same checks on the same input, which they receive in the clear. All three are operated by one entity.",
+    fix: "Revision 02 removes the MPC claim and states that a single issuer is a central operator.",
   },
   {
-    filed: '"Immutable logging" (Article 12 mapping)',
-    live: "Records are append-only and alteration is detectable. Nothing is unchangeable by construction.",
-    fix: 'Revision 02 uses "append-only, tamper-evident" and states that "immutable" is the wrong word for what anchoring achieves.',
+    filed: '"Immutable logging" and "prove compliance with AI regulations"',
+    live: "Records are append-only and alteration is detectable. Verification reports integrity only, never compliance.",
+    fix: "Revision 02 states that PSI shows integrity, origin and ordering only, not truth, legality or compliance.",
   },
   {
-    filed: "Merkle construction described with leaf duplication for odd counts and lexicographically sorted sibling pairs",
-    live: "Those two rules contradict each other, and neither matches the published schema: leaves are combined in submission order over raw 32-byte digests and an odd node is promoted unchanged.",
-    fix: "Revision 02 makes rule R8 of the PSI-SEAL/1.0.0 schema normative and corrects the description.",
+    filed: "Merkle construction with leaf duplication for odd counts, sorted sibling pairs, and inclusion proofs",
+    live: "New receipts use the RFC 6962 profile: chronological leaves, 0x00/0x01 prefixes, no duplication.",
+    fix: "Revision 02 specifies the RFC 6962 profile and the merkle_profile field, and no longer claims inclusion proofs.",
   },
 ];
 
@@ -88,10 +88,10 @@ const IETFDraft = () => {
   return (
     <>
       <Helmet>
-        <title>IETF draft-singh-psi (rev 01) — Proof of Sovereign Integrity — Apex PSI — Universal Verification Protocol</title>
-        <meta name="description" content="The filed IETF Internet-Draft draft-singh-psi revision 01, verbatim, with a statement of which of its claims the reference deployment implements." />
+        <title>IETF draft-singh-psi (rev 02) — Proof of Stateful Integrity — Apex PSI — Universal Verification Protocol</title>
+        <meta name="description" content="The filed IETF Internet-Draft draft-singh-psi revision 02, verbatim, and the claims of revision 01 it withdrew." />
         <link rel="canonical" href="https://ai-governance-standard.com/draft" />
-        <meta property="og:title" content="IETF draft-singh-psi revision 01 — as filed" />
+        <meta property="og:title" content="IETF draft-singh-psi revision 02 — as filed" />
         <meta property="og:description" content="Verbatim copy of the filed Internet-Draft, with the gap between filed text and deployed code stated plainly." />
         <meta property="og:url" content="https://ai-governance-standard.com/draft" />
         <meta property="og:type" content="website" />
@@ -104,16 +104,16 @@ const IETFDraft = () => {
           <div className="container mx-auto max-w-4xl text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <Badge variant="outline" className="border-primary/30 text-primary mb-4">
-                IETF INTERNET-DRAFT — REVISION 01 AS FILED
+                IETF INTERNET-DRAFT — REVISION 02 AS FILED
               </Badge>
               <h1 className="text-2xl sm:text-4xl font-black mb-4">
                 <span className="text-chrome-gradient">{DOC_NAME}</span>
               </h1>
               <p className="text-muted-foreground max-w-2xl mx-auto text-sm mb-6">
-                Proof of Sovereign Integrity (PSI): A Cryptographic Protocol for Verifiable AI Regulatory
-                Compliance. The text below is the filed revision, copied byte for byte from the IETF archive.
-                It is shown as filed, including the parts of it that the deployment does not implement — those
-                are listed underneath rather than edited out of the record.
+                Proof of Stateful Integrity (PSI): Signed, Merkle-Committed Receipts for Digital Records.
+                Individual Informational Internet-Draft; not an IETF standard; not adopted by a working group.
+                The text below is the filed revision. The claims revision 01 made and revision 02 withdrew are
+                listed underneath.
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <Button variant="hero" size="sm" onClick={copyDraft} disabled={!text}>
@@ -159,22 +159,21 @@ const IETFDraft = () => {
               <div className="flex items-center gap-2 mb-4">
                 <AlertTriangle className="h-4 w-4 text-destructive" />
                 <h2 className="text-sm font-bold uppercase tracking-widest text-foreground">
-                  What the filed text claims that the code does not do
+                  What revision 01 claimed and revision 02 withdrew
                 </h2>
               </div>
               <div className="space-y-5">
                 {GAPS.map((g) => (
                   <div key={g.filed} className="text-sm">
-                    <p className="text-foreground font-medium mb-1">Filed: {g.filed}</p>
+                    <p className="text-foreground font-medium mb-1">Revision 01: {g.filed}</p>
                     <p className="text-muted-foreground mb-1">Deployed: {g.live}</p>
-                    <p className="text-muted-foreground/80">Revision 02: {g.fix}</p>
+                    <p className="text-muted-foreground/80">Now: {g.fix}</p>
                   </div>
                 ))}
               </div>
               <p className="text-xs text-muted-foreground mt-5">
-                Revision 02, which withdraws the unused claims and specifies the PSI-SEAL/1.0.0 conformance
-                schema, is written but is not filed until it appears on the datatracker record. Until then this
-                page describes the filed text rather than improving it.
+                Revision 02 was filed on 13 October 2026. Revision 01 remains in the IETF archive as a
+                historical record; cite revision 02.
               </p>
             </div>
           </div>

@@ -799,7 +799,7 @@ export default function ImpactWall() {
               </li>
               <li>
                 <strong className="text-foreground">The protocol</strong>: IETF individual
-                submission draft-singh-psi (rev 01), filed 29 August 2026. Read it on the{" "}
+                submission draft-singh-psi (rev 02), filed 29 August 2026. Read it on the{" "}
                 <a href="/draft" className="text-primary underline underline-offset-2">
                   manuscript page
                 </a>

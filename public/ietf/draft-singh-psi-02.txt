@@ -1,0 +1,392 @@
+
+
+
+
+Network Working Group                                           K. Singh
+Internet-Draft                                       APEX Infrastructure
+Intended status: Informational                           13 October 2026
+Expires: 16 April 2027
+
+
+Proof of Stateful Integrity (PSI): Signed, Merkle-Committed Receipts for
+                            Digital Records
+                           draft-singh-psi-02
+
+Abstract
+
+   This document specifies Proof of Stateful Integrity (PSI), a format
+   and procedure for issuing signed receipts over digital records.  A
+   PSI receipt binds the SHA-256 digest of a canonical JSON record to an
+   issuer signature, a monotonic sequence number, and a Merkle tree root
+   computed with the RFC 6962 hashing profile, and may reference an
+   external timestamp anchor.  Any party holding the record, the
+   receipt, and the issuer public key can verify the receipt offline.
+   PSI provides evidence of integrity, origin, and ordering only.  It
+   does not establish that a record is true, lawful, safe, or compliant
+   with any regulation.
+
+   This revision replaces revision 01.  It withdraws all claims of zero-
+   knowledge proofs, multi-party computation, and inclusion proofs,
+   which the reference implementation does not provide.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 16 April 2027.
+
+Copyright Notice
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+
+
+Singh                     Expires 16 April 2027                 [Page 1]
+
+Internet-Draft                     PSI                      October 2026
+
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.1.  Requirements Language . . . . . . . . . . . . . . . . . .   2
+     1.2.  Changes from Revision 01  . . . . . . . . . . . . . . . .   3
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   3.  Receipt Format  . . . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Merkle Tree Profile . . . . . . . . . . . . . . . . . . . . .   4
+   5.  Signature . . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   6.  External Anchoring  . . . . . . . . . . . . . . . . . . . . .   5
+   7.  Verification  . . . . . . . . . . . . . . . . . . . . . . . .   5
+   8.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
+   9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
+   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+     10.1.  Normative References . . . . . . . . . . . . . . . . . .   6
+     10.2.  Informative References . . . . . . . . . . . . . . . . .   6
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
+
+1.  Introduction
+
+   Automated systems, including software agents, produce records whose
+   later integrity is disputed.  Ordinary logs can be edited by anyone
+   with storage access.  PSI defines a small receipt that makes later
+   modification of a record detectable and that can be checked without
+   contacting the issuer.
+
+   PSI is deliberately narrow.  It composes existing primitives: JSON
+   Canonicalization Scheme [RFC8785], SHA-256 [FIPS180-4], Ed25519
+   [RFC8032], and the Merkle tree hashing of [RFC6962].
+
+1.1.  Requirements Language
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 2]
+
+Internet-Draft                     PSI                      October 2026
+
+
+1.2.  Changes from Revision 01
+
+   *  Title changed; the term "Sovereign" is removed.
+
+   *  Zero-knowledge (Groth16/BN128) proof generation is removed.  No
+      such proving system is part of PSI.
+
+   *  "Multi-party computation consensus" is removed.  Any policy checks
+      an issuer runs before sealing are application logic and out of
+      scope.
+
+   *  The Merkle construction is replaced by the RFC 6962 profile, and
+      inclusion proofs are no longer claimed.
+
+   *  Claims that PSI demonstrates regulatory compliance are removed.
+
+2.  Terminology
+
+   Record:  A JSON value supplied by a submitter.
+
+   Record digest:  SHA-256 over the RFC 8785 canonical UTF-8 encoding of
+      the record, as lowercase hexadecimal.
+
+   Issuer:  The party that signs receipts.
+
+   Receipt:  A signed JSON object defined in Section 3.
+
+   Ledger:  The issuer's append-only, ordered sequence of record
+      digests.
+
+3.  Receipt Format
+
+   A receipt is a JSON object with the following members:
+
+   schema:  The string "PSI-SEAL/1.0.0".
+
+   receipt_id:  An issuer-unique identifier.
+
+   decision_hash:  The record digest.
+
+   sequence_number:  A non-negative integer, strictly increasing per
+      issuer.
+
+   prev_hash:  The decision_hash of the previous ledger entry, or 64
+      zero characters for the first entry.
+
+   merkle_profile:  The string "RFC6962-SHA256".
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 3]
+
+Internet-Draft                     PSI                      October 2026
+
+
+   merkle_root:  Lowercase hex of the tree head computed per Section 4.
+
+   issued_at:  An RFC 3339 UTC timestamp asserted by the issuer.
+
+   key_id:  Identifier of the issuer signing key.
+
+   signature:  Ed25519 signature, lowercase hex, computed per Section 5.
+
+   anchor:  OPTIONAL.  An object describing an external timestamp
+      commitment (Section 6).
+
+   Records SHOULD NOT contain personal or confidential data.  Submitters
+   SHOULD send only the record digest to the issuer.
+
+4.  Merkle Tree Profile
+
+   Leaves are the record digests of ledger entries, in ascending
+   sequence_number order; a leaf's index never changes once assigned.
+   The tree head is computed as the Merkle Tree Hash (MTH) of
+   Section 2.1 of [RFC6962], using SHA-256:
+
+     leaf_hash(d)  = SHA-256(0x00 || d)
+     node_hash(l,r)= SHA-256(0x01 || l || r)
+     MTH({})       = SHA-256()
+     MTH(D[n])     = node_hash(MTH(D[0:k]), MTH(D[k:n]))
+                     where k is the largest power of two < n
+
+   Here d is the 32-byte binary record digest.  Odd nodes are not
+   duplicated.  This revision defines tree heads only; inclusion and
+   consistency proofs are left to a future revision.  Receipts issued
+   before this profile was adopted carry no merkle_profile member and
+   MUST NOT be verified against it.
+
+5.  Signature
+
+   The signature input is the RFC 8785 canonical encoding of the receipt
+   object with the signature member removed.  The issuer signs it with
+   Ed25519.  An issuer that cannot produce a valid signature MUST fail
+   the request and MUST NOT emit a receipt with a substitute value.
+
+   An issuer MAY additionally attach a hash-based signature [RFC8554] as
+   defined in a separate post-quantum profile document.  Such signatures
+   use one-time keys and MUST be allocated from a strictly increasing
+   counter so that no key is ever used twice.
+
+   Issuer public keys are published at /.well-known/apex-psi-trust-
+   anchor.json on the issuer's origin as a list of key_id, algorithm,
+   public key, and validity period.
+
+
+
+Singh                     Expires 16 April 2027                 [Page 4]
+
+Internet-Draft                     PSI                      October 2026
+
+
+6.  External Anchoring
+
+   An issuer MAY periodically commit a tree head to a public
+   timestamping system such as OpenTimestamps [OTS].  The anchor object
+   then carries the system name, the committed root, and the proof data.
+   An anchor shows that the root existed no later than the anchored
+   time; it does not show when a record was created.
+
+7.  Verification
+
+   A verifier holding a record and a receipt:
+
+   1.  Computes the record digest and compares it to decision_hash.
+
+   2.  Obtains the public key for key_id from the trust anchor document.
+
+   3.  Verifies the Ed25519 signature over the canonical receipt without
+       its signature member.
+
+   4.  OPTIONALLY verifies the anchor proof.
+
+   Verification returns only: digest match, signature validity, and
+   anchor validity.  It never returns a judgement about the truth,
+   legality, or compliance of the record.
+
+8.  Security Considerations
+
+   *  PSI does not validate source data.  An issuer will seal a false
+      record as readily as a true one.
+
+   *  A single issuer is a central operator.  Receipts show what that
+      issuer signed; they do not make it independent.  Ledger tampering
+      by the issuer is detectable only by parties who retain earlier
+      tree heads or anchors.
+
+   *  issued_at is an issuer assertion.  Only an external anchor bounds
+      time independently.
+
+   *  Ed25519 is not resistant to large-scale quantum computers.  Long-
+      lived evidence SHOULD carry an external anchor and MAY carry a
+      hash-based signature.
+
+   *  Reuse of a one-time hash-based signing key destroys its security;
+      see Section 5.
+
+   *  Digests of low-entropy records can be brute-forced.  Records
+      SHOULD include a random salt when confidentiality matters.
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 5]
+
+Internet-Draft                     PSI                      October 2026
+
+
+9.  IANA Considerations
+
+   This document has no IANA actions.
+
+10.  References
+
+10.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, May 2017,
+              <https://www.rfc-editor.org/info/rfc8174>.
+
+   [RFC8785]  Rundgren, A., Jordan, B., and S. Erdtman, "JSON
+              Canonicalization Scheme (JCS)", RFC 8785, June 2020,
+              <https://www.rfc-editor.org/info/rfc8785>.
+
+   [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
+              Signature Algorithm (EdDSA)", RFC 8032, January 2017,
+              <https://www.rfc-editor.org/info/rfc8032>.
+
+   [RFC6962]  Laurie, B., Langley, A., and E. Kasper, "Certificate
+              Transparency", RFC 6962, June 2013,
+              <https://www.rfc-editor.org/info/rfc6962>.
+
+   [FIPS180-4]
+              NIST, "Secure Hash Standard (SHS)", FIPS PUB 180-4, August
+              2015, <https://doi.org/10.6028/NIST.FIPS.180-4>.
+
+10.2.  Informative References
+
+   [RFC8554]  McGrew, D., Curcio, M., and S. Fluhrer, "Leighton-Micali
+              Hash-Based Signatures", RFC 8554, April 2019,
+              <https://www.rfc-editor.org/info/rfc8554>.
+
+   [OTS]      OpenTimestamps project, "OpenTimestamps",
+              <https://opentimestamps.org>.
+
+Author's Address
+
+   Kawaljeet Singh
+   APEX Infrastructure
+   Melbourne Victoria
+   Australia
+   Email: kawaljeet.singh3008@gmail.com
+
+
+
+Singh                     Expires 16 April 2027                 [Page 6]
+
+Internet-Draft                     PSI                      October 2026
+
+
+   URI:   https://ai-governance-standard.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 7]

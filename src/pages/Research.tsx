@@ -127,7 +127,7 @@ const Research = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Research & Publications | PSI Protocol — IETF draft-singh-psi rev 01 — Apex PSI — Universal Verification Protocol</title>
+        <title>Research & Publications | PSI Protocol — IETF draft-singh-psi rev 02 — Apex PSI — Universal Verification Protocol</title>
         <meta
           name="description"
           content="The filed IETF Internet-Draft, our self-hosted preprint and reference implementation, and third-party literature we consider relevant — each entry linked to the record that actually resolves."

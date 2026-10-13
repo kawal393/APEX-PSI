@@ -47,7 +47,7 @@ const BusinessModel = () => (
           The Protocol is <span className="text-gold-gradient">Free</span>. Nothing here is sold.
         </h2>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          The PSI Protocol (<span className="font-mono text-primary">draft-singh-psi (rev 01)</span>) is free forever.
+          The PSI Protocol (<span className="font-mono text-primary">draft-singh-psi (rev 02)</span>) is free forever.
           The MIT licence covers the verifier and the recomputation engine source — not the hosted platform, and not the
           findings ledger. Sealing and verification are free, with no account and no key.
         </p>

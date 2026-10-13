@@ -72,7 +72,7 @@ const Spec = () => (
             under five minutes.
           </p>
           <div className="mt-8 flex flex-wrap gap-2">
-            {["IETF draft-singh-psi (rev 01)", "draft-singh-psi-http (not yet filed)", "RFC 8785 (JCS)", "NIST FIPS 204", "JUMBF-framed (ISO 19566-2)", "MIT / Apache-2.0"].map((c) => (
+            {["IETF draft-singh-psi (rev 02)", "draft-singh-psi-http (not yet filed)", "RFC 8785 (JCS)", "NIST FIPS 204", "JUMBF-framed (ISO 19566-2)", "MIT / Apache-2.0"].map((c) => (
               <span key={c} className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground border border-border/60 rounded-full px-3 py-1">
                 {c}
               </span>
