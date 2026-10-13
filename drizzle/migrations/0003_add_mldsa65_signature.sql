@@ -1,0 +1,1 @@
+ALTER TABLE public.gallows_ledger ADD COLUMN IF NOT EXISTS mldsa65_signature text;
