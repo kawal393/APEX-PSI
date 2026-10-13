@@ -15,7 +15,7 @@ type MoreLink = { label: string; href: string; external?: boolean };
 const moreGroups: { title: string; links: MoreLink[] }[] = [
   { title: "Standard & Protocol", links: [
     { label: "Protocol", href: "/protocol" }, { label: "Verticals", href: "/verticals" }, { label: "Standard", href: "/standard" },
-    { label: "Spec Shelf", href: "/specs" }, { label: "Architecture", href: "/architecture" }, { label: "Post-Quantum", href: "/quantum" },
+    { label: "IETF Drafts", href: "/drafts" }, { label: "Spec Shelf", href: "/specs" }, { label: "Architecture", href: "/architecture" }, { label: "Post-Quantum", href: "/quantum" },
     { label: "Conformance", href: "/conformance" }, { label: "Open Source", href: "https://github.com/kawal393/APEX-PSI", external: true },
   ]},
   { title: "Verify & Evidence", links: [
@@ -70,6 +70,7 @@ const navLinks = [
     { label: "Get a Receipt", href: "/seal", isRoute: true },
     { label: "Authorize", href: "/mandate", isRoute: true },
     { label: "The Standard", href: "/protocol", isRoute: true },
+    { label: "IETF Drafts", href: "/drafts", isRoute: true },
     { label: "Pricing", href: "/products", isRoute: true },
   ];
 

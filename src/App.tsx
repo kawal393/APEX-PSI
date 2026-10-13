@@ -50,6 +50,7 @@ import OperateAtScale from "./pages/OperateAtScale";
 import Registry from "./pages/Registry";
 import SubmissionKit from "./pages/SubmissionKit";
 import IETFDraft from "./pages/IETFDraft";
+import Drafts from "./pages/Drafts";
 import Paper from "./pages/Paper";
 import Notary from "./pages/Notary";
 import Explorer from "./pages/Explorer";
@@ -227,6 +228,7 @@ const App = () => (
               <Route path="/r/:hash" element={<Receipt />} />
               <Route path="/submission-kit" element={<SubmissionKit />} />
               <Route path="/draft" element={<IETFDraft />} />
+              <Route path="/drafts" element={<Drafts />} />
               <Route path="/paper" element={<Paper />} />
               <Route
                 path="/tribunal"
