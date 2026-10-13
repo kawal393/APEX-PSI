@@ -1,4 +1,4 @@
-import { rfc6962Root, signEd25519Strict } from "../_shared/psi_core.ts";
+import { rfc6962Root, signEd25519Strict, signMlDsa65Strict, MERKLE_PROFILE } from "../_shared/psi_core.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -130,11 +130,13 @@ Deno.serve(async (req) => {
       allLeaves.push(merkleLeaf);
 
       const signature = await signEd25519(merkleLeaf, supabaseKey);
+      const mldsa = await signMlDsa65Strict(merkleLeaf);
 
       receipts.push({
         receipt_id: receiptId, timestamp, decision_hash: `sha256:${decisionHash}`,
         merkle_leaf: `sha256:${merkleLeaf}`, ed25519_signature: signature,
-        predicate_applied: predicateId, receipt_version: "PSI-1.2",
+        mldsa65_signature: mldsa.sig, mldsa65_public_key: mldsa.pk, merkle_profile: MERKLE_PROFILE,
+        merkle_scope: "batch", predicate_applied: predicateId, receipt_version: "PSI-1.2",
       });
 
       ledgerRows.push({
@@ -142,7 +144,7 @@ Deno.serve(async (req) => {
         action: `NOTARIZE-BATCH: ${decision.trim().substring(0, 500)}`,
         predicate_id: predicateId, phase: "VERIFIED", status: "APPROVED",
         commit_hash: commitHash, merkle_leaf_hash: merkleLeaf,
-        ed25519_signature: signature, merkle_root: "", // filled below
+        ed25519_signature: signature, mldsa65_signature: mldsa.sig, merkle_root: "", // filled below
       });
     }
 

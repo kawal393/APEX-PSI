@@ -13,7 +13,7 @@
 //   - X-Apex-Api-Key: <key>             (either format)
 // ═══════════════════════════════════════════════════════════════════════
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { rfc6962Root, reserveLmsSlots } from "../_shared/psi_core.ts";
+import { rfc6962Root, reserveLmsSlots, signEd25519Strict, signMlDsa65Strict, MERKLE_PROFILE } from "../_shared/psi_core.ts";
 import { lmsSignInstitutional, lmsInstitutionalPublicKey, LMS_ALGORITHM, LMS_STANDARD, LMS_LEAVES } from "../_shared/pq_lms.ts";
 
 const corsHeaders = {
@@ -170,7 +170,9 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
     merkleRoot = await rfc6962Root([merkleLeaf]);
   }
 
-  const signature = await signEd25519(merkleLeaf, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "psi");
+  // Same institutional key as /notarize, so the published trust anchor verifies it.
+  const signature = await signEd25519Strict(merkleLeaf, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const mldsa = await signMlDsa65Strict(merkleLeaf);
 
   // Post-quantum LMS-W4-SHA256 over the same signed payload
   let pqSignature: any = null;
@@ -199,6 +201,7 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
     pq_signature: pqSignature,
     pq_public_key: pqPublicKey,
     pq_algorithm: pqSignature ? LMS_ALGORITHM : null,
+    mldsa65_signature: mldsa.sig,
   });
   if (insErr) return json({ error: "persist_failed", detail: insErr.message }, 500);
 
@@ -212,10 +215,13 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
     merkle_root: `sha256:${merkleRoot}`,
     ed25519_signature: signature,
     signed_payload: `sha256:${merkleLeaf}`,
-    post_quantum: !!pqSignature,
+    merkle_profile: MERKLE_PROFILE,
+    mldsa65_signature: mldsa.sig,
+    mldsa65_public_key: mldsa.pk,
+    post_quantum: true,
     pq_signature: pqSignature,
     pq_public_key: pqPublicKey,
-    algorithm: pqSignature ? "SHA-256 + Ed25519 + LMS-W4-SHA256" : "SHA-256 + Ed25519",
+    algorithm: pqSignature ? "SHA-256 + Ed25519 + ML-DSA-65 + LMS-W4-SHA256" : "SHA-256 + Ed25519 + ML-DSA-65",
     predicate_applied: predicateId,
     receipt_version: "PSI-1.2",
     engine: "APEX PSI v1 — Unified API",
