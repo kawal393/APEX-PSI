@@ -107,6 +107,12 @@ Deno.serve(async (req) => {
     const db = admin();
     await sweepLapsed();
 
+    // ---------- APPROVED PARTNER SCRIPT (public, read-only) ----------
+    if (action === "script") {
+      const s = await loadScript();
+      return json({ script: s ? { version: s.version, approved_script: s.approved_script, may_say: s.may_say, may_not_say: s.may_not_say } : null });
+    }
+
     // ---------- PUBLIC WALL ----------
     if (action === "wall") {
       const { data: members } = await db
@@ -139,6 +145,11 @@ Deno.serve(async (req) => {
       if (!witness_line || witness_line.length > 300) return json({ error: "Witness line required" }, 400);
       if (!acknowledged) return json({ error: "Acknowledgement must be accepted" }, 400);
       if (!/^[0-9a-f]{64}$/.test(ack_hash)) return json({ error: "Acknowledgement hash invalid" }, 400);
+
+      // Safety wall: public listing text may not carry banned claims.
+      const script = await loadScript();
+      const hits = findBanned(`${display_name} ${witness_line}`, script?.banned_terms ?? []);
+      if (hits.length) return json({ error: `Please remove claims that APEX cannot stand behind: ${hits.join(", ")}` }, 400);
 
       const { count } = await db
         .from("founding_members")
@@ -187,6 +198,10 @@ Deno.serve(async (req) => {
           .select("applicant_id, display_name, email, witness_line, status, seat_number, reserved_at, created_at, ack_hash")
           .maybeSingle();
         if (updated) record = updated;
+      }
+      if (AUTO_APPROVE && record.status === "VERIFIED") {
+        const r = await reserveSeat(record.applicant_id);
+        if (r.seat) record = { ...record, status: "RESERVED", seat_number: r.seat, reserved_at: new Date().toISOString() };
       }
       let member = null;
       if (record.status === "INSCRIBED" && record.seat_number) {
@@ -297,14 +312,9 @@ Deno.serve(async (req) => {
         .eq("applicant_id", applicant_id)
         .maybeSingle();
       if (!app || !app.email_verified || app.status !== "VERIFIED") return json({ error: "Not approvable" }, 409);
-      const seat = await lowestFreeSeat();
-      if (!seat) return json({ error: "No free seats" }, 409);
-      const { error } = await db
-        .from("founding_applications")
-        .update({ status: "RESERVED", seat_number: seat, reserved_at: new Date().toISOString() })
-        .eq("applicant_id", applicant_id);
-      if (error) return json({ error: "Approval failed" }, 500);
-      return json({ applicant_id, seat_number: seat, status: "RESERVED" });
+      const r = await reserveSeat(applicant_id);
+      if (r.error) return json({ error: r.error }, 409);
+      return json({ applicant_id, seat_number: r.seat, status: "RESERVED" });
     }
 
     if (action === "admin-reject") {
