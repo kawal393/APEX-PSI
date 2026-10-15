@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { sendMail, esc, findBanned, OPERATOR_EMAIL } from "../_shared/mail.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -59,6 +60,41 @@ async function lowestFreeSeat(): Promise<number | null> {
   const used = new Set<number>((taken ?? []).map((r: { seat_number: number }) => r.seat_number));
   for (let i = 1; i <= TOTAL_SEATS; i++) if (!used.has(i)) return i;
   return null;
+}
+
+/** Off by default: the operator stays the gate unless FOUNDING_AUTO_APPROVE=true. */
+const AUTO_APPROVE = Deno.env.get("FOUNDING_AUTO_APPROVE") === "true";
+const SITE = Deno.env.get("SITE_URL") ?? "https://ai-governance-standard.com";
+
+type Script = { version: number; approved_script: string; may_say: string[]; may_not_say: string[]; banned_terms: string[] };
+async function loadScript(): Promise<Script | null> {
+  const { data } = await admin().from("partner_script")
+    .select("version, approved_script, may_say, may_not_say, banned_terms").eq("id", "founding-v1").maybeSingle();
+  return (data as Script) ?? null;
+}
+
+/** Reserve the lowest free seat and send the welcome kit automatically. */
+async function reserveSeat(applicant_id: string): Promise<{ seat?: number; error?: string }> {
+  const db = admin();
+  const seat = await lowestFreeSeat();
+  if (!seat) return { error: "No free seats" };
+  const { data: app, error } = await db
+    .from("founding_applications")
+    .update({ status: "RESERVED", seat_number: seat, reserved_at: new Date().toISOString() })
+    .eq("applicant_id", applicant_id).eq("status", "VERIFIED")
+    .select("display_name, email").maybeSingle();
+  if (error || !app) return { error: "Approval failed" };
+  const s = await loadScript();
+  const list = (xs: string[]) => `<ul>${xs.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+  const seatNo = String(seat).padStart(3, "0");
+  const html = `<p>${esc(app.display_name)}, seat #${seatNo} in the APEX PSI Founding Member registry is reserved for you.</p>
+<p><b>Next step:</b> sign in at <a href="${SITE}/founding">${SITE}/founding</a> with this email, then perform your first witness act to inscribe the seat. Your personal referral code appears there once you sign in. Unused reservations lapse after ${LAPSE_DAYS} days.</p>
+${s ? `<h3>The approved script (v${s.version}) — use these words</h3><p>${esc(s.approved_script)}</p>
+<h3>You may say</h3>${list(s.may_say)}<h3>You may not say</h3>${list(s.may_not_say)}` : ""}
+<p>Reminder of what you signed (§6): a seat gives no equity, ownership, partnership, employment or authority to act for APEX. Referral fees are paid only on revenue APEX actually receives from customers you directly refer. Pass every pricing, contract or technical question to the founder.</p>`;
+  await sendMail(app.email, `Seat #${seatNo} reserved — APEX PSI Founding Member welcome kit`, html);
+  await sendMail(OPERATOR_EMAIL, `Founding seat #${seatNo} reserved: ${app.display_name}`, `<p>${esc(app.email)} — ${AUTO_APPROVE ? "auto-approved" : "approved by operator"}.</p>`);
+  return { seat };
 }
 
 Deno.serve(async (req) => {
