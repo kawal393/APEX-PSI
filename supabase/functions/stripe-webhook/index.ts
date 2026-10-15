@@ -123,6 +123,18 @@ Deno.serve(async (req) => {
               .update({ daily_limit: FREE_DAILY_LIMIT })
               .eq("stripe_subscription_id", subId);
           }
+          // Automatic, polite notice — no operator action needed.
+          try {
+            const { data: u } = await supabase.auth.admin.getUserById(row.user_id);
+            const to = u?.user?.email;
+            if (to) {
+              const site = Deno.env.get("SITE_URL") ?? "https://ai-governance-standard.com";
+              const html = newStatus === "canceled"
+                ? `<p>Your APEX PSI paid plan has ended. Your API keys keep working on the free allowance (${FREE_DAILY_LIMIT} receipts per day). Every receipt you already sealed stays verifiable forever.</p><p>Resubscribe any time: <a href="${site}/upgrade">${site}/upgrade</a></p>`
+                : `<p>A payment for your APEX PSI plan did not go through. Please update your payment method to keep your higher limit: <a href="${site}/upgrade">${site}/upgrade</a></p>`;
+              await sendMail(to, newStatus === "canceled" ? "Your APEX PSI plan has ended" : "APEX PSI payment issue", html);
+            }
+          } catch (e) { console.error("downgrade notice failed", String(e)); }
         }
       }
     }
