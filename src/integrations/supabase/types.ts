@@ -1220,6 +1220,36 @@ export type Database = {
           },
         ]
       }
+      partner_script: {
+        Row: {
+          approved_script: string
+          banned_terms: string[]
+          id: string
+          may_not_say: string[]
+          may_say: string[]
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          approved_script: string
+          banned_terms?: string[]
+          id: string
+          may_not_say?: string[]
+          may_say?: string[]
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          approved_script?: string
+          banned_terms?: string[]
+          id?: string
+          may_not_say?: string[]
+          may_say?: string[]
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
       partners: {
         Row: {
           created_at: string

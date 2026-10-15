@@ -36,6 +36,16 @@ const Upgrade = () => {
   const loadKeys = useCallback(async () => {
     const { data } = await supabase.functions.invoke("api-keys", { body: { action: "list" } });
     if (data?.keys) setKeys(data.keys as KeyRow[]);
+    // Self-serve: a signed-in user with no keys gets a free key instantly, once.
+    if (Array.isArray(data?.keys) && data.keys.length === 0 && !sessionStorage.getItem("apex_autokey")) {
+      sessionStorage.setItem("apex_autokey", "1");
+      const { data: created } = await supabase.functions.invoke("create-api-key", { body: { name: "default" } });
+      if (created?.apiKey) {
+        setFreshKey(created.apiKey);
+        const { data: again } = await supabase.functions.invoke("api-keys", { body: { action: "list" } });
+        if (again?.keys) setKeys(again.keys as KeyRow[]);
+      }
+    }
   }, []);
 
   const syncPlan = useCallback(async () => {

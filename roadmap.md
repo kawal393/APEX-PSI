@@ -33,3 +33,14 @@
 - [x] One-command conformance check (npm run test:conformance)
 - [x] IETF merkle-01, agent-01, http-00 uploaded (awaiting user email confirmation); 05/06 left to lapse
 - [x] ML-DSA-65 on batch and API sealing too
+
+## Automation (Oct 2026)
+- [x] Free API key issued automatically on first visit to /upgrade after sign-in
+- [x] Upgrade link in every limit-reached response (already live)
+- [x] Automatic emails on plan cancellation / failed payment
+- [x] Founding: welcome kit email with seat, approved script, may/may-not-say rules
+- [x] Founding: optional auto-approve flag (off by default)
+- [x] Safety wall: banned claims blocked on Founding applications
+- [ ] Auto-revoke abusive API keys + alert (next)
+- [ ] Monthly referral-commission digest email to operator (next)
+- [ ] 80%/100% daily-limit warning emails (next)

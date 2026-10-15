@@ -29,6 +29,13 @@
       "when": 1791881901172,
       "tag": "0003_add_mldsa65_signature",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792053740981,
+      "tag": "0004_partner_script",
+      "breakpoints": true
     }
   ]
 }
