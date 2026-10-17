@@ -72,7 +72,7 @@ const Verify = () => {
   const [result, setResult] = useState<VerificationResult | null>(null);
   const [receiptResult, setReceiptResult] = useState<VerificationResult | null>(null);
   const [searched, setSearched] = useState(false);
-  const [activeTab, setActiveTab] = useState("hash");
+  const [activeTab, setActiveTab] = useState("seal");
 
   // Post-quantum (LMS-W4-SHA256) verification state for the proof bundle
   const [pqResult, setPqResult] = useState<{
@@ -428,9 +428,9 @@ const Verify = () => {
         <section className="px-4 mt-10">
           <div className="container mx-auto max-w-3xl">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 mb-6">
+              <TabsList className="w-full h-auto grid grid-cols-2 sm:grid-cols-5 gap-1 mb-6">
                 <TabsTrigger value="hash" className="text-[11px] sm:text-sm">Hash Lookup</TabsTrigger>
-                <TabsTrigger value="seal" className="text-[11px] sm:text-sm">Seal (checked in your browser)</TabsTrigger>
+                <TabsTrigger value="seal" className="text-[11px] sm:text-sm">Local Seal Check</TabsTrigger>
                 <TabsTrigger value="receipt" className="text-[11px] sm:text-sm">Receipt ID</TabsTrigger>
                 <TabsTrigger value="proof" className="text-[11px] sm:text-sm">Proof Verify</TabsTrigger>
                 <TabsTrigger value="audit" className="text-[11px] sm:text-sm">Public Audit</TabsTrigger>
