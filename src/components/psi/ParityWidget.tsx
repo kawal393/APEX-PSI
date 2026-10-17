@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import parityFixtures from "../../../packages/psi-verifier-py/test/cross-language/fixtures.json";
+import pythonVerdicts from "../../../packages/psi-verifier-py/test/cross-language/python.txt?raw";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle } from "lucide-react";
@@ -9,6 +12,7 @@ import {
   psiSchemaDigestFromDocument,
   PSI_SCHEMA_ID,
   PSI_VERIFIER_VERSION,
+  type VerifySealOptions,
 } from "../../../packages/psi-verifier/src/index";
 
 /**
@@ -25,72 +29,19 @@ import {
  * npm or PyPI package output.
  */
 
-type Fixture = { id: string; label: string; input: unknown; python: string };
-
-const DIGEST = "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9";
-const HASH = "342f1e487a44517a2ac7378566a19d1dc4490620052c958d32b1fe23ba1f4b0d";
-const LEAF = "7fb4d0529d5cce32893ecece56e9eed4cafa7de754a4ff474667a11262dbfe6b";
-const SEAL_HASH = "606175f92c968d9e9c7c6c6cd3e28008f2edff38330df7040fe2261004f61254";
-
-const CONFORMANT = {
-  schema: "PSI-SEAL/1.0.0",
-  schema_digest: DIGEST,
-  sealed_at: "2026-08-17T09:00:00.000Z",
-  subject: { name: "parity.txt", size_bytes: 23 },
-  hash: HASH,
-  merkle: { leaf: LEAF },
-  signature: { alg: "Ed25519", value: "(fixture)", seal_hash: SEAL_HASH },
-};
-
-const REJECT_TAIL = [
-  "generate a conformant seal: https://ai-governance-standard.com/seal",
-  "canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json",
-  "legacy escape hatch (report-only): enforce=false",
-  "verified, not asserted; trust the math, not the maker.",
-].join("\n");
-
-const FIXTURES: Fixture[] = [
-  {
-    id: "conformant",
-    label: "Conformant seal",
-    input: CONFORMANT,
-    python: `PSI-SEAL v1.2.0 ACCEPT: conformant seal`,
-  },
-  {
-    id: "tampered",
-    label: "Tampered hash",
-    input: { ...CONFORMANT, hash: `${HASH.slice(0, -1)}0` },
-    python: [
-      "PSI-SEAL v1.2.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1",
-      `canonical schema digest: ${DIGEST}`,
-      "received schema: PSI-SEAL/1.0.0 (digest match: true)",
-      "findings:",
-      "  PSI-SEAL v1.2.0 REJECT: merkle.leaf mismatch — rule 9.1",
-      "  PSI-SEAL v1.2.0 REJECT: seal_hash mismatch — rule 10.1",
-      REJECT_TAIL,
-    ].join("\n"),
-  },
-  {
-    id: "legacy",
-    label: "Non-PSI payload",
-    input: { schema: "x", hash: "y" },
-    python: [
-      "PSI-SEAL v1.2.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1",
-      `canonical schema digest: ${DIGEST}`,
-      "received schema: x (digest match: false)",
-      "findings:",
-      "  PSI-SEAL v1.2.0 REJECT: schema identifier mismatch, expected PSI-SEAL/1.0.0 — rule 4.1",
-      "  PSI-SEAL v1.2.0 REJECT: schema_digest mismatch — rule 4.2",
-      "  PSI-SEAL v1.2.0 REJECT: sealed_at is not RFC 3339 UTC with three fractional digits — rule 6.1",
-      "  PSI-SEAL v1.2.0 REJECT: hash is not 64 lowercase hexadecimal characters — rule 5.1",
-      "  PSI-SEAL v1.2.0 REJECT: subject.size_bytes is not a non-negative integer — rule 7.1",
-      "  PSI-SEAL v1.2.0 REJECT: merkle.leaf missing — rule 8.1",
-      REJECT_TAIL,
-    ].join("\n"),
-  },
-];
+type Fixture = { id: string; label: string; input: unknown; options: VerifySealOptions; python: string };
+const DIGEST = parityFixtures.canonical_schema_digest;
+const blocks = pythonVerdicts.trimEnd().split("\n\n=====\n\n");
+const FIXTURES: Fixture[] = parityFixtures.cases.map((entry, index) => ({
+  id: String(index),
+  label: ["Signed seal", "Re-signed forgery", "Empty signature", "Garbage signature", "Wrong algorithm", "Unknown key", "Unsigned", "Legacy report-only"][index] ?? entry.name,
+  input: entry.seal,
+  options: entry.options as VerifySealOptions,
+  python: (blocks[index] ?? "").split("\n").slice(1).join("\n"),
+}));
 
 const ParityWidget = () => {
+  const { t } = useTranslation();
   const [active, setActive] = useState(FIXTURES[0].id);
   const [tsOutput, setTsOutput] = useState("");
   const [digest, setDigest] = useState("");
@@ -120,10 +71,8 @@ const ParityWidget = () => {
           // try the next source; ERROR is reported only when every source fails
         }
       }
-      const result = await verifySeal(fixture.input);
-      // v1.3.0: a pass can only be printed for a signature that was checked
-      // against a key the caller trusts. These fixtures carry no trust root, so
-      // an honest run of this widget prints PARTIAL or a rejection, never ACCEPT.
+      const result = await verifySeal(fixture.input, fixture.options);
+      // Replay the exact trust options used by the recorded Python run.
       const text = result.conformant
         ? formatAcceptance(result.signature_status, result.trusted_key_id)
         : formatRejection(result, canonical || DIGEST);
@@ -165,7 +114,7 @@ const ParityWidget = () => {
               schemaUnavailable
                 ? "border-warning/40 text-warning bg-warning/10"
                 : parity
-                  ? "border-success/40 text-success bg-success/10"
+                  ? "border-compliant/40 text-compliant bg-compliant/10"
                   : "border-destructive/40 text-destructive bg-destructive/10"
             }`}
           >
@@ -218,11 +167,7 @@ const ParityWidget = () => {
       </div>
 
       <p className="mt-4 font-mono text-[11px] text-muted-foreground break-all">
-        The left column is computed in this page, from source bundled out of <code>packages/psi-verifier</code> — no
-        registry install is involved, and no Apex package is published to npm or PyPI. The right column is a recorded
-        Python result, reproduced by running <code>python psi-conformance/conformance.py test</code> after cloning
-        <code> https://github.com/kawal393/APEX-PSI</code>. Match here means the two recordings agree; it is not proof
-        that a Python process ran just now.
+        {t("parity.recording", "The left column runs the bundled TypeScript verifier. The right column is recorded Python output for the same fixtures and trust options. The fixture key is for testing, not an APEX issuing identity. Regenerate the recordings with the verifier’s test:cross-language command. This comparison does not mean Python is running in your browser.")}
       </p>
     </Card>
   );

@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy, Check, Terminal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 const BASE_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1`;
 
@@ -79,6 +81,7 @@ func main() {
 }`;
 
 const NotaryDocs = () => {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState<string | null>(null);
 
   const copy = (text: string, id: string) => {
@@ -88,9 +91,9 @@ const NotaryDocs = () => {
   };
 
   const CopyBtn = ({ text, id }: { text: string; id: string }) => (
-    <button onClick={() => copy(text, id)} className="absolute top-3 right-3 p-1.5 rounded bg-muted/50 hover:bg-muted transition-colors">
+    <Button size="icon" variant="ghost" aria-label={t("notary.copyExample", "Copy code example")} onClick={() => copy(text, id)} className="absolute top-3 right-3 h-8 w-8 bg-muted/50 hover:bg-muted">
       {copied === id ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4 text-muted-foreground" />}
-    </button>
+    </Button>
   );
 
   return (
@@ -213,7 +216,7 @@ const NotaryDocs = () => {
               ))}
             </ul>
             <p className="text-xs text-muted-foreground/70 pt-2">
-              Every receipt anchors to the global Merkle tree. Once your audit trail has 100+ entries, switching costs become infinite — your compliance history is mathematically bound to APEX.
+              {t("notary.portableEvidence", "Keep your receipts and public keys for independent verification. A Merkle root is not itself a confirmed Bitcoin anchor. Decision text and context submitted to this endpoint are stored; do not submit personal or confidential information.")}
             </p>
           </CardContent>
         </Card>

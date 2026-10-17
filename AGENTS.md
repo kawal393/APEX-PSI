@@ -1,5 +1,12 @@
 # Project architecture decisions
 
+- Serve C2PA WebAssembly from public/wasm and initialize the reader through a browser-only dynamic import on demand; this keeps binary imports out of server bundles.
+- Exclude platform-managed preview auth storage from app lint rather than editing regenerated code; this keeps CI stable across connector syncs.
+- Default the public checker to local seal verification and label online ledger matches and detected watermarks as present, not authenticated; external lookups and detection alone do not prove authenticity.
+- Use C2PA validationResults success and failure arrays for credential verdicts; the reader's validationStatus is not a list of boolean success flags.
+- Fetched trust-anchor documents may only select built-in pinned Ed25519 identities; new identities require an explicit pin update or a visitor-supplied key, which is labelled separately to prevent silent trust substitution.
+- The public parity display imports the same signed fixtures and recorded Python output used by cross-language tests, including their explicit trust options; this prevents hand-written demonstrations from drifting from real verifier behavior.
+
 - Keep the PSI commons separate from APEX-operated capacity: offline verification and self-hosting remain free, while the hosted allowance is capped at 20 receipts per minute and 100 per day and higher-volume products are arranged directly. This prevents public licensing promises from being confused with hosted-service capacity.
 - Reserve public notary capacity atomically in a private database counter shared by single and batch endpoints. This prevents instance restarts or parallel requests from bypassing published limits.- The public witness observer records only fingerprints of open, non-personal public feeds into its own table, separate from customer receipts, with a single-flight lock and dedup key. This keeps automated observations from being confused with sealed customer evidence.
 - The SCITT bridge is a JSON view returned on request alongside native PSI receipts, never a claimed COSE/SCITT conformance. This keeps interoperability honest while PSI stays the default format.

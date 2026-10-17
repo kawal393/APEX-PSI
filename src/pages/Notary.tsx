@@ -13,7 +13,7 @@ const Notary = () => (
       <title>APEX NOTARY — Cryptographic Attestation API for AI Decisions — Apex PSI — Universal Verification Protocol</title>
       <meta
         name="description"
-        content="Notarize every AI decision with SHA-256 hashing, Ed25519 signatures, and Merkle-anchored receipts. One API call. EU AI Act compliant. Free tier available."
+         content="Create tamper-evident AI decision receipts with SHA-256 hashing, Ed25519 signatures, and Merkle proofs. Limited public hosted allowance; independent verification is free. Receipts do not establish legal compliance."
       />
     </Helmet>
     <Navbar />

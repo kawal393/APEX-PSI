@@ -2,8 +2,7 @@
 // neutrally what each one proves and cannot prove. Favours no format,
 // including its own. THE MIRROR DOES NOT BEND.
 
-import { createC2pa, type C2pa } from "c2pa";
-import wasmUrl from "c2pa/dist/assets/wasm/toolkit_bg.wasm?url";
+import type { C2pa } from "c2pa";
 import workerUrl from "c2pa/dist/c2pa.worker.min.js?url";
 import { verifyInBandCredentials, sha256Hex } from "@/lib/c2pa-inband";
 import { detectDctWatermarkInBlob } from "@/lib/psi-watermark-dct";
@@ -46,13 +45,14 @@ export function resetC2paCache(): void {
 }
 
 async function getC2pa(): Promise<C2pa | null> {
+  if (typeof window === "undefined") return null;
   if (c2paInstance) return c2paInstance;
   if (!c2paInit) {
-    c2paInit = createC2pa({
-      wasmSrc: wasmUrl,
+    c2paInit = import("c2pa").then(({ createC2pa }) => createC2pa({
+      wasmSrc: `${import.meta.env.BASE_URL}wasm/c2pa-toolkit_bg.wasm`,
       workerSrc: workerUrl,
       fetchRemoteManifests: false,
-    })
+    }))
       .then((inst) => {
         c2paInstance = inst;
         return inst;
@@ -84,7 +84,7 @@ async function readC2paRow(file: File): Promise<ReaderRow> {
     proves:
       "That a manifest was attached at some point, and what its signer declared.",
     cannotProve:
-      "What happened to the file after the manifest was attached — screenshots, recompression and cropping destroy it.",
+      "That the declared content is true, or that an unknown signer is trustworthy. Destructive edits can remove credentials.",
   };
   try {
     const c2pa = await getC2pa();
@@ -99,6 +99,10 @@ async function readC2paRow(file: File): Promise<ReaderRow> {
       manifestStore?: {
         activeManifest?: LooseManifest | null;
         validationStatus?: LooseValidation[] | null;
+        validationResults?: {
+          activeManifest?: { failure?: LooseValidation[]; success?: LooseValidation[] };
+          ingredientDeltas?: { validationDeltas?: { failure?: LooseValidation[] } }[];
+        };
       } | null;
     };
     const store = result.manifestStore;
@@ -106,7 +110,13 @@ async function readC2paRow(file: File): Promise<ReaderRow> {
     if (!store || !active) return base;
 
     const validations = (store.validationStatus ?? []) as LooseValidation[];
-    const failures = validations.filter((v) => v.success === false);
+    const results = store.validationResults;
+    const failures = [
+      ...validations.filter((v) => v.success === false),
+      ...(results?.activeManifest?.failure ?? []),
+      ...(results?.ingredientDeltas ?? []).flatMap((delta) => delta.validationDeltas?.failure ?? []),
+    ];
+    const successes = results?.activeManifest?.success ?? validations.filter((v) => v.success === true);
     const signer =
       typeof active.vendor === "string" ? active.vendor : active.vendor?.name;
     const claims = [
@@ -117,14 +127,17 @@ async function readC2paRow(file: File): Promise<ReaderRow> {
       .filter(Boolean)
       .join(" · ");
 
-    if (failures.length === 0) {
+    if (failures.length === 0 && successes.length > 0) {
       return {
         ...base,
         status: "verified",
-        detail: `Manifest present. No validation problems reported.${
+        detail: `Manifest validation succeeded.${
           claims ? ` ${claims}` : ""
         }`,
       };
+    }
+    if (failures.length === 0) {
+      return { ...base, status: "present", detail: `Manifest present; no affirmative validation result available.${claims ? ` ${claims}` : ""}` };
     }
     return {
       ...base,
@@ -189,16 +202,16 @@ async function readWatermarkRow(file: File): Promise<ReaderRow> {
     status: "absent",
     detail: "No survival watermark detected in the pixels.",
     proves:
-      "That the pixels themselves still carry a registered digest — the only mark here that is designed to outlive screenshots, recompression and crops.",
+      "That a candidate digest was detected in the pixels. The mark is designed to survive some transformations; detection alone does not authenticate it.",
     cannotProve:
-      "Who created the content. It proves continuity of the pixels with the ledger, not authorship of the meaning.",
+      "Who created the content, whether the digest is registered, or whether a trusted signer authenticated it.",
   };
   try {
     const det = await detectDctWatermarkInBlob(file);
     if (!det.present) return base;
     return {
       ...base,
-      status: "verified",
+      status: "present",
       detail: `Watermark present. Digest ${det.digest?.slice(0, 16)}… · confidence ${(
         det.confidence * 100
       ).toFixed(1)}% · scale ${det.scale}×`,
@@ -215,13 +228,13 @@ async function readWatermarkRow(file: File): Promise<ReaderRow> {
 async function readLedgerRow(sha256: string): Promise<ReaderRow> {
   const base: ReaderRow = {
     id: "ledger",
-    label: "Apex public ledger · Bitcoin anchor",
+    label: "Apex public ledger · online lookup",
     status: "absent",
     detail: "This SHA-256 digest is not registered in the public ledger.",
     proves:
-      "That this exact digest was registered at a recorded time, in a recorded phase, and anchored into the Bitcoin blockchain.",
+      "That the APEX service reports a matching ledger entry. This is an online lookup, not an independently verified signature or Bitcoin proof.",
     cannotProve:
-      "That any claim about the content is true. The ledger seals existence, not meaning.",
+      "Signature authenticity, Bitcoin inclusion, or the truth of the content. Those require separate proof checks.",
   };
   try {
     const res = await fetch(`${VERIFY_HASH_URL}?hash=${sha256}`, {
@@ -235,19 +248,21 @@ async function readLedgerRow(sha256: string): Promise<ReaderRow> {
       predicate_id?: string;
       phase?: string;
       commit_id?: string;
+      timestamp_anchor?: { status?: string } | null;
     };
     if (!body.verified) return base;
     const extra = [
       body.predicate_id ? `record: ${body.predicate_id}` : null,
       body.phase ? `phase: ${body.phase}` : null,
-      body.commit_id ? `anchor: ${body.commit_id}` : null,
+      body.commit_id ? `receipt: ${body.commit_id}` : null,
+      `anchor reported: ${body.timestamp_anchor?.status ?? "not available"}`,
     ]
       .filter(Boolean)
       .join(" · ");
     return {
       ...base,
-      status: "verified",
-      detail: `Digest verified against the ledger.${extra ? ` ${extra}` : ""}`,
+      status: "present",
+      detail: `Service reports a matching digest.${extra ? ` ${extra}` : ""}`,
     };
   } catch (err) {
     return {

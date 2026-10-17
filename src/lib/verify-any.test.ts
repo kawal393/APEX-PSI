@@ -47,6 +47,10 @@ describe("runVerifyAny", () => {
 
     const report = await runVerifyAny(textFile());
 
+    expect(createC2pa).toHaveBeenCalledWith(expect.objectContaining({
+      wasmSrc: "/wasm/c2pa-toolkit_bg.wasm",
+      fetchRemoteManifests: false,
+    }));
     expect(report.sha256).toMatch(/^[0-9a-f]{64}$/);
     // No watermark row for a non-image file: c2pa + psi-inband + ledger.
     expect(report.rows.map((r) => r.id)).toEqual(["c2pa", "psi-inband", "ledger"]);
@@ -63,6 +67,7 @@ describe("runVerifyAny", () => {
             claimGenerator: "test-app/1.0",
           },
           validationStatus: [],
+          validationResults: { activeManifest: { failure: [], success: [{ code: "claimSignature.validated" }] } },
         },
       }),
     } as never);
@@ -86,7 +91,7 @@ describe("runVerifyAny", () => {
 
     expect(byId["c2pa"].status).toBe("verified");
     expect(byId["c2pa"].detail).toContain("test-app/1.0");
-    expect(byId["ledger"].status).toBe("verified");
+    expect(byId["ledger"].status).toBe("present");
     expect(byId["ledger"].detail).toContain("TEST-1");
     // PSI in-band: a random 5-byte file carries no APEXPSI manifest.
     expect(byId["psi-inband"].status).toBe("absent");
@@ -107,5 +112,22 @@ describe("runVerifyAny", () => {
     expect(byId["c2pa"].status).toBe("error");
     expect(byId["ledger"].status).toBe("error");
     expect(report.rows).toHaveLength(3);
+  });
+
+  it.each([{ validationStatus: undefined }, { validationStatus: [] }])("does not authenticate a C2PA manifest without validation evidence (%s)", async ({ validationStatus }) => {
+    vi.mocked(createC2pa).mockResolvedValue({ read: async () => ({ manifestStore: { activeManifest: { title: "test" }, validationStatus } }) } as never);
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ verified: false }))));
+    const report = await runVerifyAny(textFile());
+    expect(report.rows.find((row) => row.id === "c2pa")?.status).toBe("present");
+  });
+
+  it("rejects failures from the real C2PA validationResults structure even when success is also reported", async () => {
+    vi.mocked(createC2pa).mockResolvedValue({ read: async () => ({ manifestStore: {
+      activeManifest: { title: "test" }, validationStatus: [],
+      validationResults: { activeManifest: { failure: [{ code: "claimSignature.mismatch" }], success: [{ code: "assertion.hashedURI.match" }] } },
+    } }) } as never);
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ verified: false }))));
+    const report = await runVerifyAny(textFile());
+    expect(report.rows.find((row) => row.id === "c2pa")?.status).toBe("failed");
   });
 });

@@ -23,9 +23,11 @@ interface LooseAnchor {
   ed25519_public_key?: string;
   keys?: {
     kid?: string;
+    key_id?: string;
     algorithm?: string;
     public_key?: string;
     signs?: string;
+    use?: string;
   }[];
 }
 
@@ -59,7 +61,7 @@ const BUILT_IN_KEYS: SealTrustKey[] = [
  * worse outcome than trying the published identity and saying so.
  */
 export function parseTrustAnchor(doc: unknown): SealTrustKey[] {
-  const anchor = (doc ?? {}) as LooseAnchor;
+  const anchor = (doc && typeof doc === "object" ? doc : {}) as LooseAnchor;
   const keys: SealTrustKey[] = [];
   const seen = new Set<string>();
   const push = (kid: string, publicKey: unknown, algorithm: unknown, signs: string) => {
@@ -74,12 +76,12 @@ export function parseTrustAnchor(doc: unknown): SealTrustKey[] {
     keys.push(normalized);
   };
 
-  for (const entry of anchor.keys ?? []) {
+  for (const entry of Array.isArray(anchor.keys) ? anchor.keys : []) {
     const algorithm = String(entry?.algorithm ?? "Ed25519");
     // Only Ed25519 can satisfy R11 today; ML-DSA/LMS rows are listed elsewhere
     // and must not be fed to an Ed25519 verifier as if they were interchangeable.
     if (algorithm.toLowerCase() !== "ed25519") continue;
-    push(String(entry?.kid ?? "unnamed-key"), entry?.public_key, algorithm, String(entry?.signs ?? ""));
+    push(String(entry?.kid ?? entry?.key_id ?? "unnamed-key"), entry?.public_key, algorithm, String(entry?.signs ?? entry?.use ?? ""));
   }
   if (typeof anchor.ed25519_public_key === "string") {
     push("apex-psi-identity-ed25519", anchor.ed25519_public_key, "Ed25519", "the institutional in-band identity (top-level key)");
@@ -93,6 +95,21 @@ export interface TrustRootsResult {
   keys: SealTrustKey[];
   /** Where the document actually came from, for honest labelling in the UI. */
   source: string;
+}
+
+/** The fetched document may describe pinned keys; it cannot silently introduce a new signing identity. */
+export function pinnedAnchorKeys(doc: unknown): SealTrustKey[] {
+  if (!doc || typeof doc !== "object") return [];
+  const anchor = doc as LooseAnchor;
+  if (anchor.spec !== "PSI-TRUST-ANCHOR-v1" || anchor.issuer !== "urn:apex-psi:issuer:root-1") return [];
+  const pins = new Set(BUILT_IN_KEYS.map((key) => key.public_key));
+  return parseTrustAnchor(doc).filter((key) => pins.has(key.public_key));
+}
+
+export function sealSignerDescription(keyId?: string): string {
+  return keyId === "visitor-supplied-key"
+    ? "The public key you supplied signed this seal, over exactly these bytes. This does not authenticate it as an APEX-issued seal."
+    : "A pinned APEX public key signed this seal, over exactly these bytes.";
 }
 
 const SOURCES = [
@@ -109,9 +126,9 @@ export async function loadSealTrustRoots(refresh = false): Promise<TrustRootsRes
     try {
       const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) continue;
-      const keys = parseTrustAnchor(await res.json());
+      const keys = pinnedAnchorKeys(await res.json());
       if (keys.length === 0) continue;
-      cache = { keys, roots: keys.map((k) => ({ public_key: k.public_key, key_id: k.kid })), source: url };
+      cache = { keys, roots: keys.map((k) => ({ public_key: k.public_key, key_id: k.kid })), source: `${url} · checked against built-in public-key pins` };
       return cache;
     } catch {
       /* try the next source */
