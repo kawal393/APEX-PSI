@@ -1,5 +1,6 @@
 # Project architecture decisions
 
+- Serve C2PA WebAssembly from public/wasm and initialize the reader through a browser-only dynamic import on demand; this keeps binary imports out of server bundles.
 - Exclude platform-managed preview auth storage from app lint rather than editing regenerated code; this keeps CI stable across connector syncs.
 - Default the public checker to local seal verification and label online ledger matches and detected watermarks as present, not authenticated; external lookups and detection alone do not prove authenticity.
 - Use C2PA validationResults success and failure arrays for credential verdicts; the reader's validationStatus is not a list of boolean success flags.

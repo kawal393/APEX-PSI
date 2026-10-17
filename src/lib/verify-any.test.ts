@@ -47,6 +47,10 @@ describe("runVerifyAny", () => {
 
     const report = await runVerifyAny(textFile());
 
+    expect(createC2pa).toHaveBeenCalledWith(expect.objectContaining({
+      wasmSrc: "/wasm/c2pa-toolkit_bg.wasm",
+      fetchRemoteManifests: false,
+    }));
     expect(report.sha256).toMatch(/^[0-9a-f]{64}$/);
     // No watermark row for a non-image file: c2pa + psi-inband + ledger.
     expect(report.rows.map((r) => r.id)).toEqual(["c2pa", "psi-inband", "ledger"]);

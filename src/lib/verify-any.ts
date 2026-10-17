@@ -2,8 +2,7 @@
 // neutrally what each one proves and cannot prove. Favours no format,
 // including its own. THE MIRROR DOES NOT BEND.
 
-import { createC2pa, type C2pa } from "c2pa";
-import wasmUrl from "c2pa/dist/assets/wasm/toolkit_bg.wasm?url";
+import type { C2pa } from "c2pa";
 import workerUrl from "c2pa/dist/c2pa.worker.min.js?url";
 import { verifyInBandCredentials, sha256Hex } from "@/lib/c2pa-inband";
 import { detectDctWatermarkInBlob } from "@/lib/psi-watermark-dct";
@@ -46,13 +45,14 @@ export function resetC2paCache(): void {
 }
 
 async function getC2pa(): Promise<C2pa | null> {
+  if (typeof window === "undefined") return null;
   if (c2paInstance) return c2paInstance;
   if (!c2paInit) {
-    c2paInit = createC2pa({
-      wasmSrc: wasmUrl,
+    c2paInit = import("c2pa").then(({ createC2pa }) => createC2pa({
+      wasmSrc: `${import.meta.env.BASE_URL}wasm/c2pa-toolkit_bg.wasm`,
       workerSrc: workerUrl,
       fetchRemoteManifests: false,
-    })
+    }))
       .then((inst) => {
         c2paInstance = inst;
         return inst;
