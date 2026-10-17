@@ -61,7 +61,7 @@ const SDK = () => {
 
   const commitExample = `// 1. Commit an action for compliance verification
 const response = await fetch(
-  '${process.env.APEX_ENDPOINT}/commit-action',
+  process.env.APEX_ENDPOINT + "/commit-action",
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -86,7 +86,7 @@ const result = await response.json();
 
   const challengeExample = `// 2. Challenge a committed action (regulatory verification)
 const response = await fetch(
-  '${process.env.APEX_ENDPOINT}/challenge-action',
+  process.env.APEX_ENDPOINT + "/challenge-action",
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -107,7 +107,7 @@ const result = await response.json();
 
   const proveExample = `// 3. Prove compliance with Merkle inclusion proof
 const response = await fetch(
-  '${process.env.APEX_ENDPOINT}/prove-action',
+  process.env.APEX_ENDPOINT + "/prove-action",
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -138,7 +138,7 @@ const result = await response.json();
 
   const verifyExample = `// 4. Verify a hash exists in the public ledger
 const response = await fetch(
-  '${process.env.APEX_ENDPOINT}/verify-hash',
+  process.env.APEX_ENDPOINT + "/verify-hash",
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
