@@ -436,7 +436,7 @@ const Protocol = () => {
                 <Link to="/challenge" className="inline-flex items-center gap-1.5 border border-gold/40 bg-gold/10 rounded px-3 py-1.5 font-semibold text-gold hover:border-gold transition-colors">
                   File a contest &rarr; /challenge
                 </Link>
-                <a href="https://github.com/kawal393/apex-psi-verify" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 border border-border rounded px-3 py-1.5 font-semibold hover:border-primary transition-colors">
+                <a href="https://github.com/kawal393/APEX-PSI/tree/main/packages/psi-verifier" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 border border-border rounded px-3 py-1.5 font-semibold hover:border-primary transition-colors">
                   Offline verifier (MIT) <ExternalLink className="h-3 w-3" />
                 </a>
                 <a href="https://github.com/kawal393/APEX-PSI/tree/main/psi-conformance" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 border border-border rounded px-3 py-1.5 font-semibold hover:border-primary transition-colors">

@@ -28,7 +28,7 @@ const critiques = [
       "Production today: RFC 8785 canonical JSON, SHA-256 and Ed25519 — reproducible offline with the MIT verifier. Records are aggregated into Merkle roots and anchored to Bitcoin through OpenTimestamps; that anchor is proved with the OpenTimestamps reference client (`ots verify`), not with our verifier. Zero-knowledge and MPC are an experimental V2 research track and are marked as such. Nothing experimental is required to verify a receipt.",
     sources: [
       { label: "Conformance vectors", url: "https://ai-governance-standard.com/conformance" },
-      { label: "MIT verifier", url: "https://github.com/kawal393/apex-psi-verify" },
+      { label: "MIT verifier", url: "https://github.com/kawal393/APEX-PSI/tree/main/packages/psi-verifier" },
     ],
   },
   {

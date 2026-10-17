@@ -1,6 +1,10 @@
 import { ExternalLink, ShieldCheck } from "lucide-react";
 
-export const VERIFIER_REPO = "https://github.com/kawal393/apex-psi-verify";
+// The verifier bundled into this page is packages/psi-verifier in this repository
+// (LocalSealCheck and ParityWidget import it directly). The standalone
+// apex-psi-verify repository is a different, Apache-2.0 LMS demo and must not be
+// presented as the MIT verifier readers are invited to audit.
+export const VERIFIER_REPO = "https://github.com/kawal393/APEX-PSI/tree/main/packages/psi-verifier";
 export const SPEC_REPO = "https://github.com/kawal393/psi-seal-spec";
 
 /** Standing invitation to break the verifier. Shown on /verify and /hello-psi. */
@@ -13,8 +17,8 @@ const VerifyTheVerifier = () => (
           Verify the Verifier
         </p>
         <p className="text-sm text-foreground/90 leading-relaxed">
-          This verifier is MIT. Audit every line. Report a divergence and you are credited in
-          SECURITY.md and merged into the record. The math must survive its maker.
+          This verifier is MIT. Audit every line. Report a divergence and you are credited
+          in the record. The math must survive its maker.
         </p>
         <div className="flex flex-wrap gap-x-5 gap-y-1 mt-2.5 text-xs font-mono">
           <a
@@ -23,7 +27,7 @@ const VerifyTheVerifier = () => (
             rel="noopener noreferrer"
             className="text-gold hover:underline inline-flex items-center gap-1"
           >
-            apex-psi-verify <ExternalLink className="h-3 w-3" />
+            psi-verifier (APEX-PSI) <ExternalLink className="h-3 w-3" />
           </a>
           <a
             href={SPEC_REPO}
