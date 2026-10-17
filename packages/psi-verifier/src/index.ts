@@ -41,7 +41,32 @@ export interface ConformanceResult {
   schema_id: string | null;
   schema_digest_match: boolean;
   seal_hash_match: boolean;
+  /** true = Ed25519 signature checked and valid; false = invalid or missing. */
+  signature_valid: boolean;
   failures: string[];
+}
+
+/** Published APEX PSI Ed25519 verification key (raw 32 bytes, hex). */
+export const PSI_PUBLIC_KEY_HEX = "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724";
+
+const hexBytes = (h: string): Uint8Array | null => {
+  if (!/^([0-9a-f]{2})*$/i.test(h)) return null;
+  const o = new Uint8Array(new ArrayBuffer(h.length / 2));
+  for (let i = 0; i < o.length; i++) o[i] = parseInt(h.slice(i * 2, i * 2 + 2), 16);
+  return o;
+};
+
+/** Ed25519 verification (WebCrypto) of `message` (ASCII) under a raw hex public key. */
+export async function verifyEd25519(message: string, signatureHex: string, publicKeyHex: string): Promise<boolean> {
+  const sig = hexBytes(signatureHex ?? "");
+  const pub = hexBytes(publicKeyHex ?? "");
+  if (!sig || sig.length !== 64 || !pub || pub.length !== 32) return false;
+  try {
+    const key = await crypto.subtle.importKey("raw", pub as unknown as ArrayBuffer, { name: "Ed25519" }, false, ["verify"]);
+    return await crypto.subtle.verify("Ed25519", key, sig as unknown as ArrayBuffer, new TextEncoder().encode(message));
+  } catch {
+    return false;
+  }
 }
 
 // ── RFC 8785 (JCS) minimal implementation ──
@@ -100,7 +125,7 @@ const RFC3339_MS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const ALLOWED = ["schema", "schema_digest", "sealed_at", "subject", "hash", "merkle", "signature", "licence"];
 
 /** Verifier distribution version. Identical in the Python distribution. */
-export const PSI_VERIFIER_VERSION = "1.2.0";
+export const PSI_VERIFIER_VERSION = "1.3.0";
 
 /**
  * Human-readable rule citations (v1.2.0). Every rejection line carries one:
@@ -117,6 +142,8 @@ export const PSI_RULE_CITATIONS = {
   leaf_missing: "8.1",
   leaf_mismatch: "9.1",
   seal_hash: "10.1",
+  signature_missing: "11.1",
+  signature_invalid: "11.2",
 } as const;
 
 /** Canonical single-line rejection. Byte-identical in TypeScript and Python. */
@@ -124,7 +151,7 @@ export function rejectLine(detail: string, rule: string): string {
   return `PSI-SEAL v${PSI_VERIFIER_VERSION} REJECT: ${detail} — rule ${rule}`;
 }
 
-export async function verifySeal(input: unknown): Promise<ConformanceResult> {
+export async function verifySeal(input: unknown, publicKeyHex: string = PSI_PUBLIC_KEY_HEX): Promise<ConformanceResult> {
   const failures: string[] = [];
   const env = input as PsiSealEnvelope;
   if (!env || typeof env !== "object" || Array.isArray(env)) {
@@ -133,6 +160,7 @@ export async function verifySeal(input: unknown): Promise<ConformanceResult> {
       schema_id: null,
       schema_digest_match: false,
       seal_hash_match: false,
+      signature_valid: false,
       failures: [rejectLine("input is not a JSON object", PSI_RULE_CITATIONS.not_object)],
     };
   }
@@ -153,12 +181,19 @@ export async function verifySeal(input: unknown): Promise<ConformanceResult> {
     failures.push(rejectLine("subject.size_bytes is not a non-negative integer", PSI_RULE_CITATIONS.size_bytes));
 
   let sealHashMatch = false;
+  let signatureValid = false;
   if (HEX64.test(env.hash ?? "") && env.merkle?.leaf) {
     if ((await psiLeaf(env.hash)) !== env.merkle.leaf)
       failures.push(rejectLine("merkle.leaf mismatch", PSI_RULE_CITATIONS.leaf_mismatch));
     if (env.signature?.seal_hash) {
       sealHashMatch = (await psiSealHash(env)) === env.signature.seal_hash;
       if (!sealHashMatch) failures.push(rejectLine("seal_hash mismatch", PSI_RULE_CITATIONS.seal_hash));
+    }
+    if (!env.signature?.value || env.signature?.alg !== "Ed25519" || !env.signature?.seal_hash) {
+      failures.push(rejectLine("Ed25519 signature missing", PSI_RULE_CITATIONS.signature_missing));
+    } else {
+      signatureValid = sealHashMatch && (await verifyEd25519(env.signature.seal_hash, env.signature.value, publicKeyHex));
+      if (!signatureValid) failures.push(rejectLine("Ed25519 signature invalid", PSI_RULE_CITATIONS.signature_invalid));
     }
   } else {
     failures.push(rejectLine("merkle.leaf missing", PSI_RULE_CITATIONS.leaf_missing));
@@ -169,6 +204,7 @@ export async function verifySeal(input: unknown): Promise<ConformanceResult> {
     schema_id: typeof env.schema === "string" ? env.schema : null,
     schema_digest_match: digestMatch,
     seal_hash_match: sealHashMatch,
+    signature_valid: signatureValid,
     failures,
   };
 }
@@ -225,6 +261,8 @@ export interface VerifyOptions {
    * Set false only to inspect legacy data without failing the pipeline.
    */
   enforce?: boolean;
+  /** Raw hex Ed25519 public key. Defaults to the published APEX PSI key. */
+  publicKeyHex?: string;
 }
 
 /**
@@ -235,7 +273,7 @@ export interface VerifyOptions {
  */
 export async function verify(input: unknown, options: VerifyOptions = {}): Promise<ConformanceResult> {
   const enforce = options.enforce !== false;
-  const result = await verifySeal(input);
+  const result = await verifySeal(input, options.publicKeyHex);
   if (!result.conformant && enforce) {
     throw new PsiSealInvalidError(result, await psiSchemaDigest());
   }
@@ -243,8 +281,8 @@ export async function verify(input: unknown, options: VerifyOptions = {}): Promi
 }
 
 /** Boolean convenience form. Never throws. */
-export async function isConformant(input: unknown): Promise<boolean> {
-  return (await verifySeal(input)).conformant;
+export async function isConformant(input: unknown, publicKeyHex?: string): Promise<boolean> {
+  return (await verifySeal(input, publicKeyHex)).conformant;
 }
 
 /** Throwing assertion, identical to `verify(input)`. */
