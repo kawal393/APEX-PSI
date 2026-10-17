@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 __pycache__/
 *.pyc
+
+# Credentials: never tracked. This repo shipped .env from 28 Feb 2026 until 18 Oct 2026,
+# which is how the estate’s Stripe live key reached a public repository.
+.env
+.env.local
+.env.*.local
