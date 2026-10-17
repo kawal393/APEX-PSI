@@ -14,6 +14,7 @@ import {
   resetTrustRootCache,
   pinnedAnchorKeys,
   loadSealTrustRoots,
+  sealSignerDescription,
 } from "@/lib/psi-trust-roots";
 import { verifySealConformance, buildSealEnvelope, psiSealHash, psiSchemaDigest } from "@/lib/psi-schema";
 
@@ -32,6 +33,11 @@ describe("trust roots come from the published anchor", () => {
 
   it("rejects a fetched anchor with a different issuer", () => {
     expect(pinnedAnchorKeys({ spec: "PSI-TRUST-ANCHOR-v1", issuer: "other-issuer", ed25519_public_key: LEDGER_KEY })).toEqual([]);
+  });
+
+  it("distinguishes visitor-selected trust from the pinned APEX identity", () => {
+    expect(sealSignerDescription("visitor-supplied-key")).toContain("does not authenticate it as an APEX-issued seal");
+    expect(sealSignerDescription("apex-psi-ledger-ed25519")).toContain("pinned APEX public key");
   });
 
   it("keeps offline verification available when all anchor requests fail", async () => {

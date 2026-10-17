@@ -110,7 +110,7 @@ describe("runVerifyAny", () => {
     expect(report.rows).toHaveLength(3);
   });
 
-  it.each([undefined, []])("does not authenticate a C2PA manifest without validation evidence (%s)", async (validationStatus) => {
+  it.each([{ validationStatus: undefined }, { validationStatus: [] }])("does not authenticate a C2PA manifest without validation evidence (%s)", async ({ validationStatus }) => {
     vi.mocked(createC2pa).mockResolvedValue({ read: async () => ({ manifestStore: { activeManifest: { title: "test" }, validationStatus } }) } as never);
     vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ verified: false }))));
     const report = await runVerifyAny(textFile());

@@ -175,7 +175,7 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
             );
           })()}
           <p className="mt-2 text-sm text-muted-foreground max-w-3xl">
-            {verdict.signature_status === "verified" ? t("localSeal.signerDescription", { defaultValue: sealSignerDescription(verdict.trusted_key_id) }) : PLAIN_ENGLISH[verdict.signature_status] ?? `Authenticity: ${verdict.signature_status}.`}
+            {verdict.signature_status === "verified" ? t(verdict.trusted_key_id === "visitor-supplied-key" ? "localSeal.visitorDescription" : "localSeal.pinnedDescription", { defaultValue: sealSignerDescription(verdict.trusted_key_id) }) : PLAIN_ENGLISH[verdict.signature_status] ?? `Authenticity: ${verdict.signature_status}.`}
           </p>
           <p className="mt-2 font-mono text-[11px] text-muted-foreground">
             schema {verdict.schema_id ?? "—"} · digest match {String(verdict.schema_digest_match)} · seal_hash match{" "}

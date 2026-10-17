@@ -7,7 +7,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
           }
         ]
       },
@@ -22,7 +22,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "546864b827cec0f345bfd088dea00dce1143be1c8ba5b66a46ca0812c4eafedf279e7d7ec3d05a6690d88cd75377b53388022ad21740604153a1325c529f3704"
+          "value": "a626655db1b057e8f90c721630bbfa641d3b58cafb823099f350031243890c09990392680b9bf4a2d77e1d8af53ff89c415d12501423b4596dc315c95e548000"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -36,7 +36,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
           }
         ]
       },
@@ -51,7 +51,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "39143f08c3ffae208c1de2a541c9e9947af8f526b0ec2ab343ffca37aef96ca6",
-          "value": "546864b827cec0f345bfd088dea00dce1143be1c8ba5b66a46ca0812c4eafedf279e7d7ec3d05a6690d88cd75377b53388022ad21740604153a1325c529f3704"
+          "value": "a626655db1b057e8f90c721630bbfa641d3b58cafb823099f350031243890c09990392680b9bf4a2d77e1d8af53ff89c415d12501423b4596dc315c95e548000"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -65,7 +65,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
           }
         ]
       },
@@ -94,7 +94,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
           }
         ]
       },
@@ -123,7 +123,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
           }
         ]
       },
@@ -138,7 +138,7 @@
         "signature": {
           "alg": "ES256",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "546864b827cec0f345bfd088dea00dce1143be1c8ba5b66a46ca0812c4eafedf279e7d7ec3d05a6690d88cd75377b53388022ad21740604153a1325c529f3704"
+          "value": "a626655db1b057e8f90c721630bbfa641d3b58cafb823099f350031243890c09990392680b9bf4a2d77e1d8af53ff89c415d12501423b4596dc315c95e548000"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -160,7 +160,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "546864b827cec0f345bfd088dea00dce1143be1c8ba5b66a46ca0812c4eafedf279e7d7ec3d05a6690d88cd75377b53388022ad21740604153a1325c529f3704"
+          "value": "a626655db1b057e8f90c721630bbfa641d3b58cafb823099f350031243890c09990392680b9bf4a2d77e1d8af53ff89c415d12501423b4596dc315c95e548000"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -205,5 +205,5 @@
       }
     }
   ],
-  "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+  "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
 }
