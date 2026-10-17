@@ -1,4 +1,11 @@
 # Brand update
+
+# Website / coder alignment (17 Oct 2026)
+- [ ] Align public verification verdicts with cryptographic checks and distinguish online ledger lookups.
+- [ ] Correct verified public claim / version mismatches without changing the frozen seal grammar.
+- [ ] Resolve the generated-file lint failure without editing managed connectors.
+- [ ] Run website, verifier and cross-language tests; check the public verification flow in the browser.
+
 - [x] Rename current website brand descriptors and metadata.
 - [x] Update sharing artwork.
 - [x] Verify branding and existing tests (34 passed; homepage title and artwork checked).
