@@ -25,7 +25,7 @@ const critiques = [
       "Zero-knowledge and multi-party signing are described, but a reviewer cannot find them as production primitives. Claims ahead of code are a liability.",
     responseTitle: "V1 is live. ZK / MPC is a labelled research track",
     response:
-      "Production today: RFC 8785 canonical JSON, SHA-256, Ed25519 signatures, Merkle roots and Bitcoin anchoring via OpenTimestamps — all reproducible with the MIT verifier. Zero-knowledge and MPC are an experimental V2 research track and are marked as such. Nothing experimental is required to verify a receipt.",
+      "Production today: RFC 8785 canonical JSON, SHA-256 and Ed25519 — reproducible offline with the MIT verifier. Records are aggregated into Merkle roots and anchored to Bitcoin through OpenTimestamps; that anchor is proved with the OpenTimestamps reference client (`ots verify`), not with our verifier. Zero-knowledge and MPC are an experimental V2 research track and are marked as such. Nothing experimental is required to verify a receipt.",
     sources: [
       { label: "Conformance vectors", url: "https://ai-governance-standard.com/conformance" },
       { label: "MIT verifier", url: "https://github.com/kawal393/apex-psi-verify" },
@@ -39,7 +39,7 @@ const critiques = [
       "One company runs the hosted notary and holds the signing key. If it disappears or misbehaves, what happens to the evidence?",
     responseTitle: "You never have to trust us",
     response:
-      "Every receipt verifies offline with the MIT verifier, without contacting APEX. The public key is published, Merkle roots are anchored to Bitcoin, and anyone can self-host. If APEX vanished tomorrow, every receipt ever issued would still verify. The math must survive its maker.",
+      "Every receipt verifies offline with the MIT verifier, without contacting APEX — v1.3.0 onward recomputes the digest and checks the Ed25519 signature itself, rather than reporting format alone. The public key is published, Merkle roots are anchored to Bitcoin, and anyone can self-host. If APEX vanished tomorrow, every receipt ever issued would still verify. The math must survive its maker.",
     sources: [
       { label: "Trust anchor", url: "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json" },
       { label: "Verify a receipt", url: "https://ai-governance-standard.com/verify" },
