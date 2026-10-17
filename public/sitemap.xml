@@ -286,6 +286,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/how-to-prove-an-ai-decision-existed-at-a-specific-time-3u2t27</loc>
+    <lastmod>2026-10-17T21:06:27.585Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/c2pa-content-credentials-for-ai-outputs-vqtb6p</loc>
+    <lastmod>2026-10-17T21:06:27.585Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/cryptographic-truth-proving-what-ai-systems-did-8az6fg</loc>
+    <lastmod>2026-10-17T21:06:27.585Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-rules-mxifhd</loc>
     <lastmod>2026-10-13T18:06:10.851Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6264,24 +6282,6 @@
   <url>
     <loc>https://ai-governance-standard.com/articles/ai-governance-standards-eu-ai-act-nist-ai-rmf-iso-42001-6hg75t</loc>
     <lastmod>2026-08-09T06:06:01.504Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/ai-output-provenance-content-credentials-c2pa-n3xfux</loc>
-    <lastmod>2026-08-09T06:06:01.504Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/cryptographic-proofs-for-ai-actions-ensuring-transparency-04w8qg</loc>
-    <lastmod>2026-08-09T03:05:19.309Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/ai-governance-standards-eu-ai-act-nist-ai-rmf-iso-42001-7a9gws</loc>
-    <lastmod>2026-08-09T00:05:27.858Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
