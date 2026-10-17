@@ -7,6 +7,7 @@
 // the referee cannot grade its own homework.
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CheckCircle2, XCircle, ShieldAlert, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatAcceptance, formatRejection } from "../../../packages/psi-verifier/src/index";
@@ -14,6 +15,7 @@ import { psiSchemaDigest, verifySealConformance } from "@/lib/psi-schema";
 import {
   loadSealTrustRoots,
   trustRootFromMaterial,
+  sealSignerDescription,
   type SealTrustKey,
 } from "@/lib/psi-trust-roots";
 
@@ -34,6 +36,7 @@ const PLAIN_ENGLISH: Record<string, string> = {
 };
 
 const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
+  const { t } = useTranslation();
   const [raw, setRaw] = useState(initial);
   const [keys, setKeys] = useState<SealTrustKey[]>([]);
   const [keySource, setKeySource] = useState("loading the published trust anchor…");
@@ -91,9 +94,9 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
   };
 
   const headline = (result: Verdict): { label: string; tone: string; icon: typeof CheckCircle2 } => {
-    if (result.conformant && result.authentic) return { label: "CONFORMANT AND SIGNED", tone: "text-emerald-400", icon: CheckCircle2 };
+    if (result.conformant && result.authentic) return { label: result.trusted_key_id === "visitor-supplied-key" ? t("localSeal.visitorSigned", "SIGNED BY YOUR SUPPLIED KEY") : t("localSeal.signed", "CONFORMANT AND SIGNED"), tone: "text-compliant", icon: CheckCircle2 };
     if (result.conformant) return { label: "CONFORMANT, BUT NOT AUTHENTICATED", tone: "text-gold", icon: ShieldAlert };
-    return { label: "REJECTED", tone: "text-red-400", icon: XCircle };
+    return { label: "REJECTED", tone: "text-destructive", icon: XCircle };
   };
 
   return (
@@ -104,6 +107,7 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
       </p>
 
       <textarea
+        aria-label={t("localSeal.envelope", "PSI seal envelope")}
         value={raw}
         onChange={(e) => setRaw(e.target.value)}
         spellCheck={false}
@@ -115,7 +119,7 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
         <Button size="sm" variant="hero" onClick={check} disabled={!raw.trim() || busy}>
           {busy ? "Checking…" : "Check this seal here"}
         </Button>
-        {parseError && <p className="text-xs font-mono text-red-400">{parseError}</p>}
+        {parseError && <p role="alert" className="text-xs font-mono text-destructive">{parseError}</p>}
       </div>
 
       {showKeys && (
@@ -136,6 +140,7 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
             add a public key you trust (64 hex or base64)
           </label>
           <input
+            aria-label={t("localSeal.publicKey", "Public key you trust")}
             value={extraKey}
             onChange={(e) => setExtraKey(e.target.value)}
             spellCheck={false}
@@ -154,7 +159,7 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
         <div
           className={`rounded-lg border px-5 py-4 ${
             verdict.conformant && verdict.authentic
-              ? "border-emerald-500/40 bg-emerald-500/5"
+              ? "border-compliant/40 bg-compliant/5"
               : verdict.conformant
                 ? "border-gold/40 bg-gold/5"
                 : "border-border bg-card/40"
@@ -164,13 +169,13 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
             const h = headline(verdict);
             const Icon = h.icon;
             return (
-              <p className={`flex items-center gap-2 text-lg font-black tracking-tight uppercase ${h.tone}`}>
+              <p role="status" className={`flex items-center gap-2 text-lg font-black uppercase ${h.tone}`}>
                 <Icon className="h-5 w-5" /> {h.label}
               </p>
             );
           })()}
           <p className="mt-2 text-sm text-muted-foreground max-w-3xl">
-            {PLAIN_ENGLISH[verdict.signature_status] ?? `Authenticity: ${verdict.signature_status}.`}
+            {verdict.signature_status === "verified" ? t("localSeal.signerDescription", { defaultValue: sealSignerDescription(verdict.trusted_key_id) }) : PLAIN_ENGLISH[verdict.signature_status] ?? `Authenticity: ${verdict.signature_status}.`}
           </p>
           <p className="mt-2 font-mono text-[11px] text-muted-foreground">
             schema {verdict.schema_id ?? "—"} · digest match {String(verdict.schema_digest_match)} · seal_hash match{" "}
@@ -180,7 +185,7 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
           {verdict.failures.length > 0 && (
             <ul className="mt-3 space-y-1">
               {verdict.failures.map((f) => (
-                <li key={f} className="font-mono text-[11px] text-red-400/90 break-all">
+                <li key={f} className="font-mono text-[11px] text-destructive/90 break-all">
                   {f}
                 </li>
               ))}

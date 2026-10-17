@@ -7,11 +7,13 @@
  * ever fails, the public checker is either trusting a key nobody published, or
  * it has silently stopped checking signatures at all.
  */
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import {
   parseTrustAnchor,
   trustRootFromMaterial,
   resetTrustRootCache,
+  pinnedAnchorKeys,
+  loadSealTrustRoots,
 } from "@/lib/psi-trust-roots";
 import { verifySealConformance, buildSealEnvelope, psiSealHash, psiSchemaDigest } from "@/lib/psi-schema";
 
@@ -19,6 +21,26 @@ const LEDGER_KEY = "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f10
 const HYBRID_KEY = "9a6bdab92234f3bd6a3b1e9081e5ce3d646c129f1f6abdf7b52338e4cca1c9ca";
 
 describe("trust roots come from the published anchor", () => {
+  afterEach(() => { vi.unstubAllGlobals(); resetTrustRootCache(); });
+
+  it("excludes substituted signing identities from a fetched anchor", () => {
+    expect(pinnedAnchorKeys({ spec: "PSI-TRUST-ANCHOR-v1", issuer: "urn:apex-psi:issuer:root-1", keys: [
+      { key_id: "substituted", algorithm: "Ed25519", public_key: "ab".repeat(32) },
+      { key_id: "published", algorithm: "Ed25519", public_key: LEDGER_KEY },
+    ] }).map((key) => key.public_key)).toEqual([LEDGER_KEY]);
+  });
+
+  it("rejects a fetched anchor with a different issuer", () => {
+    expect(pinnedAnchorKeys({ spec: "PSI-TRUST-ANCHOR-v1", issuer: "other-issuer", ed25519_public_key: LEDGER_KEY })).toEqual([]);
+  });
+
+  it("keeps offline verification available when all anchor requests fail", async () => {
+    resetTrustRootCache();
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+    const result = await loadSealTrustRoots();
+    expect(result.keys.map((key) => key.public_key)).toEqual([LEDGER_KEY, HYBRID_KEY]);
+    expect(result.roots).toHaveLength(2);
+  });
   it("reads every Ed25519 entry and keeps what each key signs", () => {
     const keys = parseTrustAnchor({
       ed25519_public_key: HYBRID_KEY,
