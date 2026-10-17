@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowRight, Shield, Globe, Clock, Zap, Camera, FileText } from "lucide-react";
@@ -7,6 +8,7 @@ import PWAInstallButton from "@/components/PWAInstallButton";
 import { CONTINUITY_LINE, PSI_ONE_LINER, ECONOMIC_LINE } from "@/data/psiConstitution";
 
 const Hero = () => {
+  const { t } = useTranslation();
   return (
     <section className="relative flex items-center justify-center px-4 pt-16 pb-12 grid-bg overflow-hidden">
       {/* Ambient glow */}
@@ -25,7 +27,7 @@ const Hero = () => {
           <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5 mb-4 border-glow">
             <Shield className="h-3.5 w-3.5 text-gold" />
             <span className="text-[10px] sm:text-xs font-black text-gold tracking-[0.25em] uppercase">
-              Post-Quantum Provenance · IETF draft-singh-psi (rev 02)
+              {t("hero.draftStatus", "Post-Quantum Provenance · Individual IETF drafts")}
             </span>
           </div>
 
@@ -62,7 +64,7 @@ const Hero = () => {
           {/* Status chips */}
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-6">
             {[
-              "IETF draft-singh-psi (rev 02)",
+              t("hero.draftChip", "Individual IETF drafts"),
               "NIST FIPS 204 (ML-DSA-65)",
               "Ed25519 · SHA-256",
               "MIT Open Source",
@@ -144,7 +146,7 @@ const Hero = () => {
           </div>
 
           <p className="mt-8 text-[10px] sm:text-xs font-mono tracking-[0.25em] uppercase text-muted-foreground/70">
-            The standard exists. The receipts are tamper-evident.
+            {t("hero.proposalStatus", "The protocol is published. IETF drafts are proposals, not approved standards. The receipts are tamper-evident.")}
           </p>
         </motion.div>
       </div>

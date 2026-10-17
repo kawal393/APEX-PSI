@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import sdkPackage from "../../packages/psi-sdk/package.json";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import Footer from "@/components/Footer";
@@ -60,7 +61,7 @@ const SDK = () => {
 
   const commitExample = `// 1. Commit an action for compliance verification
 const response = await fetch(
-  'https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/commit-action',
+  '${process.env.APEX_ENDPOINT}/commit-action',
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -85,7 +86,7 @@ const result = await response.json();
 
   const challengeExample = `// 2. Challenge a committed action (regulatory verification)
 const response = await fetch(
-  'https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/challenge-action',
+  '${process.env.APEX_ENDPOINT}/challenge-action',
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -106,7 +107,7 @@ const result = await response.json();
 
   const proveExample = `// 3. Prove compliance with Merkle inclusion proof
 const response = await fetch(
-  'https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/prove-action',
+  '${process.env.APEX_ENDPOINT}/prove-action',
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -137,7 +138,7 @@ const result = await response.json();
 
   const verifyExample = `// 4. Verify a hash exists in the public ledger
 const response = await fetch(
-  'https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/verify-hash',
+  '${process.env.APEX_ENDPOINT}/verify-hash',
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -218,7 +219,7 @@ async function generateAIResponse(prompt: string) {
       <div className="min-h-screen bg-engine-bg text-engine-text">
       {/* Header */}
       <header className="border-b border-engine-border bg-engine-surface/50 sticky top-0 z-50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4 flex flex-wrap gap-3 items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/">
               <Button variant="ghost" size="sm" className="gap-2 text-engine-muted hover:text-engine-text">
@@ -230,7 +231,7 @@ async function generateAIResponse(prompt: string) {
               <Terminal className="h-5 w-5 text-engine-approved" />
               <span className="font-mono font-bold">APEX SDK</span>
               <Badge className="bg-engine-approved/20 text-engine-approved border-engine-approved/30 text-xs">
-                v2.1
+                Source v{sdkPackage.version}
               </Badge>
             </div>
           </div>
@@ -279,11 +280,11 @@ async function generateAIResponse(prompt: string) {
           <CardContent className="space-y-4">
             <p className="text-engine-muted text-sm">
               The APEX Engine API exposes four core endpoints for the commit-challenge-prove pipeline.
-              All endpoints are public and require no authentication for basic usage.
+              {t("sdk.access", "Access requirements vary by endpoint. Hosted receipt issuance is limited; independent receipt verification can run offline.")}
             </p>
             <div className="bg-engine-bg rounded border border-engine-border p-4 font-mono text-sm">
               <span className="text-engine-muted">Base URL:</span>{" "}
-              <span className="text-engine-approved">https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1</span>
+              <span className="text-engine-approved break-all">APEX_ENDPOINT</span>
             </div>
           </CardContent>
         </Card>
@@ -312,12 +313,12 @@ async function generateAIResponse(prompt: string) {
               <CardContent>
                 <p className="text-engine-muted text-sm mb-4">
                   Notarize any AI decision with a single API call. Returns a SHA-256 hashed, Ed25519 signed,
-                  Merkle-anchored receipt. No authentication required for the free tier (100/day).
+                  receipt with a Merkle root. Public hosted allowance: 20/minute and 100/day. Bitcoin anchoring status is reported separately.
                 </p>
                 <div className="relative">
                   <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
                     <code className="text-engine-text">{`const response = await fetch(
-  "https://\${PROJECT_ID}.supabase.co/functions/v1/notarize",
+  process.env.APEX_ENDPOINT + "/notarize",
   {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -365,7 +366,7 @@ const receipt = await response.json();
                 <div className="relative">
                   <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
                     <code className="text-engine-text">{`const response = await fetch(
-  "https://\${PROJECT_ID}.supabase.co/functions/v1/notarize-batch",
+  process.env.APEX_ENDPOINT + "/notarize-batch",
   {
     method: "POST",
     headers: { "Content-Type": "application/json" },
