@@ -7,8 +7,36 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
+import Footer from "@/components/Footer";
+
+const githubConformance = `# For a checkout of the APEX-PSI repository
+name: PSI Conformance
+on: [push, pull_request]
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: npm ci
+      - run: npm run test:conformance`;
+
+const gitlabConformance = `# For a checkout of the APEX-PSI repository
+psi_conformance:
+  stage: test
+  image: node:22-bookworm
+  before_script:
+    - apt-get update && apt-get install -y python3
+    - npm ci
+  script:
+    - npm run test:conformance`;
 
 const SDK = () => {
+  const { t } = useTranslation();
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 
   const copyToClipboard = (text: string, section: string) => {
@@ -140,7 +168,7 @@ import { ApexEngine } from '@apex/psi-sdk';
 
 // Initialize SDK
 const engine = new ApexEngine({
-  endpoint: 'https://ai-governance-standard.com',
+  endpoint: process.env.APEX_ENDPOINT, // functions base URL, not the website URL
   apiKey: process.env.APEX_API_KEY,
   mode: 'blocking'          // 'blocking' halts the response, 'monitoring' logs only
 });
@@ -222,21 +250,20 @@ async function generateAIResponse(prompt: string) {
           className="text-center mb-12"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-4 font-mono">
-            Runtime Compliance SDK
+            {t("sdk.heading", "Runtime Evidence SDK")}
           </h1>
           <p className="text-lg text-engine-muted max-w-2xl mx-auto mb-6">
-            Integrate cryptographic compliance verification directly into your AI systems.
-            Block violations in milliseconds, before they reach production.
+            {t("sdk.description", "Record AI actions and screen configured text patterns before execution. A pattern match is a heuristic, not a legal compliance determination.")}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Badge className="bg-engine-surface border-engine-border text-engine-text gap-1.5 px-3 py-1">
-              <Zap className="h-3 w-3 text-amber-400" /> &lt;15ms verification
+              <Zap className="h-3 w-3 text-amber-400" /> {t("sdk.localPatterns", "Local pattern screening")}
             </Badge>
             <Badge className="bg-engine-surface border-engine-border text-engine-text gap-1.5 px-3 py-1">
-              <Lock className="h-3 w-3 text-engine-approved" /> ZK proof mode
+              <Lock className="h-3 w-3 text-engine-approved" /> {t("sdk.crypto", "SHA-256 + signatures")}
             </Badge>
             <Badge className="bg-engine-surface border-engine-border text-engine-text gap-1.5 px-3 py-1">
-              <Shield className="h-3 w-3 text-blue-400" /> 35 predicates · 7 jurisdictions
+              <Shield className="h-3 w-3 text-blue-400" /> {t("sdk.rules", "Configured rule patterns")}
             </Badge>
           </div>
         </motion.div>
@@ -514,8 +541,7 @@ const batch = await response.json();
           </CardHeader>
           <CardContent>
             <p className="text-engine-muted text-sm mb-6">
-              APEX supports compliance verification across multiple regulatory frameworks.
-              Each predicate contains violation patterns that trigger automatic blocking.
+              {t("sdk.patternCaveat", "These rule identifiers map to text-pattern screening. A match can trigger a block; no match does not establish compliance with the referenced framework.")}
             </p>
             <div className="grid md:grid-cols-3 gap-4">
               {predicates.map((p) => (
@@ -587,7 +613,7 @@ const batch = await response.json();
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-engine-muted text-sm">
-              Embed compliance verification into your build pipeline. Every deployment gets a cryptographic proof.
+              {t("sdk.ciDescription", "Run the repository’s conformance tests in CI. Passing tests check implementation behavior; they do not issue a deployment receipt.")}
             </p>
 
             <div className="space-y-4">
@@ -595,27 +621,9 @@ const batch = await response.json();
                 <p className="text-xs font-mono text-engine-approved mb-2">GitHub Actions</p>
                 <div className="relative">
                   <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-engine-text">{`# .github/workflows/compliance.yml
-name: APEX Compliance Gate
-on: [push, pull_request]
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npm install ./packages/psi-sdk   # not published to npm; build from the repository
-      - name: Run compliance check
-        env:
-          APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}
-        run: |
-          npx apex-verify \\
-            --predicates EU_ART_14,EU_ART_50,NIST_GOVERN_1 \\
-            --mode blocking \\
-            --fail-on-violation`}</code>
+                    <code className="text-engine-text">{githubConformance}</code>
                   </pre>
-                  <CopyButton text={`# .github/workflows/compliance.yml\nname: APEX Compliance Gate\non: [push, pull_request]\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with: { node-version: '20' }\n      - run: npm install ./packages/psi-sdk   # not published to npm; build from the repository\n      - name: Run compliance check\n        env:\n          APEX_ENDPOINT: \${{ secrets.APEX_ENDPOINT }}\n        run: npx apex-verify --predicates EU_ART_14,EU_ART_50,NIST_GOVERN_1 --mode blocking --fail-on-violation`} section="github-actions" />
+                  <CopyButton text={githubConformance} section="github-actions" />
                 </div>
               </div>
 
@@ -623,20 +631,9 @@ jobs:
                 <p className="text-xs font-mono text-engine-approved mb-2">GitLab CI</p>
                 <div className="relative">
                   <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
-                    <code className="text-engine-text">{`# .gitlab-ci.yml
-compliance_gate:
-  stage: test
-  image: node:20
-  script:
-    - npm install ./packages/psi-sdk   # not published to npm; build from the repository
-    - npx apex-verify
-        --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1
-        --mode blocking
-        --output proof-bundle.json
-  artifacts:
-    paths: [proof-bundle.json]`}</code>
+                    <code className="text-engine-text">{gitlabConformance}</code>
                   </pre>
-                  <CopyButton text={`# .gitlab-ci.yml\ncompliance_gate:\n  stage: test\n  image: node:20\n  script:\n    - npm install ./packages/psi-sdk   # not published to npm; build from the repository\n    - npx apex-verify --predicates EU_ART_14,MIFID_ART_17,UK_AISI_1 --mode blocking --output proof-bundle.json\n  artifacts:\n    paths: [proof-bundle.json]`} section="gitlab-ci" />
+                  <CopyButton text={gitlabConformance} section="gitlab-ci" />
                 </div>
               </div>
             </div>
@@ -699,7 +696,7 @@ GET /verify-status?action=stats
             <p className="text-engine-muted text-xs mt-2">
               Wrap your AI runtime in one line. Every response carries a signed{" "}
               <code className="text-engine-approved">Compliance-Receipt</code> header
-              (<Link to="/standard" className="text-engine-approved underline">draft-singh-psi-http — working draft, not filed</Link>).
+              (<Link to="/standard" className="text-engine-approved underline">draft-singh-psi-http — Internet-Draft, not an approved standard</Link>).
             </p>
           </CardHeader>
           <CardContent>
@@ -711,11 +708,11 @@ GET /verify-status?action=stats
                 { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "not published", install: "source in packages/ — build from the repository" },
                 { name: "@apex/psi-vercel-ai", target: "Vercel AI SDK", status: "not published", install: "source in packages/ — build from the repository" },
                 { name: "@apex/psi-hono", target: "Hono middleware", status: "not published", install: "source in packages/ — build from the repository" },
-                { name: "@apex/psi-google", target: "Gemini / Vertex", status: "roadmap", install: "Q1 2026" },
-                { name: "@apex/psi-bedrock", target: "AWS Bedrock", status: "roadmap", install: "Q1 2026" },
+                { name: "@apex/psi-google", target: "Gemini / Vertex", status: "roadmap", install: "Not implemented" },
+                { name: "@apex/psi-bedrock", target: "AWS Bedrock", status: "roadmap", install: "Not implemented" },
               ].map((pkg) => (
                 <div key={pkg.name} className="border border-engine-border bg-engine-bg rounded p-4">
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
                     <code className="text-xs text-engine-approved font-bold">{pkg.name}</code>
                     <Badge className={pkg.status === "roadmap"
                       ? "bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]"
@@ -742,7 +739,7 @@ GET /verify-status?action=stats
 
         <div className="text-center py-8">
           <p className="text-engine-muted mb-4">
-            Integration is free: no account, no key and nothing to buy.
+            {t("sdk.capacity", "Independent verification is free. Hosted issuance has limits and separate commercial terms.")}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link to="/engine">
@@ -760,6 +757,7 @@ GET /verify-status?action=stats
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   </>
   );
