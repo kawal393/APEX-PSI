@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { PSI_VERIFIER_VERSION } from "../../packages/psi-verifier/src/index";
 import { Github, ExternalLink, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import apexLogo from "@/assets/apex-logo.png";
@@ -112,7 +113,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <span className="text-border">·</span>
             <Link to="/quantum" className="hover:text-gold">Post-quantum (NIST FIPS 204)</Link>
             <span className="text-border">·</span>
-            <Link to="/verify" className="hover:text-gold">Verifier v1.2.0 — TS/Python parity</Link>
+            <Link to="/verify" className="hover:text-gold">Verifier v{PSI_VERIFIER_VERSION} — TS/Python parity</Link>
             <span className="text-border">·</span>
             <a href="https://www.rfc-editor.org/rfc/rfc8785" target="_blank" rel="noopener noreferrer" className="hover:text-gold">RFC 8785</a>
             <span className="text-border">·</span>
