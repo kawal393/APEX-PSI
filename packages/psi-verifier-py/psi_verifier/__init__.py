@@ -19,7 +19,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence
 
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 PSI_VERIFIER_VERSION = __version__
 
 PSI_SCHEMA_ID = "PSI-SEAL/1.0.0"
@@ -52,6 +52,8 @@ PSI_RULE_CITATIONS = {
     "leaf_missing": "8.1",
     "leaf_mismatch": "9.1",
     "seal_hash": "10.1",
+    "signature_missing": "11.1",
+    "signature_invalid": "11.2",
 }
 
 
@@ -121,6 +123,7 @@ class ConformanceResult:
     schema_id: Optional[str]
     schema_digest_match: bool
     seal_hash_match: bool
+    signature_valid: bool = False
     failures: List[str] = field(default_factory=list)
 
 
@@ -157,7 +160,94 @@ def format_acceptance() -> str:
     return f"PSI-SEAL v{PSI_VERIFIER_VERSION} ACCEPT: conformant seal"
 
 
-def verify_seal(seal: Any) -> ConformanceResult:
+PSI_PUBLIC_KEY_HEX = "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724"
+
+# ── Ed25519 verification, RFC 8032 (pure Python, zero dependencies) ──
+_P = 2**255 - 19
+_L = 2**252 + 27742317777372353535851937790883648493
+_D = -121665 * pow(121666, _P - 2, _P) % _P
+_I = pow(2, (_P - 1) // 4, _P)
+
+
+def _xrecover(y: int, sign: int) -> Optional[int]:
+    xx = (y * y - 1) * pow(_D * y * y + 1, _P - 2, _P) % _P
+    x = pow(xx, (_P + 3) // 8, _P)
+    if (x * x - xx) % _P:
+        x = x * _I % _P
+    if (x * x - xx) % _P:
+        return None
+    if x == 0 and sign:
+        return None
+    if x & 1 != sign:
+        x = _P - x
+    return x
+
+
+def _padd(a, b):
+    x1, y1, z1, t1 = a
+    x2, y2, z2, t2 = b
+    A = (y1 - x1) * (y2 - x2) % _P
+    B = (y1 + x1) * (y2 + x2) % _P
+    C = 2 * t1 * t2 * _D % _P
+    Dd = 2 * z1 * z2 % _P
+    E, F, G, H = B - A, Dd - C, Dd + C, B + A
+    return (E * F % _P, G * H % _P, F * G % _P, E * H % _P)
+
+
+def _pmul(s: int, p):
+    q = (0, 1, 1, 0)
+    while s:
+        if s & 1:
+            q = _padd(q, p)
+        p = _padd(p, p)
+        s >>= 1
+    return q
+
+
+def _pdecode(b: bytes):
+    if len(b) != 32:
+        return None
+    y = int.from_bytes(b, "little")
+    sign = y >> 255
+    y &= (1 << 255) - 1
+    if y >= _P:
+        return None
+    x = _xrecover(y, sign)
+    if x is None:
+        return None
+    return (x, y, 1, x * y % _P)
+
+
+def _pequal(a, b) -> bool:
+    return (a[0] * b[2] - b[0] * a[2]) % _P == 0 and (a[1] * b[2] - b[1] * a[2]) % _P == 0
+
+
+_GY = 4 * pow(5, _P - 2, _P) % _P
+_GX = _xrecover(_GY, 0)
+_G = (_GX, _GY, 1, _GX * _GY % _P)
+
+
+def verify_ed25519(message: bytes, signature_hex: str, public_key_hex: str) -> bool:
+    """RFC 8032 Ed25519 verification. Never raises."""
+    try:
+        sig = bytes.fromhex(signature_hex or "")
+        pub = bytes.fromhex(public_key_hex or "")
+    except ValueError:
+        return False
+    if len(sig) != 64 or len(pub) != 32:
+        return False
+    A = _pdecode(pub)
+    R = _pdecode(sig[:32])
+    if A is None or R is None:
+        return False
+    s = int.from_bytes(sig[32:], "little")
+    if s >= _L:
+        return False
+    k = int.from_bytes(hashlib.sha512(sig[:32] + pub + message).digest(), "little") % _L
+    return _pequal(_pmul(s, _G), _padd(R, _pmul(k, A)))
+
+
+def verify_seal(seal: Any, public_key_hex: str = PSI_PUBLIC_KEY_HEX) -> ConformanceResult:
     """Report-only conformance check. Never raises."""
     if not isinstance(seal, dict):
         return ConformanceResult(
@@ -205,6 +295,7 @@ def verify_seal(seal: Any) -> ConformanceResult:
         )
 
     seal_hash_match = False
+    signature_valid = False
     merkle = seal.get("merkle") if isinstance(seal.get("merkle"), dict) else None
     if _HEX64.match(hash_hex) and merkle and merkle.get("leaf"):
         if psi_leaf(hash_hex) != merkle["leaf"]:
@@ -214,6 +305,14 @@ def verify_seal(seal: Any) -> ConformanceResult:
             seal_hash_match = psi_seal_hash(seal) == signature["seal_hash"]
             if not seal_hash_match:
                 failures.append(reject_line("seal_hash mismatch", PSI_RULE_CITATIONS["seal_hash"]))
+        if not signature or signature.get("alg") != "Ed25519" or not signature.get("value") or not signature.get("seal_hash"):
+            failures.append(reject_line("Ed25519 signature missing", PSI_RULE_CITATIONS["signature_missing"]))
+        else:
+            signature_valid = seal_hash_match and verify_ed25519(
+                str(signature["seal_hash"]).encode("ascii", "replace"), str(signature["value"]), public_key_hex
+            )
+            if not signature_valid:
+                failures.append(reject_line("Ed25519 signature invalid", PSI_RULE_CITATIONS["signature_invalid"]))
     else:
         failures.append(reject_line("merkle.leaf missing", PSI_RULE_CITATIONS["leaf_missing"]))
 
@@ -223,16 +322,17 @@ def verify_seal(seal: Any) -> ConformanceResult:
         schema_id=schema_id if isinstance(schema_id, str) else None,
         schema_digest_match=digest_match,
         seal_hash_match=seal_hash_match,
+        signature_valid=signature_valid,
         failures=failures,
     )
 
 
-def verify(seal: Any, enforce: bool = True) -> ConformanceResult:
+def verify(seal: Any, enforce: bool = True, public_key_hex: str = PSI_PUBLIC_KEY_HEX) -> ConformanceResult:
     """Primary entry point. Enforced by default (since v1.1.0).
 
     Raises ``PsiSealInvalidError`` when the seal is not PSI-SEAL/1 conformant.
     """
-    result = verify_seal(seal)
+    result = verify_seal(seal, public_key_hex)
     if not result.conformant and enforce:
         raise PsiSealInvalidError(result, psi_schema_digest())
     return result
@@ -277,6 +377,8 @@ __all__ = [
     "psi_schema_digest",
     "psi_schema_digest_from_document",
     "psi_seal_hash",
+    "verify_ed25519",
+    "PSI_PUBLIC_KEY_HEX",
     "verify",
     "verify_seal",
     "__version__",
