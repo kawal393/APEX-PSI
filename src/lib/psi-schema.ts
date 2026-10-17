@@ -17,6 +17,14 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { jcsCanonicalize } from "./psi-canonicalize";
+// ONE R11 IMPLEMENTATION. The MIT verifier package owns the signature check;
+// this site module must not grow its own copy of the crypto, which is how a
+// website and a published package came to disagree about what "verified" means.
+import {
+  psiVerifySignature,
+  type PsiSignatureStatus,
+  type PsiTrustRoot,
+} from "../../packages/psi-verifier/src/index";
 
 /** Fixed schema identifier. Embedded in every conformant seal. */
 export const PSI_SCHEMA_ID = "PSI-SEAL/1.0.0";
@@ -81,7 +89,30 @@ export interface ConformanceResult {
   schema_digest_match: boolean;
   seal_hash_match: boolean;
   failures: string[];
+  /**
+   * R11 authenticity, added 17 Oct 2026 (verifier v1.3.0). `conformant` has
+   * always meant "the bytes match the schema" — it has never meant "a key we
+   * trust signed this". Before this field existed the two were indistinguishable
+   * on the page, so a forged seal rendered as a pass.
+   */
+  signature_status: PsiSignatureStatus;
+  authentic: boolean;
+  trusted_key_id: string | null;
+  /**
+   * The coarse v1.2.x boolean, kept so one shape travels between the site and
+   * the published package. True only when the signature was actually checked
+   * and passed — identical to `authentic`, never a proxy for `conformant`.
+   */
+  signature_valid: boolean;
 }
+
+/** Caller-chosen trust. The verifier never invents a key and never passes on silence. */
+export interface VerifySealOptions {
+  trustRoots?: readonly (PsiTrustRoot | string)[];
+  /** DEFAULT true. False restores the pre-1.3.0 schema-only verdict. */
+  requireValidSignature?: boolean;
+}
+
 
 // ─────────────── NORMALISATION HELPERS (shared, MIT) ───────────────
 
@@ -138,13 +169,18 @@ export async function psiSealHash(envelope: PsiSealEnvelope): Promise<string> {
 
 // ═══════════════ VERIFIER (MIT — free forever) ═══════════════
 
-export async function verifySealConformance(input: unknown): Promise<ConformanceResult> {
+export async function verifySealConformance(input: unknown, options: VerifySealOptions = {}): Promise<ConformanceResult> {
+  const requireValidSignature = options.requireValidSignature !== false;
   const failures: string[] = [];
   const env = input as PsiSealEnvelope;
   const expectedDigest = await psiSchemaDigest();
 
   if (!env || typeof env !== "object") {
-    return { conformant: false, schema_id: null, schema_digest_match: false, seal_hash_match: false, failures: ["Not a JSON object"] };
+    return {
+      conformant: false, schema_id: null, schema_digest_match: false, seal_hash_match: false,
+      failures: ["Not a JSON object"],
+      signature_status: "absent", authentic: false, trusted_key_id: null, signature_valid: false,
+    };
   }
   if (env.schema !== PSI_SCHEMA_ID) failures.push(`R12: schema must be "${PSI_SCHEMA_ID}" (got ${String(env.schema)})`);
   const digestMatch = env.schema_digest === expectedDigest;
@@ -163,13 +199,22 @@ export async function verifySealConformance(input: unknown): Promise<Conformance
   if (!env.merkle || !HEX64.test(env.merkle.leaf ?? "")) failures.push("R9: merkle.leaf missing or malformed");
 
   let sealHashMatch = false;
+  let computedSealHash = "";
   if (HEX64.test(env.hash ?? "") && env.merkle?.leaf) {
     const expectedLeaf = await psiLeaf(env.hash);
     if (expectedLeaf !== env.merkle.leaf) failures.push("R9: merkle.leaf is not SHA-256('PSI1:' || hash)");
     if (env.signature?.seal_hash) {
-      sealHashMatch = (await psiSealHash(env)) === env.signature.seal_hash;
+      computedSealHash = await psiSealHash(env);
+      sealHashMatch = computedSealHash === env.signature.seal_hash;
       if (!sealHashMatch) failures.push("R10: seal_hash does not equal SHA-256(JCS(core envelope))");
     }
+  }
+
+  // R11 — authenticity. Checked against the hash THIS verifier recomputed, and
+  // only against keys the caller supplied.
+  const check = await psiVerifySignature(computedSealHash, env.signature, options.trustRoots ?? []);
+  if (check.status === "invalid" || (requireValidSignature && check.status !== "verified")) {
+    failures.push(`R11 (${check.rule}): ${check.detail}`);
   }
 
   return {
@@ -178,6 +223,10 @@ export async function verifySealConformance(input: unknown): Promise<Conformance
     schema_digest_match: digestMatch,
     seal_hash_match: sealHashMatch,
     failures,
+    signature_status: check.status,
+    authentic: check.status === "verified",
+    trusted_key_id: check.key_id,
+    signature_valid: check.status === "verified",
   };
 }
 
@@ -205,6 +254,13 @@ export async function buildSealEnvelope(params: {
   hash: string;
   tier?: "personal" | "commercial";
   accepted_at?: string;
+  /**
+   * R11 signer. Given the ASCII `seal_hash`, returns the Ed25519 signature as
+   * 128 lowercase hex characters. Keys are NEVER held here: the caller brings a
+   * signing function from wherever its own key lives, and the sealing key stays
+   * outside this repository.
+   */
+  sign?: (sealHashAscii: string) => Promise<string>;
 }): Promise<PsiSealEnvelope> {
   const hash = params.hash.replace(/^sha256:/i, "").toLowerCase();
   if (!HEX64.test(hash)) throw new Error("PSI R4: hash must be 64 lowercase hex characters");
@@ -223,7 +279,16 @@ export async function buildSealEnvelope(params: {
   };
 
   const sealHash = await psiSealHash(envelope);
-  envelope.signature = { alg: "Ed25519", value: "", seal_hash: sealHash };
+  // 17 Oct 2026: this line used to read `envelope.signature = { alg: "Ed25519", value: "", seal_hash }`
+  // — it declared an algorithm and signed nothing, and the verifier never looked at
+  // `value`, so every seal this generator made carried fabricated signature metadata.
+  // A seal is now either genuinely signed by a key the caller supplied, or honestly unsigned.
+  if (params.sign) {
+    const value = (await params.sign(sealHash)).trim();
+    if (!/^[0-9a-f]{128}$/.test(value.toLowerCase()))
+      throw new Error("PSI R11: sign() must return an Ed25519 signature as 128 hexadecimal characters");
+    envelope.signature = { alg: "Ed25519", value: value.toLowerCase(), seal_hash: sealHash };
+  }
   envelope.licence = {
     engine: "APEX PSI Sealing Engine v1",
     tier: params.tier ?? "personal",

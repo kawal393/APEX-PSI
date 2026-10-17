@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "psi-verifier"
 version = "1.3.0"
-description = "MIT-licensed verifier for the PSI-SEAL/1 canonical seal schema. Verification is free forever; enforcement is on by default."
+description = "MIT-licensed verifier for the PSI-SEAL/1 canonical seal schema. Verification is free forever; enforcement is on by default, and since 1.3.0 rule R11 (Ed25519 over the ASCII seal_hash) is actually checked against caller-supplied public keys."
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
@@ -18,6 +18,12 @@ classifiers = [
   "Intended Audience :: Developers",
 ]
 dependencies = []
+
+[project.optional-dependencies]
+# R11 authenticity checks need one Ed25519 primitive. Without it the verifier
+# still installs and still runs — it reports `unverifiable` for every signature
+# rather than assuming a pass. `pip install psi-verifier[signature]` to check.
+signature = ["cryptography>=41"]
 
 [project.urls]
 Homepage = "https://ai-governance-standard.com/license"

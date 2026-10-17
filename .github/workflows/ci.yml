@@ -7,6 +7,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# One deploy at a time, and never two production pushes racing each other.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -38,15 +43,74 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+      # Hermetic by design. The live-ledger tests in src/test/pipeline.test.ts
+      # write real, signed rows into the production ledger, so they are skipped
+      # unless APEX_LIVE=1 is passed deliberately.
       - run: npm run test -- --run
 
+  # Two AI builders shipped a "1.3.0 signature fix" to this repository on
+  # 17 Oct 2026 within hours of each other, with different rule numbers and
+  # different verdict shapes. This job is what stops that happening again: the
+  # TypeScript and Python distributions must print byte-identical verdicts, and
+  # both must claim the same version.
+  verifier-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: npm ci
+      - run: python -m pip install --upgrade pip cryptography
+      - run: npm test -- --run
+        working-directory: packages/psi-verifier
+      - run: npm run test:cross-language
+        working-directory: packages/psi-verifier
+      - name: TS and Python versions must agree
+        run: |
+          ts=$(node -p "require('./packages/psi-verifier/package.json').version")
+          py=$(python -c "import re;print(re.search(r'^version = \"([^\"]+)\"', open('packages/psi-verifier-py/pyproject.toml').read(), re.M).group(1))")
+          echo "npm package: $ts   pyproject: $py"
+          if [ "$ts" != "$py" ]; then
+            echo "::error::the two free verifiers advertise different versions — publish them together or not at all"
+            exit 1
+          fi
+      - name: The npm package name must be the one that is actually published
+        run: |
+          name=$(node -p "require('./packages/psi-verifier/package.json').name")
+          echo "declared name: $name"
+          if [ "$name" != "apex-psi-verifier" ]; then
+            echo "::error::npm name drifted to $name; the published package is apex-psi-verifier and strangers install that one"
+            exit 1
+          fi
+
   supabase-deploy:
-    if: github.ref == 'refs/heads/main'
-    needs: [lint, typecheck, test]
+    # NOT on every push to main. `supabase db push` + `functions deploy` mutate
+    # production, and the deploy job used to run silently behind a test suite
+    # that called the same production endpoints. Publishing to production is now
+    # a human decision: run this workflow from the Actions tab (or protect the
+    # `production` environment with required reviewers in repo settings).
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    needs: [lint, typecheck, test, verifier-parity]
     runs-on: ubuntu-latest
     environment: production
     steps:
       - uses: actions/checkout@v4
+      - name: Refuse to deploy a stubbed MCP server
+        # 18 Oct 2026: building this site with `vite build` on a machine that has
+        # no `bunx` rewrote supabase/functions/mcp/index.ts from 297 lines to a
+        # 5-line stub. A green test suite did not notice. If that ever reaches a
+        # deploy, the public MCP endpoint goes silent while looking fine.
+        run: |
+          lines=$(wc -l < supabase/functions/mcp/index.ts)
+          echo "supabase/functions/mcp/index.ts: $lines lines"
+          if [ "$lines" -lt 100 ]; then
+            echo "::error::the MCP edge function is a stub ($lines lines) — refusing to deploy an empty protocol endpoint"
+            exit 1
+          fi
       - uses: supabase/setup-cli@v1
         with:
           version: latest

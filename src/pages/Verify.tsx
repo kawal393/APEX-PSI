@@ -22,6 +22,7 @@ import { Helmet } from "react-helmet-async";
 import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
 import CountersignUpsell from "@/components/CountersignUpsell";
 import ParityWidget from "@/components/psi/ParityWidget";
+import LocalSealCheck from "@/components/psi/LocalSealCheck";
 import RosetteTest from "@/components/verify/RosetteTest";
 import VerifyTheVerifier from "@/components/psi/VerifyTheVerifier";
 
@@ -429,6 +430,7 @@ const Verify = () => {
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="w-full grid grid-cols-2 sm:grid-cols-4 mb-6">
                 <TabsTrigger value="hash" className="text-[11px] sm:text-sm">Hash Lookup</TabsTrigger>
+                <TabsTrigger value="seal" className="text-[11px] sm:text-sm">Seal (checked in your browser)</TabsTrigger>
                 <TabsTrigger value="receipt" className="text-[11px] sm:text-sm">Receipt ID</TabsTrigger>
                 <TabsTrigger value="proof" className="text-[11px] sm:text-sm">Proof Verify</TabsTrigger>
                 <TabsTrigger value="audit" className="text-[11px] sm:text-sm">Public Audit</TabsTrigger>
@@ -535,6 +537,15 @@ const Verify = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </TabsContent>
+
+              {/* Tab: check a whole seal with no server call — the referee reads
+                  the bytes in the visitor's own browser and checks the signature
+                  against the published trust anchor. */}
+              <TabsContent value="seal">
+                <div className="max-w-3xl mx-auto">
+                  <LocalSealCheck />
+                </div>
               </TabsContent>
 
               {/* Tab: Receipt ID Verification */}

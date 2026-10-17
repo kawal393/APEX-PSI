@@ -41,8 +41,15 @@ curl -X POST https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize \
 Verify offline, forever, for free:
 
 ```bash
-npm i @apex/psi-verifier      # or: pip install psi-verifier
+npm i apex-psi-verifier@1.3.0     # Node verifier (MIT, free forever)
+# Python: build from packages/psi-verifier-py until PyPI publishing is approved
 ```
+
+**Read this before you install anything.** The version sitting on npm today is
+**1.2.0**, and 1.2.0 does not check signatures — a forged seal passes it. The fix
+is in this repository as **1.3.0** and is not published yet, so pin the version
+and, if `@1.3.0` is not available, verify from source in `packages/`. Do not use
+a floating `latest` for a control you are relying on.
 
 | Try it live | What it does |
 |---|---|
@@ -132,8 +139,11 @@ Full registry: [/registry](https://ai-governance-standard.com/registry)
 
 ## Quick Start
 
-**No package is published to npm or PyPI.** `@apex/psi-sdk`, `@apex/psi-verifier` and
-`psi-verifier` (Python) all return 404 on the public registries. Build from this repository:
+**What is actually on a registry, checked against the registry on 18 Oct 2026:**
+`apex-psi-verifier` **1.2.0** is published on npm — and 1.2.0 is the version that
+passes forged seals, so treat it as unsafe. Nothing else resolves: `psi-verifier`
+and `apex-psi-verifier` both return 404 on PyPI, and every `@apex/*` name returns
+404 on npm. Until 1.3.0 is published, build from this repository:
 
 ```bash
 git clone https://github.com/kawal393/APEX-PSI.git

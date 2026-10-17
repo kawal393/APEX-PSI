@@ -10,8 +10,8 @@ import {
   psiSchemaDigest,
   psiLeaf,
   psiMerkleRoot,
-  verifySealConformance,
 } from "@/lib/psi-schema";
+import LocalSealCheck from "@/components/psi/LocalSealCheck";
 import { jcsCanonicalize } from "@/lib/psi-canonicalize";
 import { sha256Hex } from "@/lib/hello-psi";
 
@@ -94,9 +94,6 @@ const Conformance = () => {
   const [suites, setSuites] = useState<Suite[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [digest, setDigest] = useState("");
-  const [raw, setRaw] = useState("");
-  const [verdict, setVerdict] = useState<Awaited<ReturnType<typeof verifySealConformance>> | null>(null);
-  const [parseError, setParseError] = useState<string | null>(null);
 
   const runAll = () => {
     setError(null);
@@ -123,19 +120,6 @@ const Conformance = () => {
   const total = suites ? suites.reduce((n, s) => n + s.results.length, 0) : 0;
   const passed = suites ? suites.reduce((n, s) => n + s.results.filter((r) => r.ok).length, 0) : 0;
   const clean = suites !== null && error === null && total > 0 && passed === total;
-
-  const checkEnvelope = () => {
-    setParseError(null);
-    setVerdict(null);
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(raw);
-    } catch (e) {
-      setParseError(`Not valid JSON: ${String((e as Error).message)}`);
-      return;
-    }
-    verifySealConformance(parsed).then(setVerdict);
-  };
 
   return (
     <>
@@ -282,49 +266,10 @@ const Conformance = () => {
               Judge your own seal
             </h2>
             <p className="text-sm text-muted-foreground mb-4 max-w-3xl">
-              Paste a seal envelope. The verifier checks it against {PSI_SCHEMA_ID} locally, in this page. Nothing is
-              uploaded, and no finding changes — this reports format conformance only.
+              Paste a seal envelope. The verifier checks it against {PSI_SCHEMA_ID} locally, in this page, and then
+              checks whether a published key actually signed it. Nothing is uploaded to us to make that judgement.
             </p>
-            <textarea
-              value={raw}
-              onChange={(e) => setRaw(e.target.value)}
-              spellCheck={false}
-              placeholder='{ "schema": "PSI-SEAL/1.0.0", "schema_digest": "…", … }'
-              className="w-full h-48 rounded-lg border border-border bg-background/60 p-4 font-mono text-[11px] text-foreground focus:outline-none focus:border-gold/60"
-            />
-            <div className="mt-3 flex flex-wrap gap-3 items-center">
-              <Button size="sm" variant="hero" onClick={checkEnvelope} disabled={!raw.trim()}>
-                Check conformance
-              </Button>
-              {parseError && <p className="text-xs font-mono text-red-400">{parseError}</p>}
-            </div>
-
-            {verdict && (
-              <div className={`mt-5 rounded-lg border px-5 py-4 ${verdict.conformant ? "border-emerald-500/40 bg-emerald-500/5" : "border-border bg-card/40"}`}>
-                <p className={`text-lg font-black tracking-tight ${verdict.conformant ? "text-emerald-400" : "text-foreground"}`}>
-                  {verdict.conformant ? "CONFORMANT" : "NOT CONFORMANT"}
-                </p>
-                <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-                  schema {verdict.schema_id ?? "—"} · digest match {String(verdict.schema_digest_match)} · seal_hash
-                  match {String(verdict.seal_hash_match)}
-                </p>
-                {verdict.failures.length > 0 && (
-                  <ul className="mt-3 space-y-1">
-                    {verdict.failures.map((f) => (
-                      <li key={f} className="font-mono text-[11px] text-red-400/90 break-all">
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {verdict.conformant && (
-                  <p className="mt-3 text-xs text-muted-foreground">
-                    Format conformance is the whole test. It says your seal recomputes — not that any claim inside it is
-                    true. Use of the APEX name in commerce is licensed separately, in writing.
-                  </p>
-                )}
-              </div>
-            )}
+            <LocalSealCheck />
           </section>
 
           {/* What a pass is and is not */}

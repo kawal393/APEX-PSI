@@ -121,7 +121,12 @@ const ParityWidget = () => {
         }
       }
       const result = await verifySeal(fixture.input);
-      const text = result.conformant ? formatAcceptance() : formatRejection(result, canonical || DIGEST);
+      // v1.3.0: a pass can only be printed for a signature that was checked
+      // against a key the caller trusts. These fixtures carry no trust root, so
+      // an honest run of this widget prints PARTIAL or a rejection, never ACCEPT.
+      const text = result.conformant
+        ? formatAcceptance(result.signature_status, result.trusted_key_id)
+        : formatRejection(result, canonical || DIGEST);
       if (!cancelled) {
         setDigest(canonical);
         setDigestSource(source);

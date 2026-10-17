@@ -1,0 +1,209 @@
+{
+  "canonical_schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+  "cases": [
+    {
+      "name": "python-signed seal, verified against the python public key",
+      "options": {
+        "trustRoots": [
+          {
+            "key_id": "cross-language-key",
+            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+          }
+        ]
+      },
+      "seal": {
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "Ed25519",
+          "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
+          "value": "546864b827cec0f345bfd088dea00dce1143be1c8ba5b66a46ca0812c4eafedf279e7d7ec3d05a6690d88cd75377b53388022ad21740604153a1325c529f3704"
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      }
+    },
+    {
+      "name": "forgery: content edited, seal_hash recomputed, genuine signature carried over",
+      "options": {
+        "trustRoots": [
+          {
+            "key_id": "cross-language-key",
+            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+          }
+        ]
+      },
+      "seal": {
+        "hash": "b82e969b078aef9cdc172948185d767c4326ded145c519effcd7ea827a5b9659",
+        "merkle": {
+          "leaf": "dc92b4fe37077249ef0eca3ee57ca749d2b97c51ee85a11f5354a725301db5b9"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "Ed25519",
+          "seal_hash": "39143f08c3ffae208c1de2a541c9e9947af8f526b0ec2ab343ffca37aef96ca6",
+          "value": "546864b827cec0f345bfd088dea00dce1143be1c8ba5b66a46ca0812c4eafedf279e7d7ec3d05a6690d88cd75377b53388022ad21740604153a1325c529f3704"
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 27
+        }
+      }
+    },
+    {
+      "name": "empty signature.value wearing Ed25519 clothing",
+      "options": {
+        "trustRoots": [
+          {
+            "key_id": "cross-language-key",
+            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+          }
+        ]
+      },
+      "seal": {
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "Ed25519",
+          "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
+          "value": ""
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      }
+    },
+    {
+      "name": "signature.value is neither 128 hex nor 64 base64 bytes",
+      "options": {
+        "trustRoots": [
+          {
+            "key_id": "cross-language-key",
+            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+          }
+        ]
+      },
+      "seal": {
+        "hash": "b82e969b078aef9cdc172948185d767c4326ded145c519effcd7ea827a5b9659",
+        "merkle": {
+          "leaf": "dc92b4fe37077249ef0eca3ee57ca749d2b97c51ee85a11f5354a725301db5b9"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "Ed25519",
+          "seal_hash": "39143f08c3ffae208c1de2a541c9e9947af8f526b0ec2ab343ffca37aef96ca6",
+          "value": "GARBAGE-NOT-A-SIGNATURE"
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 27
+        }
+      }
+    },
+    {
+      "name": "signature.alg is ES256 while R11 requires Ed25519",
+      "options": {
+        "trustRoots": [
+          {
+            "key_id": "cross-language-key",
+            "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+          }
+        ]
+      },
+      "seal": {
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "ES256",
+          "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
+          "value": "546864b827cec0f345bfd088dea00dce1143be1c8ba5b66a46ca0812c4eafedf279e7d7ec3d05a6690d88cd75377b53388022ad21740604153a1325c529f3704"
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      }
+    },
+    {
+      "name": "a real signature checked against nobody's key (no trust root)",
+      "options": {},
+      "seal": {
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "Ed25519",
+          "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
+          "value": "546864b827cec0f345bfd088dea00dce1143be1c8ba5b66a46ca0812c4eafedf279e7d7ec3d05a6690d88cd75377b53388022ad21740604153a1325c529f3704"
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      }
+    },
+    {
+      "name": "no signature member, default enforcement",
+      "options": {},
+      "seal": {
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      }
+    },
+    {
+      "name": "no signature member, legacy report-only",
+      "options": {
+        "requireValidSignature": false
+      },
+      "seal": {
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      }
+    }
+  ],
+  "public_key": "6e28ff9a2345f7ad69afdab062db931a3be6900a69bee110646beb3977ec94be"
+}

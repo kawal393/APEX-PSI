@@ -189,11 +189,22 @@ const UniversalSeal = () => {
       tier: licence?.tier ?? "personal",
       accepted_at: licence?.accepted_at,
     });
-    if (result.ed25519_signature && envelope.signature) {
-      envelope.signature.value = result.ed25519_signature;
-    }
+    // 17 Oct 2026: the ledger's Ed25519 signature is over the MERKLE LEAF
+    // (`signLedgerLeaf`, supabase/functions/_shared/ed25519_ledger.ts:106), while
+    // R11 defines envelope.signature.value as a signature over the ASCII
+    // SEAL_HASH. Those are different messages, so pasting the ledger signature
+    // into envelope.signature — which is what this line used to do — made every
+    // receipt claim an R11 signature that could never verify. The ledger
+    // signature now travels as what it actually is, and envelope.signature stays
+    // empty until the sealing engine signs the seal_hash with a named key.
     const receipt = {
       ...envelope,
+      ledger_signature: {
+        alg: "Ed25519",
+        value: result.ed25519_signature ?? "",
+        signed_message: "merkle_leaf (not seal_hash — see R11)",
+        key_id: "apex-psi-ledger-ed25519",
+      },
       anchor: {
         ledger: "apex-psi",
         receipt_id: result.receipt_id,
