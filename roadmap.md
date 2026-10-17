@@ -1,10 +1,15 @@
 # Brand update
 
 # Website / coder alignment (17 Oct 2026)
-- [ ] Align public verification verdicts with cryptographic checks and distinguish online ledger lookups.
-- [ ] Correct verified public claim / version mismatches without changing the frozen seal grammar.
-- [ ] Resolve the generated-file lint failure without editing managed connectors.
-- [ ] Run website, verifier and cross-language tests; check the public verification flow in the browser.
+- [x] Align public verification verdicts with cryptographic checks and distinguish online ledger lookups.
+- [x] Correct audited Notary, SDK, MCP, draft metadata and parity-display mismatches without changing the frozen seal grammar.
+- [x] Resolve the generated-file lint failure without editing managed connectors.
+- [x] Run website, verifier and cross-language tests; check the public verification flow in the browser (94 passed, 5 intentional live-test skips; offline signature acceptance/rejection verified).
+
+## Release dependencies
+- [ ] Confirm external verifier package releases — requires registry publisher access.
+- [ ] Confirm payment-key rotation — requires account owner confirmation; current source scan is clean.
+- [ ] Confirm control-plane custodian fix — requires the separate laptop repository and its test results.
 
 - [x] Rename current website brand descriptors and metadata.
 - [x] Update sharing artwork.
@@ -48,6 +53,4 @@
 - [x] Founding: welcome kit email with seat, approved script, may/may-not-say rules
 - [x] Founding: optional auto-approve flag (off by default)
 - [x] Safety wall: banned claims blocked on Founding applications
-- [ ] Auto-revoke abusive API keys + alert (next)
-- [ ] Monthly referral-commission digest email to operator (next)
-- [ ] 80%/100% daily-limit warning emails (next)
+- Deferred outside this website alignment pass: abusive-key revocation alerts, monthly referral digest, and usage-warning emails. These are not implemented or verified here.
