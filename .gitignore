@@ -30,3 +30,8 @@ __pycache__/
 .env
 .env.local
 .env.*.local
+
+# Build output that must never be committed. A tarball inside the repository is how two
+# different 1.3.0 artifacts get shipped, one of them codeless.
+*.tgz
+*.egg-info/
