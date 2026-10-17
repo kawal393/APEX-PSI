@@ -25,6 +25,7 @@
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "test": "node --experimental-strip-types --test test/seal-signature.test.ts",
     "test:cross-language": "python ../psi-verifier-py/tools/cross_language_check.py && node --experimental-strip-types test/cross-language/node_check.mts",
+    "prepack": "npm run build",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
