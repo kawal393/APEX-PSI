@@ -173,6 +173,18 @@ export default function ImpactWall() {
     setProof(null);
     try {
       const res = await fetch(`${VERIFY_URL}?hash=${encodeURIComponent(target)}`);
+      if (res.status === 429) {
+        // Handled before parsing on purpose: the throttled body carries no `found` field,
+        // so falling through would print "Not found in the ledger" about a record that
+        // does exist. A rate limit means nothing was asked, not that the answer was no.
+        const wait = Number(res.headers.get("retry-after") ?? "");
+        setProofError(
+          Number.isFinite(wait) && wait > 0
+            ? `Too many lookups from this address (the free checker allows 20 per minute). Nothing was asked of the ledger — try again in about ${Math.ceil(wait)} second(s).`
+            : "Too many lookups from this address (the free checker allows 20 per minute). Nothing was asked of the ledger — try again shortly.",
+        );
+        return;
+      }
       const data = (await res.json()) as ProofResult;
       setProof(data);
       if (!data.found) setProofError("Not found in the ledger. Check the receipt id.");

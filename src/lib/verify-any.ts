@@ -240,6 +240,19 @@ async function readLedgerRow(sha256: string): Promise<ReaderRow> {
     const res = await fetch(`${VERIFY_HASH_URL}?hash=${sha256}`, {
       method: "GET",
     });
+    if (res.status === 429) {
+      // The free lookup now has a per-address flood guard. Say "we did not ask", never
+      // "the ledger says no": an HTTP 429 reported as absent would be the site lying
+      // about a record that may well exist.
+      const wait = Number(res.headers.get("retry-after") ?? "");
+      return {
+        ...base,
+        status: "error",
+        detail: Number.isFinite(wait) && wait > 0
+          ? `Lookup rate-limited; the free checker allows 20 lookups per minute per address. Nothing was asked of the ledger. Try again in about ${Math.ceil(wait)} second(s).`
+          : "Lookup rate-limited; the free checker allows 20 lookups per minute per address. Nothing was asked of the ledger. Try again shortly.",
+      };
+    }
     if (!res.ok) {
       return { ...base, status: "error", detail: `Ledger probe HTTP ${res.status}.` };
     }

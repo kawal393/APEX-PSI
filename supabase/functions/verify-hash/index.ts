@@ -7,6 +7,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD } from "../_shared/pq_lms.ts";
+import { callerLabel, clientAddress, createThrottle, throttleHeaders } from "../_shared/rate-limit.ts";
 
 
 const corsHeaders = {
@@ -15,6 +16,20 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
+// ── Free public lookup: per-caller throttle ─────────────────────────────
+// This endpoint takes no key and no plan, and each hit costs two database reads
+// plus a real LMS post-quantum signature verification when the row has one. The
+// numbers below are a polite page's worth of lookups, not a scraper's: 20 per
+// minute sustained, up to 20 at once in burst.
+//
+// The bucket lives in one isolate, so this is a per-instance guard -- see the
+// header comment in ../_shared/rate-limit.ts for what that does and does not buy,
+// and for the durable upgrade path (a Postgres reservation RPC, the way `notarize`
+// does its daily sealing quota).
+const LOOKUPS_PER_MINUTE = 20;
+const BURST = 20;
+const lookupGuard = createThrottle({ capacity: BURST, refillPerMinute: LOOKUPS_PER_MINUTE });
+
 Deno.serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -22,6 +37,37 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Resolved before any database work: the whole point is to refuse cheaply.
+    const address = clientAddress(req.headers);
+    const decision = lookupGuard.check(address ?? "unknown-caller");
+    if (!decision.allowed) {
+      // Logged with a label, never the address itself.
+      console.warn(
+        `verify-hash throttled caller=${address ? callerLabel(address) : "unknown"} ` +
+        `retry_after=${decision.retryAfterSeconds}s ` +
+        `guard=${JSON.stringify(lookupGuard.stats())}`,
+      );
+      return new Response(
+        JSON.stringify({
+          error: "Too many lookups from this address. The free checker allows " +
+            `${LOOKUPS_PER_MINUTE} verifications per minute; try again in ` +
+            `${decision.retryAfterSeconds} second(s). This limit is enforced per ` +
+            "server instance, so it is a flood guard, not a quota.",
+          verified: false,
+          retry_after_seconds: decision.retryAfterSeconds,
+          limit_per_minute: LOOKUPS_PER_MINUTE,
+        }),
+        { status: 429, headers: throttleHeaders(decision, corsHeaders) }
+      );
+    }
+
+    // Hit-count log, so the traffic this guard actually sees is measurable rather than
+    // assumed. Every 200th accepted lookup prints the running totals.
+    const seen = lookupGuard.stats();
+    if (seen.checks % 200 === 0) {
+      console.info(`verify-hash traffic: ${JSON.stringify(seen)}`);
+    }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -197,9 +243,13 @@ Deno.serve(async (req) => {
               ots_download_url: `${functionsBase}/ots-proof?id=${proof.id}`,
             }
           : null,
-        action_summary: entry.action.length > 100 
-          ? entry.action.substring(0, 97) + "..." 
-          : entry.action,
+        // `action` is free text and a ledger row may legitimately have none. Reading
+        // .length off null threw here, which returned a 500 for a row that exists --
+        // the worst possible answer for a checker whose product is not lying about state.
+        action_summary: (() => {
+          const action = typeof entry.action === "string" ? entry.action : "";
+          return action.length > 100 ? action.slice(0, 97) + "..." : action;
+        })(),
         created_at: entry.created_at,
         challenged_at: entry.challenged_at,
         proven_at: entry.proven_at,

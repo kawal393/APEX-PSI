@@ -23,6 +23,17 @@ export default function AutoVerifier() {
     setResult(null);
     try {
       const res = await fetch(`${VERIFY_URL}?hash=${encodeURIComponent(clean)}`);
+      if (res.status === 429) {
+        // A flood guard is an absence of an answer, not a negative answer. Reported as
+        // an error with the wait time rather than rendered as a verdict object.
+        const wait = Number(res.headers.get("retry-after") ?? "");
+        setError(
+          Number.isFinite(wait) && wait > 0
+            ? `Lookup rate-limited (20 free lookups per minute per address). Nothing was asked of the ledger — retry in about ${Math.ceil(wait)} second(s).`
+            : "Lookup rate-limited (20 free lookups per minute per address). Nothing was asked of the ledger — retry shortly.",
+        );
+        return;
+      }
       setResult(await res.json());
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
