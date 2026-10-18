@@ -67,12 +67,39 @@ jobs:
           grep -q "dist/index.js" pack.log || { echo "STOP: dist/index.js is missing from the tarball"; exit 1; }
           grep -q "dist/index.d.ts" pack.log || { echo "STOP: types are missing from the tarball"; exit 1; }
 
+      # npm will not overwrite a version, so a re-run of an already-released tag must not
+      # be a failure. Publish only when the registry does not yet serve this version.
+      - name: Does the registry already serve this version?
+        run: |
+          HAVE=$(npm view "apex-psi-verifier@$PKG" version 2>/dev/null || true)
+          echo "registry has: ${HAVE:-nothing} for $PKG"
+          echo "ALREADY_PUBLISHED=$([ "$HAVE" = "$PKG" ] && echo 1 || echo 0)" >> "$GITHUB_ENV"
+
       - name: Publish to npm
+        if: env.ALREADY_PUBLISHED != '1'
         run: npm publish
 
+      - name: Skip the publish
+        if: env.ALREADY_PUBLISHED == '1'
+        run: echo "apex-psi-verifier@$PKG is already on the registry; nothing to publish"
+
+      # This guard produced the only false failure the rail has had: run 39161727540
+      # published 1.3.0 successfully and then failed here, because the registry's
+      # metadata cache had not caught up inside 10 seconds. A guard must wait for the
+      # fact it is asserting, not for the delay it happened to sleep.
       - name: The registry must now serve this version
         run: |
-          sleep 10
-          SERVED=$(npm view apex-psi-verifier version)
-          echo "registry serves $SERVED, we built $PKG"
-          test "$SERVED" = "$PKG" || { echo "STOP: registry does not serve $PKG"; exit 1; }
+          ok=0
+          for i in $(seq 1 18); do
+            SERVED=$(npm view apex-psi-verifier version --prefer-online 2>/dev/null || echo unknown)
+            if [ "$SERVED" = "$PKG" ]; then echo "attempt $i: registry serves $SERVED"; ok=1; break; fi
+            echo "attempt $i: registry still serves $SERVED, waiting"
+            sleep 10
+          done
+          if [ "$ok" != "1" ]; then
+            echo "STOP: npm's dist-tag never moved to $PKG"
+            echo "Direct registry probe:"
+            curl -s -o /dev/null -w "%{http_code}\n" "https://registry.npmjs.org/apex-psi-verifier/$PKG" || true
+            exit 1
+          fi
+          node -e "fetch('https://registry.npmjs.org/apex-psi-verifier/'+process.env.PKG).then(r=>r.json()).then(d=>{console.log('probed tarball:',d.dist.tarball,'| provenance:',!!d.dist.attestations);if(!d.version||d.version!==process.env.PKG)process.exit(1)})"
