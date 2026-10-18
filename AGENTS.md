@@ -1,6 +1,7 @@
 # Project architecture decisions
 
 - Redirect legacy `/index` and `/index.html` app launches to `/` while preserving query parameters and hash; old phone shortcuts must retain referrals and the selected home view.
+- Resolve the managed public Cloud client settings through Vite's environment loader and fail builds when either is absent; never publish a bundle that crashes at client initialization or edit the generated client.
 
 - Serve C2PA WebAssembly from public/wasm and initialize the reader through a browser-only dynamic import on demand; this keeps binary imports out of server bundles.
 - Exclude platform-managed preview auth storage from app lint rather than editing regenerated code; this keeps CI stable across connector syncs.
