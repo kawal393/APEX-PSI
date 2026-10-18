@@ -32,7 +32,7 @@ ER  -`;
 
 const ietf = `[APEX-PSI]  Singh, K., "APEX PSI: Proof of Stateful Integrity",
             Work in Progress, Internet-Draft,
-            draft-singh-psi-01 (Informational, work in progress, not filed as a standard), ${YEAR},
+            draft-singh-psi-02 (Informational individual Internet-Draft; not an approved standard), 2026,
             <https://ai-governance-standard.com/standard>.`;
 
 const apa = `Singh, K. (${YEAR}). APEX PSI: Proof of stateful integrity for verifiable AI governance (Internet-Draft draft-singh-psi, revision 01; Informational, individual submission, not an approved standard). Apex Intelligence Empire. https://ai-governance-standard.com/standard`;
@@ -85,7 +85,7 @@ export default function Cite() {
             <div className="font-bold mb-2">Canonical URLs</div>
             <ul className="text-sm text-muted-foreground space-y-1">
               <li>Specification — <a className="underline" href="/standard">/standard</a></li>
-              <li>IETF draft — <a className="underline" href="/ietf/draft-singh-psi-http-01.txt">Compliance-Receipt header working text (not filed with the IETF)</a></li>
+              <li>IETF draft — <a className="underline" href="https://datatracker.ietf.org/doc/draft-singh-psi-http/">Compliance-Receipt HTTP header, draft-singh-psi-http-00 at the IETF datatracker</a></li>
               <li>Protocol overview — <a className="underline" href="/protocol">/protocol</a></li>
               <li>Foundation — <a className="underline" href="/foundation">/foundation</a></li>
             </ul>

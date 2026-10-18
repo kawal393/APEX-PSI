@@ -8,6 +8,15 @@ const DESCRIPTION =
 
 const ENTRIES = [
   {
+    date: "19 October 2026",
+    said:
+      "Nineteen public surfaces stated that the Compliance-Receipt header specification had not been filed with the IETF, and the working text published at /ietf/draft-singh-psi-http-01.txt asserted that the only PSI document on the IETF record was draft-singh-psi revision 01.",
+    now:
+      "Both are out of date, and the undertaking recorded on 1 October — that a draft is called filed only when its datatracker record is verified — is what caught it. Re-read against the datatracker on 19 October, five PSI documents are Active individual Internet-Drafts in the Informational category, all authored by K. Singh: draft-singh-psi revision 02 (posted 13 Oct 2026, expires 16 Apr 2027), draft-singh-psi-http revision 00 (posted 13 Oct 2026, expires 16 Apr 2027), draft-singh-psi-agent revision 01 (posted 13 Oct 2026, expires 16 Apr 2027), draft-singh-psi-merkle revision 01 (posted 13 Oct 2026, expires 16 Apr 2027) and draft-singh-psi-post-quantum revision 00 (posted 19 Jul 2026, expires 19 Jan 2027). None of them is an approved standard, none is adopted by any working group, and none carries IETF endorsement; the copy says so wherever it names one. The local revision 01 working text is still unsubmitted and now says exactly that, together with which revision is the filed record. Nothing on this page was rewritten — the 1 October entry stands below as it was written.",
+    undertaking:
+      "Filing status, revision numbers and expiry dates are read from the IETF datatracker on the day the sentence is written, never carried over from the last time it was checked. An under-claim is corrected with the same urgency as an over-claim: a public record we hold and do not state is still a statement that is false.",
+  },
+  {
     date: "6 October 2026",
     said:
       "The corrections of 4 September and 30 September 2026 said that sealing carries no charge because no payment processor exists, and that referral payouts were withdrawn and removed from the code.",

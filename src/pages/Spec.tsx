@@ -72,7 +72,7 @@ const Spec = () => (
             under five minutes.
           </p>
           <div className="mt-8 flex flex-wrap gap-2">
-            {["IETF draft-singh-psi (rev 02)", "draft-singh-psi-http (not yet filed)", "RFC 8785 (JCS)", "NIST FIPS 204", "JUMBF-framed (ISO 19566-2)", "MIT / Apache-2.0"].map((c) => (
+            {["IETF draft-singh-psi (rev 02)", "draft-singh-psi-http-00 (filed 13 Oct 2026)", "RFC 8785 (JCS)", "NIST FIPS 204", "JUMBF-framed (ISO 19566-2)", "MIT / Apache-2.0"].map((c) => (
               <span key={c} className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground border border-border/60 rounded-full px-3 py-1">
                 {c}
               </span>
@@ -246,8 +246,8 @@ root        = fold(parent, leaves)   // odd tail promoted unchanged`}
         <Section id="http" n="06" title="Transport: the Compliance-Receipt header">
           <p className="text-muted-foreground mb-5">
             For AI systems that emit text rather than files, the receipt travels as an HTTP response header. This is
-            specified in <span className="font-mono text-foreground">draft-singh-psi-http</span> — a working
-            draft that has not been filed with the IETF — and is the mechanism
+            specified in <span className="font-mono text-foreground">draft-singh-psi-http-00</span> — an individual
+            Internet-Draft filed with the IETF on 13 Oct 2026, not an approved standard — and is the mechanism
             we expect to matter most at scale — it requires no change to payload formats.
           </p>
           <pre className="overflow-x-auto rounded-lg border border-border bg-background/80 p-4 text-xs font-mono text-foreground/80">
@@ -387,7 +387,7 @@ Compliance-Receipt: v=1; id=psi_01J...; alg=Ed25519+ML-DSA-65;
             <Row k="Protocol licence" v="MIT — reference implementation" />
             <Row k="Verifier libraries" v="Apache-2.0" />
             <Row k="Patent posture" v="non-assertion pledge for standards-conformant implementations" />
-            <Row k="Specifications" v="draft-singh-psi (rev 01, filed 29 Aug 2026); draft-singh-psi-http in preparation, not yet filed (IETF individual submissions)" />
+            <Row k="Specifications" v="draft-singh-psi-02 and draft-singh-psi-http-00, both filed 13 Oct 2026 as IETF individual Internet-Drafts, expiring 16 Apr 2027 — not approved standards" />
             <Row k="Governance" v="APEX PSI Foundation — in formation; charter and verifier-node programme published" />
             <Row k="Forkability" v="the entire protocol runs without APEX. That is the design goal, not a concession." />
           </div>

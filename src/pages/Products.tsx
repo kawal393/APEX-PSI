@@ -45,7 +45,7 @@ const capabilities: Capability[] = [
       "Client-side SHA-256 sealing of any file (/seal, /pramaan)",
       "Ed25519 plus documented post-quantum signature options",
       "Public hash verification portal and REST API",
-      "Compliance-Receipt HTTP header (draft-singh-psi-http — in preparation, not yet filed)",
+      "Compliance-Receipt HTTP header (draft-singh-psi-http-00 — filed with the IETF as revision 00 on 13 Oct 2026; an individual Internet-Draft, not an approved standard)",
       "Vendor transparency console (/registry/check)",
     ],
     cta: { label: "Use the protocol", href: "/seal" },

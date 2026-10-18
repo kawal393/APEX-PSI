@@ -59,11 +59,11 @@ export default function Regulator() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 mb-10">
-            <a href="/ietf/draft-singh-psi-http-01.txt" target="_blank" rel="noreferrer">
+            <a href="https://datatracker.ietf.org/doc/draft-singh-psi-http/" target="_blank" rel="noreferrer">
               <Card className="p-5 h-full hover:border-primary/40 transition-colors cursor-pointer">
-                <div className="text-xs text-muted-foreground mb-1">Working draft — not filed with the IETF</div>
-                <div className="font-bold mb-2">draft-singh-psi-http</div>
-                <div className="text-xs text-muted-foreground flex items-center gap-1">Read full text <ExternalLink className="h-3 w-3" /></div>
+                <div className="text-xs text-muted-foreground mb-1">Individual Internet-Draft, filed 13 Oct 2026 — not an approved standard</div>
+                <div className="font-bold mb-2">draft-singh-psi-http-00</div>
+                <div className="text-xs text-muted-foreground flex items-center gap-1">Read the datatracker record <ExternalLink className="h-3 w-3" /></div>
               </Card>
             </a>
             <a href="/standards"><Card className="p-5 h-full hover:border-primary/40 transition-colors cursor-pointer">

@@ -1,6 +1,6 @@
 Network Working Group                                          K. Singh
 Working Text                              Apex Intelligence Empire / PSI
-Intended status: Informational        NOT SUBMITTED TO THE IETF (no record)
+Intended status: Informational        THIS REVISION IS UNSUBMITTED (see below)
 Expires: 
 
 
@@ -9,14 +9,27 @@ Expires:
 
    STATUS OF THIS TEXT
 
-      This document is a local working draft held at
-      ai-governance-standard.com. It has NOT been submitted to the IETF,
-      has no datatracker record, is not an Internet-Draft in the sense of
-      RFC 7841, and carries no Standards Track status. It describes no
-      IANA registration that has been requested. The only PSI document
-      actually filed with the IETF is draft-singh-psi, revision 01, an
-      individual submission in the Informational category, which is a
-      different document.
+      This is revision 01 of a local working text held at
+      ai-governance-standard.com. This revision has not been submitted to
+      the IETF and has no datatracker record of its own. It is not an
+      Internet-Draft in the sense of RFC 7841 and carries no Standards
+      Track status. No IANA registration has been requested.
+
+      The header field itself IS filed. draft-singh-psi-http, revision 00,
+      an individual Internet-Draft in the Informational category, was
+      posted 13 October 2026 and expires 16 April 2027:
+
+        https://datatracker.ietf.org/doc/draft-singh-psi-http/
+
+      Where this working text and revision 00 disagree, revision 00 is the
+      filed record and this text is a proposal to change it.
+
+      Five PSI documents stand on the IETF record as individual
+      submissions: draft-singh-psi-02, draft-singh-psi-http-00,
+      draft-singh-psi-agent-01, draft-singh-psi-merkle-01 and
+      draft-singh-psi-post-quantum-00. None of them is an approved
+      standard, none is adopted by any working group, and none carries
+      IETF endorsement.
 
 Abstract
 

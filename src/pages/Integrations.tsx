@@ -21,7 +21,7 @@ const CHANNELS = [
   },
   {
     title: "Compliance-Receipt HTTP header",
-    body: "A transport-level marking any server can emit and any client can check offline, specified in draft-singh-psi-http — in preparation, not yet filed with the IETF.",
+    body: "A transport-level marking any server can emit and any client can check offline, specified in draft-singh-psi-http-00, filed with the IETF as revision 00 on 13 Oct 2026 — an individual Internet-Draft, not an approved standard.",
     to: "/header",
     cta: "Inspect a header",
   },

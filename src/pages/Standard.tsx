@@ -38,7 +38,7 @@ const CURL = `curl -i https://your-ai-endpoint.com/v1/chat \\
 
 const WELL_KNOWN = `{
   "issuer": "https://ai-governance-standard.com",
-  "spec": "draft-singh-psi-http (working specification, not filed with the IETF)",
+  "spec": "draft-singh-psi-http-00 (IETF individual Internet-Draft, filed 13 Oct 2026, expires 16 Apr 2027)",
   "version": 1,
   "public_keys": [
     {
@@ -64,10 +64,10 @@ const Standard = () => {
   return (
     <>
       <Helmet>
-        <title>Compliance-Receipt HTTP Header — working draft, not filed with the IETF — Apex PSI — Universal Verification Protocol</title>
+        <title>Compliance-Receipt HTTP Header — IETF Internet-Draft draft-singh-psi-http-00 — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="The Compliance-Receipt HTTP response header specification for embedding cryptographic evidence in every API response." />
         <link rel="canonical" href="https://ai-governance-standard.com/standard" />
-        <meta property="og:title" content="Compliance-Receipt HTTP Header — working draft, not filed with the IETF" />
+        <meta property="og:title" content="Compliance-Receipt HTTP Header — IETF Internet-Draft draft-singh-psi-http-00" />
         <meta property="og:description" content="The Compliance-Receipt HTTP response header specification for embedding cryptographic evidence in every API response." />
         <meta property="og:url" content="https://ai-governance-standard.com/standard" />
         <meta property="og:type" content="website" />
@@ -79,7 +79,7 @@ const Standard = () => {
           <div className="container mx-auto max-w-5xl text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <Badge variant="outline" className="border-primary/30 text-primary mb-4 tracking-widest">
-                WORKING DRAFT — NOT FILED WITH THE IETF
+                IETF INDIVIDUAL INTERNET-DRAFT — FILED 13 OCT 2026, NOT AN APPROVED STANDARD
               </Badge>
               <h1 className="text-3xl sm:text-5xl font-black mb-4 leading-tight">
                 <span className="text-chrome-gradient">One HTTP Header.</span>
@@ -195,8 +195,10 @@ const Standard = () => {
                     APEX PSI is preparing the IANA permanent message header registration for
                     <code className="text-primary mx-1">Compliance-Receipt</code> and
                     <code className="text-primary mx-1">Compliance-Receipt-Policy</code> under RFC 3864.
-                    Reference: <code className="text-primary">draft-singh-psi-http</code>, a working draft
-                    that has not been filed with the IETF. No IANA registration has been requested.
+                    Reference: <code className="text-primary">draft-singh-psi-http-00</code>, an individual
+                    Internet-Draft filed with the IETF on 13 Oct 2026 and expiring 16 Apr 2027 — not an approved
+                    standard. The text offered below is later local working text (revision 01) that has not been
+                    submitted. No IANA registration has been requested.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <Button variant="heroOutline" size="sm" asChild>

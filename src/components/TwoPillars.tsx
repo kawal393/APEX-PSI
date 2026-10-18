@@ -57,7 +57,7 @@ const TwoPillars = () => {
               {[
                 { icon: Cpu, text: "SHA-256 + Ed25519 + ML-DSA-65 hybrid signatures" },
                 { icon: Lock, text: "Merkle-anchored, monotonic sequence counter" },
-                { icon: Globe, text: "Compliance-Receipt HTTP header (draft-singh-psi-http — in preparation, not yet filed)" },
+                { icon: Globe, text: "Compliance-Receipt HTTP header (draft-singh-psi-http-00 — filed with the IETF as revision 00 on 13 Oct 2026; an individual Internet-Draft, not an approved standard)" },
                 { icon: FileCheck, text: "Multi-node lattice attestation, permissionless verification" },
               ].map((item) => (
                 <div key={item.text} className="flex items-start gap-3 text-sm">

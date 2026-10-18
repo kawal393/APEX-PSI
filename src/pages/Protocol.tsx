@@ -280,7 +280,7 @@ const Protocol = () => {
                   t: "Compliance-Receipt HTTP Header",
                   tag: "Mandatory",
                   items: [
-                    "draft-singh-psi-http — in preparation, not yet filed",
+                    "draft-singh-psi-http-00 — filed with the IETF as revision 00 on 13 Oct 2026, not an approved standard",
                     "Every AI API response carries a signed receipt",
                     "Public verification at /.well-known/compliance-receipt",
                   ],

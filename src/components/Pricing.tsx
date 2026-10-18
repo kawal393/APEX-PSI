@@ -9,7 +9,7 @@ const included = [
   "Public hosted issuance: 20 receipts per minute, 100 per day",
   "Independent verification: unlimited and free forever",
   "Verifier source — MIT, TypeScript and Python, in the repository",
-  "Compliance-Receipt HTTP header (draft-singh-psi-http — in preparation, not yet filed)",
+  "Compliance-Receipt HTTP header (draft-singh-psi-http-00 — filed with the IETF as revision 00 on 13 Oct 2026; an individual Internet-Draft, not an approved standard)",
   "Vendor transparency console (/registry/check)",
   "Public receipt pages at /r/<hash>",
 ];
