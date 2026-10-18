@@ -125,6 +125,7 @@ import ChatWidget from "@/components/chat/ChatWidget";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import FeedbackWidget from "@/components/FeedbackWidget";
 import CanonicalDomainRedirect from "@/components/CanonicalDomainRedirect";
+import HomeLaunchRedirect from "@/components/HomeLaunchRedirect";
 import { usePageTracker } from "@/hooks/use-page-tracker";
 
 const queryClient = new QueryClient();
@@ -147,6 +148,8 @@ const App = () => (
             <PageTracker />
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/index" element={<HomeLaunchRedirect />} />
+              <Route path="/index.html" element={<HomeLaunchRedirect />} />
               <Route path="/products" element={<Products />} />
               <Route path="/crypto" element={<CryptoCheckout />} />
               <Route path="/crypto/:ref" element={<CryptoCheckout />} />
