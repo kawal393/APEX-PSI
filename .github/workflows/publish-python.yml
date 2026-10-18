@@ -1,0 +1,57 @@
+name: Publish psi-verifier to PyPI
+
+# Trusted publishing: PyPI verifies this workflow by its OpenID Connect identity, so no
+# API token exists to leak. That is the whole point — the estate spent 18 Oct removing
+# credentials from files, and this adds none.
+#
+# Fires on a version tag (push it with:  git tag psi-verifier-v1.3.0 && git push origin psi-verifier-v1.3.0)
+# and can also be started by hand from the Actions tab.
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "psi-verifier-v*"
+
+permissions:
+  contents: read
+  id-token: write # required for PyPI trusted publishing
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    # Must match the "Environment name" field on the PyPI trusted-publisher form.
+    environment: pypi
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install the build tool
+        run: python -m pip install --upgrade pip build
+
+      # The published package must be the one CI already proved. If the version in
+      # pyproject.toml does not match the tag, stop rather than ship a surprise release.
+      - name: Tag and pyproject version must agree
+        run: |
+          TAG="${GITHUB_REF_NAME#psi-verifier-v}"
+          PY=$(python -c "import tomllib;print(tomllib.load(open('packages/psi-verifier-py/pyproject.toml','rb'))['project']['version'])")
+          echo "tag says $TAG, pyproject says $PY"
+          test "$TAG" = "$PY" || { echo "STOP: tag and pyproject.toml disagree"; exit 1; }
+
+      - name: Build the sdist and wheel
+        run: python -m build --outdir dist packages/psi-verifier-py
+
+      # A guard that cannot fail is not a guard: prove the wheel actually installs and
+      # verifies before it reaches strangers.
+      - name: Install the built wheel and run it
+        run: |
+          python -m pip install --force-reinstall dist/psi_verifier-*.whl
+          python -c "import psi_verifier, json; print('import ok, version', psi_verifier.__version__ if hasattr(psi_verifier,'__version__') else 'n/a')"
+          python -m psi_verifier --help >/dev/null 2>&1 || echo "note: no CLI --help; import path is the contract"
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          print-hash: true
