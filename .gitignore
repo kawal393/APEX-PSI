@@ -37,3 +37,7 @@ __pycache__/
 # different 1.3.0 artifacts get shipped, one of them codeless.
 *.tgz
 *.egg-info/
+
+# What the registry serves, pulled by scripts/registry-truth-check.mjs. Strangers' copies,
+# never a build input: it must never be committed or picked up as a vendored artifact.
+.registry-check/
