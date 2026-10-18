@@ -7,7 +7,13 @@ import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = { ...loadEnv(mode, process.cwd(), "VITE_"), ...process.env } as Record<string, string | undefined>;
+  // Public (publishable) fallbacks so a publish build without injected settings never ships a blank site.
+  const fallback = {
+    VITE_SUPABASE_URL: "https://qhtntebpcribjiwrdtdd.supabase.co",
+    VITE_SUPABASE_PUBLISHABLE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFodG50ZWJwY3JpYmppd3JkdGRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMTUxNTgsImV4cCI6MjA4Nzc5MTE1OH0.XdHR4S7-MtNHa8WUfHxWtCBrofr68k1qIXIOGnsZoXc",
+  };
+  const loaded = { ...loadEnv(mode, process.cwd(), "VITE_"), ...process.env } as Record<string, string | undefined>;
+  const env = { ...loaded, VITE_SUPABASE_URL: loaded.VITE_SUPABASE_URL || fallback.VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY: loaded.VITE_SUPABASE_PUBLISHABLE_KEY || fallback.VITE_SUPABASE_PUBLISHABLE_KEY } as Record<string, string | undefined>;
   const required = ["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY"];
   const missing = required.filter((name) => !env[name]);
   if (missing.length) {
