@@ -13,10 +13,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # This repository shipped a tracked .env from 28 Feb 2026 to 18 Oct 2026, and that is
-  # how a live Stripe key reached a public repo. The scanner never prints a matched
-  # value — only file, line number and pattern name — so the build log cannot become
-  # the second leak.
+  # This repository shipped a tracked .env from 28 Feb 2026 to 18 Oct 2026. Measured on
+  # 18 Oct, that file held three values -- project id, publishable key and URL -- and the
+  # publishable key is public by design; a `git log -S` pickaxe over every ref **in this
+  # repository** finds no commit that ever contained a Stripe secret key. So this job guards
+  # a class of mistake here, not an admitted incident in this tree. It stays because the next
+  # builder can make one. The scanner
+  # never prints a matched value -- only file, line number and pattern name -- so the build
+  # log cannot become the second leak.
   secret-scan:
     runs-on: ubuntu-latest
     steps:

@@ -54,8 +54,9 @@ function carriesServiceRole(line) {
 }
 
 // Files deliberately skipped. Keep this empty: a credential file that is tracked has no
-// business being exempt, and `.env` is untracked as of this commit (it shipped in the
-// repository since 28 Feb 2026, which is how the estate's Stripe key reached GitHub).
+// business being exempt. `.env` was tracked from 28 Feb 2026 to 18 Oct 2026; measured on
+// 18 Oct it carried only Supabase project id, publishable key and URL, and no commit in this
+// repository ever carried a Stripe secret key. This scanner exists to keep that true going forward.
 const ALLOW = new Set([]);
 
 const fromGit = () =>
