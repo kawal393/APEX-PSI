@@ -39,8 +39,9 @@ const HowToUse = () => {
               <p className="font-mono text-xs text-primary mb-2">01 · INSTALL</p>
               <p className="text-sm text-foreground/80 mb-3">Add a runtime adapter for your stack.</p>
               <p className="text-[11px] text-muted-foreground mb-3">
-                Adapter API shown as designed. These packages are not published to npm; the verifier source is MIT in the
-                repository. Install it from source, not from a registry.
+                Adapter API shown as designed. The adapter packages are not published to npm — install them from source.
+                The verifier is published: <span className="font-mono">npm install apex-psi-verifier</span> or{" "}
+                <span className="font-mono">pip install psi-verifier</span>, version 1.3.0 on both.
               </p>
               <pre className="bg-black/60 border border-primary/20 rounded-md p-3 text-[11px] font-mono text-primary overflow-x-auto">
 {`git clone https://github.com/kawal393/APEX-PSI

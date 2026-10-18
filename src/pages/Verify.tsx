@@ -408,7 +408,8 @@ const Verify = () => {
               >
                 <span className="font-mono text-sm font-bold text-foreground">packages/psi-verifier (source)</span>
                 <span className="mt-1 text-xs text-muted-foreground">
-                  MIT, free forever - TypeScript and Python. Not published to a registry yet; build from the repository.
+                  MIT, free forever - TypeScript and Python. Published as well: npm i apex-psi-verifier@1.3.0, or pip install
+                  psi-verifier==1.3.0. Pin 1.3.0 - 1.2.0 is still installable and does not check signatures.
                 </span>
               </a>
               <a
