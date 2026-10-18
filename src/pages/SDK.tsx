@@ -703,7 +703,7 @@ GET /verify-status?action=stats
           <CardContent>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
-                { name: "apex-psi-verifier", target: "MIT verifier — free forever. No permission required.", status: "published at 1.2.0; 1.3.0 pending", install: "npm i apex-psi-verifier@1.3.0 — or build from packages/psi-verifier. 1.2.0 does not check signatures; do not rely on it." },
+                { name: "apex-psi-verifier", target: "MIT verifier — free forever. No permission required.", status: "published at 1.3.0 on npm (latest)", install: "npm i apex-psi-verifier@1.3.0 — pin it: 1.2.0 is still installable and does not check signatures." },
                 { name: "psi-verifier", target: "Python verifier, MIT — same rules, same verdicts, byte-identical", status: "published at 1.3.0 on PyPI", install: "pip install psi-verifier==1.3.0 — signature checking, zero dependencies, built from packages/psi-verifier-py by CI" },
                 { name: "@apex/psi-openai", target: "OpenAI Node SDK", status: "not published", install: "source in packages/ — build from the repository" },
                 { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "not published", install: "source in packages/ — build from the repository" },

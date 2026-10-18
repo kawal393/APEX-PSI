@@ -41,16 +41,18 @@ curl -X POST https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize \
 Verify offline, forever, for free:
 
 ```bash
-pip install psi-verifier==1.3.0   # Python verifier (MIT, free forever) — live on PyPI
-npm i apex-psi-verifier@1.3.0     # Node verifier (MIT, free forever) — see the warning
+pip install psi-verifier==1.3.0      # Python verifier (MIT, free forever)
+npm i apex-psi-verifier@1.3.0        # Node verifier (MIT, free forever)
 ```
 
-**Read this before you install anything.** The Python verifier is published: `psi-verifier`
-**1.3.0** is on PyPI, built from this repository by CI with no stored credentials, and it
-checks signatures. The Node package is not there yet — the version sitting on npm today is
-**1.2.0**, and 1.2.0 does not check signatures, so a forged seal passes it. `@1.3.0` is in
-this repository and is being released; until it lands, use the Python wheel or verify from
-source in `packages/`. Do not use a floating `latest` for a control you are relying on.
+**Read this before you install anything.** Both verifiers are published. `psi-verifier`
+**1.3.0** is on PyPI and `apex-psi-verifier` **1.3.0** is on npm, each built from this
+repository by CI with no stored credential of any kind, and the npm release carries a
+provenance attestation that points back at that build. Both check signatures: a seal whose
+Ed25519 signature was not made by the key it names is **rejected**, not annotated.
+**1.2.0 is still installable and it does not check signatures** — a forged seal passes it —
+so pin `@1.3.0` rather than trusting `latest`, and treat any tool reporting `1.2.0` as
+unsafe. Pin the version you rely on; that is the whole discipline this standard is about.
 
 | Try it live | What it does |
 |---|---|
@@ -140,12 +142,13 @@ Full registry: [/registry](https://ai-governance-standard.com/registry)
 
 ## Quick Start
 
-**What is actually on a registry, re-checked against the registry on 18 Oct 2026:**
-`psi-verifier` **1.3.0** is published on PyPI — signature checking, zero dependencies,
-built by CI from this repository, no API token involved. `apex-psi-verifier` **1.2.0** is
-published on npm — and 1.2.0 is the version that passes forged seals, so treat it as
-unsafe; its 1.3.0 replacement is not on npm yet. Every `@apex/*` name returns 404 on npm.
-For Node, until `apex-psi-verifier@1.3.0` lands, build from this repository:
+**What is actually on a registry, re-checked against the registry on 19 Oct 2026:**
+`psi-verifier` **1.3.0** is published on PyPI, and `apex-psi-verifier` **1.3.0** is
+published on npm and is now `latest` there — both signature-checking, both built by CI
+from this repository with no API token involved, the npm one carrying a provenance
+attestation. `apex-psi-verifier` **1.2.0** remains installable if you pin it, and 1.2.0 is
+the version that passes forged seals, so pin **1.3.0**. Every `@apex/*` name still returns
+404 on npm; those are source-only in `packages/` and are installed from a local path:
 
 ```bash
 git clone https://github.com/kawal393/APEX-PSI.git

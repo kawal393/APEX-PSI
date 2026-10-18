@@ -162,7 +162,7 @@ const Pramaan = () => {
       licence: {
         engine: "APEX PSI Sealing Engine v1",
         terms: ENGINE_LICENCE_TERMS,
-        verifier: "MIT — packages/psi-verifier (the npm release is 1.2.0, which does not check signatures; pip install psi-verifier==1.3.0 for the published checker)",
+        verifier: "MIT — packages/psi-verifier (published as npm apex-psi-verifier@1.3.0 and PyPI psi-verifier@1.3.0; apex-psi-verifier@1.2.0 does not check signatures)",
       },
       sealed_at: current.ts,
       file: { name: current.fileName, size_bytes: current.size },
