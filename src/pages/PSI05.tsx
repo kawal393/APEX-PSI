@@ -11,7 +11,7 @@ const TEXT = "https://www.ietf.org/archive/id/draft-singh-apex-psi-05-02.txt";
 const ENDPOINTS = [
   { method: "POST", path: "/v1/notarize", body: "Seal a disclosure recomputation and receive a dual-signed receipt." },
   { method: "GET", path: "/v1/verify?hash=…", body: "Verify a receipt hash and return both signatures plus anchor state." },
-  { method: "GET", path: "/functions/v1/verify-hash?hash=…", body: "Public, keyless ledger lookup for regulators and agents." },
+  { method: "GET", path: "/functions/v1/verify-hash?hash=…", body: "Public, keyless ledger lookup for regulators and agents. 20 lookups per minute per address, then HTTP 429 with the limit in the body. Self-hosted verification has no limit." },
   { method: "MCP", path: "verify_hash", body: "Agent-native verification through the MCP server." },
 ];
 

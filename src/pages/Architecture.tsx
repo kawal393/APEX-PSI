@@ -350,6 +350,11 @@ function combinePair(a: string, b: string): string {
           <CardContent className="space-y-4">
             <p className="text-sm font-mono text-engine-muted">
               Anyone can independently verify a hash against the APEX Engine append-only ledger via the public API.
+              No key, no account, no permission — the verifier you run offline is unmetered. The hosted endpoint below
+              allows 20 lookups per minute per address; past that it answers HTTP 429 with
+              {" "}<span className="font-mono text-engine-approved">limit_per_minute</span> and
+              {" "}<span className="font-mono text-engine-approved">retry_after_seconds</span> in the body.
+              It is a flood guard per server instance, not a billed quota.
             </p>
             <div className="space-y-3">
               <div className="p-3 bg-engine-bg rounded border border-engine-border">

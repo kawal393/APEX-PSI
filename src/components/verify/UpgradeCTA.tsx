@@ -40,7 +40,8 @@ export const UpgradeCTA = ({ hash, className = "" }: UpgradeCTAProps) => {
             Ready to Seal at Scale?
           </h3>
           <p className="text-xs text-muted-foreground mb-4">
-            Free verification is unlimited. Paid sealing starts at 2,000 per day. Upgrade to unlock more.
+            Verification you run yourself is free and unmetered. Hosted issuance is free at 20 receipts a minute and
+            100 a day; Pro raises hosted sealing to 2,000 a day. A higher tier buys capacity, never a finding.
           </p>
           <Button
             variant="outline"
