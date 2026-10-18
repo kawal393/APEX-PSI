@@ -1,5 +1,11 @@
 # Brand update
 
+# Phone launch recovery (18 Oct 2026)
+- [x] Redirect legacy `/index` and `/index.html` launches while preserving query parameters and the selected home view.
+- [x] Verify both launch paths on a phone-sized browser (no runtime errors); public site confirmed blank with `supabaseUrl is required`.
+- [x] Load and validate managed public Cloud settings explicitly during bundling to prevent silent blank-screen releases.
+- [ ] Update the published site and recheck the installed phone app — requires publishing; existing installed shortcuts on the drifted legacy domain may need reinstalling from the live domain.
+
 # Website / coder alignment (17 Oct 2026)
 - [x] Align public verification verdicts with cryptographic checks and distinguish online ledger lookups.
 - [x] Correct audited Notary, SDK, MCP, draft metadata and parity-display mismatches without changing the frozen seal grammar.
