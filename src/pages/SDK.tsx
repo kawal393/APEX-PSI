@@ -704,7 +704,7 @@ GET /verify-status?action=stats
             <div className="grid sm:grid-cols-2 gap-3">
               {[
                 { name: "apex-psi-verifier", target: "MIT verifier — free forever. No permission required.", status: "published at 1.2.0; 1.3.0 pending", install: "npm i apex-psi-verifier@1.3.0 — or build from packages/psi-verifier. 1.2.0 does not check signatures; do not rely on it." },
-                { name: "psi-verifier", target: "Python verifier, MIT — same rules, same verdicts, byte-identical", status: "not published (PyPI 404)", install: "source in packages/psi-verifier-py — build from the repository" },
+                { name: "psi-verifier", target: "Python verifier, MIT — same rules, same verdicts, byte-identical", status: "published at 1.3.0 on PyPI", install: "pip install psi-verifier==1.3.0 — signature checking, zero dependencies, built from packages/psi-verifier-py by CI" },
                 { name: "@apex/psi-openai", target: "OpenAI Node SDK", status: "not published", install: "source in packages/ — build from the repository" },
                 { name: "@apex/psi-anthropic", target: "Anthropic SDK", status: "not published", install: "source in packages/ — build from the repository" },
                 { name: "@apex/psi-vercel-ai", target: "Vercel AI SDK", status: "not published", install: "source in packages/ — build from the repository" },
