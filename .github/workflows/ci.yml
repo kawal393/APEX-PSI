@@ -32,6 +32,9 @@ jobs:
           fi
           echo ".env is not tracked."
       - run: node scripts/secret-scan.mjs
+      # The guard is tested too: a scanner that silently stops matching is worse than none,
+      # because everyone believes the green tick. Synthetic tokens only, printed as nothing.
+      - run: node scripts/check-secret-scan-jwt.mjs
 
   lint:
     runs-on: ubuntu-latest
