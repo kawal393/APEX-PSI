@@ -7,15 +7,14 @@ import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "VITE_");
+  const env = { ...loadEnv(mode, process.cwd(), "VITE_"), ...process.env } as Record<string, string | undefined>;
   const required = ["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY"];
-  for (const name of required) {
-    if (!env[name]) {
-      throw new Error(`Missing ${name}: restore the Lovable Cloud connection before publishing.`);
-    }
+  const missing = required.filter((name) => !env[name]);
+  if (missing.length && mode === "production") {
+    throw new Error(`Missing ${missing.join(", ")}: restore the Lovable Cloud connection before publishing.`);
   }
   return {
-  define: Object.fromEntries(required.map((name) => [
+  define: Object.fromEntries(required.filter((name) => env[name]).map((name) => [
     `import.meta.env.${name}`, JSON.stringify(env[name]),
   ])),
   server: {
