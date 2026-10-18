@@ -107,6 +107,20 @@ jobs:
             exit 1
           fi
 
+  # 18 Oct 2026: a bot commit added a 6.3 MB WebAssembly binary to public/wasm and
+  # the reader page started loading it from there. A vendored binary is only honest
+  # while it is still the bytes upstream published, and no build step or future bot
+  # is going to notice if it stops being them. This job is that notice.
+  wasm-provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: node scripts/wasm-provenance.mjs
+
   supabase-deploy:
     # NOT on every push to main. `supabase db push` + `functions deploy` mutate
     # production, and the deploy job used to run silently behind a test suite
@@ -114,7 +128,7 @@ jobs:
     # a human decision: run this workflow from the Actions tab (or protect the
     # `production` environment with required reviewers in repo settings).
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-    needs: [secret-scan, lint, typecheck, test, verifier-parity]
+    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance]
     runs-on: ubuntu-latest
     environment: production
     steps:

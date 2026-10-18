@@ -1,0 +1,14 @@
+{
+  "file": "c2pa-toolkit_bg.wasm",
+  "package": "c2pa",
+  "package_version": "0.30.17",
+  "package_license": "MIT",
+  "upstream_path": "node_modules/c2pa/dist/assets/wasm/toolkit_bg.wasm",
+  "sha256": "605e14156c754d21a5bd66e1a5d0d85861f99ac6009d44234398b5b29cc812d9",
+  "bytes": 6259517,
+  "verified_on": "2026-10-18",
+  "verification_method": "git show 19b2e07:public/wasm/c2pa-toolkit_bg.wasm | sha256sum, compared against the file inside c2pa@0.30.17 as installed from the npm registry",
+  "committed_by": "gpt-engineer-app[bot] in 19b2e07 (\"Moved binary to public URL\")",
+  "why_it_is_vendored": "The C2PA reader is loaded at runtime from this path instead of being pulled through the bundler, so the verification page can start without dragging a 6.3 MB WASM into the main chunk.",
+  "rule": "This file is a copy of a published MIT-licensed artifact. Nobody's build must change it. scripts/wasm-provenance.mjs runs in CI and fails if the committed bytes stop matching the sha256 above or stop matching the c2pa version this repository declares."
+}
