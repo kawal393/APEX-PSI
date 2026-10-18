@@ -1,0 +1,78 @@
+name: Publish apex-psi-verifier to npm
+
+# Same design as publish-python.yml: npm verifies this workflow by its OpenID Connect
+# identity, so there is no token on disk or in secrets to leak.
+#
+# npm's trusted publishing requires npm CLI >= 11.5.1 and Node >= 22.14.0, which is why
+# this job does not reuse CI's node 20 image. It is also why publishing must happen here
+# and not from a laptop: the OIDC identity only exists inside a CI run.
+#
+# Fires on a version tag:  git tag apex-psi-verifier-v1.3.0 && git push origin apex-psi-verifier-v1.3.0
+# and can also be started by hand from the Actions tab.
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "apex-psi-verifier-v*"
+
+permissions:
+  contents: read
+  id-token: write # required for npm trusted publishing
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Must match the "Environment name" field on the npm trusted-publisher form.
+    environment: npm
+    defaults:
+      run:
+        working-directory: packages/psi-verifier
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Set the version for later steps
+        run: echo "PKG=$(node -p "require('./package.json').version")" >> "$GITHUB_ENV"
+
+      # The published package must be the one CI already proved. If the tag and the
+      # manifest disagree, stop rather than ship a surprise release.
+      - name: Tag and package.json version must agree
+        if: github.event_name == 'push'
+        run: |
+          TAG="${GITHUB_REF_NAME#apex-psi-verifier-v}"
+          PKG=$(node -p "require('./package.json').version")
+          echo "tag says $TAG, package.json says $PKG"
+          test "$TAG" = "$PKG" || { echo "STOP: tag and package.json disagree"; exit 1; }
+
+      # The verifier package is standalone and has no lockfile of its own; the root
+      # lockfile does not contain tsup, so install inside the package instead.
+      - name: Install build tools
+        run: npm install --no-package-lock --no-audit --no-fund
+
+      - name: Build the distributable
+        run: npm run build
+
+      - name: Test the built verifier
+        run: npm test
+
+      # A guard that cannot fail is not a guard: prove the tarball strangers receive
+      # actually contains the built code, not just the manifest.
+      - name: Prove dist is inside the tarball
+        run: |
+          npm pack --dry-run 2>&1 | tee pack.log
+          grep -q "dist/index.js" pack.log || { echo "STOP: dist/index.js is missing from the tarball"; exit 1; }
+          grep -q "dist/index.d.ts" pack.log || { echo "STOP: types are missing from the tarball"; exit 1; }
+
+      - name: Publish to npm
+        run: npm publish
+
+      - name: The registry must now serve this version
+        run: |
+          sleep 10
+          SERVED=$(npm view apex-psi-verifier version)
+          echo "registry serves $SERVED, we built $PKG"
+          test "$SERVED" = "$PKG" || { echo "STOP: registry does not serve $PKG"; exit 1; }
