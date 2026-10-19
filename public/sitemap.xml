@@ -286,6 +286,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-wf3m66</loc>
+    <lastmod>2026-10-19T03:06:48.665Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/cryptographic-truth-proving-what-ai-actually-did-eh00gs</loc>
+    <lastmod>2026-10-19T03:06:48.665Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-zi8k4u</loc>
+    <lastmod>2026-10-19T03:06:48.665Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/ietf-draft-singh-psi-verifiable-ai-compliance-jztjpc</loc>
     <lastmod>2026-10-19T00:06:54.788Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6264,24 +6282,6 @@
   <url>
     <loc>https://ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-requirements-x102f8</loc>
     <lastmod>2026-08-10T12:06:52.676Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/cryptographic-truth-proving-what-ai-actually-did-0gd62b</loc>
-    <lastmod>2026-08-10T12:06:52.676Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/verifiable-ai-governance-without-vendor-trust-enj7hr</loc>
-    <lastmod>2026-08-10T09:07:01.243Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-header-ed1cmz</loc>
-    <lastmod>2026-08-10T09:07:01.243Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
