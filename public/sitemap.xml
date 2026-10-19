@@ -286,6 +286,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://ai-governance-standard.com/articles/ietf-draft-singh-psi-verifiable-ai-compliance-jztjpc</loc>
+    <lastmod>2026-10-19T00:06:54.788Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/ietf-draft-singh-psi-verifiable-ai-compliance-k33ixu</loc>
+    <lastmod>2026-10-19T00:06:54.788Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-governance-standard.com/articles/what-is-ai-governance-technical-definition-for-2026-s0shgo</loc>
+    <lastmod>2026-10-19T00:06:54.788Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-governance-standard.com/articles/ai-governance-framework-checklist-for-enterprises-wf2pnq</loc>
     <lastmod>2026-10-18T21:06:28.530Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6264,24 +6282,6 @@
   <url>
     <loc>https://ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-header-ed1cmz</loc>
     <lastmod>2026-08-10T09:07:01.243Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/sha-256-merkle-trees-for-tamper-evident-ai-logs-xcp67z</loc>
-    <lastmod>2026-08-10T09:07:01.243Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/nist-ai-rmf-vs-eu-ai-act-key-differences-xsyvw5</loc>
-    <lastmod>2026-08-10T06:07:06.291Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://ai-governance-standard.com/articles/ai-governance-framework-checklist-for-enterprises-by1l0p</loc>
-    <lastmod>2026-08-10T06:07:06.291Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
