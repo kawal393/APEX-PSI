@@ -9,8 +9,16 @@
 // Read-only against Stripe. Never prints a key. Key comes from the vault file
 // outside every repo: C:/Users/apex1/.apex-vault/stripe_payment_links_once.env
 //
+// Two fatal rules, each proven by its own failure case:
+//   1. a sentence the site serves that the merchant account contradicts
+//      (demonstrated red on 19 October: "there is no fee" beside an active $199.00 monthly listing)
+//   2. a checkout button the served page carries that cannot charge
+//      (a link that is not on this account, is switched off, or sells only archived prices)
+// Everything else it prints is measurement, not verdict: which APEX PSI prices have a
+// button, which have none, and which are quoted as a number in the served file.
+//
 // Usage: node scripts/commerce-truth-check.mjs
-// Exit 0 = site and store agree. Exit 1 = contradiction, listed per line.
+// Exit 0 = site and store agree. Exit 1 = contradiction, listed per line. Exit 2 = could not measure.
 
 import { readFileSync } from 'node:fs';
 
@@ -70,7 +78,6 @@ async function stripe(path) {
   // A price counts as reachable when the site both states it and links a
   // checkout for it. "$11" sitting in prose proves nothing on its own, so the
   // predicate below is deliberately weak and is paired with the link check.
-  const LINK_RE = /buy\.stripe\.com\/[A-Za-z0-9]+/g;
   let bad = 0;
   for (const a of FEE_ASSERTIONS) {
     const onSite = bundle.includes(a.must_contain);
@@ -88,18 +95,82 @@ async function stripe(path) {
     }
   }
 
-  // 4. Paid APEX PSI products a visitor cannot actually buy from the page.
-  const links = [...new Set([...bundle.matchAll(LINK_RE)].map(m => m[0]))];
-  console.log(`checkout links in the live bundle: ${links.length}${links.length ? ' — ' + links.join(', ') : ''}`);
-  const psi = sellable.filter(s => /APEX PSI/i.test(s.name) && /Pro|Ultra|Registry|Article 50|Prover/i.test(s.name));
-  console.log('\nAPEX PSI products the merchant account sells, vs what the served page says:');
-  console.log('  NOTE: "site links a checkout" is account-level — it proves the page carries at least one');
-  console.log('  Stripe link, not that this particular product has one. Per-product pairing needs the');
-  console.log('  price id, and a buy.stripe.com URL does not expose it in the bundle.');
+  // 4. Every active APEX PSI price, paired with the ONE checkout link that can charge it.
+  //
+  // This replaces the account-level guess the first version had to admit in a NOTE. A Stripe
+  // payment link carries its price id, so the pairing is provable: fetch the links, ask each one
+  // what it charges, then match that price id against the ids in the links the served file carries.
+  // Nothing about a name or a substring is trusted any more.
+  const LINK_RE = /buy\.stripe\.com\/([A-Za-z0-9]+)/g;
+  const bundleSlugs = [...new Set([...bundle.matchAll(LINK_RE)].map(m => m[1]))];
+
+  const allLinks = [];
+  for (const l of (await stripe('/v1/payment_links?limit=100')).data || []) allLinks.push(l);
+  const charges = {};            // slug -> { active, priceIds, amounts }
+  for (const l of allLinks) {
+    // line_items comes back EMPTY unless it is asked for, and an empty read looks exactly like
+    // a link that charges nothing. Measured 20 October: the first version of this pairing read
+    // zero prices from every link and reported both live buttons as dead checkouts.
+    const detail = await stripe('/v1/payment_links/' + l.id + '?expand[]=line_items.data.price');
+    const items = (detail.line_items && detail.line_items.data) || [];
+    const priceIds = items.map(it => (typeof it.price === 'string' ? it.price : it.price && it.price.id)).filter(Boolean);
+    const slug = String(l.url || '').split('/').pop();
+    charges[slug] = { active: !!l.active, priceIds, amounts: items.map(it => it.amount_total / 100) };
+  }
+  const slugHasLivePrice = (slug) =>
+    charges[slug] && charges[slug].active &&
+    charges[slug].priceIds.some(id => sellable.some(s => s.id === id));
+
+  console.log(`checkout links in the live bundle: ${bundleSlugs.length}` +
+    (bundleSlugs.length ? ' — ' + bundleSlugs.map(s => 'buy.stripe.com/' + s).join(', ') : ''));
+
+  // A button on the page that cannot charge is a lie a customer can click, so it is fatal.
+  // --self-test injects a link that cannot exist on any account and requires the guard to catch it,
+  // because an assertion that has never failed is not evidence that anything was measured.
+  const SELF_TEST = process.argv.includes('--self-test');
+  const FAKE_SLUG = 'selftestnotareallink0';
+  const checkSlugs = SELF_TEST ? bundleSlugs.concat([FAKE_SLUG]) : bundleSlugs;
+  const faults = [];
+  const fault = (msg) => { faults.push(msg); console.log('CONTRADICTION  ' + msg); };
+  for (const slug of checkSlugs) {
+    if (!charges[slug]) {
+      bad++;
+      fault('the served page links buy.stripe.com/' + slug + ', which is not a link on this account');
+    } else if (!slugHasLivePrice(slug)) {
+      bad++;
+      fault('the served page links buy.stripe.com/' + slug +
+        ` but that link is ${charges[slug].active ? 'charging a price the account no longer sells' : 'marked inactive'} — a customer would reach a dead checkout`);
+    }
+  }
+
+  const psi = sellable.filter(s => /APEX PSI/i.test(s.name));
+  const reachable = new Set();
+  for (const slug of bundleSlugs) for (const id of (charges[slug] || {}).priceIds || []) if (slugHasLivePrice(slug)) reachable.add(id);
+
+  console.log('\nEvery APEX PSI price the account sells, against the link that can charge it:');
   for (const s of psi) {
-    const priced = bundle.includes('$' + s.amount.split('.')[0]) || bundle.includes(s.amount);
-    console.log('  ' + (priced ? 'price stated   ' : 'NO PRICE ON SITE') + '  ' +
-      (links.length ? 'site links a checkout' : 'NO LINK ON SITE  ') + '  ' + s.name + '  ' + s.amount + ' ' + s.currency + ' ' + s.cadence);
+    const onPage = reachable.has(s.id);
+    const linkOwnsIt = Object.entries(charges).filter(([, c]) => c.active && c.priceIds.includes(s.id)).map(([k]) => k);
+    const quote = bundle.includes('$' + s.amount.split('.')[0]);
+    console.log('  ' +
+      (onPage ? 'BUYABLE FROM THE PAGE ' : 'no button reaches it  ') + ' | ' +
+      (linkOwnsIt.length ? 'a live link charges it' : 'NO LINK CHARGES IT    ') + ' | ' +
+      (quote ? 'the number appears in the served file' : 'the number is not in the served file    ') + ' | ' +
+      s.name + '  ' + s.amount + ' ' + s.currency + ' ' + s.cadence);
+  }
+  const orphanPrices = psi.filter(s => !reachable.has(s.id));
+  if (orphanPrices.length) {
+    console.log('  NOTE: the products above with "no button reaches it" are not a false sentence — the site');
+    console.log('  does not quote them as buyable. They are stock the account sells that nobody can buy.');
+    console.log('  Each one needs an owner decision: put a price and a button on its page, or archive it.');
+  }
+
+  if (SELF_TEST) {
+    const caught = faults.some(f => f.includes(FAKE_SLUG));
+    console.log('  SELF-TEST  injected a link no account owns -> ' +
+      (caught ? 'CAUGHT: this rule can fail, so its passing means something'
+              : 'MISSED: this rule is broken and was removed from the estate today'));
+    if (!caught) bad++;
   }
 
   console.log(bad ? `\nFAIL — ${bad} site-vs-store contradiction(s).` : '\nPASS — site money claims match what the account sells.');
