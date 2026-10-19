@@ -67,6 +67,10 @@ async function stripe(path) {
   console.log(`store: ${activeProducts.length} active products, ${sellable.length} active prices\n`);
 
   // 3. Pair them.
+  // A price counts as reachable when the site both states it and links a
+  // checkout for it. "$11" sitting in prose proves nothing on its own, so the
+  // predicate below is deliberately weak and is paired with the link check.
+  const LINK_RE = /buy\.stripe\.com\/[A-Za-z0-9]+/g;
   let bad = 0;
   for (const a of FEE_ASSERTIONS) {
     const onSite = bundle.includes(a.must_contain);
@@ -85,11 +89,15 @@ async function stripe(path) {
   }
 
   // 4. Paid APEX PSI products a visitor cannot actually buy from the page.
+  const links = [...new Set([...bundle.matchAll(LINK_RE)].map(m => m[0]))];
+  console.log(`checkout links in the live bundle: ${links.length}${links.length ? ' — ' + links.join(', ') : ''}`);
   const psi = sellable.filter(s => /APEX PSI/i.test(s.name) && /Pro|Ultra|Registry|Article 50|Prover/i.test(s.name));
   console.log('\nAPEX PSI products the merchant account sells, vs whether the live bundle names a price for them:');
+  console.log('  (priced = the amount appears in the served bundle; reachable = the bundle also carries a Stripe checkout link)');
   for (const s of psi) {
     const priced = bundle.includes('$' + s.amount.split('.')[0]) || bundle.includes(s.amount);
-    console.log('  ' + (priced ? 'price visible ' : 'NO PRICE ON SITE') + '  ' + s.name + '  ' + s.amount + ' ' + s.currency + ' ' + s.cadence);
+    console.log('  ' + (priced ? 'price stated   ' : 'NO PRICE ON SITE') + '  ' +
+      (links.length ? 'link present ' : 'NO LINK     ') + '  ' + s.name + '  ' + s.amount + ' ' + s.currency + ' ' + s.cadence);
   }
 
   console.log(bad ? `\nFAIL — ${bad} site-vs-store contradiction(s).` : '\nPASS — site money claims match what the account sells.');

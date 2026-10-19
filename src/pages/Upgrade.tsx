@@ -134,7 +134,10 @@ const Upgrade = () => {
 
         {signedIn === false && (
           <div className="mb-10 rounded-lg border border-border bg-card p-6 text-sm">
-            <p className="mb-4 text-muted-foreground">Sign in to subscribe and manage API keys.</p>
+            <p className="mb-4 text-muted-foreground">
+              You can pay by card above without signing in at all. Sign in with the email on the card to turn a payment
+              into a managed API key, and to see your remaining daily capacity.
+            </p>
             <Button variant="hero" asChild><Link to="/auth">Sign in</Link></Button>
           </div>
         )}

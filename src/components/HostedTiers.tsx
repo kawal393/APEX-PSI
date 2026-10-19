@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { HOSTED_TIERS, RAPIDAPI_URL, salesMailto } from "@/lib/commerce";
+import { HOSTED_TIERS, RAPIDAPI_URL, DIRECT_CHECKOUT, salesMailto } from "@/lib/commerce";
 
 /**
  * The hosted product ladder, identical on every channel.
  * Free and Institutional route to use / contact; Pro and Ultra open direct
  * card checkout, with the same product on the marketplace as an alternative.
+ * A paid tier can also be bought with no account at all, straight to the
+ * Stripe-hosted page for the identical price.
  */
 const HostedTiers = ({ currentTier }: { currentTier?: string }) => {
   const { toast } = useToast();
@@ -76,14 +78,27 @@ const HostedTiers = ({ currentTier }: { currentTier?: string }) => {
 
               {tier.selfServe && (
                 <>
+                  <a
+                    href={(DIRECT_CHECKOUT.find((d) => d.tier === tier.id) ?? {}).url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-md bg-gold px-4 py-2 text-sm font-bold text-background transition-opacity hover:opacity-90"
+                  >
+                    Pay by card — no account
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                  <p className="text-[11px] leading-snug text-muted-foreground">
+                    {tier.price} {tier.cadence}, the same price as subscribing here. Pay on Stripe's page, then sign in
+                    with that card's email to get your API key — no one is contacted and nothing is negotiated.
+                  </p>
                   <button
                     type="button"
                     disabled={busy === tier.id}
                     onClick={() => startCheckout(tier.id)}
-                    className="inline-flex items-center justify-center gap-2 rounded-md border border-gold bg-gold/10 px-4 py-2 text-sm font-bold text-gold transition-colors hover:bg-gold/20 disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-md border border-gold/30 px-4 py-2 text-sm font-bold text-gold transition-colors hover:bg-gold/10 disabled:opacity-60"
                   >
                     {busy === tier.id ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                    {busy === tier.id ? "Opening…" : `Subscribe — ${tier.price}/mo`}
+                    {busy === tier.id ? "Opening…" : `Or subscribe signed-in — ${tier.price}/mo`}
                   </button>
                   <a
                     href={RAPIDAPI_URL}

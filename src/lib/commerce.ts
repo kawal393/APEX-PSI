@@ -85,3 +85,45 @@ export const HOSTED_TIERS: HostedTier[] = [
 
 /** Name of the one-off receipt artefact, kept for display and reference only. */
 export const TRANSPARENCY_RECEIPT_LABEL = "Article 50 Transparency Receipt";
+
+/**
+ * Card checkout that needs no account and no human.
+ *
+ * These are Stripe-hosted payment links on the APEX PSI store, wrapping the
+ * same recurring prices the site sells through the signed-in flow
+ * (supabase/functions/_shared/tiers.ts). Two doors, one product: a visitor can
+ * pay here with no sign-in, or subscribe on /upgrade and get a managed key in
+ * the same session.
+ *
+ * Provisioning after a direct payment is by email: /upgrade calls
+ * sync-subscription, which looks the Stripe customer up by the signed-in
+ * user's email and maps the price id back to the tier. So the buyer must
+ * create the account with the same address they paid with — the copy says so.
+ */
+export type DirectCheckout = {
+  tier: "pro" | "ultra";
+  name: string;
+  price: string;
+  cadence: string;
+  url: string;
+};
+
+export const DIRECT_CHECKOUT: DirectCheckout[] = [
+  {
+    tier: "pro",
+    name: "Pro",
+    price: "$11",
+    cadence: "per month",
+    url: "https://buy.stripe.com/cNidR10VP26seQEbswb7y0d",
+  },
+  {
+    tier: "ultra",
+    name: "Ultra",
+    price: "$55",
+    cadence: "per month",
+    url: "https://buy.stripe.com/4gM28jbAteTe5g4fIMb7y0c",
+  },
+];
+
+/** Where a direct-payer goes to turn a receipt into a working key. */
+export const POST_PAYMENT_PATH = "/upgrade";
