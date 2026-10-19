@@ -24,6 +24,10 @@ const MUST = [
   ['datatracker is linked', 'datatracker.ietf.org/doc/draft-singh-psi-http/'],
   ['capacity-not-finding doctrine', 'never a finding'],
   ['corrections 19 Oct entry', '19 October 2026'],
+  // Distinctive to the 20 October entry. Chosen over the date string on purpose: "20 October 2026"
+  // already appears once in the served file from unrelated copy, so counting it would pass while the
+  // correction itself was still unpublished. This assertion is RED until Lovable publishes main.
+  ['corrections 20 Oct entry', 'named a product called PSI Prover API'],
 ];
 
 // Claims that are false today. `has not been filed` appears once on the live site and
