@@ -92,12 +92,14 @@ async function stripe(path) {
   const links = [...new Set([...bundle.matchAll(LINK_RE)].map(m => m[0]))];
   console.log(`checkout links in the live bundle: ${links.length}${links.length ? ' — ' + links.join(', ') : ''}`);
   const psi = sellable.filter(s => /APEX PSI/i.test(s.name) && /Pro|Ultra|Registry|Article 50|Prover/i.test(s.name));
-  console.log('\nAPEX PSI products the merchant account sells, vs whether the live bundle names a price for them:');
-  console.log('  (priced = the amount appears in the served bundle; reachable = the bundle also carries a Stripe checkout link)');
+  console.log('\nAPEX PSI products the merchant account sells, vs what the served page says:');
+  console.log('  NOTE: "site links a checkout" is account-level — it proves the page carries at least one');
+  console.log('  Stripe link, not that this particular product has one. Per-product pairing needs the');
+  console.log('  price id, and a buy.stripe.com URL does not expose it in the bundle.');
   for (const s of psi) {
     const priced = bundle.includes('$' + s.amount.split('.')[0]) || bundle.includes(s.amount);
     console.log('  ' + (priced ? 'price stated   ' : 'NO PRICE ON SITE') + '  ' +
-      (links.length ? 'link present ' : 'NO LINK     ') + '  ' + s.name + '  ' + s.amount + ' ' + s.currency + ' ' + s.cadence);
+      (links.length ? 'site links a checkout' : 'NO LINK ON SITE  ') + '  ' + s.name + '  ' + s.amount + ' ' + s.currency + ' ' + s.cadence);
   }
 
   console.log(bad ? `\nFAIL — ${bad} site-vs-store contradiction(s).` : '\nPASS — site money claims match what the account sells.');
