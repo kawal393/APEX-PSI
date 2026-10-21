@@ -28,6 +28,8 @@ const MUST = [
   // already appears once in the served file from unrelated copy, so counting it would pass while the
   // correction itself was still unpublished. This assertion is RED until Lovable publishes main.
   ['corrections 20 Oct entry', 'named a product called PSI Prover API'],
+  // Distinctive to the 21 October entry on public/llms.txt. RED until Lovable publishes main.
+  ['corrections 21 Oct entry', 'A file no guard reads is a file that will drift'],
 ];
 
 // Claims that are false today. `has not been filed` appears once on the live site and

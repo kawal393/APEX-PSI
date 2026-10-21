@@ -1,0 +1,139 @@
+# APEX PSI — full text for models and auditors
+
+Last measured: 21 October 2026. Every number, revision and field name below was read
+from a public artifact or from the code that produces it, not from a remembered figure.
+This file is corrected by a dated entry on /corrections; it is never silently edited.
+
+## The short answer
+
+APEX PSI is an open, MIT-licensed evidence protocol. You take the SHA-256 hash of a
+decision, document or artefact, record it in an append-only public ledger, and receive a
+receipt. Anyone, anywhere, at any later date can re-check that hash against the ledger —
+free, with no account and without our cooperation — and see whether the record existed at
+that timestamp and has not changed since. It does not judge whether the contents are true.
+
+## What it is, and what it is not
+
+- It is an **audit trail**. It proves a statement was *made* and preserved.
+- It is not a verdict, a certification, a score, or an opinion.
+- It does not store your content. Only the hash leaves your machine.
+- It cannot make a false statement true, and it cannot make a true statement provable
+  in a court on its own. It gives a document a date and a fingerprint that others can
+  re-compute.
+- Verification is free forever and is not a paid tier. A higher tier buys capacity,
+  never a finding.
+
+## Verify it yourself, in three commands
+
+```bash
+# 1. the offline verifier, no account, no network needed
+npm install apex-psi-verifier        # or: pip install psi-verifier
+
+# 2. run our own conformance suite and see the same result we publish
+#    https://ai-governance-standard.com/conformance
+
+# 3. look any hash up in the public ledger
+#    https://ai-governance-standard.com/verify
+```
+
+Both packages are published at version **1.3.0**. Release **1.2.0 is unsafe and should be
+pinned away from**: it contains no signature code at all, so it can report a forged seal
+as intact. From 1.3.0, a seal whose Ed25519 signature could not be checked is never
+reported as a pass — the verifier fails loudly instead.
+
+## What a receipt contains
+
+Field names are taken from the notary that issues them
+(`supabase/functions/notarize/index.ts` on `main`):
+
+| Field | Meaning |
+|---|---|
+| `receipt_id` | Identifier for this receipt. |
+| `timestamp` | When the record was written to the ledger. |
+| `decision_hash` | `sha256:` over the canonical (RFC 8785 JCS) payload. |
+| `merkle_leaf` | `sha256:` binding `receipt_id` to the commit hash. |
+| `merkle_root`, `merkle_profile` | The batch root the leaf was folded into, and the profile it used. |
+| `ed25519_signature` | The Ed25519 signature the ledger attaches. |
+| `mldsa65_signature`, `mldsa65_public_key` | ML-DSA-65 (FIPS 204) post-quantum signature and its key. |
+| `pq_signature`, `pq_public_key` | LMS-W4-SHA256 (NIST SP 800-208) signature and key, when a slot was available. |
+| `post_quantum` | Boolean the receipt itself asserts. |
+| `algorithm` | **Which signatures this particular receipt actually carries** — either `SHA-256 + Ed25519 + ML-DSA-65 + LMS-W4-SHA256` or `SHA-256 + Ed25519 + ML-DSA-65`. Read this field rather than assuming. |
+| `signed_payload` | What the signature covers: today `sha256:` of the Merkle leaf. |
+| `verify_url` | The ledger endpoint that answers a lookup for this hash. |
+| `proof_url` | The Merkle inclusion proof for this receipt. |
+| `pdf_url` | Human-readable rendering of the same receipt. |
+| `predicate_applied` | The predicate the record was filed under. |
+| `receipt_version` | Currently `PSI-1.2`. |
+| `tier`, `engine` | The capacity tier that served it and the notary build string. |
+
+Bitcoin / OpenTimestamps state is **not** part of the receipt: it is read from a separate
+endpoint (`/blockchain-anchor`, exposed as the `anchor` tool), and an anchor counts only
+once a real block is found.
+
+Algorithms in scope: RFC 8785 (JCS), SHA-256 (FIPS 180-4), Ed25519 (RFC 8032),
+ML-DSA-65 (FIPS 204), LMS-W4-SHA256 (NIST SP 800-208). Canonical seal schema: PSI-SEAL/1.0.0.
+
+## The limit, stated before anyone has to find it
+
+The published seal rule (R11) specifies an Ed25519 signature over the canonical
+`seal_hash`. The live ledger key currently signs the **Merkle leaf**. Those are different
+strings, so an honest verifier reports these receipts as **"format is correct — not proven
+who signed it"**, and that gap is recorded on /corrections rather than papered over. Until
+it is closed one way or the other, treat a hosted receipt as proof of *publication and
+integrity*, not as proof of *the publisher's identity*. This is the first thing a careful
+auditor should check, and it is why we publish the constraint here instead of in a footnote.
+
+## Standards status — exactly, not impressively
+
+Five PSI documents are **filed Internet-Drafts** (Individual Submissions, Informational,
+author K. Singh). **None is an approved standard. None has been adopted by a working
+group. The IETF has not endorsed any of them.** Measured 21 October 2026, each revision
+returns HTTP 200 from the IETF archive:
+
+- `draft-singh-psi-02` — expires 16 April 2027
+- `draft-singh-psi-http-00` — expires 16 April 2027
+- `draft-singh-psi-agent-01` — expires 16 April 2027
+- `draft-singh-psi-merkle-01` — expires 16 April 2027
+- `draft-singh-psi-post-quantum-00` — expires 19 January 2027
+
+Our rule: a draft is called filed only when its datatracker URL returns 200.
+
+## For the auditor: a paragraph you can paste into a workpaper
+
+> The engagement team re-computed the SHA-256 hash of the client-held record and queried
+> it against the APEX PSI public ledger, an append-only evidence log, on the date shown in
+> the working papers. The ledger returned a matching entry with the timestamp and Merkle
+> position recorded in the client's receipt. We re-performed the check independently of the
+> client's systems. The result supports only two assertions: that content matching this hash
+> was recorded at the stated time, and that the content has not changed since. It does not
+> support any assertion about the accuracy, completeness or authorship of that content, and
+> the signature-scope limitation published in the protocol's own documentation was taken into
+> account. Verification used the MIT-licensed `apex-psi-verifier` / `psi-verifier` 1.3.0
+> package, whose conformance suite is public and reproducible.
+
+## Connect an agent
+
+- Install (stdio, npm, no account): `npx -y apex-psi-mcp` — tools `seal`, `verify`,
+  `anchor`, `cite`, `verify_chain`.
+- Hosted manifest: https://ai-governance-standard.com/.well-known/mcp/server.json —
+  tools `seal`, `verify_hash`, `anchor_status`, `list_attestations`, `ledger_stats`,
+  `protocol_info`.
+- Free allowance: 20 operations per minute, 100 per day, enforced per server instance.
+  An API key raises the ceiling; it does not change what a receipt can claim.
+
+## Cite it
+
+```
+APEX PSI — Proof of Stateful Integrity (2026). Open evidence protocol, MIT.
+https://ai-governance-standard.com
+```
+
+Preferred citation page: https://ai-governance-standard.com/cite
+
+## Corrections and security
+
+- Mistakes we found in our own public copy: https://ai-governance-standard.com/corrections
+- Security disclosures: SECURITY.md in https://github.com/kawal393/APEX-PSI
+
+License: MIT. The protocol must survive the company: the format is open, the verifier is
+free, and nothing here requires trusting us to check a record.

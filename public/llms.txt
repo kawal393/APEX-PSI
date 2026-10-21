@@ -1,22 +1,45 @@
 # APEX PSI — Proof of Stateful Integrity
 
-> Open-standard cryptographic evidence protocol for AI governance. Records the
-> existence and integrity of a decision, document or artefact at a point in
-> time. It does not judge whether the contents are true.
+> Open-standard evidence protocol for AI governance. Records the existence and
+> integrity of a decision, document or artefact at a point in time. It does not
+> judge whether the contents are true, and verification is free forever.
 
 Canonical site: https://ai-governance-standard.com
+Full text for models: https://ai-governance-standard.com/llms-full.txt
+
+## Verify without asking anyone
+
+- npm: `npm install apex-psi-verifier` (zero dependencies; Node, Deno, Bun, browsers, CI)
+- PyPI: `pip install psi-verifier`
+- Both are published at **1.3.0** and both are MIT. A seal whose Ed25519 signature
+  could not be checked is never reported as a pass.
+- Reproduce our own conformance result: https://ai-governance-standard.com/conformance
+
+A seal is an **audit trail**: it proves a statement was *made* at a timestamp and has
+not changed since. It is not proof that the statement is true.
 
 ## Connect an AI agent (MCP)
-npx -y apex-psi-mcp
-- Server manifest: https://ai-governance-standard.com/.well-known/mcp/server.json
+
+Two surfaces over the same ledger, both free to start with no account:
+
+- **Install anywhere (stdio, npm):** `npx -y apex-psi-mcp` — tools `seal`, `verify`,
+  `anchor`, `cite`, `verify_chain`.
+- **Hosted, no install:** manifest at
+  https://ai-governance-standard.com/.well-known/mcp/server.json — tools `seal`,
+  `verify_hash`, `anchor_status`, `list_attestations`, `ledger_stats`, `protocol_info`.
 - OAuth metadata: https://ai-governance-standard.com/.well-known/oauth-authorization-server
-- Tools: verify_hash, list_attestations, ledger_stats, protocol_info
+- Free allowance: 20 operations per minute, 100 per day, enforced per server instance.
+  A higher tier buys capacity, never a finding.
 
 ## Core pages
+
 - /protocol — protocol specification
 - /spec — EU AI Act Article 50 mapping
 - /standard — Compliance-Receipt HTTP header
-- /verify — public hash verification
+- /verify — public hash verification, no account
+- /conformance — the test suite and its result
+- /cite — how to cite a receipt, and this protocol
+- /corrections — our own mistakes, by dated entry; pages are never silently edited
 - /pramaan — human witness sealing
 - /api — REST API reference
 - /integrations — integration surfaces
@@ -26,12 +49,27 @@ npx -y apex-psi-mcp
 - /media — browser-side file fingerprint sealing with an informative C2PA-shaped hash record
 - /console — signed-in list, search and JSONL export of your own receipts
 
-## Standards
+## Standards and algorithms
+
 RFC 8785 (JCS), SHA-256 (FIPS 180-4), Ed25519 (RFC 8032), ML-DSA-65 (FIPS 204),
-LMS-W4-SHA256 (NIST SP 800-208). IETF Internet-Draft draft-singh-psi rev 01 (Informational, not a standard);
-draft-singh-psi-http is in preparation and has not been filed. Canonical seal schema: PSI-SEAL/1.0.0.
+LMS-W4-SHA256 (NIST SP 800-208). Canonical seal schema: PSI-SEAL/1.0.0.
+
+Five PSI documents are **filed Internet-Drafts** (Individual Submissions, status
+Informational, author K. Singh). **None is an approved standard and none has been
+adopted by a working group.** Measured 21 October 2026, each revision below returns
+HTTP 200 from the IETF archive:
+
+- draft-singh-psi-02 — expires 16 April 2027
+- draft-singh-psi-http-00 — expires 16 April 2027
+- draft-singh-psi-agent-01 — expires 16 April 2027
+- draft-singh-psi-merkle-01 — expires 16 April 2027
+- draft-singh-psi-post-quantum-00 — expires 19 January 2027
+
+Rule we hold ourselves to: a draft is called filed only when its datatracker URL
+returns 200. https://datatracker.ietf.org/doc/draft-singh-psi/
 
 ## Trust anchor
+
 https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json
 
 License: MIT

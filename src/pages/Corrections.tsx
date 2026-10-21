@@ -8,6 +8,15 @@ const DESCRIPTION =
 
 const ENTRIES = [
   {
+    date: "21 October 2026",
+    said:
+      "public/llms.txt — the plain-text summary this site publishes for AI answer engines — stated that the Compliance-Receipt specification \u201cis in preparation and has not been filed\u201d, and named draft-singh-psi revision 01 as the PSI document on the IETF record. The correction of 19 October 2026 records that nineteen public surfaces were re-read against the datatracker and fixed. This file was not one of them.",
+    now:
+      "Re-measured on 21 October from the IETF archive: draft-singh-psi-02, draft-singh-psi-http-00, draft-singh-psi-agent-01, draft-singh-psi-merkle-01 and draft-singh-psi-post-quantum-00 each return HTTP 200, with the same expiry dates published here on 19 October. All five remain Individual Submissions in the Informational category: none is an approved standard, none is adopted by a working group, none carries IETF endorsement, and the file now says so beside the list. The sentence stayed false in the one place it matters most to a stranger, because a plain-text file is exactly what a model repeats without any of the page around it. The same file named four of the six tools the hosted manifest advertises and none of the five tools the installable npm server exposes, gave no version number for either verifier, and gave no free allowance. It is rewritten, and public/llms-full.txt is published beside it with the receipt field names read out of the notary that issues them, the limit we have not closed \u2014 the live ledger key signs the Merkle leaf while rule R11 specifies an Ed25519 signature over the ASCII seal_hash, so a hosted receipt proves publication and integrity and not the publisher\u2019s identity \u2014 and one methodology paragraph an auditor can paste into a workpaper. Two facts about our own checking are recorded here rather than quietly fixed. First, the served bundle had no Bitcoin or OpenTimestamps field in it at all: anchoring is a separate endpoint, and a table in the new file that had implied otherwise was corrected before it shipped. Second, scripts/live-copy-check.mjs reads the file a browser receives, so every public/*.txt sat outside the only guard that watches what a visitor actually gets.",
+    undertaking:
+      "A correction is not finished until the machine-readable copies carry it. scripts/static-copy-check.mjs now compares the live bytes of llms.txt and llms-full.txt against the committed bytes, fails on a false claim still being served, and exits non-zero on drift or absence; its failure case is today\u2019s own red run, which is the state this entry exists to end. A file no guard reads is a file that will drift, and the guard now reads it.",
+  },
+  {
     date: "20 October 2026",
     said:
       "The corrections entry of 19 October 2026 stated that three products were found active \u201cwhile no page names or prices them\u201d, and that APEX PSI Prover at $49 per month \u201cis still not named or priced on any page\u201d. It also recorded the store as holding 35 active products and 40 active prices, of which five are APEX PSI.",
