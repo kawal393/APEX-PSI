@@ -9,9 +9,11 @@
 //
 // Usage:  node scripts/static-copy-check.mjs [site]
 // Exit 0 - every watched static file is byte-identical to the committed copy.
-// Exit 2 - a file differs: either Lovable has not published main yet, or the live copy has
+// Exit 3 - a file differs: either Lovable has not published main yet, or the live copy has
 //          drifted away from the repo. Both are reportable; neither is a pass.
 // Exit 1 - a fetch failed, or the live copy carries a claim on the never-again list.
+// 3 rather than 2 on purpose: 2 already means "the guard could not run" to commerce-truth-check
+// and to the morning scan, and "not published yet" is a different fact from "cannot check".
 
 const SITE = process.argv[2] || 'https://www.ai-governance-standard.com';
 const BASE = 'https://ai-governance-standard.com';
@@ -80,6 +82,6 @@ if (fatal) {
 }
 if (differs) {
   console.log(`\nstatic-copy-check: ${differs} file(s) not yet matching main — publish pending, not a pass.`);
-  process.exit(2);
+  process.exit(3);
 }
 console.log('\nstatic-copy-check: every watched static file is live and matches the repository.');
