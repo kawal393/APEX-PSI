@@ -202,7 +202,7 @@ const Forge = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>APEX Forge — AI Image Generator with Cryptographic Truth Stamp — Apex PSI — Universal Verification Protocol</title>
+        <title>APEX Forge — AI Image Generator with a Tamper-Evident Seal — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Generate any image with AI and stamp it with the APEX VERIFIED seal. Anchored to the APEX PSI ledger. Free, open, shareable." />
         <link rel="canonical" href="https://www.ai-governance-standard.com/forge" />
       </Helmet>

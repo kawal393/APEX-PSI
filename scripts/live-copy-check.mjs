@@ -30,6 +30,16 @@ const MUST = [
   ['corrections 20 Oct entry', 'named a product called PSI Prover API'],
   // Distinctive to the 21 October entry on public/llms.txt. RED until Lovable publishes main.
   ['corrections 21 Oct entry', 'A file no guard reads is a file that will drift'],
+  // Distinctive to the 23 October badge rewrite. The badge page used to sell "Display Your
+  // Apex PSI Score" and a "real-time score" — there is no scoring engine anywhere in this
+  // product, and compliance_score is a number a person types into a form. These two strings
+  // are the corrected copy, and they are RED until Lovable publishes main.
+  ['badge says it issues no scores', 'APEX PSI issues no scores'],
+  ['badge refuses a non-hash', 'not a 64-character SHA-256 hash'],
+  // The corrected hero, and the sentence that says what a seal cannot do. Both RED until
+  // Lovable publishes main.
+  ['hero names records not truth', 'for Verifiable Records'],
+  ['hero states the seal limit', 'has not changed since its timestamp'],
 ];
 
 // Claims that are false today. `has not been filed` appears once on the live site and
@@ -43,6 +53,21 @@ const MUST_NOT = [
   ['unfiled label', 'unfiled'],
   ['registry under-claim', 'Not published to a registry yet'],
   ['registry under-claim (cards)', 'Neither is published to a package registry yet'],
+  // 23 Oct: the badge page promised a score and an endorsement we do not issue. A badge that
+  // anyone can download and paste says "PSI Verified" about nothing, which hands a stranger
+  // our brand as a fake credential. These phrases must never come back.
+  ['badge promises a score', 'Apex PSI Score'],
+  ['badge promises a live score', 'Real-time score'],
+  ['badge auto-updates a score', 'Auto-updates as your score changes'],
+  ['badge claims regulator trust', 'building trust with customers and regulators'],
+  ['badge issues a verdict', 'PSI Verified'],
+  ['compliance pulse over-claim', 'Show your real-time compliance status'],
+  // 23 Oct: five surfaces called a seal the truth. The H1 on the site root and on /mcp were
+  // the loudest; badge-copy-check.mjs now refuses them in the tree, and these refuse them
+  // on the served bundle.
+  ['hero claims digital truth', 'for Digital Truth'],
+  ['mcp hero claims cryptographic truth', 'Cryptographic truth'],
+  ['product line claims a verified badge', 'APEX Verified badge'],
 ];
 
 const count = (haystack, needle) => haystack.split(needle).length - 1;

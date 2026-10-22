@@ -88,9 +88,13 @@ const Receipt = () => {
     ? `Cryptographic receipt for ${shortHash}. Sealed ${data?.created_at ? new Date(data.created_at).toUTCString() : "in the APEX PSI ledger"} with ${data?.algorithm ?? "SHA-256 + Ed25519"}. Independently re-verifiable against the public AI governance standard ledger.`
     : `No APEX PSI ledger entry matches ${shortHash}. Verify any hash for free against the public AI governance standard ledger.`;
 
-  const embedSnippet = `<a href="${canonical}" target="_blank" rel="noopener">
-  <img src="${SITE_URL}/apex-verified-badge.svg" alt="APEX PSI Verified — proof ${clean.slice(0, 12)}" height="40" />
-</a>`;
+  // Offered only for a hash the ledger actually holds. Handing out a "verified" badge for
+  // an unknown hash would put our mark on a record we have just said does not exist.
+  const embedSnippet = found
+    ? `<a href="${canonical}" target="_blank" rel="noopener">
+  <img src="${SITE_URL}/apex-verified-badge.svg" alt="Sealed in the APEX PSI ledger — proof ${clean.slice(0, 12)}" height="40" />
+</a>`
+    : "";
 
   return (
     <div className="min-h-screen bg-background">
@@ -239,11 +243,13 @@ const Receipt = () => {
                   Put the badge on your site or model card. It links back to this receipt, so
                   anyone can verify without trusting you — or us.
                 </p>
-                <Button variant="heroOutline" size="sm" onClick={() => setShowEmbed((v) => !v)}>
-                  <Code2 className="h-4 w-4 mr-1" />
-                  {showEmbed ? "Hide embed code" : "Show embed code"}
-                </Button>
-                {showEmbed && (
+                {found && (
+                  <Button variant="heroOutline" size="sm" onClick={() => setShowEmbed((v) => !v)}>
+                    <Code2 className="h-4 w-4 mr-1" />
+                    {showEmbed ? "Hide embed code" : "Show embed code"}
+                  </Button>
+                )}
+                {found && showEmbed && (
                   <div className="mt-4">
                     <pre className="text-[11px] font-mono bg-muted/40 rounded p-3 overflow-x-auto whitespace-pre-wrap break-all text-foreground/80">
                       {embedSnippet}

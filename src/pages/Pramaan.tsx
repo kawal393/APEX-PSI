@@ -448,7 +448,7 @@ const Pramaan = () => {
           </span>
         </div>
         <p className="text-muted-foreground mb-6 max-w-3xl">
-          The .praman file is an open, tamper-evident receipt. Mathematically minimal. Politically neutral. Free forever. This is the HTTPS moment for digital truth.
+          The .praman file is an open, tamper-evident receipt. Mathematically minimal. Politically neutral. Free forever. This is the HTTPS moment for verifiable records.
         </p>
 
         <Card className="p-6 bg-card/60 border-border mb-6">

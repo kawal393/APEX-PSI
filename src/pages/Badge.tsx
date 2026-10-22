@@ -18,14 +18,74 @@ import { Helmet } from "react-helmet-async";
 type BadgeTheme = "dark" | "light" | "gold";
 type BadgeSize = "sm" | "md" | "lg";
 
+// The ledger lookup the badge stands on. A badge may only claim what a stranger can
+// re-check: that one hash is in the append-only ledger. It is never a rating, a score, or
+// an assurance that what the holder says is true — and there is no scoring engine in this
+// product, so no page may imply one.
+const VERIFY_HASH_URL =
+  "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/verify-hash";
+
+type SealState =
+  | { kind: "empty" }
+  | { kind: "checking" }
+  | { kind: "found"; commitId?: string }
+  | { kind: "absent" }
+  | { kind: "refused"; detail: string };
+
 const Badge = () => {
   const [companyName, setCompanyName] = useState("Your Company");
   const [theme, setTheme] = useState<BadgeTheme>("dark");
   const [size, setSize] = useState<BadgeSize>("md");
   const { user } = useAuth();
   const [complianceStatus, setComplianceStatus] = useState<string | null>(null);
+  const [sealHash, setSealHash] = useState("");
+  const [seal, setSeal] = useState<SealState>({ kind: "empty" });
 
-  // Fetch real compliance status for authenticated users
+  const checkSeal = async () => {
+    const clean = sealHash.trim().replace(/^sha256:/i, "").toLowerCase();
+    if (!/^[0-9a-f]{64}$/.test(clean)) {
+      setSeal({
+        kind: "refused",
+        detail: "That is not a 64-character SHA-256 hash. Paste the hash from your receipt.",
+      });
+      return;
+    }
+    setSeal({ kind: "checking" });
+    try {
+      const res = await fetch(`${VERIFY_HASH_URL}?hash=${clean}`, { method: "GET" });
+      if (res.status === 429) {
+        // The flood guard refused the lookup. Nothing was asked of the ledger, so the page
+        // must not read "not sealed" — that would be the site lying about a real record.
+        const wait = Number(res.headers.get("retry-after") ?? "");
+        setSeal({
+          kind: "refused",
+          detail: Number.isFinite(wait) && wait > 0
+            ? `Lookup rate-limited (20 free lookups a minute per address). Nothing was asked of the ledger. Try again in about ${Math.ceil(wait)} second(s).`
+            : "Lookup rate-limited (20 free lookups a minute per address). Nothing was asked of the ledger. Try again shortly.",
+        });
+        return;
+      }
+      if (!res.ok) {
+        setSeal({ kind: "refused", detail: `Ledger probe answered HTTP ${res.status}. Nothing was confirmed.` });
+        return;
+      }
+      const body = (await res.json()) as { verified?: boolean; found?: boolean; commit_id?: string };
+      if (body.verified || body.found) {
+        setSeal({ kind: "found", commitId: typeof body.commit_id === "string" ? body.commit_id : undefined });
+      } else {
+        setSeal({ kind: "absent" });
+      }
+    } catch (err) {
+      setSeal({ kind: "refused", detail: `Could not reach the ledger: ${(err as Error).message}` });
+    }
+  };
+
+  const sealedHash = seal.kind === "found" ? sealHash.trim().replace(/^sha256:/i, "").toLowerCase() : "";
+  const isSealed = sealedHash.length === 64;
+
+  // Fetch the workspace status only so a signed-in holder can see it. It is an assessment
+  // recorded in their own workspace, not a fact the ledger carries, so it never drives a
+  // public badge.
   useEffect(() => {
     if (!user) return;
     const fetchStatus = async () => {
@@ -57,19 +117,27 @@ const Badge = () => {
   const s = sizeConfig[size];
   const t = themeConfig[theme];
 
+  const badgeLabel = isSealed ? "PSI Sealed" : "No seal checked";
   const badgeSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${s.w}" height="${s.h}" viewBox="0 0 ${s.w} ${s.h}">
   <rect width="${s.w}" height="${s.h}" rx="8" fill="${t.bg}" stroke="${t.border}" stroke-width="1"/>
-  <circle cx="${s.h / 2}" cy="${s.h / 2}" r="${s.logoSize / 2}" fill="${t.accent}" fill-opacity="0.15"/>
-  <text x="${s.h / 2}" y="${s.h / 2 + 1}" text-anchor="middle" dominant-baseline="central" fill="${t.accent}" font-size="${s.logoSize * 0.5}" font-weight="900" font-family="system-ui">✓</text>
-  <text x="${s.h + 4}" y="${s.h * 0.38}" fill="${t.text}" font-size="${s.fontSize}" font-weight="700" font-family="system-ui">PSI Verified</text>
+  <circle cx="${s.h / 2}" cy="${s.h / 2}" r="${s.logoSize / 2}" fill="${t.accent}" fill-opacity="${isSealed ? "0.15" : "0.05"}"/>
+  <text x="${s.h / 2}" y="${s.h / 2 + 1}" text-anchor="middle" dominant-baseline="central" fill="${t.accent}" font-size="${s.logoSize * 0.5}" font-weight="900" font-family="system-ui">${isSealed ? "✓" : "·"}</text>
+  <text x="${s.h + 4}" y="${s.h * 0.38}" fill="${t.text}" font-size="${s.fontSize}" font-weight="700" font-family="system-ui">${badgeLabel}</text>
   <text x="${s.h + 4}" y="${s.h * 0.65}" fill="${t.subtext}" font-size="${s.fontSize - 2}" font-family="system-ui">${companyName}</text>
   <text x="${s.w - 8}" y="${s.h * 0.65}" text-anchor="end" fill="${t.accent}" font-size="${s.fontSize - 3}" font-family="system-ui" opacity="0.6">APEX</text>
 </svg>`;
 
-  const embedCode = `<!-- APEX PSI Trust Badge -->
-<a href="https://ai-governance-standard.com/verify" target="_blank" rel="noopener noreferrer" title="PSI Verified by APEX PSI">
-  <img src="data:image/svg+xml,${encodeURIComponent(badgeSvg)}" alt="PSI Verified - ${companyName}" width="${s.w}" height="${s.h}" />
-</a>`;
+  // The link IS the claim. It goes to the one record, not to a front page where a visitor
+  // has to take our word for it.
+  const badgeHref = isSealed
+    ? `https://www.ai-governance-standard.com/verify?hash=${sealedHash}`
+    : "https://www.ai-governance-standard.com/verify";
+  const embedCode = isSealed
+    ? `<!-- APEX PSI seal badge — links to one ledger record anyone can re-check -->
+<a href="${badgeHref}" target="_blank" rel="noopener noreferrer" title="Sealed in the APEX PSI append-only ledger. Verify it yourself.">
+  <img src="data:image/svg+xml,${encodeURIComponent(badgeSvg)}" alt="PSI Sealed - ${companyName}" width="${s.w}" height="${s.h}" />
+</a>`
+    : `Paste a seal hash above and the code here becomes the badge for that one record.`;
 
   const copy = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -79,11 +147,11 @@ const Badge = () => {
   return (
     <>
       <Helmet>
-        <title>Trust Badge — Display Your Apex PSI Score — Apex PSI — Universal Verification Protocol</title>
-        <meta name="description" content="Embed a verifiable trust badge on your site. Real-time score, tamper-evident link back to your public attestation." />
+        <title>Seal Badge — Put one verifiable record on your site — APEX PSI</title>
+        <meta name="description" content="Embed a badge that links to a single record in the APEX PSI append-only ledger. Anyone can re-check it, free, with no account. A seal proves a record was made and has not changed — never that its contents are true." />
         <link rel="canonical" href="https://www.ai-governance-standard.com/badge" />
-        <meta property="og:title" content="Trust Badge — Display Your APEX PSI Score" />
-        <meta property="og:description" content="Embed a verifiable trust badge on your site. Real-time score, tamper-evident link back to your public attestation." />
+        <meta property="og:title" content="Seal Badge — link your site to one verifiable record" />
+        <meta property="og:description" content="The badge points at a specific ledger entry. A visitor re-checks the hash themselves; nobody has to trust a rating." />
         <meta property="og:url" content="https://www.ai-governance-standard.com/badge" />
         <meta property="og:type" content="website" />
       </Helmet>
@@ -94,14 +162,17 @@ const Badge = () => {
           <div className="container mx-auto max-w-4xl">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
               <UiBadge variant="outline" className="border-gold/30 text-gold mb-4">
-                EMBEDDABLE TRUST BADGE
+                EMBEDDABLE SEAL BADGE
               </UiBadge>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4">
-                <span className="text-chrome-gradient">Show Your</span>{" "}
-                <span className="text-gold-gradient">Compliance</span>
+                <span className="text-chrome-gradient">Point at</span>{" "}
+                <span className="text-gold-gradient">one record</span>
               </h1>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Display the PSI Verified badge on your website. Every badge links back to our public verification portal — building trust with customers and regulators.
+                Paste a hash that the APEX PSI ledger already holds, and the badge below links
+                straight to it. A visitor re-checks the record themselves — free, no account.
+                The badge proves a record was made and has not changed since its timestamp. It
+                does not rate you, certify you, or say that anything you claim is true.
               </p>
               <div className="max-w-xl mx-auto mt-5 text-left">
                 <ZeroClaimLabel state="verified" />
@@ -124,6 +195,48 @@ const Badge = () => {
 
                   {/* Customization */}
                   <div className="space-y-4">
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">
+                        Seal hash — the 64-character hash from your receipt
+                      </label>
+                      <div className="flex gap-2">
+                        <Input
+                          value={sealHash}
+                          onChange={(e) => {
+                            setSealHash(e.target.value);
+                            setSeal({ kind: "empty" });
+                          }}
+                          placeholder="e.g. 4606e9ee…  (64 hex characters)"
+                          className="bg-background border-border font-mono text-xs"
+                          maxLength={71}
+                        />
+                        <Button variant="heroOutline" size="sm" onClick={checkSeal} className="shrink-0">
+                          Check
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {seal.kind === "empty" && "Nothing asked of the ledger yet. The badge stays a preview until a hash is confirmed."}
+                        {seal.kind === "checking" && "Asking the ledger…"}
+                        {seal.kind === "found" && (
+                          <>This hash is in the append-only ledger{seal.commitId ? ` (receipt ${seal.commitId})` : ""}.{" "}
+                            <a className="text-gold underline" href={badgeHref} target="_blank" rel="noopener noreferrer">
+                              See the record
+                            </a>
+                            . A seal proves the record was made and has not changed — not that its contents are true.</>
+                        )}
+                        {seal.kind === "absent" && "The ledger holds no record of that hash. Seal something first, then come back."}
+                        {seal.kind === "refused" && seal.detail}
+                      </p>
+                      {!isSealed && (
+                        <p className="text-xs mt-1">
+                          No receipt yet?{" "}
+                          <Link to="/seal" className="text-gold underline">Seal a record</Link>{" "}
+                          or ask the{" "}
+                          <Link to="/mcp" className="text-gold underline">MCP server</Link> to seal one for you.
+                        </p>
+                      )}
+                    </div>
+
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block">Company Name</label>
                       <Input
@@ -195,6 +308,7 @@ const Badge = () => {
                       <Button
                         variant="heroOutline"
                         size="sm"
+                        disabled={!isSealed}
                         className="absolute top-2 right-2"
                         onClick={() => copy(embedCode, "Embed code")}
                       >
@@ -216,27 +330,34 @@ const Badge = () => {
                   </div>
 
                   <div className="rounded-lg border border-gold/20 bg-gold/5 p-4">
-                    <p className="text-xs text-gold font-semibold mb-2">How It Works</p>
+                    <p className="text-xs text-gold font-semibold mb-2">What this badge does, and what it cannot</p>
                     <ul className="text-xs text-muted-foreground space-y-1.5">
-                      <li>• Badge links to APEX public verification portal</li>
-                      <li>• Visitors can independently verify your compliance</li>
-                      <li>• Builds trust with customers and regulators</li>
-                      <li>• Updates automatically as your status changes</li>
+                      <li>• It links to one ledger entry, not to a marketing page</li>
+                      <li>• Anyone can re-check that hash, free, with no account</li>
+                      <li>• It shows a record existed at its timestamp and has not changed</li>
+                      <li>• It does not rate, certify or endorse the holder, and it cannot — APEX PSI issues no scores</li>
+                      <li>• It never proves the sealed content is true, accurate, or lawful</li>
+                      <li>• It is not legal advice and no regulator has approved it</li>
                     </ul>
                   </div>
 
                   {complianceStatus ? (
-                    <div className="rounded-lg border border-compliant/20 bg-compliant/5 p-4">
-                      <p className="text-xs text-compliant font-semibold mb-1">✓ Dynamic Badge Active</p>
+                    <div className="rounded-lg border border-border bg-background/60 p-4">
+                      <p className="text-xs text-foreground font-semibold mb-1">Your workspace status</p>
                       <p className="text-xs text-muted-foreground">
-                        Your badge reflects your live compliance status: <span className="font-bold text-foreground">{complianceStatus}</span>
+                        Your own assessments record a status of <span className="font-bold text-foreground">{complianceStatus}</span>.
+                        That number and word live in your workspace and nobody verifies them for you — the badge above only
+                        ever carries the ledger, which is a fact a stranger can re-check.
                       </p>
                     </div>
                   ) : (
                     <div className="rounded-lg border border-border bg-background/60 p-4">
-                      <p className="text-xs text-muted-foreground mb-2">Sign in to get a dynamic badge that shows your real compliance status.</p>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Sign in to keep your own assessments in one place. It changes nothing about the badge: the badge
+                        stands on a sealed hash, and that is the part a visitor can check.
+                      </p>
                       <Button variant="hero" size="sm" className="w-full" asChild>
-                        <Link to="/auth">Sign In for Dynamic Badge</Link>
+                        <Link to="/auth">Sign In</Link>
                       </Button>
                     </div>
                   )}
@@ -255,8 +376,8 @@ const Badge = () => {
               />
               {complianceStatus && (
                 <EmbedCodeGenerator
-                  title="Live Compliance Pulse"
-                  description="Show your real-time compliance status on your website. Auto-updates as your score changes."
+                  title="Workspace Status Widget"
+                  description="Shows a status you recorded in your own APEX PSI workspace. It is a display of your own notes, not a verification by APEX and not a rating — a visitor checking the ledger learns nothing about this number."
                   embedUrl={`https://ai-governance-standard.com/embed/pulse/${user?.id || ""}`}
                   defaultWidth={320}
                   defaultHeight={160}

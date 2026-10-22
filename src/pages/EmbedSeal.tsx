@@ -56,7 +56,7 @@ const EmbedSeal = () => {
           <Shield className="h-4 w-4 text-emerald-400" />
           <h1 className="text-sm font-bold tracking-widest uppercase text-gold-gradient">APEX SEAL</h1>
         </div>
-        <p className="text-xs text-muted-foreground mb-4">Drop any file. Get a cryptographic truth receipt. Hashed locally.</p>
+        <p className="text-xs text-muted-foreground mb-4">Drop any file. Get a tamper-evident receipt. Hashed locally.</p>
 
         <div
           onClick={() => !busy && inputRef.current?.click()}

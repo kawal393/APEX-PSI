@@ -57,7 +57,7 @@ const ActiveSinceClock = () => {
 const GrandHero = () => {
   return (
     <section
-      aria-label="The first global open protocol for digital truth — the proof layer of the AI economy"
+      aria-label="The first global open protocol for verifiable records — the proof layer of the AI economy"
       className="relative border-b border-gold/20 bg-background px-4 pb-14 pt-12 text-center md:pb-20 md:pt-16"
     >
       <div className="mx-auto max-w-6xl">
@@ -68,12 +68,17 @@ const GrandHero = () => {
         <h1 className="mt-6 font-serif text-4xl font-bold leading-[1.05] tracking-tight text-foreground md:text-7xl lg:text-8xl">
           Global Open Protocol
           <span className="mt-2 block bg-gradient-to-b from-gold via-gold/90 to-gold/50 bg-clip-text text-transparent">
-            for Digital Truth
+            for Verifiable Records
           </span>
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground md:text-sm">
           The Proof Layer of the AI Economy. Independent verification. Free forever.
+        </p>
+
+        <p className="mx-auto mt-3 max-w-2xl text-xs text-muted-foreground md:text-sm">
+          A seal proves a record was made and has not changed since its timestamp. It never
+          proves that what the record says is true — that judgement stays with you.
         </p>
 
         <ActiveSinceClock />

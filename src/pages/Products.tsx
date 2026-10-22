@@ -97,7 +97,7 @@ const capabilities: Capability[] = [
       "A public, machine-checkable check of what a domain publishes, free to run for any domain including your own.",
     features: [
       "Public domain transparency check",
-      "Embeddable APEX Verified badge",
+      "Embeddable badge that links to one published record",
       "Procurement-facing evidence page",
       "Registry API entry for buyer due diligence",
       "Reports published signals only, never a legal determination",

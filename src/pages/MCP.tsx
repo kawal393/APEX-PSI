@@ -97,7 +97,7 @@ const MCP = () => {
           <Terminal className="w-4 h-4" /> APEX PSI · MCP
         </div>
         <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4">
-          <span className="text-chrome-gradient">Cryptographic truth</span>{" "}
+          <span className="text-chrome-gradient">Cryptographic evidence</span>{" "}
           <span className="text-gold-gradient">for every AI agent.</span>
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mb-6">

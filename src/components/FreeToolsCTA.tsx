@@ -27,8 +27,8 @@ const tools = [
   },
   {
     icon: Award,
-    title: "Trust Badge",
-    desc: "Display a PSI Verified badge on your website. Customizable theme, size, and embed code.",
+    title: "Seal Badge",
+    desc: "Put a badge on your site that links to one sealed record in the ledger, so a visitor can re-check it themselves. No score, no endorsement — a seal proves a record was made and unchanged.",
     cta: "Get Badge",
     href: "/badge",
   },

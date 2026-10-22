@@ -417,7 +417,7 @@ async function apexSeal(file) {
         <div className="mb-8">
           <h2 className="text-2xl md:text-4xl font-black mb-2 text-chrome-gradient">Sync Any Website. One Line.</h2>
           <p className="text-muted-foreground max-w-3xl">
-            APEX is a protocol, not a product. Drop the widget, paste the snippet, or call the API — any site instantly gains cryptographic truth-stamping.
+            APEX is a protocol, not a product. Drop the widget, paste the snippet, or call the API — any site instantly gains tamper-evident sealing.
           </p>
         </div>
 
