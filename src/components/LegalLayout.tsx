@@ -1,7 +1,8 @@
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import apexLogo from "@/assets/apex-logo.png";
+import { SITE_URL } from "@/lib/site";
 
 interface LegalLayoutProps {
   title: string;
@@ -10,11 +11,20 @@ interface LegalLayoutProps {
 }
 
 const LegalLayout = ({ title, lastUpdated, children }: LegalLayoutProps) => {
+  const { pathname } = useLocation();
+  const url = `${SITE_URL}${pathname}`;
+  const description = `${title} for APEX PSI. Last updated ${lastUpdated}.`;
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>{title} — APEX PSI</title>
-        <meta name="description" content={`${title} for APEX PSI. Last updated ${lastUpdated}.`} />
+        <meta name="description" content={description} />
+        <link rel="canonical" href={url} />
+        <meta property="og:title" content={`${title} — APEX PSI`} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={url} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
       </Helmet>
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/90 backdrop-blur-xl">
         <div className="container mx-auto max-w-6xl h-16 px-4 relative flex items-center justify-between">
