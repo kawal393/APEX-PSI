@@ -40,13 +40,13 @@ const Disclaimers = () => (
         name="description"
         content="What an APEX PSI seal does and does not prove: existence and integrity at a point in time, no content validation, no legal advice, no certification."
       />
-      <link rel="canonical" href="https://ai-governance-standard.com/disclaimers" />
+      <link rel="canonical" href="https://www.ai-governance-standard.com/disclaimers" />
       <meta property="og:title" content="Important Disclaimers — Apex PSI" />
       <meta
         property="og:description"
         content="A seal proves existence and integrity at a point in time. It does not validate content."
       />
-      <meta property="og:url" content="https://ai-governance-standard.com/disclaimers" />
+      <meta property="og:url" content="https://www.ai-governance-standard.com/disclaimers" />
       <meta property="og:type" content="website" />
       <meta name="twitter:card" content="summary_large_image" />
     </Helmet>

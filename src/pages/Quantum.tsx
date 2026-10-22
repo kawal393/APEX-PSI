@@ -68,7 +68,7 @@ export default function Quantum() {
       <Helmet>
         <title>Post-Quantum Signature Experiment — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Test hybrid Ed25519 and ML-DSA-65 signatures. Post-quantum cryptography reduces a class of future risk but does not guarantee indefinite security." />
-        <link rel="canonical" href="https://ai-governance-standard.com/quantum" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/quantum" />
       </Helmet>
       <Navbar />
       <main className="min-h-screen bg-background">

@@ -8,7 +8,7 @@ const Case002 = () => {
       <Helmet>
         <title>CASE 002 — The Money | APEX PSI Reference</title>
         <meta name="description" content="RESERVED. The reference applied at institutional scale." />
-        <link rel="canonical" href="https://ai-governance-standard.com/case-002" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/case-002" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />

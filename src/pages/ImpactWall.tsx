@@ -291,7 +291,7 @@ export default function ImpactWall() {
           name="description"
           content="A live public wall of testimony about verifiable truth in the economy. Every statement is cryptographically sealed - SHA-256, Ed25519, post-quantum LMS - into the APEX public ledger. No edits. No deletions. No censorship."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/impact" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/impact" />
       </Helmet>
       <div className="min-h-screen bg-background">
         <Navbar />

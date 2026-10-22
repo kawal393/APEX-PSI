@@ -66,10 +66,10 @@ const Standard = () => {
       <Helmet>
         <title>Compliance-Receipt HTTP Header — IETF Internet-Draft draft-singh-psi-http-00 — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="The Compliance-Receipt HTTP response header specification for embedding cryptographic evidence in every API response." />
-        <link rel="canonical" href="https://ai-governance-standard.com/standard" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/standard" />
         <meta property="og:title" content="Compliance-Receipt HTTP Header — IETF Internet-Draft draft-singh-psi-http-00" />
         <meta property="og:description" content="The Compliance-Receipt HTTP response header specification for embedding cryptographic evidence in every API response." />
-        <meta property="og:url" content="https://ai-governance-standard.com/standard" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/standard" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

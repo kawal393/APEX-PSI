@@ -29,10 +29,10 @@ const Architecture = () => {
       <Helmet>
         <title>Architecture — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Multi-node verification lattice, tri-signed attestations, Bitcoin anchoring, and digest-only privacy powering APEX PSI." />
-        <link rel="canonical" href="https://ai-governance-standard.com/architecture" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/architecture" />
         <meta property="og:title" content="Architecture — APEX PSI Verification Infrastructure" />
         <meta property="og:description" content="Multi-node verification lattice, tri-signed attestations, Bitcoin anchoring, and digest-only privacy powering APEX PSI." />
-        <meta property="og:url" content="https://ai-governance-standard.com/architecture" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/architecture" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-engine-bg text-engine-text">

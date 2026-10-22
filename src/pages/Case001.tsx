@@ -51,7 +51,7 @@ const Case001 = () => {
           name="description"
           content="The first sealed worker record. Facts only. No verdicts. Every sealed row is recomputable in your own browser."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/case-001" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/case-001" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />

@@ -35,7 +35,7 @@ const Mandate = () => {
       <Helmet>
         <title>Ask Before You Act — APEX PSI</title>
         <meta name="description" content="A pre-action gate: an AI asks before it acts, and the receiver checks the receipt before obeying." />
-        <link rel="canonical" href="https://ai-governance-standard.com/mandate" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/mandate" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />

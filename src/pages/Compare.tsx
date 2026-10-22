@@ -46,10 +46,10 @@ const Compare = () => {
       <Helmet>
         <title>Apex PSI vs. Alternatives — Feature Comparison — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="How APEX PSI compares to policy-only, self-attested, and closed compliance platforms. Verifiability, openness, and cost." />
-        <link rel="canonical" href="https://ai-governance-standard.com/compare" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/compare" />
         <meta property="og:title" content="APEX PSI vs. Alternatives — Feature Comparison" />
         <meta property="og:description" content="How APEX PSI compares to policy-only, self-attested, and closed compliance platforms. Verifiability, openness, and cost." />
-        <meta property="og:url" content="https://ai-governance-standard.com/compare" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/compare" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

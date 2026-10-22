@@ -124,7 +124,7 @@ const Partners = () => {
         name="description"
         content="Four ways to work with APEX PSI: publish a verification badge, install the MCP server, build the reference client, or list an interop note. Checking stays free forever."
       />
-      <link rel="canonical" href="https://ai-governance-standard.com/partners" />
+      <link rel="canonical" href="https://www.ai-governance-standard.com/partners" />
     </Helmet>
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />

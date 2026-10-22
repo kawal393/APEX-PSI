@@ -31,13 +31,13 @@ const Registry = () => {
           name="description"
           content="A public record of verification adoption, sorted by first seal date. Not a ranking. No scores, no fees, no permission. We do not judge. We document."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/registry" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/registry" />
         <meta property="og:title" content="The Public Registry of Verification Adoption" />
         <meta
           property="og:description"
           content="Organisations appear on the date they first sealed a public document with APEX PSI. Sorted chronologically."
         />
-        <meta property="og:url" content="https://ai-governance-standard.com/registry" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/registry" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>

@@ -35,7 +35,7 @@ export default function Articles() {
       <Helmet>
         <title>AI Governance Articles — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Deep-dive articles on verifiable AI compliance, EU AI Act, Ed25519 signatures, Bitcoin-anchored proofs, and the IETF PSI standard." />
-        <link rel="canonical" href="https://ai-governance-standard.com/articles" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/articles" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Feed" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",

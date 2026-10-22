@@ -68,11 +68,11 @@ const Index = () => {
       <Helmet>
         <title>APEX PSI — Universal Verification Protocol</title>
         <meta name="description" content="An open protocol for verifying digital records. Verification free forever. Proposed open standard under active development." />
-        <link rel="canonical" href="https://ai-governance-standard.com/" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/" />
         <link rel="alternate" type="application/rss+xml" title="APEX PSI Articles" href="https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/rss-feed" />
         <meta property="og:title" content="Apex PSI — Universal Verification Protocol" />
         <meta property="og:description" content="Open, neutral, deterministic proof for AI outputs and records. Verification free forever (MIT)." />
-        <meta property="og:url" content="https://ai-governance-standard.com/" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <script type="application/ld+json">{JSON.stringify({

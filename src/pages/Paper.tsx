@@ -444,10 +444,10 @@ const Paper = () => {
       <Helmet>
         <title>Apex PSI White Paper — Verifiable AI Governance — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Full white paper on Proof of Stateful Integrity: canonicalization, signature schemes, Merkle anchoring, and adversarial review." />
-        <link rel="canonical" href="https://ai-governance-standard.com/paper" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/paper" />
         <meta property="og:title" content="APEX PSI White Paper — Verifiable AI Governance" />
         <meta property="og:description" content="Full white paper on Proof of Stateful Integrity: canonicalization, signature schemes, Merkle anchoring, and adversarial review." />
-        <meta property="og:url" content="https://ai-governance-standard.com/paper" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/paper" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

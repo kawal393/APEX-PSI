@@ -48,7 +48,7 @@ const Ecosystem = () => (
         name="description"
         content="Independent PSI implementations, node operators, adopters and conformance listings. Anyone can implement PSI. No permission required."
       />
-      <link rel="canonical" href="https://ai-governance-standard.com/ecosystem" />
+      <link rel="canonical" href="https://www.ai-governance-standard.com/ecosystem" />
       <meta property="og:title" content="PSI Ecosystem — Independent Implementations" />
       <meta
         property="og:description"

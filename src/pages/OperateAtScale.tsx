@@ -20,7 +20,7 @@ const OperateAtScale = () => (
         name="description"
         content="The PSI protocol is free forever. APEX operates the industrial-grade implementation: managed issuance, redundancy, priority anchoring and evidence retention. No prices published; arranged by agreement."
       />
-      <link rel="canonical" href="https://ai-governance-standard.com/operate" />
+      <link rel="canonical" href="https://www.ai-governance-standard.com/operate" />
       <meta property="og:title" content="Operating PSI at Scale — APEX Infrastructure" />
       <meta
         property="og:description"

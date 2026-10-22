@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowRight, Terminal, KeyRound, ShieldCheck } from "lucide-react";
+import { SITE_URL } from "@/lib/site";
 
 const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID || "your-project";
 const BASE = `https://${PROJECT_ID}.supabase.co/functions/v1/psi-api`;
@@ -20,6 +21,12 @@ const API = () => (
     <Helmet>
       <title>Apex PSI Unified API — Sync any system to the ledger — Apex PSI — Universal Verification Protocol</title>
       <meta name="description" content="Connect any app to APEX PSI via a single /v1 REST API. Notarize decisions and verify hashes with scoped apex_sk_ keys." />
+      <link rel="canonical" href={`${SITE_URL}/api`} />
+      <meta property="og:title" content="APEX PSI Unified API — notarize and verify over one REST endpoint" />
+      <meta property="og:description" content="One /v1 REST API to seal decisions into signed receipts and verify hashes, with scoped API keys." />
+      <meta property="og:url" content={`${SITE_URL}/api`} />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
     </Helmet>
     <Navbar />
 

@@ -43,5 +43,5 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-Sitemap: https://ai-governance-standard.com/sitemap.xml
+Sitemap: https://www.ai-governance-standard.com/sitemap.xml
 

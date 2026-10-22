@@ -49,11 +49,11 @@ const SealedMemory = () => {
       <Helmet>
         <title>Sealed AI Memory — APEX PSI</title>
         <meta name="description" content={SUBLINE} />
-        <link rel="canonical" href="https://ai-governance-standard.com/sealed-memory" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/sealed-memory" />
         <meta property="og:title" content="Sealed AI Memory — APEX PSI" />
         <meta property="og:description" content={SUBLINE} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ai-governance-standard.com/sealed-memory" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/sealed-memory" />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 

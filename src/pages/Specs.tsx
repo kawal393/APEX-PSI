@@ -63,7 +63,7 @@ const Specs = () => {
           name="description"
           content="The dated, versioned public prior-art shelf for the APEX PSI protocol: the PSI-SEAL/1.0.0 schema, the EU AI Act Article 50 conformance profile, interop notes for SCITT and C2PA, agent envelope, discrepancy score, evidence package, Truth Commons Charter, and the anchored release register."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/specs" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/specs" />
         <meta property="og:title" content="APEX PSI — Specification Shelf" />
         <meta property="og:description" content="Every APEX PSI specification, published with a date and a cryptographic digest, before anyone else needed one." />
         <meta property="og:type" content="article" />

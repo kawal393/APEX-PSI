@@ -28,7 +28,7 @@ const License = () => {
           name="description"
           content="APEX PSI licensing: independent verification and self-hosted sealing are free; the public APEX-hosted service has a limited allowance. Reserved: the APEX marks and building a competing seal generator."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/license" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/license" />
       </Helmet>
       <Navbar />
 
@@ -132,7 +132,7 @@ received schema: PSI-SEAL/1.0.0 (digest match: false)
 findings:
   PSI-SEAL v1.2.0 REJECT: schema_digest mismatch — rule 4.2
 generate a conformant seal: https://ai-governance-standard.com/seal
-canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
+canonical schema: https://www.ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
 verified, not asserted; trust the math, not the maker.`}
             </pre>

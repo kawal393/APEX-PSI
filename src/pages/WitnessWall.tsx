@@ -62,7 +62,7 @@ export default function WitnessWall() {
       <Helmet>
         <title>Witness Wall (device-local) — APEX PRAMAAN — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="A device-local board of witness notes. For testimony sealed into the permanent public ledger, use the Living Impact Wall." />
-        <link rel="canonical" href="https://ai-governance-standard.com/witness-wall" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/witness-wall" />
       </Helmet>
       <div className="min-h-screen bg-background">
         <Navbar />

@@ -265,7 +265,7 @@ async function apexSeal(file) {
           name="description"
           content="Stamp any photo, video, audio, document, or file with APEX PSI · APEX Pramaan. Client-side SHA-256, anchored receipt, verifiable forever. Free, open, no login."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/seal" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/seal" />
       </Helmet>
       <Navbar />
 

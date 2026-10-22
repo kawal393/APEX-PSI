@@ -174,10 +174,10 @@ const FreeAssessment = () => {
       <Helmet>
         <title>Free AI Compliance Score — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Free, instant AI-governance score across EU AI Act, NIST AI RMF, and ISO 42001. Shareable results." />
-        <link rel="canonical" href="https://ai-governance-standard.com/assess" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/assess" />
         <meta property="og:title" content="Free AI Compliance Score — APEX PSI" />
         <meta property="og:description" content="Free, instant AI-governance score across EU AI Act, NIST AI RMF, and ISO 42001. Shareable results." />
-        <meta property="og:url" content="https://ai-governance-standard.com/assess" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/assess" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

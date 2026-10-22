@@ -37,7 +37,7 @@ const Genesis = () => {
           name="description"
           content="GENESIS ZERO — APEX PSI Reference Implementation v1.0. Sealed 29 August 2026. Recomputable by anyone, editable by no one."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/genesis" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/genesis" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />
