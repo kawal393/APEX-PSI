@@ -128,6 +128,20 @@ jobs:
       - run: npm ci
       - run: node scripts/wasm-provenance.mjs
 
+  # What the public says is part of the build. live-copy-check.mjs can only read the served
+  # bundle after Lovable publishes, so between a commit and a publish the tree is unwatched —
+  # and on 23 Oct the badge page shipped a "PSI Verified" mark anyone could download without
+  # sealing anything, plus a "real-time score" no code computes. This job refuses those
+  # phrases before they reach the repository, not after they reach the world.
+  public-copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/badge-copy-check.mjs
+
   supabase-deploy:
     # NOT on every push to main. `supabase db push` + `functions deploy` mutate
     # production, and the deploy job used to run silently behind a test suite
@@ -135,7 +149,7 @@ jobs:
     # a human decision: run this workflow from the Actions tab (or protect the
     # `production` environment with required reviewers in repo settings).
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance]
+    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy]
     runs-on: ubuntu-latest
     environment: production
     steps:
