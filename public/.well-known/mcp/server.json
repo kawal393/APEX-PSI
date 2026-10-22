@@ -2,10 +2,10 @@
   "schema_version": "2025-06-18",
   "name": "apex-psi",
   "title": "APEX PSI",
-  "version": "0.2.0",
-  "description": "Cryptographic open-standard evidence protocol for AI governance. Seal decisions to an append-only ledger, verify SHA-256 hashes, check Bitcoin anchoring status, browse ledger attestations, and read the protocol reference.",
-  "homepage": "https://ai-governance-standard.com",
-  "documentation": "https://ai-governance-standard.com/mcp",
+  "version": "1.1.2",
+  "description": "Append-only evidence receipts for AI decisions and documents. Seal a record and get a receipt, verify a hash against the public ledger, check a chain of receipts, cite a receipt, and read the Bitcoin anchoring status. A seal proves a record was made and has not changed — never that its contents are true. Verification is free and needs no account.",
+  "homepage": "https://www.ai-governance-standard.com",
+  "documentation": "https://www.ai-governance-standard.com/mcp",
   "install": {
     "command": "npx",
     "args": [
@@ -13,140 +13,139 @@
       "apex-psi-mcp"
     ]
   },
-  "remotes": [
-    {
-      "type": "streamable-http",
-      "url": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp"
-    }
-  ],
-  "authorization": {
-    "type": "oauth2",
-    "authorization_servers": [
-      "https://qhtntebpcribjiwrdtdd.supabase.co/auth/v1"
-    ],
-    "dynamic_client_registration": true
-  },
+  "license": "MIT",
   "tools": [
     {
       "name": "seal",
-      "title": "Seal a decision to the APEX PSI ledger",
-      "description": "Mint a post-quantum verifiable receipt for a machine action or decision. Canonicalises the payload, signs it (SHA-256 + Ed25519 + LMS-W4-SHA256), records it in the append-only ledger, and returns a receipt id that any agent can later re-check with verify_hash.",
+      "title": "Seal content",
+      "description": "Record content in the APEX PSI append-only ledger and return a receipt: SHA-256 hash, an Ed25519 signature over the Merkle leaf, and post-quantum ML-DSA-65 (plus LMS-W4-SHA256 when a slot is available — the receipt's own algorithm field states which). Proves that this content existed and has not changed since the timestamp. It never proves the contents are true. Free tier: 20 operations/minute, 100/day, no account needed.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "decision": {
+          "content": {
             "type": "string",
-            "minLength": 1,
             "maxLength": 10000,
-            "description": "The action or decision text to seal — what the machine did."
-          },
-          "model_id": {
-            "type": "string",
-            "maxLength": 200,
-            "description": "Optional identifier of the model or agent that produced the decision."
+            "description": "The content to seal (text, up to 10000 characters)"
           },
           "context": {
             "type": "string",
-            "maxLength": 2000,
-            "description": "Optional description of the decision environment."
+            "description": "Optional context label (e.g. document name, case ID)"
           },
           "predicate": {
             "type": "string",
-            "maxLength": 100,
-            "description": "Optional predicate id, e.g. EU_ART_50. Defaults to EU_ART_12."
+            "description": "Optional predicate describing why this is sealed"
+          },
+          "model_id": {
+            "type": "string",
+            "description": "Optional model/agent identifier producing the seal"
           }
         },
         "required": [
-          "decision"
-        ]
+          "content"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "verify_hash",
-      "title": "Verify a hash against the APEX PSI ledger",
-      "description": "Look up a SHA-256 hash (commit hash or Merkle leaf hash) in the APEX PSI evidence ledger and report whether a matching attestation exists.",
+      "name": "verify",
+      "title": "Verify a receipt",
+      "description": "Confirm a seal's integrity against the APEX PSI append-only ledger. Accepts a receipt object (from the seal tool) or a raw SHA-256 hash. Reports whether the hash is present and anchored — integrity, not the truth of the original content.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "hash": {
             "type": "string",
-            "pattern": "^[0-9a-fA-F]{64}$",
-            "description": "SHA-256 hash to verify, lowercase hex."
-          }
-        },
-        "required": [
-          "hash"
-        ]
-      }
-    },
-    {
-      "name": "anchor_status",
-      "title": "Bitcoin anchoring status of a sealed receipt",
-      "description": "Report the OpenTimestamps / Bitcoin anchoring state for a sealed receipt: whether its Merkle root has been committed to a real Bitcoin block, the block height, the transaction id and the offline `ots verify` command.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "commit_id": {
-            "type": "string",
-            "description": "Receipt id returned by `seal`, e.g. APEX-NTR-...."
-          }
-        },
-        "required": [
-          "commit_id"
-        ]
-      }
-    },
-    {
-      "name": "list_attestations",
-      "title": "List recent attestations",
-      "description": "List the most recent APEX PSI ledger attestations visible to the signed-in user, newest first.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "limit": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 50,
-            "default": 10,
-            "description": "How many attestations to return."
+            "description": "A SHA-256 hash to look up in the ledger (with or without 'sha256:' prefix)"
           },
-          "predicate_id": {
-            "type": "string",
-            "description": "Optional predicate filter, e.g. EU_ART_50."
+          "receipt": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "A receipt object as returned by the seal tool"
           }
-        }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     },
     {
-      "name": "ledger_stats",
-      "title": "APEX PSI ledger statistics",
-      "description": "Return counts of ledger attestations, non-approved exceptions and public attestations for a quick integrity snapshot.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "protocol_info",
-      "title": "APEX PSI protocol reference",
-      "description": "Return the APEX PSI protocol reference: canonicalization, hashing, signature suites, IETF drafts, HTTP header and anchoring targets.",
+      "name": "anchor",
+      "title": "Bitcoin anchoring history",
+      "description": "Read the Bitcoin (OpenTimestamps) anchoring record for the ledger's Merkle roots. Defaults to action:'history', which is read-only and returns each anchor transaction with its txid, block height, confirmation state and how many ledger entries it covers. Pass action:'verify' with a txid to check one transaction, or action:'anchor' to explicitly request that pending roots be aggregated and submitted to the OTS calendars. Defaults to 'history' so a routine call never triggers a batch write. An anchor counts as confirmed only when a real Bitcoin block contains it.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "section": {
+          "action": {
             "type": "string",
             "enum": [
-              "all",
-              "signatures",
-              "drafts",
-              "anchoring"
+              "history",
+              "verify",
+              "anchor"
             ],
-            "default": "all",
-            "description": "Which part of the reference to return."
+            "description": "'history' reads the anchored transactions (default); 'verify' checks one txid; 'anchor' explicitly requests anchoring of pending roots"
+          },
+          "txid": {
+            "type": "string",
+            "description": "Bitcoin transaction id — required only when action is 'verify'"
           }
-        }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "cite",
+      "title": "Generate citation",
+      "description": "Generate a citation for a sealed receipt in APA, BibTeX, or MLA format, citing the APEX PSI ledger entry.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "receipt": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "A receipt object as returned by the seal tool"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "apa",
+              "bibtex",
+              "mla"
+            ],
+            "description": "Citation format (default: apa)"
+          }
+        },
+        "required": [
+          "receipt"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    {
+      "name": "verify_chain",
+      "title": "Verify a receipt chain",
+      "description": "Independently verify a chain of receipts against the APEX PSI ledger. Recomputes each hash's presence and integrity and reports Merkle chain continuity. Returns a verification report — a recomputation result, not an opinion or a certification.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "receipts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {},
+              "description": "An APEX PSI receipt object (as returned by the seal tool)"
+            },
+            "minItems": 1,
+            "description": "Array of receipt objects to verify (in order)"
+          }
+        },
+        "required": [
+          "receipts"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
       }
     }
-  ],
-  "license": "MIT"
+  ]
 }

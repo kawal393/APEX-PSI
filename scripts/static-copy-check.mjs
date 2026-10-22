@@ -76,6 +76,90 @@ for (const file of WATCH) {
   }
 }
 
+// The MCP discovery cards are read by agents, not by people, and nothing else in this
+// suite looked at them. On 22 Oct both cards named six tools — verify_hash, anchor_status,
+// list_attestations, ledger_stats, protocol_info — and the installable package contains
+// none of those five, while the remote they pointed at answers HTTP 401 to an anonymous
+// client. A reader that trusted the card had no door to open. Compared semantically
+// (version + tool names + description), not byte for byte, because these are machine files
+// whose whitespace is not the claim.
+const CARDS = ['.well-known/mcp/server.json', '.well-known/mcp/server-card.json'];
+const CARD_MUST_NOT = [
+  'Cryptographic open-standard evidence protocol',
+  'verify_hash',
+  'anchor_status',
+  'list_attestations',
+  'ledger_stats',
+  'protocol_info',
+];
+
+for (const card of CARDS) {
+  const res = await fetch(`${BASE}/${card}?t=${Date.now()}`, { headers }).catch(() => null);
+  if (!res) {
+    console.log(`FAIL ${card}: network`);
+    fatal++;
+    continue;
+  }
+  if (res.status !== 200) {
+    console.log(`MISSING ${card}: HTTP ${res.status} (not published yet)`);
+    differs++;
+    continue;
+  }
+  const live = await res.text();
+  const { readFileSync } = await import('node:fs');
+  let local;
+  try {
+    local = readFileSync(`public/${card}`, 'utf8');
+  } catch {
+    console.log(`FAIL ${card}: no committed copy to compare against`);
+    fatal++;
+    continue;
+  }
+  const parse = (s) => {
+    try {
+      return JSON.parse(s);
+    } catch {
+      return null;
+    }
+  };
+  const L = parse(live);
+  const C = parse(local);
+  if (!L || !C) {
+    console.log(`FAIL ${card}: ${!L ? 'live' : 'committed'} copy is not valid JSON`);
+    fatal++;
+    continue;
+  }
+  const liveNames = (L.tools || []).map((t) => t.name).sort().join(',');
+  const repoNames = (C.tools || []).map((t) => t.name).sort().join(',');
+  if (liveNames !== repoNames) {
+    console.log(`DRIFT ${card}: live advertises [${liveNames}] but the repository ships [${repoNames}]`);
+    differs++;
+  }
+  if (L.version !== C.version) {
+    console.log(`DRIFT ${card}: live version ${L.version} vs committed ${C.version}`);
+    differs++;
+  }
+  if (L.description !== C.description) {
+    console.log(`DRIFT ${card}: the sentence an agent quotes is not the one in the repository`);
+    differs++;
+  }
+  for (const needle of CARD_MUST_NOT) {
+    if (live.includes(needle)) {
+      console.log(`FAIL ${card}: serves a claim we measured false — "${needle}"`);
+      fatal++;
+    }
+  }
+  if (!live.includes('"install"') || !live.includes('apex-psi-mcp')) {
+    console.log(`FAIL ${card}: no installable door named, so a reader cannot reach the server`);
+    fatal++;
+  }
+  if (!/no account/i.test(L.description)) {
+    console.log(`FAIL ${card}: the card hides the fact that verification needs no account`);
+    differs++;
+  }
+  console.log(`CHECKED ${card}: ${liveNames} @ ${L.version}`);
+}
+
 if (fatal) {
   console.log(`\nstatic-copy-check: ${fatal} fatal finding(s)`);
   process.exit(1);
