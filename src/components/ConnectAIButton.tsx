@@ -46,15 +46,15 @@ const ConnectAIButton = () => {
           </div>
 
           <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
-            <li>· Used by ChatGPT, Claude, Cursor</li>
-            <li>· OAuth protected, 4 tools</li>
-            <li>· Public ledger, free tier</li>
+            <li>· Works in Claude, Cursor and any MCP client</li>
+            <li>· Runs locally, 6 tools</li>
+            <li>· mcprush Grade A · 100/100 trust</li>
             <li>
               <a
-                href="/.well-known/mcp/server.json"
+                href="/mcp"
                 className="text-primary underline underline-offset-2 hover:opacity-80"
               >
-                Read MCP spec →
+                Setup guide →
               </a>
             </li>
           </ul>

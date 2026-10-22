@@ -27,8 +27,8 @@ const CHANNELS = [
   },
   {
     title: "Agent integrations (MCP)",
-    body: "An OAuth-protected Model Context Protocol server so Claude, ChatGPT and Cursor can verify hashes and read ledger statistics directly.",
-    to: "/api",
+    body: "One command — npx -y apex-psi-mcp — gives Claude, Cursor and any MCP client six tools to seal, verify and check anchoring. Listed on the official MCP Registry and rated Grade A, 100/100 trust by the independent mcprush directory.",
+    to: "/mcp",
     cta: "Connect an agent",
   },
   {

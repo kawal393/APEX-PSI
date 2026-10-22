@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ExternalLink, Terminal } from "lucide-react";
 
 const INSTALL = "npx -y apex-psi-mcp";
+const CLAUDE_CODE = "claude mcp add apex-psi -- npx -y apex-psi-mcp";
+const MCPRUSH_URL = "https://mcprush.com/kawal393/apex-psi-mcp";
 const CONFIG = `{
   "mcpServers": {
     "apex-psi": {
@@ -16,6 +18,13 @@ const CONFIG = `{
     }
   }
 }`;
+
+const SIGNALS = [
+  { value: "A", label: "mcprush grade" },
+  { value: "100/100", label: "mcprush trust score" },
+  { value: "stdio", label: "Runs locally · no sign-in to install" },
+  { value: "6", label: "Tools exposed to the agent" },
+];
 
 const Code = ({ children }: { children: React.ReactNode }) => (
   <pre className="bg-muted/80 border border-border rounded p-4 overflow-x-auto text-xs font-mono text-foreground leading-relaxed">
@@ -111,19 +120,50 @@ const MCP = () => {
           >
             Registry listing <ExternalLink className="w-4 h-4" />
           </a>
+          <a
+            href={MCPRUSH_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 border border-gold/50 text-gold px-5 py-3 rounded font-semibold"
+          >
+            mcprush · Grade A <ExternalLink className="w-4 h-4" />
+          </a>
         </div>
         <div className="flex flex-wrap gap-2 font-mono">
-          <Badge variant="outline">apex-psi-mcp v1.1.0 · npm</Badge>
+          <Badge variant="outline">apex-psi-mcp v1.1.1 · npm</Badge>
           <Badge variant="outline">io.github.kawal393/apex-psi-mcp — ACTIVE</Badge>
           <Badge variant="outline">Free tier: 20 seals/min · 100/day</Badge>
         </div>
       </header>
 
       <section className="mb-14">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border border border-border rounded overflow-hidden">
+          {SIGNALS.map((s) => (
+            <div key={s.label} className="bg-background p-5">
+              <div className="text-3xl md:text-4xl font-black tracking-tight text-gold-gradient">{s.value}</div>
+              <div className="mt-2 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-[11px] font-mono text-muted-foreground">
+          Grade and trust score are assigned by the independent{" "}
+          <a href={MCPRUSH_URL} target="_blank" rel="noopener noreferrer" className="text-primary underline">
+            mcprush
+          </a>{" "}
+          directory (Security &amp; Testing category, checked 22 Oct 2026). A directory listing is not an
+          endorsement or partnership.
+        </p>
+      </section>
+
+      <section className="mb-14">
         <h2 className="text-2xl font-bold mb-3">1 · Install</h2>
         <Code>{INSTALL}</Code>
+        <p className="text-muted-foreground text-sm mt-4 mb-3">Claude Code, one line:</p>
+        <Code>{CLAUDE_CODE}</Code>
         <p className="text-muted-foreground text-sm mt-4 mb-3">
-          Then add it to your Claude Desktop / MCP client config:
+          Claude Desktop, Cursor, Windsurf or any MCP client config:
         </p>
         <Code>{CONFIG}</Code>
         <div className="mt-4 text-sm text-muted-foreground space-y-1">
