@@ -24,7 +24,7 @@ const Drafts = () => (
     <Helmet>
       <title>IETF Internet-Drafts — Apex PSI</title>
       <meta name="description" content="Every filed PSI Internet-Draft with links to the IETF Datatracker and archive text." />
-      <link rel="canonical" href="https://ai-governance-standard.com/drafts" />
+      <link rel="canonical" href="https://www.ai-governance-standard.com/drafts" />
     </Helmet>
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />

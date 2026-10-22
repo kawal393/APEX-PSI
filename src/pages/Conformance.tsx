@@ -129,7 +129,7 @@ const Conformance = () => {
           name="description"
           content="Run the APEX PSI conformance suite in your browser: RFC 8785 canonicalisation, SHA-256, domain-separated leaves and Merkle assembly checked against the committed golden vectors, plus a paste box that judges any seal envelope against rules R1 to R12."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/conformance" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/conformance" />
         <meta property="og:title" content="APEX PSI — Conformance Suite" />
         <meta property="og:description" content="No permission, no key, no server call. The vectors are public; the math runs on your machine." />
         <meta property="og:type" content="website" />

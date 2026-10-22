@@ -3,7 +3,7 @@ import { z } from "zod";
 
 const SPEC = {
   protocol: "APEX PSI — Proof of Stateful Integrity",
-  canonical_site: "https://ai-governance-standard.com",
+  canonical_site: "https://www.ai-governance-standard.com",
   canonicalization: "RFC 8785 (JSON Canonicalization Scheme)",
   hashing: "SHA-256",
   signatures: ["Ed25519", "ML-DSA-65 (hybrid)", "LMS-W4-SHA256 (NIST SP 800-208)"],

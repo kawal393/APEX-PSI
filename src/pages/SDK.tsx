@@ -210,10 +210,10 @@ async function generateAIResponse(prompt: string) {
       <Helmet>
         <title>SDKs & Integrations — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="SDK source for OpenAI, Anthropic, Vercel AI and Hono, built from the repository — not published to npm. CI/CD guides and the psi-sdk runtime pattern cache." />
-        <link rel="canonical" href="https://ai-governance-standard.com/sdk" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/sdk" />
         <meta property="og:title" content="SDKs & Integrations — APEX PSI" />
         <meta property="og:description" content="SDK source for OpenAI, Anthropic, Vercel AI and Hono, built from the repository — not published to npm. CI/CD guides and the psi-sdk runtime pattern cache." />
-        <meta property="og:url" content="https://ai-governance-standard.com/sdk" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/sdk" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-engine-bg text-engine-text">

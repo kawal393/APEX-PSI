@@ -125,11 +125,11 @@ const Founding = () => {
       <Helmet>
         <title>{TITLE}</title>
         <meta name="description" content={DESCRIPTION} />
-        <link rel="canonical" href="https://ai-governance-standard.com/founding" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/founding" />
         <meta property="og:title" content={TITLE} />
         <meta property="og:description" content={DESCRIPTION} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ai-governance-standard.com/founding" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/founding" />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 

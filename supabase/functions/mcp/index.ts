@@ -251,7 +251,7 @@ import { defineTool as defineTool6 } from "npm:@lovable.dev/mcp-js@0.26.1";
 import { z as z5 } from "npm:zod@^4.4.3";
 var SPEC = {
   protocol: "APEX PSI \u2014 Proof of Stateful Integrity",
-  canonical_site: "https://ai-governance-standard.com",
+  canonical_site: "https://www.ai-governance-standard.com",
   canonicalization: "RFC 8785 (JSON Canonicalization Scheme)",
   hashing: "SHA-256",
   signatures: ["Ed25519", "ML-DSA-65 (hybrid)", "LMS-W4-SHA256 (NIST SP 800-208)"],

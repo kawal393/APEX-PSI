@@ -90,10 +90,10 @@ const IETFDraft = () => {
       <Helmet>
         <title>IETF draft-singh-psi (rev 02) — Proof of Stateful Integrity — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="The filed IETF Internet-Draft draft-singh-psi revision 02, verbatim, and the claims of revision 01 it withdrew." />
-        <link rel="canonical" href="https://ai-governance-standard.com/draft" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/draft" />
         <meta property="og:title" content="IETF draft-singh-psi revision 02 — as filed" />
         <meta property="og:description" content="Verbatim copy of the filed Internet-Draft, with the gap between filed text and deployed code stated plainly." />
-        <meta property="og:url" content="https://ai-governance-standard.com/draft" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/draft" />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">

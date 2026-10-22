@@ -28,7 +28,7 @@ const DeclarationPage = () => (
         name="description"
         content="The Recomputation Declaration. Issued 30 August 2026, Melbourne. Seal, open, bend or break — one public test for any organisation using AI to decide about a human being."
       />
-      <link rel="canonical" href="https://ai-governance-standard.com/declaration" />
+      <link rel="canonical" href="https://www.ai-governance-standard.com/declaration" />
     </Helmet>
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />

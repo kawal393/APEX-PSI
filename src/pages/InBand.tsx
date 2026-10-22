@@ -69,7 +69,7 @@ const InBand = () => (
         name="description"
         content="PSI-INBAND-v1: JUMBF-framed in-band signed tamper-evident metadata plus a transform-domain robust watermark for AI-generated content. EU AI Act Code of Practice, Section 1."
       />
-      <link rel="canonical" href="https://ai-governance-standard.com/inband" />
+      <link rel="canonical" href="https://www.ai-governance-standard.com/inband" />
       <meta property="og:title" content="In-Band Signed Metadata & Watermarking Spec | APEX PSI" />
       <meta
         property="og:description"

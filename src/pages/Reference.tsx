@@ -17,7 +17,7 @@ const Reference = () => {
           name="description"
           content="The world's first public reference for machine-governance records. Free, open, recomputable by anyone."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/reference" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/reference" />
       </Helmet>
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />

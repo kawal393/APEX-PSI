@@ -103,7 +103,7 @@ export default function Timeline() {
           name="description"
           content="Every public claim Apex PSI has made about its own history, as a dated row that resolves to a third-party-checkable artefact: a public receipt, an IETF filing, or a live ledger counter. A row that cannot be checked is not printed."
         />
-        <link rel="canonical" href="https://ai-governance-standard.com/timeline" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/timeline" />
       </Helmet>
       <div className="min-h-screen bg-background">
         <Navbar />

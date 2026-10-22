@@ -66,11 +66,11 @@ const EnforcementWatch = () => {
       <Helmet>
         <title>Article 50 Enforcement Watch — APEX PSI</title>
         <meta name="description" content={SUBLINE} />
-        <link rel="canonical" href="https://ai-governance-standard.com/enforcement-watch" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/enforcement-watch" />
         <meta property="og:title" content="Article 50 Enforcement Watch — APEX PSI" />
         <meta property="og:description" content={SUBLINE} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ai-governance-standard.com/enforcement-watch" />
+        <meta property="og:url" content="https://www.ai-governance-standard.com/enforcement-watch" />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 

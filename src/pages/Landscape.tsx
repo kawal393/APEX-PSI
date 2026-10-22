@@ -84,7 +84,7 @@ const Landscape = () => (
         name="description"
         content="How Apex PSI relates to adjacent standards work: ZKMLOps (arXiv:2510.26576v1), SCITT VCP (draft-ietf-scitt-vcp), Longfellow ZK, and DAAP (draft-aylward-daap-v2-00). Scope and interoperability, cited by document ID."
       />
-      <link rel="canonical" href="https://ai-governance-standard.com/landscape" />
+      <link rel="canonical" href="https://www.ai-governance-standard.com/landscape" />
     </Helmet>
 
     <Navbar />

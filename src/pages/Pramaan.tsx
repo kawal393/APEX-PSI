@@ -252,7 +252,7 @@ const Pramaan = () => {
       <Helmet>
         <title>Apex Pramaan — The Truth Protocol — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Apex Pramaan: client-side cryptographic proof for any photo, video, or file. Seal it, anchor it, verify it — in 30 seconds, on any phone." />
-        <link rel="canonical" href="https://ai-governance-standard.com/pramaan" />
+        <link rel="canonical" href="https://www.ai-governance-standard.com/pramaan" />
       </Helmet>
       <Navbar />
 
