@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import { PSI_VERIFIER_VERSION } from "../../packages/psi-verifier/src/index";
 import { Github, ExternalLink, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { openCookieSettings } from "@/lib/ads-consent";
 import apexLogo from "@/assets/apex-logo.png";
 import { useTranslation } from "react-i18next";
 import { DECLARATION_TEXT } from "@/components/Declaration";

@@ -1,7 +1,7 @@
 import LegalLayout from "@/components/LegalLayout";
 
 const CookiePolicy = () => (
-  <LegalLayout title="Cookie Policy" lastUpdated="28 February 2026">
+  <LegalLayout title="Cookie Policy" lastUpdated="23 October 2026">
     <section>
       <h2>1. What Are Cookies</h2>
       <p>
@@ -33,11 +33,26 @@ const CookiePolicy = () => (
         your preferences, displaying your local city and time, and providing personalised content.
       </p>
 
-      <h3>2.4 Marketing Cookies</h3>
+      <h3>2.4 Advertising Measurement Cookies (Google Ads)</h3>
       <p>
-        These cookies may be set through our site by advertising partners to build a profile
-        of your interests and show you relevant content on other sites. We currently do not
-        use marketing cookies but reserve the right to implement them with proper notice and consent.
+        We advertise on Google Search. When you arrive from one of our ads, Google Ads cookies
+        let us measure whether that visit led to a free API key being created. We use this only
+        to count which ads work; we do not build interest profiles or use these cookies for
+        retargeting.
+      </p>
+      <ul>
+        <li><strong>Data:</strong> ad click identifier, cookie identifiers, page visited, browser and device details, and the fact that a free API key was created (never the key itself or your email)</li>
+        <li><strong>Recipient:</strong> Google Ads (Google LLC / Google Ireland)</li>
+        <li><strong>Purpose:</strong> advertising measurement (conversion counting)</li>
+      </ul>
+      <p>
+        Visitors in the EEA, UK, Switzerland and Canada are asked first and these cookies stay off
+        unless you accept. Elsewhere they are on by default and you can switch them off. You can
+        change or withdraw your choice at any time with <strong>Cookie settings</strong> in the
+        footer of every page. Google explains how it uses data at{" "}
+        <a href="https://business.safety.google/privacy/" target="_blank" rel="noopener noreferrer">
+          business.safety.google/privacy
+        </a>.
       </p>
     </section>
 
@@ -48,6 +63,7 @@ const CookiePolicy = () => (
         control these cookies. Third-party providers include:
       </p>
       <ul>
+        <li>Google Ads (advertising measurement, only as described in 2.4)</li>
         <li>Analytics providers (for website usage data)</li>
         <li>Payment processors (for secure transaction handling)</li>
         <li>IP geolocation services (for city-level location display)</li>
