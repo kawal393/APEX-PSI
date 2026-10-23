@@ -117,6 +117,7 @@ import Case002 from "./pages/Case002";
 import Case003 from "./pages/Case003";
 import Mandate from "./pages/Mandate";
 import ConnectAIButton from "@/components/ConnectAIButton";
+import CookieConsent from "@/components/CookieConsent";
 
 
 
@@ -314,6 +315,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ConnectAIButton />
+            <CookieConsent />
             <ExitIntentPopup />
             <ChatWidget />
             <FeedbackWidget />

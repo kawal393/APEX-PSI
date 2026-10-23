@@ -99,6 +99,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               <li><Link to="/privacy" className="hover:text-gold transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="hover:text-gold transition-colors">Terms of Service</Link></li>
               <li><Link to="/cookies" className="hover:text-gold transition-colors">Cookie Policy</Link></li>
+              <li><button type="button" onClick={openCookieSettings} className="hover:text-gold transition-colors">Cookie settings</button></li>
             </ul>
           </div>
         </div>
