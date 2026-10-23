@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Check, Copy, Terminal, X } from "lucide-react";
+import { LOCAL_COMMAND, LOCAL_COUNT } from "@/lib/mcp-surfaces";
 
-const COMMAND = "npx -y apex-psi-mcp";
+const COMMAND = LOCAL_COMMAND;
 
 const ConnectAIButton = () => {
   const [open, setOpen] = useState(false);
@@ -47,7 +48,7 @@ const ConnectAIButton = () => {
 
           <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
             <li>· Works in Claude, Cursor and any MCP client</li>
-            <li>· Runs locally, 6 tools</li>
+            <li>· Runs locally, {LOCAL_COUNT} tools · no account</li>
             <li>· mcprush Grade A · 100/100 trust</li>
             <li>
               <a

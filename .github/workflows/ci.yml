@@ -141,6 +141,14 @@ jobs:
         with:
           node-version: 20
       - run: node scripts/badge-copy-check.mjs
+      - name: Refuse to advertise a tool the server does not answer
+        # APEX PSI runs two MCP servers over one ledger — the npm package (stdio, 5 tools, no
+        # account) and the hosted connector (streamable-http, 6 tools, OAuth). Until 23 Oct our
+        # /mcp page printed them as one list, and a third-party directory copied the mixture onto
+        # a listing that carries our version number. An agent that installed `apex-psi-mcp` and
+        # called verify_hash got "unknown tool" from a page graded Grade A. A page an agent reads
+        # is an interface, so it is guarded like one.
+        run: node scripts/tool-name-check.mjs
 
   supabase-deploy:
     # NOT on every push to main. `supabase db push` + `functions deploy` mutate

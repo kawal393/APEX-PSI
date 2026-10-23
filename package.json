@@ -13,7 +13,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:conformance": "vitest run src/test/psi-conformance.vectors.test.ts && python3 psi-conformance/conformance.py && python3 packages/apex-psi-python/tests/test_offline.py",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:tools": "node scripts/tool-name-check.mjs",
+    "check:badge-copy": "node scripts/badge-copy-check.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

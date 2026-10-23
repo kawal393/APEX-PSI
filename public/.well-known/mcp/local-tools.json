@@ -1,0 +1,38 @@
+{
+  "measured_at": "2026-10-23",
+  "measured_by": "empire/build-mcp-cards.mjs, over stdio against the built dist/index.js",
+  "package": "apex-psi-mcp",
+  "version": "1.1.2",
+  "tools": [
+    {
+      "name": "seal",
+      "title": "Seal content",
+      "description": "Record content in the APEX PSI append-only ledger and return a receipt: SHA-256 hash, an Ed25519 signature over the Merkle leaf, and post-quantum ML-DSA-65 (plus LMS-W4-SHA256 when a slot is available — the receipt's own algorithm field states which). Proves that this content existed and has not changed since the timestamp. It never proves the contents are true. Free tier: 20 operations/minute, 100/day, no account needed.",
+      "write": false
+    },
+    {
+      "name": "verify",
+      "title": "Verify a receipt",
+      "description": "Confirm a seal's integrity against the APEX PSI append-only ledger. Accepts a receipt object (from the seal tool) or a raw SHA-256 hash. Reports whether the hash is present and anchored — integrity, not the truth of the original content.",
+      "write": false
+    },
+    {
+      "name": "anchor",
+      "title": "Bitcoin anchoring history",
+      "description": "Read the Bitcoin (OpenTimestamps) anchoring record for the ledger's Merkle roots. Defaults to action:'history', which is read-only and returns each anchor transaction with its txid, block height, confirmation state and how many ledger entries it covers. Pass action:'verify' with a txid to check one transaction, or action:'anchor' to explicitly request that pending roots be aggregated and submitted to the OTS calendars. Defaults to 'history' so a routine call never triggers a batch write. An anchor counts as confirmed only when a real Bitcoin block contains it.",
+      "write": false
+    },
+    {
+      "name": "cite",
+      "title": "Generate citation",
+      "description": "Generate a citation for a sealed receipt in APA, BibTeX, or MLA format, citing the APEX PSI ledger entry.",
+      "write": false
+    },
+    {
+      "name": "verify_chain",
+      "title": "Verify a receipt chain",
+      "description": "Independently verify a chain of receipts against the APEX PSI ledger. Recomputes each hash's presence and integrity and reports Merkle chain continuity. Returns a verification report — a recomputation result, not an opinion or a certification.",
+      "write": false
+    }
+  ]
+}

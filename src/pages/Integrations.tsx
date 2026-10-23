@@ -27,7 +27,7 @@ const CHANNELS = [
   },
   {
     title: "Agent integrations (MCP)",
-    body: "One command — npx -y apex-psi-mcp — gives Claude, Cursor and any MCP client six tools to seal, verify and check anchoring. Listed on the official MCP Registry and rated Grade A, 100/100 trust by the independent mcprush directory.",
+    body: "One command — npx -y apex-psi-mcp — gives Claude, Cursor and any MCP client five tools over stdio with no account: seal, verify, anchor, cite, verify_chain. A second, hosted connector serves six OAuth-protected tools over streamable-http. mcprush scans the published code Grade A / 100/100; we claimed and manage that listing, so read it as their measurement of our source, not as a rating APEX PSI gives — APEX PSI issues no scores.",
     to: "/mcp",
     cta: "Connect an agent",
   },

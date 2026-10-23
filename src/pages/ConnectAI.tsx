@@ -7,32 +7,23 @@ import { Copy, Check, ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import AutoVerifier from "@/components/protocol/AutoVerifier";
 import { SITE_URL } from "@/lib/site";
+import { HOSTED_COUNT, HOSTED_TOOLS, LOCAL_COMMAND } from "@/lib/mcp-surfaces";
 
 const MCP_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/mcp`;
 const SERVER_JSON = `${SITE_URL}/.well-known/mcp/server.json`;
 
-const TOOLS = [
-  {
-    name: "verify_hash",
-    desc: "Look up a SHA-256 hash in the evidence ledger and return the signed attestation bundle.",
-    example: `{ "hash": "4606e9eee90b...e3ca7f" }`,
-  },
-  {
-    name: "list_attestations",
-    desc: "List recent ledger attestations, newest first, scoped to the signed-in account.",
-    example: `{ "limit": 10 }`,
-  },
-  {
-    name: "ledger_stats",
-    desc: "Integrity snapshot: attestations, exceptions and public attestations.",
-    example: `{}`,
-  },
-  {
-    name: "protocol_info",
-    desc: "Protocol reference: canonicalisation, signature suites, IETF drafts, anchoring.",
-    example: `{}`,
-  },
-];
+// One-line argument shapes for the hosted tools. The names themselves come from
+// src/lib/mcp-surfaces.ts, which the guard checks against .lovable/mcp/manifest.json — the file
+// the MCP SDK generates from src/lib/mcp/tools. This page used to show four of the six hosted
+// tools and call the list "the four tools", which under-claimed our own connector.
+const EXAMPLES: Record<string, string> = {
+  seal: `{ "decision": "approved refund #4411", "model_id": "claude-sonnet" }`,
+  verify_hash: `{ "hash": "4606e9eee90b...e3ca7f" }`,
+  anchor_status: `{ "hash": "4606e9eee90b...e3ca7f" }`,
+  list_attestations: `{ "limit": 10 }`,
+  ledger_stats: `{}`,
+  protocol_info: `{}`,
+};
 
 function CopyLine({ value }: { value: string }) {
   const [done, setDone] = useState(false);
@@ -78,7 +69,7 @@ export default function ConnectAI() {
         <title>Connect Your AI to Apex PSI — MCP Server — Apex PSI — Universal Verification Protocol</title>
         <meta
           name="description"
-          content="One-click MCP connection for ChatGPT, Claude and Cursor. Four OAuth-protected tools: verify_hash, list_attestations, ledger_stats, protocol_info."
+          content={`One-click MCP connection for ChatGPT, Claude and Cursor. The hosted connector exposes ${HOSTED_COUNT} OAuth-protected tools, including seal; the npm package is a separate, key-free door with five tools over stdio.`}
         />
         <link rel="canonical" href={`${SITE_URL}/connect`} />
       </Helmet>
@@ -97,7 +88,15 @@ export default function ConnectAI() {
 
         <section className="space-y-3">
           <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground">1 — Connect</h2>
-          <CopyLine value="npx -y apex-psi-mcp" />
+          <p className="text-xs text-muted-foreground">
+            Door 1 · the npm package: stdio on your machine, five tools, no sign-in.
+          </p>
+          <CopyLine value={LOCAL_COMMAND} />
+          <p className="text-xs text-muted-foreground pt-2">
+            Door 2 · the hosted connector on this page: streamable-http, {HOSTED_COUNT} tools, your
+            APEX sign-in. An anonymous call returns HTTP 401 with an OAuth metadata pointer — the
+            protocol asking for a session, not a missing server.
+          </p>
           <CopyLine value={MCP_ENDPOINT} />
           <div className="flex flex-wrap gap-2 pt-1">
             <Button asChild variant="outline" size="sm">
@@ -119,14 +118,29 @@ export default function ConnectAI() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground">2 — The four tools</h2>
+          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground">
+            2 — The {HOSTED_COUNT} hosted tools
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Names exactly as the deployed connector answers them.{" "}
+            <code className="font-mono">seal</code> is the one write tool; the other five are
+            read-only. These are the hosted names — the npm package answers with a different,
+            overlapping set (seal, verify, anchor, cite, verify_chain).
+          </p>
           <div className="grid md:grid-cols-2 gap-4">
-            {TOOLS.map((t) => (
+            {HOSTED_TOOLS.map((t) => (
               <div key={t.name} className="border border-border rounded-lg bg-card/40 p-4">
-                <div className="font-mono text-sm text-gold">{t.name}</div>
+                <div className="font-mono text-sm text-gold">
+                  {t.name}
+                  {t.write ? (
+                    <span className="ml-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+                      writes
+                    </span>
+                  ) : null}
+                </div>
                 <p className="text-xs text-muted-foreground mt-1.5">{t.desc}</p>
                 <pre className="mt-3 text-[10px] font-mono bg-background/60 border border-border/60 rounded p-2 overflow-auto">
-                  {t.example}
+                  {EXAMPLES[t.name] ?? "{}"}
                 </pre>
               </div>
             ))}

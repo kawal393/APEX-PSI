@@ -20,13 +20,15 @@ not changed since. It is not proof that the statement is true.
 
 ## Connect an AI agent (MCP)
 
-Two surfaces over the same ledger, both free to start with no account:
+Two doors over the same ledger. Verification through either is free and needs no payment; the
+hosted door needs a free APEX sign-in, the npm door needs no account at all.
 
-- **Install anywhere (stdio, npm):** `npx -y apex-psi-mcp` — tools `seal`, `verify`,
+- **Install anywhere (stdio, npm, no account):** `npx -y apex-psi-mcp` — tools `seal`, `verify`,
   `anchor`, `cite`, `verify_chain`.
-- **Hosted, no install:** manifest at
-  https://ai-governance-standard.com/.well-known/mcp/server.json — tools `seal`,
-  `verify_hash`, `anchor_status`, `list_attestations`, `ledger_stats`, `protocol_info`.
+- **Hosted, no install (streamable-http, OAuth):** manifest at
+  https://www.ai-governance-standard.com/.well-known/mcp/server.json — tools `seal`,
+  `verify_hash`, `anchor_status`, `list_attestations`, `ledger_stats`, `protocol_info`. An
+  anonymous call returns HTTP 401 with a `WWW-Authenticate` resource-metadata pointer.
 - OAuth metadata: https://ai-governance-standard.com/.well-known/oauth-authorization-server
 - Free allowance: 20 operations per minute, 100 per day, enforced per server instance.
   A higher tier buys capacity, never a finding.

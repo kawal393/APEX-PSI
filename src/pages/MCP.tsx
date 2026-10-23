@@ -6,8 +6,24 @@ import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ExternalLink, Terminal } from "lucide-react";
+import {
+  HOSTED_COUNT,
+  HOSTED_PATH,
+  HOSTED_TOOLS,
+  LOCAL_COMMAND,
+  LOCAL_COUNT,
+  LOCAL_TOOLS,
+  SURFACE_SENTENCE,
+} from "@/lib/mcp-surfaces";
 
-const INSTALL = "npx -y apex-psi-mcp";
+// Door 2's address is the project's Supabase host, built exactly the way ConnectAI builds it.
+// The site's own domain answers that path with the SPA shell, so printing
+// www.ai-governance-standard.com/functions/v1/mcp here would hand an agent an HTML page and a
+// confusing parse error instead of the JSON-RPC endpoint.
+const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unset";
+const HOSTED_URL = `https://${projectRef}.supabase.co${HOSTED_PATH}`;
+
+const INSTALL = LOCAL_COMMAND;
 const CLAUDE_CODE = "claude mcp add apex-psi -- npx -y apex-psi-mcp";
 const MCPRUSH_URL = "https://mcprush.com/kawal393/apex-psi-mcp";
 const CONFIG = `{
@@ -19,56 +35,43 @@ const CONFIG = `{
   }
 }`;
 
-const SIGNALS = [
-  { value: "A", label: "mcprush grade" },
-  { value: "100/100", label: "mcprush trust score" },
-  { value: "stdio", label: "Runs locally · no sign-in to install" },
-  { value: "6", label: "Tools exposed to the agent" },
-];
-
 const Code = ({ children }: { children: React.ReactNode }) => (
   <pre className="bg-muted/80 border border-border rounded p-4 overflow-x-auto text-xs font-mono text-foreground leading-relaxed">
     <code>{children}</code>
   </pre>
 );
 
-const TOOLS = [
-  {
-    name: "seal",
-    desc: "Mint a SHA-256 + Ed25519 + post-quantum LMS receipt for any action or decision.",
-    linkLabel: "Read the protocol",
-    to: "/protocol",
-  },
-  {
-    name: "verify_hash",
-    desc: "Look up a hash in the hosted ledger; this is an online lookup, not offline signature verification.",
-    linkLabel: "Open verifier",
-    to: "/verify",
-  },
-  {
-    name: "anchor_status",
-    desc: "Report whether a receipt's Merkle root is committed to Bitcoin.",
-    linkLabel: "Ledger explorer",
-    to: "/explorer",
-  },
-  {
-    name: "list_attestations",
-    desc: "Browse the most recent ledger attestations, newest first.",
-    linkLabel: "Ledger explorer",
-    to: "/explorer",
-  },
-  {
-    name: "ledger_stats",
-    desc: "A quick integrity snapshot of the public ledger.",
-    linkLabel: "Open verifier",
-    to: "/verify",
-  },
-  {
-    name: "protocol_info",
-    desc: "Canonicalization, signature suites, IETF drafts and anchoring reference.",
-    linkLabel: "Read the protocol",
-    to: "/protocol",
-  },
+// Tool names and descriptions live in one module, src/lib/mcp-surfaces.ts, because APEX PSI
+// ships TWO MCP servers and this page used to print them as if they were one: it advertised
+// verify_hash / anchor_status / list_attestations / ledger_stats / protocol_info beside the
+// npm install command, and those five are the hosted connector's names, not the package's.
+// An agent that installed `apex-psi-mcp` and called them got "unknown tool" — and a directory
+// scraped this page and published the same mix, with our version number attached to the wrong
+// door. The guard scripts/tool-name-check.mjs now fails the build on a mix.
+const LOCAL_LINKS: Record<string, { label: string; to: string }> = {
+  seal: { label: "Read the protocol", to: "/protocol" },
+  verify: { label: "Open verifier", to: "/verify" },
+  anchor: { label: "Ledger explorer", to: "/explorer" },
+  cite: { label: "Look a record up", to: "/verify" },
+  verify_chain: { label: "Ledger explorer", to: "/explorer" },
+};
+
+const HOSTED_LINKS: Record<string, { label: string; to: string }> = {
+  seal: { label: "Read the protocol", to: "/protocol" },
+  verify_hash: { label: "Open verifier", to: "/verify" },
+  anchor_status: { label: "Ledger explorer", to: "/explorer" },
+  list_attestations: { label: "Ledger explorer", to: "/explorer" },
+  ledger_stats: { label: "Ledger explorer", to: "/explorer" },
+  protocol_info: { label: "Read the protocol", to: "/protocol" },
+};
+
+// Both counts are derived from the measured lists, never typed. The hand-typed "6" that used
+// to sit here is what a third-party directory copied onto a listing we now manage.
+const SIGNALS = [
+  { value: "A", label: "mcprush grade" },
+  { value: "100/100", label: "mcprush trust score" },
+  { value: String(LOCAL_COUNT), label: "Tools in the npm package · no account" },
+  { value: String(HOSTED_COUNT), label: "Tools on the hosted connector · sign-in" },
 ];
 
 const DEEPER = [
@@ -86,7 +89,7 @@ const MCP = () => {
       <title>Apex PSI MCP Server — Model Context Protocol integration — Apex PSI — Universal Verification Protocol</title>
       <meta
         name="description"
-        content="Install APEX PSI as an MCP server: seal, verify, report Bitcoin anchor status, browse the ledger. Published on npm and the official MCP Registry."
+        content="Two APEX PSI MCP doors, one ledger: the npm package (stdio, 5 tools, no account) and the hosted connector (streamable-http, 6 tools, OAuth sign-in). Published on npm and the official MCP Registry."
       />
     </Helmet>
     <Navbar />
@@ -130,7 +133,9 @@ const MCP = () => {
           </a>
         </div>
         <div className="flex flex-wrap gap-2 font-mono">
-          <Badge variant="outline">apex-psi-mcp v1.1.1 · npm</Badge>
+          {/* No version digit here on purpose: npm moves ahead of this page every patch, and a
+              stale "v1.1.1" on our own site is how a directory ended up printing one. */}
+          <Badge variant="outline">apex-psi-mcp · install from npm</Badge>
           <Badge variant="outline">io.github.kawal393/apex-psi-mcp — ACTIVE</Badge>
           <Badge variant="outline">Free tier: 20 seals/min · 100/day</Badge>
         </div>
@@ -148,17 +153,23 @@ const MCP = () => {
           ))}
         </div>
         <p className="mt-3 text-[11px] font-mono text-muted-foreground">
-          Grade and trust score are assigned by the independent{" "}
+          The grade and trust score are{" "}
           <a href={MCPRUSH_URL} target="_blank" rel="noopener noreferrer" className="text-primary underline">
             mcprush
-          </a>{" "}
-          directory (Security &amp; Testing category, checked 22 Oct 2026). A directory listing is not an
-          endorsement or partnership.
+          </a>
+          &apos;s own security scan of this published code (Security &amp; Testing category,
+          scanned 22&nbsp;Oct&nbsp;2026). We claimed and manage that listing, so read it as a third
+          party&apos;s measurement of our public source — not as an endorsement, a partnership, or a
+          rating APEX PSI gives anything. APEX PSI issues no scores; a seal proves a record was made,
+          never that it is true.
         </p>
       </section>
 
       <section className="mb-14">
-        <h2 className="text-2xl font-bold mb-3">1 · Install</h2>
+        <h2 className="text-2xl font-bold mb-3">1 · Install — door 1, the npm package</h2>
+        <p className="text-muted-foreground text-sm mb-3">
+          stdio on your machine, {LOCAL_COUNT} tools, nothing to sign in to.
+        </p>
         <Code>{INSTALL}</Code>
         <p className="text-muted-foreground text-sm mt-4 mb-3">Claude Code, one line:</p>
         <Code>{CLAUDE_CODE}</Code>
@@ -166,6 +177,14 @@ const MCP = () => {
           Claude Desktop, Cursor, Windsurf or any MCP client config:
         </p>
         <Code>{CONFIG}</Code>
+        <p className="text-muted-foreground text-sm mt-4 mb-3">
+          Door 2 is the hosted connector, for clients that speak streamable-http and will do an
+          OAuth sign-in. Its address is this project&apos;s Supabase host plus{" "}
+          <code className="text-primary">{HOSTED_PATH}</code> — an anonymous call returns{" "}
+          <code className="text-primary">401</code> with the OAuth metadata pointer, which is the
+          protocol asking for a session:
+        </p>
+        <Code>{HOSTED_URL}</Code>
         <div className="mt-4 text-sm text-muted-foreground space-y-1">
           <p>
             Optional env vars: <code className="text-primary">APEX_API_BASE</code> (API override),{" "}
@@ -189,22 +208,81 @@ const MCP = () => {
       </section>
 
       <section className="mb-14">
-        <h2 className="text-2xl font-bold mb-4">2 · The tools</h2>
+        <h2 className="text-2xl font-bold mb-3">2 · The tools — two doors, one ledger</h2>
+        <p className="text-sm text-muted-foreground mb-6 max-w-3xl">
+          {SURFACE_SENTENCE} Both write to the same append-only ledger, so a record sealed through
+          either door is verifiable through both.{" "}
+          <span className="font-mono text-[11px]">
+            A seal proves a record was made, never that it is true.
+          </span>
+        </p>
+
+        <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-3">
+          Door 1 · npm package — stdio, runs on your machine, no account ({LOCAL_COUNT} tools)
+        </h3>
+        <div className="grid md:grid-cols-2 gap-4 mb-10">
+          {LOCAL_TOOLS.map((tool) => {
+            const link = LOCAL_LINKS[tool.name] ?? { label: "Read the protocol", to: "/protocol" };
+            return (
+              <Card key={`local-${tool.name}`}>
+                <CardContent className="p-5">
+                  <div className="font-mono text-sm text-primary mb-2">
+                    {tool.name}
+                    {tool.write ? (
+                      <span className="ml-2 text-[10px] uppercase tracking-widest text-gold">
+                        writes
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">{tool.desc}</p>
+                  <Link
+                    to={link.to}
+                    className="text-sm font-semibold inline-flex items-center gap-1 hover:text-gold transition-colors"
+                  >
+                    {link.label} <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-gold mb-3">
+          Door 2 · hosted connector — streamable-http, OAuth sign-in ({HOSTED_COUNT} tools)
+        </h3>
+        <p className="text-sm text-muted-foreground mb-4 max-w-3xl">
+          The hosted server is a separate integration from the npm package and it keeps its own
+          tool names. An unauthenticated caller gets{" "}
+          <code className="text-primary">HTTP 401</code> with a{" "}
+          <code className="text-primary">WWW-Authenticate</code> pointer to its OAuth metadata —
+          that is the Model Context Protocol asking you to sign in, not a missing door. It is the
+          same project Supabase serves, so the records are identical.
+        </p>
         <div className="grid md:grid-cols-2 gap-4">
-          {TOOLS.map((tool) => (
-            <Card key={tool.name + tool.to}>
-              <CardContent className="p-5">
-                <div className="font-mono text-sm text-primary mb-2">{tool.name}</div>
-                <p className="text-sm text-muted-foreground mb-4">{tool.desc}</p>
-                <Link
-                  to={tool.to}
-                  className="text-sm font-semibold inline-flex items-center gap-1 hover:text-gold transition-colors"
-                >
-                  {tool.linkLabel} <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
+          {HOSTED_TOOLS.map((tool) => {
+            const link = HOSTED_LINKS[tool.name] ?? { label: "Read the protocol", to: "/protocol" };
+            return (
+              <Card key={`hosted-${tool.name}`}>
+                <CardContent className="p-5">
+                  <div className="font-mono text-sm text-primary mb-2">
+                    {tool.name}
+                    {tool.write ? (
+                      <span className="ml-2 text-[10px] uppercase tracking-widest text-gold">
+                        writes
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">{tool.desc}</p>
+                  <Link
+                    to={link.to}
+                    className="text-sm font-semibold inline-flex items-center gap-1 hover:text-gold transition-colors"
+                  >
+                    {link.label} <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </section>
 

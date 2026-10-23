@@ -2,149 +2,96 @@
   "schema_version": "2025-06-18",
   "name": "apex-psi",
   "title": "APEX PSI",
-  "version": "1.1.2",
-  "description": "Append-only evidence receipts for AI decisions and documents. Seal a record and get a receipt, verify a hash against the public ledger, check a chain of receipts, cite a receipt, and read the Bitcoin anchoring status. A seal proves a record was made and has not changed — never that its contents are true. Verification is free and needs no account.",
+  "version": "0.2.0",
+  "description": "Hosted APEX PSI evidence connector: six OAuth-protected tools over streamable-http, including one write tool (seal). Seal a record, look a hash up, read Bitcoin anchoring, browse attestations, snapshot the ledger, and read the protocol reference. An anonymous caller gets HTTP 401 with an OAuth metadata pointer — that is the Model Context Protocol asking for a session. A seal proves a record was made and has not changed, never that its contents are true. Verification is free; the hosted door needs a free APEX sign-in, the npm door does not need any account at all.",
   "homepage": "https://www.ai-governance-standard.com",
   "documentation": "https://www.ai-governance-standard.com/mcp",
-  "install": {
-    "command": "npx",
-    "args": [
-      "-y",
-      "apex-psi-mcp"
-    ]
+  "transport": {
+    "type": "streamable-http",
+    "url": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "authorization_servers": [
+      "https://qhtntebpcribjiwrdtdd.supabase.co/auth/v1"
+    ],
+    "protected_resource_metadata": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp/.well-known/oauth-protected-resource",
+    "note": "Every tool requires a signed-in APEX session. Nothing here is anonymous."
   },
   "tools": [
     {
       "name": "seal",
-      "title": "Seal content",
-      "description": "Record content in the APEX PSI append-only ledger and return a receipt: SHA-256 hash, an Ed25519 signature over the Merkle leaf, and post-quantum ML-DSA-65 (plus LMS-W4-SHA256 when a slot is available — the receipt's own algorithm field states which). Proves that this content existed and has not changed since the timestamp. It never proves the contents are true. Free tier: 20 operations/minute, 100/day, no account needed.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "string",
-            "maxLength": 10000,
-            "description": "The content to seal (text, up to 10000 characters)"
-          },
-          "context": {
-            "type": "string",
-            "description": "Optional context label (e.g. document name, case ID)"
-          },
-          "predicate": {
-            "type": "string",
-            "description": "Optional predicate describing why this is sealed"
-          },
-          "model_id": {
-            "type": "string",
-            "description": "Optional model/agent identifier producing the seal"
-          }
-        },
-        "required": [
-          "content"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-      }
+      "title": "Seal a decision to the APEX PSI ledger",
+      "description": "Mint a post-quantum verifiable receipt for a machine action or decision. Canonicalises the payload, signs it (SHA-256 + Ed25519 + LMS-W4-SHA256), records it in the append-only ledger, and returns a receipt id that any agent can later re-check with verify_hash. This is the write half of the trust handshake.",
+      "write": true
     },
     {
-      "name": "verify",
-      "title": "Verify a receipt",
-      "description": "Confirm a seal's integrity against the APEX PSI append-only ledger. Accepts a receipt object (from the seal tool) or a raw SHA-256 hash. Reports whether the hash is present and anchored — integrity, not the truth of the original content.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "hash": {
-            "type": "string",
-            "description": "A SHA-256 hash to look up in the ledger (with or without 'sha256:' prefix)"
-          },
-          "receipt": {
-            "type": "object",
-            "additionalProperties": {},
-            "description": "A receipt object as returned by the seal tool"
-          }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-      }
+      "name": "verify_hash",
+      "title": "Verify a hash against the APEX PSI ledger",
+      "description": "Look up a SHA-256 hash (commit hash or Merkle leaf hash) in the APEX PSI evidence ledger and report whether a matching attestation exists.",
+      "write": false
     },
     {
-      "name": "anchor",
-      "title": "Bitcoin anchoring history",
-      "description": "Read the Bitcoin (OpenTimestamps) anchoring record for the ledger's Merkle roots. Defaults to action:'history', which is read-only and returns each anchor transaction with its txid, block height, confirmation state and how many ledger entries it covers. Pass action:'verify' with a txid to check one transaction, or action:'anchor' to explicitly request that pending roots be aggregated and submitted to the OTS calendars. Defaults to 'history' so a routine call never triggers a batch write. An anchor counts as confirmed only when a real Bitcoin block contains it.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "action": {
-            "type": "string",
-            "enum": [
-              "history",
-              "verify",
-              "anchor"
-            ],
-            "description": "'history' reads the anchored transactions (default); 'verify' checks one txid; 'anchor' explicitly requests anchoring of pending roots"
-          },
-          "txid": {
-            "type": "string",
-            "description": "Bitcoin transaction id — required only when action is 'verify'"
-          }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-      }
+      "name": "anchor_status",
+      "title": "Bitcoin anchoring status of a sealed receipt",
+      "description": "Report the OpenTimestamps / Bitcoin anchoring state for a sealed receipt: whether its Merkle root has been committed to a real Bitcoin block, the block height, the transaction id and the offline `ots verify` command. Anchoring runs automatically; this reads its result — it does not trigger it.",
+      "write": false
     },
     {
-      "name": "cite",
-      "title": "Generate citation",
-      "description": "Generate a citation for a sealed receipt in APA, BibTeX, or MLA format, citing the APEX PSI ledger entry.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "receipt": {
-            "type": "object",
-            "additionalProperties": {},
-            "description": "A receipt object as returned by the seal tool"
-          },
-          "format": {
-            "type": "string",
-            "enum": [
-              "apa",
-              "bibtex",
-              "mla"
-            ],
-            "description": "Citation format (default: apa)"
-          }
-        },
-        "required": [
-          "receipt"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-      }
+      "name": "list_attestations",
+      "title": "List recent attestations",
+      "description": "List the most recent APEX PSI ledger attestations visible to the signed-in user, newest first.",
+      "write": false
     },
     {
-      "name": "verify_chain",
-      "title": "Verify a receipt chain",
-      "description": "Independently verify a chain of receipts against the APEX PSI ledger. Recomputes each hash's presence and integrity and reports Merkle chain continuity. Returns a verification report — a recomputation result, not an opinion or a certification.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "receipts": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "additionalProperties": {},
-              "description": "An APEX PSI receipt object (as returned by the seal tool)"
-            },
-            "minItems": 1,
-            "description": "Array of receipt objects to verify (in order)"
-          }
-        },
-        "required": [
-          "receipts"
-        ],
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-      }
+      "name": "ledger_stats",
+      "title": "APEX PSI ledger statistics",
+      "description": "Return counts of ledger attestations, non-approved exceptions and public attestations for a quick integrity snapshot.",
+      "write": false
+    },
+    {
+      "name": "protocol_info",
+      "title": "APEX PSI protocol reference",
+      "description": "Return the APEX PSI protocol reference: canonicalization, hashing, signature suites, IETF drafts, HTTP header and anchoring targets.",
+      "write": false
     }
-  ]
+  ],
+  "alternative_installs": [
+    {
+      "type": "npm",
+      "identifier": "apex-psi-mcp",
+      "version": "1.1.2",
+      "transport": {
+        "type": "stdio"
+      },
+      "auth": "none",
+      "install": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "apex-psi-mcp"
+        ]
+      },
+      "tools": [
+        "seal",
+        "verify",
+        "anchor",
+        "cite",
+        "verify_chain"
+      ],
+      "note": "A different server with different names: seal, verify, anchor, cite, verify_chain. Runs on your machine, no sign-in. Its own card is published with the npm package."
+    }
+  ],
+  "measured": {
+    "hosted_tools_from": ".lovable/mcp/manifest.json, generated by @lovable.dev/mcp-js from src/lib/mcp/tools",
+    "package_tools_from": "public/.well-known/mcp/local-tools.json",
+    "package_measured_at": "2026-10-23",
+    "remote_probed_at": "2026-10-23"
+  }
 }

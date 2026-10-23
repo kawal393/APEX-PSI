@@ -113,11 +113,15 @@ Our rule: a draft is called filed only when its datatracker URL returns 200.
 
 ## Connect an agent
 
+Two doors over one ledger. Verification is free through either; the hosted door needs a free APEX
+sign-in, the npm door needs no account at all.
+
 - Install (stdio, npm, no account): `npx -y apex-psi-mcp` — tools `seal`, `verify`,
   `anchor`, `cite`, `verify_chain`.
-- Hosted manifest: https://ai-governance-standard.com/.well-known/mcp/server.json —
+- Hosted (streamable-http, OAuth): https://www.ai-governance-standard.com/.well-known/mcp/server.json —
   tools `seal`, `verify_hash`, `anchor_status`, `list_attestations`, `ledger_stats`,
-  `protocol_info`.
+  `protocol_info`. An anonymous caller gets HTTP 401 with an OAuth resource-metadata pointer,
+  which is the protocol asking for a session rather than a missing server.
 - Free allowance: 20 operations per minute, 100 per day, enforced per server instance.
   An API key raises the ceiling; it does not change what a receipt can claim.
 

@@ -77,21 +77,33 @@ for (const file of WATCH) {
 }
 
 // The MCP discovery cards are read by agents, not by people, and nothing else in this
-// suite looked at them. On 22 Oct both cards named six tools — verify_hash, anchor_status,
-// list_attestations, ledger_stats, protocol_info — and the installable package contains
-// none of those five, while the remote they pointed at answers HTTP 401 to an anonymous
-// client. A reader that trusted the card had no door to open. Compared semantically
-// (version + tool names + description), not byte for byte, because these are machine files
-// whose whitespace is not the claim.
+// suite looked at them — so on 22 Oct both cards could name six tools while this suite's own
+// probe was declaring the remote they point at dead. The probe was the defect: that remote
+// answers an anonymous caller with HTTP 401 plus `WWW-Authenticate: … resource_metadata="…"`,
+// and the metadata document it points to resolves over HTTPS. That is the Model Context
+// Protocol's correct handshake for an OAuth-protected resource server, not a bricked doorway —
+// and this card IS the hosted connector's card, so its six hosted tool names belong here.
+//
+// Blanket-banning those names made the guard wrong in the opposite direction, which is the same
+// defect class as over-claiming. What a guard must refuse is not a name, it is a MIX: one
+// surface wearing the other surface's tool set, version, transport or auth story. A mixed card
+// is precisely what a third-party directory copied off our own page and printed as "6 tools"
+// next to an install command that delivers five.
+//
+// Compared semantically (version + tool names + description), not byte for byte, because these
+// are machine files whose whitespace is not the claim.
 const CARDS = ['.well-known/mcp/server.json', '.well-known/mcp/server-card.json'];
-const CARD_MUST_NOT = [
-  'Cryptographic open-standard evidence protocol',
+const CARD_MUST_NOT = ['Cryptographic open-standard evidence protocol'];
+const HOSTED_SET = [
+  'seal',
   'verify_hash',
   'anchor_status',
   'list_attestations',
   'ledger_stats',
   'protocol_info',
-];
+].sort().join(',');
+const PACKAGE_SET = ['seal', 'verify', 'anchor', 'cite', 'verify_chain'].sort().join(',');
+const HOSTED_REMOTE = 'https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp';
 
 for (const card of CARDS) {
   const res = await fetch(`${BASE}/${card}?t=${Date.now()}`, { headers }).catch(() => null);
@@ -149,15 +161,68 @@ for (const card of CARDS) {
       fatal++;
     }
   }
-  if (!live.includes('"install"') || !live.includes('apex-psi-mcp')) {
-    console.log(`FAIL ${card}: no installable door named, so a reader cannot reach the server`);
+
+  // Surface separation is the claim worth guarding. Top-level = the hosted connector; the npm
+  // package lives under alternative_installs with its own names, version and "no account".
+  if (liveNames !== HOSTED_SET) {
+    console.log(`FAIL ${card}: top-level tools [${liveNames}] are not the hosted connector's measured set [${HOSTED_SET}]`);
     fatal++;
   }
-  if (!/no account/i.test(L.description)) {
-    console.log(`FAIL ${card}: the card hides the fact that verification needs no account`);
+  const alt = (L.alternative_installs || [])[0] || {};
+  const altNames = (alt.tools || []).slice().sort().join(',');
+  if (altNames !== PACKAGE_SET) {
+    console.log(`FAIL ${card}: the npm door advertises [${altNames || 'nothing'}], the package answers [${PACKAGE_SET}]`);
+    fatal++;
+  }
+  if (alt.auth !== 'none' || !alt.install || alt.install.command !== 'npx') {
+    console.log(`FAIL ${card}: the npm door is not stated as a key-free npx install`);
+    fatal++;
+  }
+  const remote = (L.remotes || [])[0] || {};
+  if (remote.url !== HOSTED_REMOTE) {
+    console.log(`FAIL ${card}: remote is ${remote.url || 'absent'}, not the deployed connector ${HOSTED_REMOTE}`);
+    fatal++;
+  }
+  if (L.transport?.url !== HOSTED_REMOTE || L.transport?.type !== 'streamable-http') {
+    console.log(`FAIL ${card}: transport does not name the hosted connector it describes`);
+    fatal++;
+  }
+  if (L.auth?.type !== 'oauth2') {
+    console.log(`FAIL ${card}: an OAuth server that does not say so — a reader will call it anonymously and take HTTP 401 as an outage`);
+    fatal++;
+  }
+  if (!/OAuth/i.test(L.description || '')) {
+    console.log(`FAIL ${card}: the description an agent quotes never mentions that the hosted door signs in`);
     differs++;
   }
-  console.log(`CHECKED ${card}: ${liveNames} @ ${L.version}`);
+  if (L.version !== C.version || C.version === alt.version) {
+    console.log(`FAIL ${card}: version ${L.version} is not the hosted connector's own (the npm package's ${alt.version} belongs to the npm door)`);
+    fatal++;
+  }
+
+  // The door must actually be behind the challenge it advertises, or the card is a promise.
+  const probe = await fetch(HOSTED_REMOTE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'static-copy-check', version: '1' } } }),
+  }).catch(() => null);
+  if (!probe) {
+    console.log(`FAIL ${card}: cannot probe the advertised remote`);
+    fatal++;
+  } else {
+    const challenge = probe.headers.get('www-authenticate') || '';
+    const pointer = (challenge.match(/resource_metadata="([^"]+)"/) || [])[1] || '';
+    const metaOk = pointer
+      ? (await fetch(pointer, { headers: { Accept: 'application/json' } }).catch(() => null))?.status === 200
+      : false;
+    if (!(probe.status === 401 && metaOk)) {
+      console.log(`FAIL ${card}: advertised remote answers HTTP ${probe.status} with ${pointer ? `metadata HTTP ${metaOk ? 'ok' : 'unreachable'}` : 'no OAuth challenge'} — a 401 without a resolvable challenge is a door we cannot prove`);
+      fatal++;
+    } else {
+      console.log(`PROVED ${card}: hosted remote challenges 401 and its resource_metadata resolves`);
+    }
+  }
+  console.log(`CHECKED ${card}: hosted [${liveNames}] @ ${L.version} · npm [${altNames}] @ ${alt.version}`);
 }
 
 if (fatal) {
