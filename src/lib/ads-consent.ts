@@ -30,7 +30,9 @@ export function isConsentRequiredRegion(): Promise<boolean> {
 
 async function lookupConsentRegion(): Promise<boolean> {
   try {
-    const res = await fetch("/cdn-cgi/trace", { signal: AbortSignal.timeout(2000) });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch("/cdn-cgi/trace", { signal: controller.signal }).finally(() => clearTimeout(timer));
     if (!res.ok) return true;
     const country = (await res.text()).match(/^loc=([A-Z0-9]{2})$/m)?.[1];
     if (!country || country === "XX" || country === "T1") return true;
