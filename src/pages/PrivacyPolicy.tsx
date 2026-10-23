@@ -119,6 +119,18 @@ const PrivacyPolicy = () => (
         These providers have their own privacy policies and are contractually obligated to protect
         your data.
       </p>
+      <p>
+        <strong>Google Ads.</strong> We advertise on Google Search and share with Google Ads the ad
+        click identifier, cookie identifiers, browser and device details, and the fact that a free
+        API key was created after an ad visit, so we can measure which ads work. We never send your
+        email or API key. Visitors in the EEA, UK, Switzerland and Canada are asked for consent
+        first; elsewhere this measurement is on by default. You can change or withdraw your choice
+        at any time with Cookie settings in the site footer. See how Google uses this data at{" "}
+        <a href="https://business.safety.google/privacy/" target="_blank" rel="noopener noreferrer">
+          business.safety.google/privacy
+        </a>{" "}
+        and our <a href="/cookies">Cookie Policy</a>.
+      </p>
     </section>
 
     <section>

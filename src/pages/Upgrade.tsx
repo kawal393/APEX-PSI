@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { SITE_URL } from "@/lib/site";
 import { RAPIDAPI_URL, salesMailto } from "@/lib/commerce";
+import { reportFreeApiKeyConversion } from "@/lib/ads-consent";
 
 type KeyRow = {
   id: string;
@@ -42,6 +43,7 @@ const Upgrade = () => {
       const { data: created } = await supabase.functions.invoke("create-api-key", { body: { name: "default" } });
       if (created?.apiKey) {
         setFreshKey(created.apiKey);
+        void reportFreeApiKeyConversion();
         const { data: again } = await supabase.functions.invoke("api-keys", { body: { action: "list" } });
         if (again?.keys) setKeys(again.keys as KeyRow[]);
       }
@@ -68,6 +70,7 @@ const Upgrade = () => {
       if (data?.error) throw new Error(String(data.error));
       if (data?.apiKey) {
         setFreshKey(data.apiKey);
+        void reportFreeApiKeyConversion();
         loadKeys();
       }
     } catch (e) {

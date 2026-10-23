@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import { PSI_VERIFIER_VERSION } from "../../packages/psi-verifier/src/index";
 import { Github, ExternalLink, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { openCookieSettings } from "@/lib/ads-consent";
 import apexLogo from "@/assets/apex-logo.png";
 import { useTranslation } from "react-i18next";
 import { DECLARATION_TEXT } from "@/components/Declaration";
@@ -99,6 +100,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               <li><Link to="/privacy" className="hover:text-gold transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="hover:text-gold transition-colors">Terms of Service</Link></li>
               <li><Link to="/cookies" className="hover:text-gold transition-colors">Cookie Policy</Link></li>
+              <li><button type="button" onClick={openCookieSettings} className="hover:text-gold transition-colors">Cookie settings</button></li>
             </ul>
           </div>
         </div>
