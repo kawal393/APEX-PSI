@@ -196,11 +196,16 @@ const Verify = () => {
         },
       });
       const data = await res.json();
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         const entry = data[0];
+        // Finding the row is not proof: recompute the leaf and check the
+        // Ed25519 signature against the pinned APEX key, in this browser.
+        const check = await verifyLedgerReceipt(entry);
         setReceiptResult({
-          verified: true, found: true,
-          merkle_verified: !!entry.merkle_root,
+          verified: check.verified, found: true,
+          merkle_verified: check.leafMatches,
+          signature_valid: check.signatureValid,
+          signature_detail: check.detail,
           commit_id: entry.commit_id,
           predicate_id: entry.predicate_id,
           phase: entry.phase, status: entry.status,
@@ -209,11 +214,10 @@ const Verify = () => {
           created_at: entry.created_at,
           queried_hash: entry.commit_hash,
           queried_at: new Date().toISOString(),
-          engine: "APEX NOTARY Receipt Verification",
+          engine: "APEX NOTARY Receipt Verification · signature checked locally",
           algorithm: "SHA-256 + Ed25519",
-          eu_ai_act_compliance: entry.status === "APPROVED",
           sequence_number: entry.sequence_number,
-        });
+        } as VerificationResult);
       } else {
         setReceiptResult({
           verified: false, found: false,
@@ -236,82 +240,20 @@ const Verify = () => {
     setBundleResult(null);
     setPqResult(null);
 
-    const steps: { label: string; status: "pending" | "pass" | "fail"; value?: string }[] = [
-      { label: "Parse JSON Bundle", status: "pending" },
-      { label: "JCS Canonicalize Event", status: "pending" },
-      { label: "Recompute SHA-256 Commit Hash", status: "pending" },
-      { label: "Recompute Merkle Leaf Hash", status: "pending" },
-      { label: "Verify Merkle Root Attestation", status: "pending" },
-      { label: "Verify Ed25519 Signature", status: "pending" },
-    ];
-
-    const updateStep = (idx: number, status: "pass" | "fail", value?: string) => {
-      steps[idx] = { ...steps[idx], status, value };
-      setBundleResult({ valid: !steps.some((s) => s.status === "fail"), steps: [...steps] });
-    };
-
     try {
-      // Step 1: Parse
-      let bundle: PSIProofBundle;
-      try {
-        bundle = JSON.parse(bundleJson);
-        updateStep(0, "pass", `Protocol: ${bundle.protocol} v${bundle.version}`);
-      } catch {
-        updateStep(0, "fail", "Invalid JSON");
-        setBundleVerifying(false);
-        return;
+      // Strict, fail-closed verification: signature required, pinned key only,
+      // checked over the leaf recomputed here — never over declared values.
+      const verdict = await verifyProofBundle(bundleJson);
+      const shown: { label: string; status: "pending" | "pass" | "fail"; value?: string }[] =
+        verdict.steps.map((s) => ({ label: s.label, status: "pending" }));
+      for (let i = 0; i < verdict.steps.length; i++) {
+        shown[i] = { ...verdict.steps[i] };
+        setBundleResult({ valid: false, steps: [...shown] });
+        await new Promise((r) => setTimeout(r, 200));
       }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 2: JCS Canonicalize
-      try {
-        const eventData = { action: bundle.action, predicate_id: bundle.predicateId, timestamp: bundle.timestamp };
-        const canonicalHash = await jcsHash(eventData);
-        updateStep(1, "pass", `JCS hash: ${canonicalHash.substring(0, 24)}...`);
-      } catch {
-        updateStep(1, "fail", "Canonicalization failed");
-      }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 3: Recompute commit hash
-      const recomputedCommitHash = await hashSHA256(`${bundle.action}|${bundle.predicateId}|${bundle.timestamp}`);
-      if (recomputedCommitHash === bundle.commitHash) {
-        updateStep(2, "pass", `${recomputedCommitHash.substring(0, 24)}... ✓ MATCH`);
-      } else {
-        updateStep(2, "fail", `Expected: ${bundle.commitHash.substring(0, 16)}... Got: ${recomputedCommitHash.substring(0, 16)}...`);
-      }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 4: Recompute Merkle leaf
-      const recomputedLeaf = await hashSHA256(`${bundle.commitId}|${bundle.commitHash}`);
-      if (recomputedLeaf === bundle.merkleLeafHash) {
-        updateStep(3, "pass", `${recomputedLeaf.substring(0, 24)}... ✓ MATCH`);
-      } else {
-        updateStep(3, "fail", `Leaf hash mismatch`);
-      }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 5: Merkle proof verification
-      if (bundle.merkleProof && bundle.merkleRoot) {
-        const merkleValid = await verifyMerkleProof(bundle.merkleLeafHash, bundle.merkleProof, bundle.merkleRoot);
-        updateStep(4, merkleValid ? "pass" : "fail", merkleValid ? `Root: ${bundle.merkleRoot.substring(0, 24)}... ✓ VERIFIED` : "Merkle root attestation failed");
-      } else {
-        updateStep(4, "fail", "No Merkle proof in bundle");
-      }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 6: Ed25519 signature
-      if (bundle.ed25519Signature && bundle.ed25519PublicKey) {
-        const sigValid = await verifyEd25519Signature(bundle.merkleRoot, bundle.ed25519Signature, bundle.ed25519PublicKey);
-        updateStep(5, sigValid ? "pass" : "fail", sigValid ? "Ed25519 signature verified" : "Signature verification failed");
-      } else {
-        updateStep(5, "pass", "No signature in bundle (pre-Ed25519 commit)");
-      }
+      setBundleResult({ valid: verdict.valid, steps: [...shown] });
+      if (!verdict.recomputedLeaf) { setPqResult({ present: false, valid: false }); return; }
+      const bundle = JSON.parse(bundleJson) as PSIProofBundle;
 
       // Step 7: Post-quantum LMS-W4-SHA256 signature (verified locally)
       const anyBundle = bundle as unknown as Record<string, any>;
