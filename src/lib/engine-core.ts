@@ -673,6 +673,15 @@ export class MerkleTree {
     this.layers = await this.computeLayers();
   }
 
+  /** Swap a provisional client leaf for the server-signed one, keeping position. */
+  async replaceLeaf(oldLeaf: string, newLeaf: string): Promise<boolean> {
+    const i = this.leaves.indexOf(oldLeaf);
+    if (i === -1) return false;
+    this.leaves[i] = newLeaf;
+    this.layers = await this.computeLayers();
+    return true;
+  }
+
   async addLeaf(leafHash: string): Promise<void> {
     this.leaves.push(leafHash);
     this.layers = await this.computeLayers();
@@ -704,6 +713,10 @@ export class MerkleTree {
           hash: layer[siblingIdx],
           position: isRight ? 'left' : 'right',
         });
+      } else if (layer.length > 1) {
+        // Odd last node: computeLayers paired it with itself, so the proof
+        // must carry that duplicate or the path would not reach the root.
+        proof.push({ hash: layer[idx], position: 'right' });
       }
 
       idx = Math.floor(idx / 2);
