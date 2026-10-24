@@ -21,7 +21,7 @@ const REAL_ROW = {
 };
 
 async function makeBundle() {
-  const priv = ed.utils.randomPrivateKey();
+  const priv = crypto.getRandomValues(new Uint8Array(32));
   const pub = hex(await ed.getPublicKeyAsync(priv));
   const action = "Approve loan application #4411";
   const predicateId = "EU-AI-ACT-ART-14";
