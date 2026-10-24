@@ -685,7 +685,7 @@ const Verify = () => {
                           <span className={`font-mono text-sm font-bold tracking-wider ${
                             pqResult.valid ? "text-compliant" : "text-destructive"
                           }`}>
-                            {pqResult.valid ? "PQ SIGNATURE VALID" : "PQ SIGNATURE INVALID"}
+                            {pqResult.valid ? "PQ SIGNATURE VALID UNDER THE KEY IN THIS BUNDLE (SUPPLEMENTARY — NOT THE VERDICT)" : "PQ SIGNATURE INVALID"}
                           </span>
                         </div>
 
