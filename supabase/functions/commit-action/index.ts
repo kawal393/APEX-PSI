@@ -5,6 +5,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { signEd25519Strict } from "../_shared/psi_core.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
