@@ -60,3 +60,11 @@
 - [x] Founding: optional auto-approve flag (off by default)
 - [x] Safety wall: banned claims blocked on Founding applications
 - Deferred outside this website alignment pass: abusive-key revocation alerts, monthly referral digest, and usage-warning emails. These are not implemented or verified here.
+
+# Strict signature enforcement (24 Oct 2026)
+- [x] Proof bundles: missing signature, unpinned key, forged payload, altered leaf/root all fail.
+- [x] Receipt ID lookup: signature checked locally before "verified".
+- [x] In-band media: VALID only under the pinned APEX anchor; otherwise INTEGRITY ONLY.
+- [x] Engine export includes the ledger signature and commit timestamp; odd-tree inclusion proofs fixed.
+- [x] Commit service fails closed instead of issuing a pseudo-signature (deployed, live-tested).
+- [ ] Publish the site so the live checker uses the strict rules.
