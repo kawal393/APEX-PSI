@@ -674,11 +674,13 @@ export class MerkleTree {
   }
 
   /** Swap a provisional client leaf for the server-signed one, keeping position. */
-  async replaceLeaf(oldLeaf: string, newLeaf: string): Promise<boolean> {
+  replaceLeaf(oldLeaf: string, newLeaf: string): boolean {
     const i = this.leaves.indexOf(oldLeaf);
-    if (i === -1) return false;
+    if (i === -1 || oldLeaf === newLeaf) return false;
     this.leaves[i] = newLeaf;
-    this.layers = await this.computeLayers();
+    // Invalidate now (getRoot/getProof recompute on demand), refill in background.
+    this.layers = [];
+    void this.computeLayers().then((layers) => { if (this.layers.length === 0) this.layers = layers; });
     return true;
   }
 
@@ -909,9 +911,13 @@ export function updateRecordFromServer(
   const idx = commitLog.findIndex(r => r.id === commitId);
   if (idx === -1) return null;
 
+  const previousLeaf = commitLog[idx].merkleLeafHash;
   const updatedRecord = { ...commitLog[idx], ...serverData };
   commitLog[idx] = updatedRecord;
-  
+  // Keep the in-memory tree on the server-signed leaf so later inclusion
+  // proofs start from the leaf the ledger signature actually covers.
+  if (serverData.merkleLeafHash) globalTree.replaceLeaf(previousLeaf, serverData.merkleLeafHash);
+
   return updatedRecord;
 }
 
