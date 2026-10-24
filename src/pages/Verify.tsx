@@ -12,11 +12,10 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
 import { toast } from "sonner";
-import { verifyEd25519Signature, type PSIProofBundle } from "@/lib/psi-signatures";
-import { jcsHash } from "@/lib/psi-canonicalize";
+import { type PSIProofBundle } from "@/lib/psi-signatures";
+import { verifyProofBundle, verifyLedgerReceipt } from "@/lib/proof-bundle-verify";
 import Rosette from "@/components/Rosette";
 import ZeroClaimLabel from "@/components/ZeroClaimLabel";
-import { verifyMerkleProof, hashSHA256 } from "@/lib/engine-core";
 import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD, type LMSSignature } from "@/lib/psi-lms";
 import { Helmet } from "react-helmet-async";
 import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
@@ -47,6 +46,8 @@ interface VerificationResult extends ProofReceiptData {
   engine: string;
   algorithm?: string;
   eu_ai_act_compliance?: boolean;
+  signature_valid?: boolean;
+  signature_detail?: string;
   message?: string;
   sequence_number?: number;
 }
@@ -440,7 +441,7 @@ const Verify = () => {
                           { label: "Merkle Root", value: result.merkle_root, mono: true },
                           { label: "Action", value: result.action_summary },
                           { label: "Created", value: result.created_at ? new Date(result.created_at).toLocaleString() : null },
-                          { label: "EU AI Act Compliant", value: result.eu_ai_act_compliance ? "YES" : "PENDING" },
+                          { label: "Predicate check", value: result.eu_ai_act_compliance ? "PASSED" : "PENDING" },
                         ].filter(r => r.value).map((row) => (
                           <div key={row.label} className="flex items-start justify-between gap-4 text-sm">
                             <span className="text-muted-foreground shrink-0">{row.label}</span>
@@ -516,27 +517,35 @@ const Verify = () => {
                 <AnimatePresence mode="wait">
                   {receiptResult && receiptResult.found && (
                     <motion.div key="receipt-found" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                      className="rounded-xl border border-compliant/30 bg-card/80 backdrop-blur-sm overflow-hidden">
-                      <div className="border-b border-border px-6 py-4 flex items-center justify-between flex-wrap gap-3"
-                        style={{ background: "linear-gradient(135deg, hsl(142 76% 36% / 0.08), transparent)" }}>
+                      className={`rounded-xl border ${receiptResult.verified ? "border-compliant/30" : "border-destructive/30"} bg-card/80 backdrop-blur-sm overflow-hidden`}>
+                      <div className="border-b border-border px-6 py-4 flex items-center justify-between flex-wrap gap-3">
                         <div className="flex items-center gap-3">
-                          <ShieldCheck className="h-6 w-6 text-compliant" />
+                          {receiptResult.verified
+                            ? <ShieldCheck className="h-6 w-6 text-compliant" />
+                            : <ShieldX className="h-6 w-6 text-destructive" />}
                           <div>
-                            <p className="font-black text-compliant text-sm">RECEIPT VERIFIED</p>
-                            <p className="text-xs text-muted-foreground">Found in APEX NOTARY append-only ledger</p>
+                            <p className={`font-black text-sm ${receiptResult.verified ? "text-compliant" : "text-destructive"}`}>
+                              {receiptResult.verified ? "RECEIPT VERIFIED" : "RECEIPT FOUND — SIGNATURE NOT VERIFIED"}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {receiptResult.verified
+                                ? "Leaf recomputed and Ed25519 signature checked against the pinned APEX key, in your browser"
+                                : "A ledger row exists, but it did not pass the local cryptographic check"}
+                            </p>
                           </div>
                         </div>
-                        <Badge className="bg-compliant/10 text-compliant border-compliant/30">{receiptResult.phase}</Badge>
+                        <Badge className="bg-muted/20 text-foreground border-border">{receiptResult.phase}</Badge>
                       </div>
                       <div className="px-6 py-5 space-y-3">
                         {[
                           { label: "Receipt ID", value: receiptResult.commit_id },
+                          { label: "Signature check", value: receiptResult.signature_detail },
+                          { label: "Leaf recomputed", value: receiptResult.merkle_verified ? "MATCH" : "MISMATCH" },
                           { label: "Predicate", value: receiptResult.predicate_id },
                           { label: "Status", value: receiptResult.status },
                           { label: "Merkle Root", value: receiptResult.merkle_root, mono: true },
                           { label: "Action", value: receiptResult.action_summary },
                           { label: "Created", value: receiptResult.created_at ? new Date(receiptResult.created_at).toLocaleString() : null },
-                          { label: "EU AI Act Compliant", value: receiptResult.eu_ai_act_compliance ? "YES" : "PENDING" },
                         ].filter(r => r.value).map((row) => (
                           <div key={row.label} className="flex items-start justify-between gap-4 text-sm">
                             <span className="text-muted-foreground shrink-0">{row.label}</span>
