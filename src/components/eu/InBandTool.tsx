@@ -229,7 +229,9 @@ const InBandTool = () => {
                   check.verdict === "VALID" ? "text-emerald-400" : check.verdict === "TAMPERED" ? "text-destructive" : "text-muted-foreground"
                 }`}
               />
-              <span className="text-sm font-black tracking-widest">{check.verdict}</span>
+              <span className="text-sm font-black tracking-widest">
+                {check.verdict === "INTEGRITY_ONLY" ? "INTEGRITY ONLY — SIGNER NOT AUTHENTICATED" : check.verdict}
+              </span>
             </div>
             {check.found && (
               <div

@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Award, Download, Printer, CheckCircle, XCircle, QrCode, ExternalLink, FileJson } from "lucide-react";
 import { type ComplianceCertificate, downloadCertificateJSON, printCertificate } from "@/lib/engine-certificate";
-import { type PSIProofBundle } from "@/lib/psi-signatures";
+import { type PSIProofBundle, PSI_PUBLIC_KEY } from "@/lib/psi-signatures";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -15,17 +15,25 @@ const CertificatePanel = ({ certificate }: CertificatePanelProps) => {
   const isApproved = certificate.status === 'APPROVED';
 
   const exportProofBundle = () => {
+    if (!certificate.ed25519Signature) {
+      toast.error("No ledger signature yet", {
+        description: "This record has not been signed by the ledger, so an unsigned bundle would be rejected by the checker.",
+      });
+      return;
+    }
     const bundle: PSIProofBundle = {
       version: "1.0",
       protocol: "APEX-PSI",
       commitId: certificate.commitId,
       action: certificate.action,
       predicateId: certificate.predicateId,
-      timestamp: certificate.generatedAt,
+      timestamp: certificate.commitTimestamp,
       commitHash: certificate.commitHash,
       merkleLeafHash: certificate.merkleLeafHash,
       merkleProof: certificate.merkleProof as any,
       merkleRoot: certificate.merkleRoot,
+      ed25519Signature: certificate.ed25519Signature,
+      ed25519PublicKey: PSI_PUBLIC_KEY,
       canonicalizationScheme: "RFC-8785-JCS",
       hashAlgorithm: "SHA-256",
       signatureAlgorithm: "Ed25519",

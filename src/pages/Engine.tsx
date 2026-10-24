@@ -116,6 +116,7 @@ const Engine = () => {
           commitHash: result.commit_hash!,
           merkleLeafHash: result.merkle_leaf_hash!,
           timestamp: result.timestamp || record.timestamp,
+          ed25519Signature: result.ed25519_signature,
         };
         
         // Update both local engine state and current record
