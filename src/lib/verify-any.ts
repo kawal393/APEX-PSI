@@ -178,7 +178,14 @@ async function readPsiInBandRow(file: File): Promise<ReaderRow> {
       return {
         ...base,
         status: "verified",
-        detail: `Manifest valid. ${sigs}. Mechanism: ${v.mechanism ?? "in-band"}.`,
+        detail: `Manifest valid and signed by the pinned APEX trust anchor. ${sigs}. Mechanism: ${v.mechanism ?? "in-band"}.`,
+      };
+    }
+    if (v.verdict === "INTEGRITY_ONLY") {
+      return {
+        ...base,
+        status: "present",
+        detail: `Manifest intact, but signed by a key that is not the pinned APEX anchor — integrity only, signer not authenticated. ${sigs}.`,
       };
     }
     return {

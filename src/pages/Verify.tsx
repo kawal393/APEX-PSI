@@ -12,11 +12,10 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
 import { toast } from "sonner";
-import { verifyEd25519Signature, type PSIProofBundle } from "@/lib/psi-signatures";
-import { jcsHash } from "@/lib/psi-canonicalize";
+import { type PSIProofBundle } from "@/lib/psi-signatures";
+import { verifyProofBundle, verifyLedgerReceipt } from "@/lib/proof-bundle-verify";
 import Rosette from "@/components/Rosette";
 import ZeroClaimLabel from "@/components/ZeroClaimLabel";
-import { verifyMerkleProof, hashSHA256 } from "@/lib/engine-core";
 import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD, type LMSSignature } from "@/lib/psi-lms";
 import { Helmet } from "react-helmet-async";
 import ProofReceipt, { type ProofReceiptData } from "@/components/verify/ProofReceipt";
@@ -47,6 +46,8 @@ interface VerificationResult extends ProofReceiptData {
   engine: string;
   algorithm?: string;
   eu_ai_act_compliance?: boolean;
+  signature_valid?: boolean;
+  signature_detail?: string;
   message?: string;
   sequence_number?: number;
 }
@@ -196,11 +197,16 @@ const Verify = () => {
         },
       });
       const data = await res.json();
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         const entry = data[0];
+        // Finding the row is not proof: recompute the leaf and check the
+        // Ed25519 signature against the pinned APEX key, in this browser.
+        const check = await verifyLedgerReceipt(entry);
         setReceiptResult({
-          verified: true, found: true,
-          merkle_verified: !!entry.merkle_root,
+          verified: check.verified, found: true,
+          merkle_verified: check.leafMatches,
+          signature_valid: check.signatureValid,
+          signature_detail: check.detail,
           commit_id: entry.commit_id,
           predicate_id: entry.predicate_id,
           phase: entry.phase, status: entry.status,
@@ -209,11 +215,10 @@ const Verify = () => {
           created_at: entry.created_at,
           queried_hash: entry.commit_hash,
           queried_at: new Date().toISOString(),
-          engine: "APEX NOTARY Receipt Verification",
+          engine: "APEX NOTARY Receipt Verification · signature checked locally",
           algorithm: "SHA-256 + Ed25519",
-          eu_ai_act_compliance: entry.status === "APPROVED",
           sequence_number: entry.sequence_number,
-        });
+        } as VerificationResult);
       } else {
         setReceiptResult({
           verified: false, found: false,
@@ -236,82 +241,20 @@ const Verify = () => {
     setBundleResult(null);
     setPqResult(null);
 
-    const steps: { label: string; status: "pending" | "pass" | "fail"; value?: string }[] = [
-      { label: "Parse JSON Bundle", status: "pending" },
-      { label: "JCS Canonicalize Event", status: "pending" },
-      { label: "Recompute SHA-256 Commit Hash", status: "pending" },
-      { label: "Recompute Merkle Leaf Hash", status: "pending" },
-      { label: "Verify Merkle Root Attestation", status: "pending" },
-      { label: "Verify Ed25519 Signature", status: "pending" },
-    ];
-
-    const updateStep = (idx: number, status: "pass" | "fail", value?: string) => {
-      steps[idx] = { ...steps[idx], status, value };
-      setBundleResult({ valid: !steps.some((s) => s.status === "fail"), steps: [...steps] });
-    };
-
     try {
-      // Step 1: Parse
-      let bundle: PSIProofBundle;
-      try {
-        bundle = JSON.parse(bundleJson);
-        updateStep(0, "pass", `Protocol: ${bundle.protocol} v${bundle.version}`);
-      } catch {
-        updateStep(0, "fail", "Invalid JSON");
-        setBundleVerifying(false);
-        return;
+      // Strict, fail-closed verification: signature required, pinned key only,
+      // checked over the leaf recomputed here — never over declared values.
+      const verdict = await verifyProofBundle(bundleJson);
+      const shown: { label: string; status: "pending" | "pass" | "fail"; value?: string }[] =
+        verdict.steps.map((s) => ({ label: s.label, status: "pending" }));
+      for (let i = 0; i < verdict.steps.length; i++) {
+        shown[i] = { ...verdict.steps[i] };
+        setBundleResult({ valid: false, steps: [...shown] });
+        await new Promise((r) => setTimeout(r, 200));
       }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 2: JCS Canonicalize
-      try {
-        const eventData = { action: bundle.action, predicate_id: bundle.predicateId, timestamp: bundle.timestamp };
-        const canonicalHash = await jcsHash(eventData);
-        updateStep(1, "pass", `JCS hash: ${canonicalHash.substring(0, 24)}...`);
-      } catch {
-        updateStep(1, "fail", "Canonicalization failed");
-      }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 3: Recompute commit hash
-      const recomputedCommitHash = await hashSHA256(`${bundle.action}|${bundle.predicateId}|${bundle.timestamp}`);
-      if (recomputedCommitHash === bundle.commitHash) {
-        updateStep(2, "pass", `${recomputedCommitHash.substring(0, 24)}... ✓ MATCH`);
-      } else {
-        updateStep(2, "fail", `Expected: ${bundle.commitHash.substring(0, 16)}... Got: ${recomputedCommitHash.substring(0, 16)}...`);
-      }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 4: Recompute Merkle leaf
-      const recomputedLeaf = await hashSHA256(`${bundle.commitId}|${bundle.commitHash}`);
-      if (recomputedLeaf === bundle.merkleLeafHash) {
-        updateStep(3, "pass", `${recomputedLeaf.substring(0, 24)}... ✓ MATCH`);
-      } else {
-        updateStep(3, "fail", `Leaf hash mismatch`);
-      }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 5: Merkle proof verification
-      if (bundle.merkleProof && bundle.merkleRoot) {
-        const merkleValid = await verifyMerkleProof(bundle.merkleLeafHash, bundle.merkleProof, bundle.merkleRoot);
-        updateStep(4, merkleValid ? "pass" : "fail", merkleValid ? `Root: ${bundle.merkleRoot.substring(0, 24)}... ✓ VERIFIED` : "Merkle root attestation failed");
-      } else {
-        updateStep(4, "fail", "No Merkle proof in bundle");
-      }
-
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Step 6: Ed25519 signature
-      if (bundle.ed25519Signature && bundle.ed25519PublicKey) {
-        const sigValid = await verifyEd25519Signature(bundle.merkleRoot, bundle.ed25519Signature, bundle.ed25519PublicKey);
-        updateStep(5, sigValid ? "pass" : "fail", sigValid ? "Ed25519 signature verified" : "Signature verification failed");
-      } else {
-        updateStep(5, "pass", "No signature in bundle (pre-Ed25519 commit)");
-      }
+      setBundleResult({ valid: verdict.valid, steps: [...shown] });
+      if (!verdict.recomputedLeaf) { setPqResult({ present: false, valid: false }); return; }
+      const bundle = JSON.parse(bundleJson) as PSIProofBundle;
 
       // Step 7: Post-quantum LMS-W4-SHA256 signature (verified locally)
       const anyBundle = bundle as unknown as Record<string, any>;
@@ -498,7 +441,7 @@ const Verify = () => {
                           { label: "Merkle Root", value: result.merkle_root, mono: true },
                           { label: "Action", value: result.action_summary },
                           { label: "Created", value: result.created_at ? new Date(result.created_at).toLocaleString() : null },
-                          { label: "EU AI Act Compliant", value: result.eu_ai_act_compliance ? "YES" : "PENDING" },
+                          { label: "Predicate check", value: result.eu_ai_act_compliance ? "PASSED" : "PENDING" },
                         ].filter(r => r.value).map((row) => (
                           <div key={row.label} className="flex items-start justify-between gap-4 text-sm">
                             <span className="text-muted-foreground shrink-0">{row.label}</span>
@@ -574,27 +517,35 @@ const Verify = () => {
                 <AnimatePresence mode="wait">
                   {receiptResult && receiptResult.found && (
                     <motion.div key="receipt-found" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                      className="rounded-xl border border-compliant/30 bg-card/80 backdrop-blur-sm overflow-hidden">
-                      <div className="border-b border-border px-6 py-4 flex items-center justify-between flex-wrap gap-3"
-                        style={{ background: "linear-gradient(135deg, hsl(142 76% 36% / 0.08), transparent)" }}>
+                      className={`rounded-xl border ${receiptResult.verified ? "border-compliant/30" : "border-destructive/30"} bg-card/80 backdrop-blur-sm overflow-hidden`}>
+                      <div className="border-b border-border px-6 py-4 flex items-center justify-between flex-wrap gap-3">
                         <div className="flex items-center gap-3">
-                          <ShieldCheck className="h-6 w-6 text-compliant" />
+                          {receiptResult.verified
+                            ? <ShieldCheck className="h-6 w-6 text-compliant" />
+                            : <ShieldX className="h-6 w-6 text-destructive" />}
                           <div>
-                            <p className="font-black text-compliant text-sm">RECEIPT VERIFIED</p>
-                            <p className="text-xs text-muted-foreground">Found in APEX NOTARY append-only ledger</p>
+                            <p className={`font-black text-sm ${receiptResult.verified ? "text-compliant" : "text-destructive"}`}>
+                              {receiptResult.verified ? "RECEIPT VERIFIED" : "RECEIPT FOUND — SIGNATURE NOT VERIFIED"}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {receiptResult.verified
+                                ? "Leaf recomputed and Ed25519 signature checked against the pinned APEX key, in your browser"
+                                : "A ledger row exists, but it did not pass the local cryptographic check"}
+                            </p>
                           </div>
                         </div>
-                        <Badge className="bg-compliant/10 text-compliant border-compliant/30">{receiptResult.phase}</Badge>
+                        <Badge className="bg-muted/20 text-foreground border-border">{receiptResult.phase}</Badge>
                       </div>
                       <div className="px-6 py-5 space-y-3">
                         {[
                           { label: "Receipt ID", value: receiptResult.commit_id },
+                          { label: "Signature check", value: receiptResult.signature_detail },
+                          { label: "Leaf recomputed", value: receiptResult.merkle_verified ? "MATCH" : "MISMATCH" },
                           { label: "Predicate", value: receiptResult.predicate_id },
                           { label: "Status", value: receiptResult.status },
                           { label: "Merkle Root", value: receiptResult.merkle_root, mono: true },
                           { label: "Action", value: receiptResult.action_summary },
                           { label: "Created", value: receiptResult.created_at ? new Date(receiptResult.created_at).toLocaleString() : null },
-                          { label: "EU AI Act Compliant", value: receiptResult.eu_ai_act_compliance ? "YES" : "PENDING" },
                         ].filter(r => r.value).map((row) => (
                           <div key={row.label} className="flex items-start justify-between gap-4 text-sm">
                             <span className="text-muted-foreground shrink-0">{row.label}</span>
@@ -734,7 +685,7 @@ const Verify = () => {
                           <span className={`font-mono text-sm font-bold tracking-wider ${
                             pqResult.valid ? "text-compliant" : "text-destructive"
                           }`}>
-                            {pqResult.valid ? "PQ SIGNATURE VALID" : "PQ SIGNATURE INVALID"}
+                            {pqResult.valid ? "PQ SIGNATURE VALID UNDER THE KEY IN THIS BUNDLE (SUPPLEMENTARY — NOT THE VERDICT)" : "PQ SIGNATURE INVALID"}
                           </span>
                         </div>
 

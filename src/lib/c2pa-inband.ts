@@ -492,7 +492,8 @@ export interface InBandVerification {
   bindingValid: boolean;
   computedSha256: string | null;
   watermark: Wm2Detection | null;
-  verdict: "VALID" | "TAMPERED" | "UNSIGNED";
+  /** VALID = intact AND signed by the pinned APEX anchor; INTEGRITY_ONLY = intact under an unpinned key. */
+  verdict: "VALID" | "INTEGRITY_ONLY" | "TAMPERED" | "UNSIGNED";
   /** Issuer declared in the claim (or null when unsigned). */
   issuer: string | null;
   /** True only if the signing keys match the published APEX PSI trust anchor. */
@@ -558,12 +559,15 @@ export async function verifyInBandCredentials(file: File | Blob): Promise<InBand
 
   const ok = sig.ok && bindingValid;
   if (ok) notes.push("Hybrid signature and hard binding both verify. Asset is unmodified since sealing.");
+  // VALID is reserved for seals signed by the pinned APEX trust anchor. An
+  // intact seal under any other key proves integrity only, never authorship.
+  const verdict: InBandVerification["verdict"] = !ok ? "TAMPERED" : issuerVerified ? "VALID" : "INTEGRITY_ONLY";
 
   return {
     found: true, container, mechanism: CONTAINER_MECHANISM[container], manifest,
     signatureValid: sig.ok, ed25519Valid: sig.ed25519_ok, mldsaValid: sig.mldsa_ok,
     bindingValid, computedSha256, watermark,
-    verdict: ok ? "VALID" : "TAMPERED",
+    verdict,
     issuer, issuerVerified, attribution,
     notes,
 

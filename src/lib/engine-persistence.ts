@@ -33,6 +33,7 @@ export interface ServerCommitResponse {
   commit_hash?: string;
   merkle_leaf_hash?: string;
   timestamp?: string;
+  ed25519_signature?: string;
   hash_verified_server_side?: boolean;
   hash_mismatch_detected?: boolean;
   rate_limit_remaining?: number;
@@ -98,6 +99,7 @@ export async function persistCommit(record: CommitRecord): Promise<ServerCommitR
       commit_hash: data.commit_hash,
       merkle_leaf_hash: data.merkle_leaf_hash,
       timestamp: data.timestamp,
+      ed25519_signature: data.ed25519_signature,
       hash_verified_server_side: data.hash_verified_server_side,
       hash_mismatch_detected: data.hash_mismatch_detected,
       rate_limit_remaining: data.rate_limit_remaining,

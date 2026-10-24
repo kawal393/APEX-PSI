@@ -673,6 +673,17 @@ export class MerkleTree {
     this.layers = await this.computeLayers();
   }
 
+  /** Swap a provisional client leaf for the server-signed one, keeping position. */
+  replaceLeaf(oldLeaf: string, newLeaf: string): boolean {
+    const i = this.leaves.indexOf(oldLeaf);
+    if (i === -1 || oldLeaf === newLeaf) return false;
+    this.leaves[i] = newLeaf;
+    // Invalidate now (getRoot/getProof recompute on demand), refill in background.
+    this.layers = [];
+    void this.computeLayers().then((layers) => { if (this.layers.length === 0) this.layers = layers; });
+    return true;
+  }
+
   async addLeaf(leafHash: string): Promise<void> {
     this.leaves.push(leafHash);
     this.layers = await this.computeLayers();
@@ -704,6 +715,10 @@ export class MerkleTree {
           hash: layer[siblingIdx],
           position: isRight ? 'left' : 'right',
         });
+      } else if (layer.length > 1) {
+        // Odd last node: computeLayers paired it with itself, so the proof
+        // must carry that duplicate or the path would not reach the root.
+        proof.push({ hash: layer[idx], position: 'right' });
       }
 
       idx = Math.floor(idx / 2);
@@ -896,9 +911,13 @@ export function updateRecordFromServer(
   const idx = commitLog.findIndex(r => r.id === commitId);
   if (idx === -1) return null;
 
+  const previousLeaf = commitLog[idx].merkleLeafHash;
   const updatedRecord = { ...commitLog[idx], ...serverData };
   commitLog[idx] = updatedRecord;
-  
+  // Keep the in-memory tree on the server-signed leaf so later inclusion
+  // proofs start from the leaf the ledger signature actually covers.
+  if (serverData.merkleLeafHash) globalTree.replaceLeaf(previousLeaf, serverData.merkleLeafHash);
+
   return updatedRecord;
 }
 

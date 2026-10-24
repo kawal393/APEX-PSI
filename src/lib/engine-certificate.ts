@@ -20,11 +20,15 @@ export interface ComplianceCertificate {
   predicateName: string;
   
   // Cryptographic Evidence
+  /** The commit's own timestamp — the one hashed into commitHash. */
+  commitTimestamp: string;
   commitHash: string;
   merkleLeafHash: string;
   merkleRoot: string;
   proofHash: string;
   merkleProof: object;
+  /** Ed25519 ledger signature over merkleLeafHash (absent if the commit was never persisted). */
+  ed25519Signature?: string;
   
   // Verdict
   status: 'APPROVED' | 'BLOCKED';
@@ -171,11 +175,13 @@ export async function generateCertificate(record: CommitRecord): Promise<Complia
     predicateId: record.predicateId,
     predicateName: PREDICATE_NAMES[record.predicateId] || record.predicateId,
     
+    commitTimestamp: record.timestamp,
     commitHash: record.commitHash,
     merkleLeafHash: record.merkleLeafHash,
     merkleRoot: record.merkleRoot,
     proofHash: record.proofHash,
     merkleProof: record.merkleProof,
+    ed25519Signature: record.ed25519Signature,
     
     status: record.status || 'APPROVED',
     violationFound: record.violationFound,
