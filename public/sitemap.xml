@@ -286,6 +286,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://www.ai-governance-standard.com/articles/ai-compliance-receipts-compliance-receipt-header-z6gqub</loc>
+    <lastmod>2026-10-26T00:06:59.276Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-89rm10</loc>
+    <lastmod>2026-10-26T00:06:59.276Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/verifiable-ai-governance-cryptographic-evidence-jnkmna</loc>
+    <lastmod>2026-10-26T00:06:59.276Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.ai-governance-standard.com/articles/ed25519-signatures-for-secure-ai-audit-trails-9ppgom</loc>
     <lastmod>2026-10-25T21:06:46.360Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6264,24 +6282,6 @@
   <url>
     <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-article-50-marking-detection-duties-ejbsw7</loc>
     <lastmod>2026-08-15T03:06:49.388Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-compliance-automation-what-can-and-cannot-be-automated-ptw9iy</loc>
-    <lastmod>2026-08-15T03:06:49.388Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/opentimestamps-for-permanent-ai-decision-records-is81yj</loc>
-    <lastmod>2026-08-15T03:06:49.388Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/how-to-prove-an-ai-decision-existed-at-a-specific-time-1dkerx</loc>
-    <lastmod>2026-08-15T00:06:41.354Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
