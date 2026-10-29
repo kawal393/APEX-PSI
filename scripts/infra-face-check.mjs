@@ -33,6 +33,23 @@ async function get(url, ms = 30000) {
 }
 
 const count = (hay, needle) => hay.split(needle).length - 1;
+
+async function postJson(url, body, ms = 20000) {
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), ms);
+  try {
+    const r = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json", "user-agent": UA },
+      body: JSON.stringify(body),
+      signal: ac.signal,
+    });
+    return { status: r.status, text: await r.text() };
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 const all = (hay, re) => [...hay.matchAll(re)];
 const uniq = (arr) => [...new Set(arr)];
 
@@ -132,10 +149,12 @@ const tillInvoke = count(app, "stripe-checkout");
 const tillButton = count(app, "Continue to payment");
 const sbHosts = uniq(all(app, /https:\/\/[a-z0-9]{15,25}\.supabase\.co/g));
 let tillLive = "unknown";
+let tillUrl = null;
 for (const host of sbHosts) {
   const r = await get(`${host}/functions/v1/stripe-checkout`);
   if (r.status === 404) continue;
   tillLive = r.ok || r.status === 400 || r.status === 500 ? `${host} -> HTTP ${r.status}` : `HTTP ${r.status}`;
+  tillUrl = `${host}/functions/v1/stripe-checkout`;
   break;
 }
 const quoted = uniq(
@@ -150,10 +169,44 @@ if (quoted.length > 0 && (tillInvoke === 0 || tillButton === 0)) {
   fail("price-with-no-till", `the page can ask for money but no deployed stripe-checkout function answered on any supabase host in the bundle (${sbHosts.join(", ") || "none found"}) — the button would fail at click`);
 }
 
+// ------------------------------------------------------------------ 4b. a withdrawn offer is unpurchasable, not just unlinked
+// Deleting a price from the page proves nothing about the till. The Verdict Engine and the
+// Discrepancy Feed were withdrawn on 3 Sep 2026 and the seal products on 29 Oct 2026, but a
+// delete that only reaches GitHub leaves the DEPLOYED function selling them to anyone who
+// remembers the name — and a priced verdict on a named company is a legal characterisation we
+// say publicly we do not sell. The function validates the product id before it touches Stripe,
+// so posting an id with no customer_email reveals its whole price map without creating a
+// checkout session or moving money. A nonsense id is probed as the control: if the function
+// does not reject THAT, this gate is blind and must say so rather than print a green.
+const WITHDRAWN_PRODUCTS = [
+  "feed_monthly", "feed_annual", "api_single", "api_pack5",
+  "seal_single", "seal_pack5", "seal_licence",
+];
+if (tillUrl) {
+  const control = await postJson(tillUrl, { product: "zzz_guard_control" });
+  const blind = !/Unknown product/i.test(control.text);
+  const stillSelling = [];
+  for (const id of WITHDRAWN_PRODUCTS) {
+    const r = await postJson(tillUrl, { product: id });
+    if (blind || !/Unknown product/i.test(r.text)) stillSelling.push(`${id} (HTTP ${r.status}: ${r.text.replace(/\s+/g, " ").slice(0, 60)})`);
+  }
+  notes.push(`withdrawn-product probe: control ${control.status} ${control.text.replace(/\s+/g, " ").slice(0, 46)} | rejected ${WITHDRAWN_PRODUCTS.length - stillSelling.length}/${WITHDRAWN_PRODUCTS.length}`);
+  if (blind) {
+    fail("guard-blind", `the deployed stripe-checkout did not reject the control product "zzz_guard_control" (${control.status}: ${control.text.replace(/\s+/g, " ").slice(0, 80)}) — it no longer validates product ids, so this gate cannot tell withdrawn from live stock`);
+  } else if (stillSelling.length) {
+    fail("withdrawn-still-sellable", `${stillSelling.length} of ${WITHDRAWN_PRODUCTS.length} offers the site calls withdrawn are still purchasable from the deployed function: ${stillSelling.join("; ")} — the page has no button for them but a stranger who posts the old name gets a checkout`);
+  }
+}
+
 // ------------------------------------------------------------------ 5. the legal file and the shelves
 const mark = await get(ORIGIN + "/TRADEMARK.md");
 if (mark.ok) {
-  const denies = /no Apex package has ever been published/i.test(mark.text);
+  // The corrected file QUOTES the withdrawn sentence to retract it, so a plain match on
+  // "no Apex package has ever been published" fires on the honest version. Assert positively
+  // instead: the legal file must itself name the packages the registries answer for.
+  const admits = /\|\s*`?(apex-psi-verifier|apex-psi-mcp|psi-verifier)`?\s*\|\s*(npm|PyPI)/i.test(mark.text);
+  const denies = /no Apex package has ever been published/i.test(mark.text) &&
+    !/was false|is withdrawn|\*\*are\*\* published/i.test(mark.text);
   const shelves = [];
   try {
     const n = await get("https://registry.npmjs.org/apex-psi-verifier/latest", 15000);
@@ -163,8 +216,9 @@ if (mark.ok) {
     const p = await get("https://pypi.org/pypi/psi-verifier/json", 15000);
     if (p.ok) shelves.push(`PyPI psi-verifier ${p.text && "serves"}`);
   } catch {}
-  if (denies && shelves.length) {
-    fail("shelf-denial", `the served TRADEMARK.md states "no Apex package has ever been published to the npm or PyPI registry" while ${shelves.join(" and ")} — a stranger disproves our own legal page in one minute`);
+  notes.push(`TRADEMARK.md shelf read: denial standing=${denies}, positively names published packages=${admits}`);
+  if (shelves.length && (denies || !admits)) {
+    fail("shelf-denial", `the served TRADEMARK.md ${denies ? 'still states "no Apex package has ever been published to the npm or PyPI registry"' : "names none of the published packages"} while ${shelves.join(" and ")} — a stranger disproves our own legal page in one minute, and a priority date we claim should be anchored to the first registry publication`);
   }
 } else {
   fail("address-dead", `TRADEMARK.md serves HTTP ${mark.status}`);
