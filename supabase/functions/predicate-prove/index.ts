@@ -64,10 +64,10 @@ const DISALLOWED_TOKENS = [
 ];
 
 function predNoPII(_input: string, output: string): PredicateResult {
-  const hits: { name: string; sample: string }[] = [];
+  const hits: { name: string }[] = [];
   for (const p of PII_PATTERNS) {
     const m = output.match(p.re);
-    if (m) hits.push({ name: p.name, sample: m[0].substring(0, 32) });
+    if (m) hits.push({ name: p.name }); // never store the matched PII itself
   }
   return hits.length === 0
     ? { verdict: "SATISFIED", evidence: { checked: PII_PATTERNS.map(p => p.name) } }

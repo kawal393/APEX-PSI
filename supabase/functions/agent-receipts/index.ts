@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
     steps = await result.steps;
   } catch (e) {
     const status = (e as { statusCode?: number }).statusCode ?? 500;
-    console.error("[agent-receipts]", e);
+    console.error("[agent-receipts] failed:", e instanceof Error ? e.name : "unknown");
     const msg = status === 402 ? "AI credits are used up for now." : status === 429 ? "Too many requests — try again in a minute." : "The agent could not finish.";
     return json({ error: msg }, status === 402 || status === 429 || status === 403 ? status : 502);
   }

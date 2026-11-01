@@ -11,6 +11,13 @@ export interface PSIReceiptInput {
   apiKey?: string;
 }
 
+// Only a SHA-256 fingerprint leaves your process; raw text and prompts are never sent.
+async function fingerprint(value: unknown): Promise<string> {
+  const text = typeof value === "string" ? value : JSON.stringify(value);
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return "sha256:" + Array.from(new Uint8Array(d)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 const DEFAULT_NOTARY = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize";
 
 export async function buildPSIReceiptHeader(input: PSIReceiptInput): Promise<string | null> {
@@ -22,9 +29,8 @@ export async function buildPSIReceiptHeader(input: PSIReceiptInput): Promise<str
         ...(input.apiKey ? { Authorization: `Bearer ${input.apiKey}` } : {}),
       },
       body: JSON.stringify({
-        decision: input.text.slice(0, 8000),
+        decision: await fingerprint(input.text),
         model_id: "vercel-ai",
-        context: { prompt: input.prompt },
         predicate: input.predicates[0],
       }),
     });

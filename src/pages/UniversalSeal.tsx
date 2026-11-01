@@ -121,7 +121,6 @@ const UniversalSeal = () => {
         body: JSON.stringify({
           decision: `APEX_SEAL sha256:${hash}`,
           model_id: "apex.universal.seal",
-          context: { fileName: file.name, fileSize: file.size, fileType: file.type || "application/octet-stream" },
           predicate: "APEX_TRUTH_PROTOCOL",
         }),
       });
@@ -248,8 +247,7 @@ async function apexSeal(file) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       decision: "APEX_SEAL sha256:" + sha256,
-      predicate: "APEX_TRUTH_PROTOCOL",
-      context: { fileName: file.name, fileSize: file.size, fileType: file.type }
+      predicate: "APEX_TRUTH_PROTOCOL"
     })
   });
   return await res.json(); // { receipt_id, merkle_root, ed25519_signature, ... }
