@@ -200,7 +200,11 @@ Deno.serve(async (req) => {
     const { error: insertError } = await supabase.from("gallows_ledger").insert({
       commit_id: receiptId,
       user_id: userId,
-      action: `NOTARIZE: sha256:${decisionHash.slice(0, 16)}`, // fingerprint only, never raw text
+      // Fingerprint only, never raw text. Sole exception: Impact Wall testimony,
+      // which the author submits explicitly for public display.
+      action: decision.trim().startsWith("APEX_IMPACT_WALL|")
+        ? `NOTARIZE: ${decision.trim().substring(0, 500)}`
+        : `NOTARIZE: sha256:${decisionHash.slice(0, 16)}`,
       predicate_id: predicateId,
       phase: "VERIFIED",
       status: "APPROVED",

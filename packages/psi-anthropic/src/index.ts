@@ -10,6 +10,13 @@ export interface WithPSIOptions {
   onReceipt?: (header: string) => void;
 }
 
+// Only a SHA-256 fingerprint leaves your process; raw text and prompts are never sent.
+async function fingerprint(value: unknown): Promise<string> {
+  const text = typeof value === "string" ? value : JSON.stringify(value);
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return "sha256:" + Array.from(new Uint8Array(d)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 const DEFAULT_NOTARY = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize";
 
 async function notarize(input: unknown, output: unknown, opts: WithPSIOptions): Promise<string | null> {
@@ -21,9 +28,8 @@ async function notarize(input: unknown, output: unknown, opts: WithPSIOptions): 
         ...(opts.apiKey ? { Authorization: `Bearer ${opts.apiKey}` } : {}),
       },
       body: JSON.stringify({
-        decision: typeof output === "string" ? output : JSON.stringify(output).slice(0, 8000),
+        decision: await fingerprint(output),
         model_id: "anthropic",
-        context: { input },
         predicate: opts.predicates[0],
       }),
     });

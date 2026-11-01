@@ -30,7 +30,6 @@ const EmbedSeal = () => {
         body: JSON.stringify({
           decision: `APEX_SEAL sha256:${hash}`,
           model_id: "apex.embed.seal",
-          context: { fileName: file.name, fileSize: file.size, fileType: file.type },
           predicate: "APEX_TRUTH_PROTOCOL",
         }),
       });
