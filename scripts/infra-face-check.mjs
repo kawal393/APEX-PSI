@@ -27,6 +27,11 @@ async function get(url, ms = 30000) {
   try {
     const r = await fetch(url, { headers: { "user-agent": UA }, signal: ac.signal });
     return { status: r.status, ok: r.ok, text: await r.text() };
+  } catch (e) {
+    // A refused address is a FINDING, not a crash. On 2 Nov the commerce project stopped
+    // resolving and this script died on a stack trace, which the morning scan printed as
+    // "exit 1 | Node.js v22.16.0" — a real outage wearing the costume of a broken tool.
+    return { status: 0, ok: false, text: "", error: (e.cause && e.cause.code) || e.message };
   } finally {
     clearTimeout(t);
   }
@@ -45,6 +50,8 @@ async function postJson(url, body, ms = 20000) {
       signal: ac.signal,
     });
     return { status: r.status, text: await r.text() };
+  } catch (e) {
+    return { status: 0, text: `probe refused: ${(e.cause && e.cause.code) || e.message}` };
   } finally {
     clearTimeout(t);
   }
@@ -150,9 +157,15 @@ const tillButton = count(app, "Continue to payment");
 const sbHosts = uniq(all(app, /https:\/\/[a-z0-9]{15,25}\.supabase\.co/g));
 let tillLive = "unknown";
 let tillUrl = null;
+let tillRefused = null;
 for (const host of sbHosts) {
   const r = await get(`${host}/functions/v1/stripe-checkout`);
   if (r.status === 404) continue;
+  if (r.status === 0) {
+    tillRefused = `${host} — ${r.error}`;
+    tillUrl = `${host}/functions/v1/stripe-checkout`;
+    break;
+  }
   tillLive = r.ok || r.status === 400 || r.status === 500 ? `${host} -> HTTP ${r.status}` : `HTTP ${r.status}`;
   tillUrl = `${host}/functions/v1/stripe-checkout`;
   break;
@@ -162,6 +175,9 @@ const quoted = uniq(
 );
 notes.push(`direct stripe links in the served app (0 is normal here): ${JSON.stringify(checkout)}`);
 notes.push(`till mechanism: invoke("stripe-checkout") x${tillInvoke}, "Continue to payment" x${tillButton}, function ${tillLive}`);
+if (tillRefused) {
+  fail("backend-unreachable", `the page renders and quotes ${quoted.length || "several"} AUD prices, but the project every price depends on — ${tillRefused} — does not answer. Every "Continue to payment" button on this face fails at click and the ledger counts cannot load. A page can look healthy while the whole paid and data plane behind it is gone, so this is measured at the backend address, not at the site.`);
+}
 notes.push(`AUD price strings quoted across the served app: ${quoted.length ? quoted.join(" | ") : "none"}`);
 if (quoted.length > 0 && (tillInvoke === 0 || tillButton === 0)) {
   fail("price-with-no-till", `the app quotes ${quoted.length} AUD prices but the checkout call or its button is missing from the shipped chunks (invoke x${tillInvoke}, button x${tillButton}) — a quoted price nobody can pay`);
@@ -182,7 +198,7 @@ const WITHDRAWN_PRODUCTS = [
   "feed_monthly", "feed_annual", "api_single", "api_pack5",
   "seal_single", "seal_pack5", "seal_licence",
 ];
-if (tillUrl) {
+if (tillUrl && !tillRefused) {
   const control = await postJson(tillUrl, { product: "zzz_guard_control" });
   const blind = !/Unknown product/i.test(control.text);
   const stillSelling = [];
