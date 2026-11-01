@@ -46,9 +46,12 @@ const PrivacyPolicy = () => (
       </ul>
       <h3>3.3 Compliance Platform Data</h3>
       <p>
-        Our platform verifies by publishing cryptographic digests only — the original document
-        or model is never uploaded. Verification uses Ed25519 and post-quantum signatures over
-        those digests.
+        Receipts publish cryptographic digests, never the original document or model. Our file
+        seals and developer libraries compute the fingerprint on your device and send only that.
+        If you send plain text to the hosted notary, it is hashed on our server and only a
+        fingerprint is kept. Text you submit to the engine for a verdict, and testimony you
+        choose to publish on the Impact Wall, is stored as written. Verification uses Ed25519 and
+        post-quantum signatures over those digests.
         <strong> We never access, store, or transmit your AI model weights.</strong> Compliance
         verification occurs without disclosure of proprietary model internals.
       </p>

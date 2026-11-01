@@ -578,9 +578,11 @@ const batch = await response.json();
             <p className="text-engine-muted text-sm mb-4">
               A receipt publishes a digest, not a document: the ledger entry carries the SHA-256 of
               the record, the predicate, the verdict and the Merkle proof. Sealing in your browser
-              sends the digest only, and the content never leaves the device. Sending an action to
-              the sealing endpoint for a verdict does store the text server-side, so the check can be
-              reproduced - it is stored, not published. None of this is zero-knowledge: a SHA-256 of
+              sends the digest only, and the content never leaves the device; the Python client and the
+              OpenAI, Anthropic, Vercel AI and Hono add-ons do the same. If you send plain text to the
+              hosted notary instead, it travels to the server to be hashed and only a fingerprint is
+              kept. Sending an action to the engine for a verdict does store the text server-side, so
+              the check can be reproduced - it is stored, not published. None of this is zero-knowledge: a SHA-256 of
               short, guessable text can be brute-forced, so never treat a hash as encryption.
             </p>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
