@@ -200,7 +200,7 @@ Deno.serve(async (req) => {
     const { error: insertError } = await supabase.from("gallows_ledger").insert({
       commit_id: receiptId,
       user_id: userId,
-      action: `NOTARIZE: ${decision.trim().substring(0, 500)}`,
+      action: `NOTARIZE: sha256:${decisionHash.slice(0, 16)}`, // fingerprint only, never raw text
       predicate_id: predicateId,
       phase: "VERIFIED",
       status: "APPROVED",
