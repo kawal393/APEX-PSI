@@ -189,7 +189,7 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
   const { error: insErr } = await supabase.from("gallows_ledger").insert({
     commit_id: rid,
     user_id: auth.userId ?? null,
-    action: `PSI_API: ${decision.trim().substring(0, 500)}`,
+    action: `PSI_API: sha256:${decisionHash.slice(0, 16)}`, // fingerprint only
     predicate_id: predicateId,
     phase: "VERIFIED",
     status: "APPROVED",

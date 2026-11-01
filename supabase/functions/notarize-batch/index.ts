@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
 
       ledgerRows.push({
         commit_id: receiptId, user_id: userId,
-        action: `NOTARIZE-BATCH: ${decision.trim().substring(0, 500)}`,
+        action: `NOTARIZE-BATCH: sha256:${decisionHash.slice(0, 16)}`, // fingerprint only
         predicate_id: predicateId, phase: "VERIFIED", status: "APPROVED",
         commit_hash: commitHash, merkle_leaf_hash: merkleLeaf,
         ed25519_signature: signature, mldsa65_signature: mldsa.sig, merkle_root: "", // filled below
