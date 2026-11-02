@@ -53,6 +53,39 @@ const MUST_NOT = [
 const headers = { 'User-Agent': 'Mozilla/5.0', 'Cache-Control': 'no-cache' };
 let differs = 0;
 let fatal = 0;
+// The morning scan prints only a guard's LAST line. "1 fatal finding(s)" on its own therefore
+// tells the reader nothing about what to fix, which is how a network miss stayed anonymous for a
+// whole run. Every counted finding is named here and repeated on the summary line.
+const notes = [];
+const count = (kind, msg) => {
+  if (kind === "fatal") fatal++; else differs++;
+  notes.push(msg);
+};
+const fail = (msg) => {
+  console.log(`FAIL ${msg}`);
+  count("fatal", msg);
+};
+const sayDrift = (msg) => {
+  console.log(`FAIL ${msg}`);
+  count("differs", msg);
+};
+
+// One retry, two seconds later: these are fourteen HTTPS requests to two hosts and a single
+// dropped socket is not a defect in the site. A second failure is reported as the failure it is.
+async function get(url, init) {
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const res = await fetch(url, { ...(init || {}), headers: { ...headers, ...((init && init.headers) || {}) } }).catch(async (e) => {
+      if (attempt === 1) {
+        await new Promise((r) => setTimeout(r, 2000));
+        return "retry";
+      }
+      return null;
+    });
+    if (res === "retry") continue;
+    if (res) return res;
+  }
+  return null;
+}
 
 async function committedCopy(dir, file) {
   const { readFileSync } = await import("node:fs");
@@ -65,22 +98,22 @@ async function committedCopy(dir, file) {
 
 for (const surface of SURFACES) {
   for (const file of surface.files) {
-    const res = await fetch(`${surface.site}/${file}?t=${Date.now()}`, { headers }).catch(() => null);
+    const res = await get(`${surface.site}/${file}?t=${Date.now()}`);
     if (!res) {
-      console.log(`FAIL ${file}: network (${surface.site})`);
-      fatal++;
+      console.log(`FAIL ${file}: network (${surface.site}, after one retry)`);
+      count("fatal", `${file} unreachable on ${surface.site}`);
       continue;
     }
     const live = await res.text();
     if (res.status !== 200) {
       console.log(`MISSING ${file}: ${surface.site} answers HTTP ${res.status} (not published yet)`);
-      differs++;
+      count("differs", `${file} not published on ${surface.site} (HTTP ${res.status})`);
       continue;
     }
     const local = await committedCopy(surface.dir, file);
     if (local === null) {
       console.log(`FAIL ${file}: no committed copy under ${surface.dir}`);
-      fatal++;
+      count("fatal", `${file} has no committed copy for ${surface.site}`);
       continue;
     }
     const norm = (s) => s.replace(/\r\n/g, "\n");
@@ -89,7 +122,7 @@ for (const surface of SURFACES) {
     } else {
       const first = (norm(live).split("\n").findIndex((l, i) => l !== norm(local).split("\n")[i]));
       console.log(`DRIFT ${file}: live ${live.length} B vs committed ${norm(local).length} B — first difference at line ${first + 1}. Either the site has not been republished from main, or the live copy drifted.`);
-      differs++;
+      count("differs", `${file} on ${surface.site} differs from main at line ${first + 1} — publish pending`);
     }
     for (const [target, needles] of MUST_NOT) {
       if (target !== file) continue;
@@ -97,7 +130,7 @@ for (const surface of SURFACES) {
         const hits = live.split(needle).length - 1;
         if (hits > 0) {
           console.log(`FAIL ${file}: ${surface.site} serves a claim we measured false — "${needle}" x${hits}`);
-          fatal++;
+          count("fatal", `${surface.site} still serves "${needle}"`);
         }
       }
     }
@@ -133,22 +166,22 @@ const PACKAGE_SET = ['seal', 'verify', 'anchor', 'cite', 'verify_chain'].sort().
 const HOSTED_REMOTE = 'https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp';
 
 for (const surface of SURFACES) for (const card of surface.cards) {
-  const res = await fetch(`${surface.site}/${card}?t=${Date.now()}`, { headers }).catch(() => null);
+  const res = await get(`${surface.site}/${card}?t=${Date.now()}`);
   if (!res) {
-    console.log(`FAIL ${card}: network (${surface.site})`);
-    fatal++;
+    console.log(`FAIL ${card}: network (${surface.site}, after one retry)`);
+    count("fatal", `${card} unreachable on ${surface.site}`);
     continue;
   }
   if (res.status !== 200) {
     console.log(`MISSING ${card}: ${surface.site} answers HTTP ${res.status} (not published yet)`);
-    differs++;
+    count("differs", `${card} not published on ${surface.site} (HTTP ${res.status})`);
     continue;
   }
   const live = await res.text();
   const local = await committedCopy(surface.dir, card);
   if (local === null) {
     console.log(`FAIL ${card}: no committed copy under ${surface.dir}`);
-    fatal++;
+    count("fatal", `${card} has no committed copy for ${surface.site}`);
     continue;
   }
   const parse = (s) => {
@@ -162,27 +195,27 @@ for (const surface of SURFACES) for (const card of surface.cards) {
   const C = parse(local);
   if (!L || !C) {
     console.log(`FAIL ${card}: ${!L ? 'live' : 'committed'} copy is not valid JSON`);
-    fatal++;
+    count("fatal", `${card} on ${surface.site} is not valid JSON`);
     continue;
   }
   const liveNames = (L.tools || []).map((t) => t.name).sort().join(',');
   const repoNames = (C.tools || []).map((t) => t.name).sort().join(',');
   if (liveNames !== repoNames) {
     console.log(`DRIFT ${card}: live advertises [${liveNames}] but the repository ships [${repoNames}]`);
-    differs++;
+    count("differs", `${card} on ${surface.site} advertises tools the repository does not ship`);
   }
   if (L.version !== C.version) {
     console.log(`DRIFT ${card}: live version ${L.version} vs committed ${C.version}`);
-    differs++;
+    count("differs", `${card} on ${surface.site} is version ${L.version}, main says ${C.version}`);
   }
   if (L.description !== C.description) {
     console.log(`DRIFT ${card}: the sentence an agent quotes is not the one in the repository`);
-    differs++;
+    count("differs", `${card} on ${surface.site} introduces itself with a sentence that is not in main`);
   }
   for (const needle of CARD_MUST_NOT) {
     if (live.includes(needle)) {
       console.log(`FAIL ${card}: serves a claim we measured false — "${needle}"`);
-      fatal++;
+      count("fatal", `${card} on ${surface.site} still serves "${needle}"`);
     }
   }
 
@@ -192,59 +225,49 @@ for (const surface of SURFACES) for (const card of surface.cards) {
   // document and asserting this set against it would be the guard inventing a defect.
   if (surface.deepCards) {
   if (liveNames !== HOSTED_SET) {
-    console.log(`FAIL ${card}: top-level tools [${liveNames}] are not the hosted connector's measured set [${HOSTED_SET}]`);
-    fatal++;
+    fail(`${card}: top-level tools [${liveNames}] are not the hosted connector's measured set [${HOSTED_SET}]`);
   }
   const alt = (L.alternative_installs || [])[0] || {};
   const altNames = (alt.tools || []).slice().sort().join(',');
   if (altNames !== PACKAGE_SET) {
-    console.log(`FAIL ${card}: the npm door advertises [${altNames || 'nothing'}], the package answers [${PACKAGE_SET}]`);
-    fatal++;
+    fail(`${card}: the npm door advertises [${altNames || 'nothing'}], the package answers [${PACKAGE_SET}]`);
   }
   if (alt.auth !== 'none' || !alt.install || alt.install.command !== 'npx') {
-    console.log(`FAIL ${card}: the npm door is not stated as a key-free npx install`);
-    fatal++;
+    fail(`${card}: the npm door is not stated as a key-free npx install`);
   }
   const remote = (L.remotes || [])[0] || {};
   if (remote.url !== HOSTED_REMOTE) {
-    console.log(`FAIL ${card}: remote is ${remote.url || 'absent'}, not the deployed connector ${HOSTED_REMOTE}`);
-    fatal++;
+    fail(`${card}: remote is ${remote.url || 'absent'}, not the deployed connector ${HOSTED_REMOTE}`);
   }
   if (L.transport?.url !== HOSTED_REMOTE || L.transport?.type !== 'streamable-http') {
-    console.log(`FAIL ${card}: transport does not name the hosted connector it describes`);
-    fatal++;
+    fail(`${card}: transport does not name the hosted connector it describes`);
   }
   if (L.auth?.type !== 'oauth2') {
-    console.log(`FAIL ${card}: an OAuth server that does not say so — a reader will call it anonymously and take HTTP 401 as an outage`);
-    fatal++;
+    fail(`${card}: an OAuth server that does not say so — a reader will call it anonymously and take HTTP 401 as an outage`);
   }
   if (!/OAuth/i.test(L.description || '')) {
-    console.log(`FAIL ${card}: the description an agent quotes never mentions that the hosted door signs in`);
-    differs++;
+    sayDrift(`${card}: the description an agent quotes never mentions that the hosted door signs in`);
   }
   if (L.version !== C.version || C.version === alt.version) {
-    console.log(`FAIL ${card}: version ${L.version} is not the hosted connector's own (the npm package's ${alt.version} belongs to the npm door)`);
-    fatal++;
+    fail(`${card}: version ${L.version} is not the hosted connector's own (the npm package's ${alt.version} belongs to the npm door)`);
   }
 
   // The door must actually be behind the challenge it advertises, or the card is a promise.
-  const probe = await fetch(HOSTED_REMOTE, {
+  const probe = await get(HOSTED_REMOTE, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'static-copy-check', version: '1' } } }),
-  }).catch(() => null);
+  });
   if (!probe) {
-    console.log(`FAIL ${card}: cannot probe the advertised remote`);
-    fatal++;
+    fail(`${card}: cannot probe the advertised remote`);
   } else {
     const challenge = probe.headers.get('www-authenticate') || '';
     const pointer = (challenge.match(/resource_metadata="([^"]+)"/) || [])[1] || '';
     const metaOk = pointer
-      ? (await fetch(pointer, { headers: { Accept: 'application/json' } }).catch(() => null))?.status === 200
+      ? (await get(pointer, { headers: { Accept: 'application/json' } }))?.status === 200
       : false;
     if (!(probe.status === 401 && metaOk)) {
-      console.log(`FAIL ${card}: advertised remote answers HTTP ${probe.status} with ${pointer ? `metadata HTTP ${metaOk ? 'ok' : 'unreachable'}` : 'no OAuth challenge'} — a 401 without a resolvable challenge is a door we cannot prove`);
-      fatal++;
+      fail(`${card}: advertised remote answers HTTP ${probe.status} with ${pointer ? `metadata HTTP ${metaOk ? 'ok' : 'unreachable'}` : 'no OAuth challenge'} — a 401 without a resolvable challenge is a door we cannot prove`);
     } else {
       console.log(`PROVED ${card}: hosted remote challenges 401 and its resource_metadata resolves`);
     }
@@ -256,11 +279,11 @@ for (const surface of SURFACES) for (const card of surface.cards) {
 }
 
 if (fatal) {
-  console.log(`\nstatic-copy-check: ${fatal} fatal finding(s)`);
+  console.log(`\nstatic-copy-check: ${fatal} fatal finding(s): ${notes.join(" · ")}`);
   process.exit(1);
 }
 if (differs) {
-  console.log(`\nstatic-copy-check: ${differs} file(s) not yet matching main — publish pending, not a pass.`);
+  console.log(`\nstatic-copy-check: ${differs} file(s) not yet matching main — publish pending, not a pass. ${notes.join(" · ")}`);
   process.exit(3);
 }
 console.log('\nstatic-copy-check: every watched static file is live and matches the repository.');
