@@ -7,19 +7,42 @@
 // drafts returning HTTP 200 and corrected nineteen HTML surfaces. A machine-readable surface
 // that no guard reads is a surface that drifts.
 //
-// Usage:  node scripts/static-copy-check.mjs [site]
-// Exit 0 - every watched static file is byte-identical to the committed copy.
-// Exit 3 - a file differs: either Lovable has not published main yet, or the live copy has
-//          drifted away from the repo. Both are reportable; neither is a pass.
-// Exit 1 - a fetch failed, or the live copy carries a claim on the never-again list.
+// Usage:  node scripts/static-copy-check.mjs
+// Exit 0 - every watched static file on both domains is byte-identical to its committed copy.
+// Exit 3 - a file differs: either the site has not been republished from main, or the live copy
+//          has drifted away from the repo. Both are reportable; neither is a pass.
+// Exit 1 - a fetch failed, a committed copy is missing, or the live copy carries a claim on the
+//          never-again list.
 // 3 rather than 2 on purpose: 2 already means "the guard could not run" to commerce-truth-check
 // and to the morning scan, and "not published yet" is a different fact from "cannot check".
 
-const SITE = process.argv[2] || 'https://www.ai-governance-standard.com';
-const BASE = 'https://ai-governance-standard.com';
+import { homedir } from "node:os";
+import { join } from "node:path";
 
-// Files in public/ that a stranger or a model can read and quote.
-const WATCH = ['llms.txt', 'llms-full.txt', 'SELF_AUDIT.md'];
+// Every surface that a stranger or a model can read and quote, paired with the repository folder
+// that is its source of truth. Both pairs are asserted, because the domains ship different files:
+// SELF_AUDIT.md exists only on the flagship, llms-full.txt only on the standard domain. This
+// distinction is the whole reason for the table — on 2 Nov this guard was given SELF_AUDIT.md to
+// watch while still defaulting to the standard domain, so it compared a flagship file against
+// `public/` in whatever folder the scan happened to launch it from, reported "publish pending" and
+// could never have cleared. A guard that checks file X on the site that does not serve X is red
+// forever, and a permanently red guard is the same as no guard.
+const SURFACES = [
+  {
+    site: "https://apex-infrastructure.com",
+    dir: join(homedir(), ".openhands", "apex-infra-site", "public"),
+    files: ["llms.txt", "SELF_AUDIT.md"],
+    cards: [".well-known/mcp/server.json"],
+  },
+  {
+    site: "https://www.ai-governance-standard.com",
+    dir: join(homedir(), ".openhands", "psi-hub-merge", "public"),
+    files: ["llms.txt", "llms-full.txt"],
+    cards: [".well-known/mcp/server.json", ".well-known/mcp/server-card.json"],
+    // The hosted connector's card carries claims only this domain makes (tool set, OAuth, npm door).
+    deepCards: true,
+  },
+];
 
 // Claims that are false today, asserted against the LIVE bytes whatever else happens,
 // so a republish cannot smuggle them back.
@@ -31,46 +54,51 @@ const headers = { 'User-Agent': 'Mozilla/5.0', 'Cache-Control': 'no-cache' };
 let differs = 0;
 let fatal = 0;
 
-for (const file of WATCH) {
-  const res = await fetch(`${BASE}/${file}?t=${Date.now()}`, { headers }).catch((e) => null);
-  if (!res) {
-    console.log(`FAIL ${file}: network`);
-    fatal++;
-    continue;
-  }
-  const live = await res.text();
-  if (res.status !== 200) {
-    console.log(`MISSING ${file}: HTTP ${res.status} (not published yet)`);
-    differs++;
-    continue;
-  }
-  let local = null;
+async function committedCopy(dir, file) {
+  const { readFileSync } = await import("node:fs");
   try {
-    local = await Bun.file(`public/${file}`).text();
+    return readFileSync(join(dir, file), "utf8");
   } catch {
-    const { readFileSync } = await import('node:fs');
-    try {
-      local = readFileSync(`public/${file}`, 'utf8');
-    } catch {
-      console.log(`FAIL ${file}: no committed copy to compare against`);
+    return null;
+  }
+}
+
+for (const surface of SURFACES) {
+  for (const file of surface.files) {
+    const res = await fetch(`${surface.site}/${file}?t=${Date.now()}`, { headers }).catch(() => null);
+    if (!res) {
+      console.log(`FAIL ${file}: network (${surface.site})`);
       fatal++;
       continue;
     }
-  }
-  const norm = (s) => s.replace(/\r\n/g, '\n');
-  if (norm(live) === norm(local)) {
-    console.log(`MATCH ${file}: live equals committed (${live.length} B)`);
-  } else {
-    console.log(`DRIFT ${file}: live ${live.length} B vs committed ${local.length} B`);
-    differs++;
-  }
-  for (const [target, needles] of MUST_NOT) {
-    if (target !== file) continue;
-    for (const needle of needles) {
-      const hits = live.split(needle).length - 1;
-      if (hits > 0) {
-        console.log(`FAIL ${file}: serves a claim we measured false — "${needle}" x${hits}`);
-        fatal++;
+    const live = await res.text();
+    if (res.status !== 200) {
+      console.log(`MISSING ${file}: ${surface.site} answers HTTP ${res.status} (not published yet)`);
+      differs++;
+      continue;
+    }
+    const local = await committedCopy(surface.dir, file);
+    if (local === null) {
+      console.log(`FAIL ${file}: no committed copy under ${surface.dir}`);
+      fatal++;
+      continue;
+    }
+    const norm = (s) => s.replace(/\r\n/g, "\n");
+    if (norm(live) === norm(local)) {
+      console.log(`MATCH ${file}: ${surface.site.replace(/^https:\/\//, "")} equals committed (${live.length} B)`);
+    } else {
+      const first = (norm(live).split("\n").findIndex((l, i) => l !== norm(local).split("\n")[i]));
+      console.log(`DRIFT ${file}: live ${live.length} B vs committed ${norm(local).length} B — first difference at line ${first + 1}. Either the site has not been republished from main, or the live copy drifted.`);
+      differs++;
+    }
+    for (const [target, needles] of MUST_NOT) {
+      if (target !== file) continue;
+      for (const needle of needles) {
+        const hits = live.split(needle).length - 1;
+        if (hits > 0) {
+          console.log(`FAIL ${file}: ${surface.site} serves a claim we measured false — "${needle}" x${hits}`);
+          fatal++;
+        }
       }
     }
   }
@@ -92,7 +120,6 @@ for (const file of WATCH) {
 //
 // Compared semantically (version + tool names + description), not byte for byte, because these
 // are machine files whose whitespace is not the claim.
-const CARDS = ['.well-known/mcp/server.json', '.well-known/mcp/server-card.json'];
 const CARD_MUST_NOT = ['Cryptographic open-standard evidence protocol'];
 const HOSTED_SET = [
   'seal',
@@ -105,25 +132,22 @@ const HOSTED_SET = [
 const PACKAGE_SET = ['seal', 'verify', 'anchor', 'cite', 'verify_chain'].sort().join(',');
 const HOSTED_REMOTE = 'https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp';
 
-for (const card of CARDS) {
-  const res = await fetch(`${BASE}/${card}?t=${Date.now()}`, { headers }).catch(() => null);
+for (const surface of SURFACES) for (const card of surface.cards) {
+  const res = await fetch(`${surface.site}/${card}?t=${Date.now()}`, { headers }).catch(() => null);
   if (!res) {
-    console.log(`FAIL ${card}: network`);
+    console.log(`FAIL ${card}: network (${surface.site})`);
     fatal++;
     continue;
   }
   if (res.status !== 200) {
-    console.log(`MISSING ${card}: HTTP ${res.status} (not published yet)`);
+    console.log(`MISSING ${card}: ${surface.site} answers HTTP ${res.status} (not published yet)`);
     differs++;
     continue;
   }
   const live = await res.text();
-  const { readFileSync } = await import('node:fs');
-  let local;
-  try {
-    local = readFileSync(`public/${card}`, 'utf8');
-  } catch {
-    console.log(`FAIL ${card}: no committed copy to compare against`);
+  const local = await committedCopy(surface.dir, card);
+  if (local === null) {
+    console.log(`FAIL ${card}: no committed copy under ${surface.dir}`);
     fatal++;
     continue;
   }
@@ -164,6 +188,9 @@ for (const card of CARDS) {
 
   // Surface separation is the claim worth guarding. Top-level = the hosted connector; the npm
   // package lives under alternative_installs with its own names, version and "no account".
+  // Only the standard domain's cards make those claims; the flagship's server.json is a different
+  // document and asserting this set against it would be the guard inventing a defect.
+  if (surface.deepCards) {
   if (liveNames !== HOSTED_SET) {
     console.log(`FAIL ${card}: top-level tools [${liveNames}] are not the hosted connector's measured set [${HOSTED_SET}]`);
     fatal++;
@@ -223,6 +250,9 @@ for (const card of CARDS) {
     }
   }
   console.log(`CHECKED ${card}: hosted [${liveNames}] @ ${L.version} · npm [${altNames}] @ ${alt.version}`);
+  } else {
+    console.log(`CHECKED ${card}: ${surface.site.replace(/^https:\/\//, "")} serves it and it matches the repository (tools [${liveNames}] @ ${L.version})`);
+  }
 }
 
 if (fatal) {
