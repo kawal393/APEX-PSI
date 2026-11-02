@@ -21,6 +21,23 @@ const audit = need("self_audit.json");
 const rows = need("registry_all.json");
 const flagged = need("flagged.json");
 
+// Every field the page is built from is checked before the page exists. Without this a record
+// missing one number threw a stack trace out of the middle of a template — a broken tool reporting
+// nothing, which is the failure this estate has already been burned on twice.
+const NEED = [["audit.rows", audit.rows], ["audit.tally.PASS", audit.tally?.PASS], ["audit.tally.FAIL", audit.tally?.FAIL], ["audit.tally.UNCHECKED", audit.tally?.UNCHECKED], ["audit.flagged.PASS", audit.flagged?.PASS], ["audit.flagged.FAIL", audit.flagged?.FAIL], ["rows.length", rows.length]];
+const missing = NEED.filter(([, v]) => !Number.isFinite(v)).map(([k]) => k);
+if (missing.length) {
+  console.log(`BROKEN — the machine record is missing ${missing.join(", ")}. The page was not written; run the audit again.`);
+  process.exit(2);
+}
+
+// The record's shape is allowed to change; the page is not allowed to guess. Whatever arrives is
+// turned into {n, why} pairs, and anything that cannot be read as a count is dropped so the output
+// lint below sees a gap rather than a crash. A generator that throws tells Master nothing.
+const reasons = (Array.isArray(audit.reasons) ? audit.reasons : Object.entries(audit.reasons || {}).map(([why, n]) => ({ why, n })))
+  .map((x) => ({ n: Number(x.n ?? x.count), why: String(x.why ?? x.reason ?? x.note ?? "") }))
+  .filter((x) => Number.isFinite(x.n) && x.why);
+
 const F = rows.filter((r) => r.finding_severity && r.finding_severity !== "none");
 const isVendor = (r) => /cross-source|market data feed|data vendor|market data/i.test(`${r.metric} ${r.apex_recomputation} ${r.finding}`);
 const zeroFlagged = F.filter((r) => /^0(\.0+)?%$/.test(String(r.variance || "")));
@@ -81,7 +98,7 @@ accepted when all four are judged correctly. This run caught 4 of 4.
 The machine only judges a row when the row prints both of its own figures in a form it can read. Where it
 declined, it says why:
 
-${Object.entries(audit.reasons || {}).map(([k, v]) => `- ${v} rows — ${k}`).join("\n") || `- see the machine record for the per-row reasons`}
+${reasons.map((x) => `- ${x.n.toLocaleString()} rows — ${x.why}`).join("\n") || "- the machine record carries no per-reason tally this run can be read against"}
 
 Raising that coverage is the point of the next runs, not a defect in the rows.
 
@@ -95,6 +112,14 @@ node scripts/registry-self-audit.mjs
 It reads the live registry through the same public address the website uses, needs no account, changes
 nothing, and exits non-zero if any row stops agreeing with itself or if the checker misses a planted error.
 `;
+
+// A page that renders [object Object] is a defect with our name on it, and one did ship. The
+// generator now refuses to write its own output if any placeholder survived the template.
+const junk = [...md.matchAll(/\[object Object\]|\bundefined\b|\bNaN\b|null rows/g)];
+if (junk.length) {
+  console.log(`BROKEN — the generated page contains ${junk.length} placeholder(s): ${junk.map((m) => m[0]).join(", ")}. Nothing was written.`);
+  process.exit(2);
+}
 
 writeFileSync(SITE, md);
 console.log(`WROTE ${SITE}\n`);

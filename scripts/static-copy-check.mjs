@@ -19,7 +19,7 @@ const SITE = process.argv[2] || 'https://www.ai-governance-standard.com';
 const BASE = 'https://ai-governance-standard.com';
 
 // Files in public/ that a stranger or a model can read and quote.
-const WATCH = ['llms.txt', 'llms-full.txt'];
+const WATCH = ['llms.txt', 'llms-full.txt', 'SELF_AUDIT.md'];
 
 // Claims that are false today, asserted against the LIVE bytes whatever else happens,
 // so a republish cannot smuggle them back.
