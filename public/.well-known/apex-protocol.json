@@ -5,22 +5,27 @@
   "ietf_drafts": [
     {
       "name": "draft-singh-psi",
-      "revision": "01",
+      "revision": "02",
       "category": "Informational",
       "submission": "individual",
       "status": "filed",
       "title": "Proof of Stateful Integrity (PSI) for Verifiable AI Governance",
       "url": "https://datatracker.ietf.org/doc/draft-singh-psi/",
-      "expires": "2027-03-03"
+      "expires": "2027-04-16",
+      "verified_against_datatracker": "2026-11-03"
     },
     {
       "name": "draft-singh-psi-http",
+      "revision": "00",
       "category": "Informational",
       "submission": "individual",
-      "status": "not filed",
-      "note": "Working specification text held at this domain only. It has not been submitted to the IETF and has no datatracker record.",
+      "status": "filed",
+      "submitted": "2026-10-13",
+      "note": "Filed with the IETF on 13 October 2026 and listed as an Active Internet-Draft (individual); datatracker record: https://datatracker.ietf.org/doc/draft-singh-psi-http/. The earlier statement here that it 'has no datatracker record' was out of date.",
       "title": "The Compliance-Receipt HTTP Header Field",
-      "url": "https://ai-governance-standard.com/ietf/draft-singh-psi-http-01.txt"
+      "url": "https://datatracker.ietf.org/doc/draft-singh-psi-http/",
+      "expires": "2027-04-16",
+      "verified_against_datatracker": "2026-11-03"
     },
     {
       "name": "draft-singh-apex-psi-04",
@@ -38,10 +43,10 @@
     }
   ],
   "standards": [
-    { "id": "psi-00", "title": "Proof of Stateful Integrity Core", "status": "filed", "draft": "draft-singh-psi rev 01 (Informational, not an approved standard)", "jurisdiction": "Global / IETF", "description": "Core protocol: canonicalisation, hash chain, signature suites and receipt formats." },
-    { "id": "psi-01", "title": "Compliance-Receipt HTTP Header Field", "status": "in preparation, not filed", "draft": "draft-singh-psi-http", "jurisdiction": "Global / IETF", "description": "In-band transport of a PSI receipt over HTTP responses." },
+    { "id": "psi-00", "title": "Proof of Stateful Integrity Core", "status": "filed", "draft": "draft-singh-psi rev 02 (Informational, not an approved standard; revision verified against datatracker 2026-11-03)", "jurisdiction": "Global / IETF", "description": "Core protocol: canonicalisation, hash chain, signature suites and receipt formats." },
+    { "id": "psi-01", "title": "Compliance-Receipt HTTP Header Field", "status": "filed 2026-10-13 as revision -00", "draft": "draft-singh-psi-http-00", "jurisdiction": "Global / IETF", "description": "In-band transport of a PSI receipt over HTTP responses." },
     { "id": "psi-02", "title": "Predicate Registry Governance", "status": "ready", "jurisdiction": "Global / IETF", "description": "Registration procedures and versioning rules for compliance predicates." },
-    { "id": "psi-03", "title": "Post-Quantum Signature Profile", "status": "ready", "jurisdiction": "Global / NIST-aligned", "description": "Hybrid Ed25519 + ML-DSA-65 / LMS-W4-SHA256 profile for long-lived evidence." },
+    { "id": "psi-03", "title": "Post-Quantum Signature Profile", "status": "specified; runs in APEX site tooling only", "jurisdiction": "Global / NIST-aligned", "description": "Hybrid Ed25519 + ML-DSA-65 / LMS-W4-SHA256 profile for long-lived evidence. Not verified by the published verifier package, which never reads pq_alg or pq_value (measured 2026-11-03)." },
     { "id": "psi-04", "title": "APEX PSI Predicate Registry and Proof Formats", "status": "filed", "draft": "draft-singh-apex-psi-04", "jurisdiction": "Global / IETF", "description": "Predicate identifiers, proof envelopes and verdict semantics." },
     { "id": "psi-05", "title": "Financial Disclosure Integrity", "status": "filed", "draft": "draft-singh-apex-psi-05", "jurisdiction": "Global / IETF", "description": "Hybrid dual-signature framework for disclosure recomputation, ledger structure, API endpoints and royalty tiers." },
     { "id": "psi-06", "title": "Bitcoin Anchoring Profile", "status": "ready", "jurisdiction": "Global", "description": "OpenTimestamps calendar usage, Merkle batching and anchor confirmation rules." },
@@ -53,8 +58,12 @@
     "https://ai-governance-standard.com/verify",
     "https://ai-governance-standard.com/verify-hash"
   ],
-  "pq_signature_algs": ["LMS-W4-SHA256", "ML-DSA-65", "Ed25519"],
-  "canonicalization": "RFC 8785 (JCS)",
+  "signature_verification": {
+    "public_verifier_apex_psi_verifier_1_3_0": ["Ed25519"],
+    "apex_site_tooling_only_not_the_package": ["ML-DSA-65 (FIPS 204)", "LMS-W4-SHA256 (NIST SP 800-208)"],
+    "note": "The free public door checks the Ed25519 half. The post-quantum halves are implemented and verified in our own site tooling (src/lib/psi-pqc.ts, src/lib/psi-lms.ts) and are NOT checked by the published verifier package — measured 2026-11-03: the installed dist contains 0 references to pq_alg or pq_value."
+  },
+  "canonicalization": "PSI-SEAL/1.0.0 key-sorted JSON — this verifier's own canonical form. Not RFC 8785: measured 2026-11-03, a string containing U+2028 digests bacc0479771c7059 under the published jcs() and 45731493d4bc3231 under RFC 8785, and the published jcs() emits null for NaN where RFC 8785 refuses the input.",
   "hash": "SHA-256",
   "anchor_method": "opentimestamps",
   "anchor": {
@@ -78,7 +87,7 @@
   "compliance_receipt": "https://ai-governance-standard.com/.well-known/compliance-receipt",
   "security_txt": "https://ai-governance-standard.com/.well-known/security.txt",
   "interop": ["IETF RFC 9943 (SCITT architecture) — JSON bridge view, not COSE conformance", "C2PA — informative view, not a signed manifest"],
-  "merkle_profile": "RFC6962-SHA256 (0x00 leaf / 0x01 node prefixes, chronological leaf order) for receipts issued from 2026-10-13",
+  "merkle_profile": "PSI-R8-SHA256 — raw 32-byte node concatenation, odd node promoted, no domain-separation prefixes, chronological leaf order, for receipts issued from 2026-10-13. Not RFC 6962: over the same two leaf nodes the published verifier returns ae2c68c7ffc19e0f while an RFC 6962 tree head over the same nodes is 1cb7025aaf86ac63 (measured 2026-11-03). An RFC 6962 profile would change every existing root and is a versioned target, not the shipped behaviour.",
   "regulatory_scope": ["EU AI Act Article 50", "EU AI Act Articles 11-15", "C2PA 2.1", "NIST SP 800-208"],
   "ecosystem": {
     "business": "https://apex-infrastructure.com",

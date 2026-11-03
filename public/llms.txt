@@ -53,8 +53,15 @@ hosted door needs a free APEX sign-in, the npm door needs no account at all.
 
 ## Standards and algorithms
 
-RFC 8785 (JCS), SHA-256 (FIPS 180-4), Ed25519 (RFC 8032), ML-DSA-65 (FIPS 204),
-LMS-W4-SHA256 (NIST SP 800-208). Canonical seal schema: PSI-SEAL/1.0.0.
+SHA-256 (FIPS 180-4) and Ed25519 (RFC 8032) are what the published verifier
+(apex-psi-verifier / psi-verifier, 1.3.0) actually checks. Canonical seal schema:
+PSI-SEAL/1.0.0, whose canonical form is key-sorted JSON — not RFC 8785, which the
+package does not implement (it neither escapes U+2028/U+2029 nor refuses non-finite
+numbers). The post-quantum pair ML-DSA-65 (FIPS 204) / LMS-W4-SHA256 (NIST SP 800-208) is
+NOT checked by the public package — it never reads the pq_alg or pq_value fields — and runs
+only in our own site tooling. Merkle framing is
+PSI-R8 raw node concatenation, not RFC 6962. See
+/.well-known/apex-protocol.json for the measured differences.
 
 Five PSI documents are **filed Internet-Drafts** (Individual Submissions, status
 Informational, author K. Singh). **None is an approved standard and none has been
