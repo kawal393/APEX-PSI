@@ -134,6 +134,9 @@ const Hero = () => {
               </Link>
             </Button>
           </div>
+          <p className="mb-4 text-center text-xs font-mono uppercase tracking-widest">
+            <Link to="/playground" className="text-gold underline underline-offset-4">Try it in 5 seconds — seal in your browser, no sign-up</Link>
+          </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4">
             <Button size="lg" className="bg-gold hover:bg-gold/90 text-background font-black tracking-[0.15em] px-8 border border-gold shadow-lg shadow-gold/30" asChild>

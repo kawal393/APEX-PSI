@@ -95,6 +95,7 @@ Deno.serve(async (req) => {
             limit: dailyLimit,
             remaining: 0,
             upgrade_url: `${Deno.env.get("SITE_URL") ?? "https://ai-governance-standard.com"}/upgrade`,
+            offline_verification: "Verification and local sealing are always free and offline; only hosted issuance is metered.",
           }), {
             status: 429, headers: {
               ...corsHeaders,
