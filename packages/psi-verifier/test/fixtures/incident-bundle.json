@@ -1,0 +1,32 @@
+{
+  "format": "APEX-INCIDENT/1",
+  "hash_alg": "sha256",
+  "count": 3,
+  "head": "953d711a6eeb929f85aa2fbc03691cf0324109c520f797ff45fc15bc5cbf46ee",
+  "entries": [
+    {
+      "seq": 0,
+      "ts": "2026-11-03T22:13:27.352Z",
+      "kind": "tool_start",
+      "payload_sha256": "361555956e888dc6eac4a9af089c26f71e182fe23b59482287a90de8bc752612",
+      "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+      "entry_hash": "2f6ce46f0c1878c346398393a12bfaa5475375366ec2a0763bd87a40e49b2910"
+    },
+    {
+      "seq": 1,
+      "ts": "2026-11-03T22:13:27.352Z",
+      "kind": "step",
+      "payload_sha256": "1aeabc299e1b080b53deccb84cec9876a66999f9a364a46e72318583b561921d",
+      "prev": "2f6ce46f0c1878c346398393a12bfaa5475375366ec2a0763bd87a40e49b2910",
+      "entry_hash": "78ebaf541284e2cbb63e48372ddfbed97f654838f31348ee6d37a012bfd9ccf6"
+    },
+    {
+      "seq": 2,
+      "ts": "2026-11-03T22:13:27.352Z",
+      "kind": "tool_end",
+      "payload_sha256": "a97e9c88b11d8580a52a2a7718e7d1f23e29adb914408c3fb4ecf043d256c513",
+      "prev": "78ebaf541284e2cbb63e48372ddfbed97f654838f31348ee6d37a012bfd9ccf6",
+      "entry_hash": "953d711a6eeb929f85aa2fbc03691cf0324109c520f797ff45fc15bc5cbf46ee"
+    }
+  ]
+}
