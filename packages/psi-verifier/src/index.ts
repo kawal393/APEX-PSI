@@ -563,3 +563,4 @@ export async function merkleRoot(leaves: string[]): Promise<string> {
   }
   return Array.from(level[0]).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
+export { verifyIncidentBundle, incidentEntryHash, INCIDENT_FORMAT, type IncidentResult } from "./incident.ts";
