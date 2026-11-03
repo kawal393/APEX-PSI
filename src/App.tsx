@@ -33,6 +33,7 @@ import Verify from "./pages/Verify";
 import VerifyAny from "./pages/VerifyAny";
 import Fwc from "./pages/Fwc";
 import HelloPsi from "./pages/HelloPsi";
+import Playground from "./pages/Playground";
 import BadgePage from "./pages/Badge";
 import FreeAssessment from "./pages/FreeAssessment";
 import Regulations from "./pages/Regulations";
@@ -196,6 +197,7 @@ const App = () => (
               <Route path="/verify-any" element={<VerifyAny />} />
               <Route path="/fwc" element={<Fwc />} />
               <Route path="/hello-psi" element={<HelloPsi />} />
+              <Route path="/playground" element={<Playground />} />
               <Route path="/badge" element={<BadgePage />} />
               <Route path="/assess" element={<FreeAssessment />} />
               <Route path="/regulations" element={<Regulations />} />
