@@ -42,8 +42,8 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mb-4">
-              Universal Verification Protocol — open, neutral, deterministic proof for AI outputs and
-              records. Verification free forever (MIT). By APEX Infrastructure.
+              Universal Verification Protocol — open, neutral, append-only evidence receipts for AI records: a seal proves a record existed at a time,
+              never that its contents are true. Verification free forever (MIT). By APEX Infrastructure.
             </p>
             <div className="text-xs text-muted-foreground space-y-1">
               <p>A division of <span className="text-foreground/80">APEX INTELLIGENCE EMPIRE</span></p>

@@ -69,31 +69,32 @@ export default function Playground() {
       <main className="max-w-7xl mx-auto px-4 pt-28 pb-20 space-y-14">
         <header className="space-y-3">
           <p className="text-xs font-mono uppercase tracking-widest text-gold">Playground · no sign-up · offline</p>
-          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight">Seal it. Break it. Watch it fail.</h1>
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight">Fingerprint it. Break it. Watch it fail.</h1>
           <p className="max-w-2xl text-muted-foreground">
             Everything on this page runs in your browser. Your text is never sent to APEX — you can check that in your browser's network tab.
           </p>
         </header>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-bold uppercase">1 · Seal an agent action</h2>
-          <Textarea aria-label="Action to seal" value={text} onChange={(e) => setText(e.target.value)} rows={8} className="font-mono text-xs" />
+          <h2 className="text-xl font-bold uppercase">1 · Fingerprint an agent action</h2>
+          <Textarea aria-label="Action to fingerprint" value={text} onChange={(e) => setText(e.target.value)} rows={8} className="font-mono text-xs" />
           <div className="flex flex-wrap gap-3">
-            <Button onClick={doSeal}>Seal in browser</Button>
+            <Button onClick={doSeal}>Fingerprint it in your browser</Button>
             <Button variant="outline" onClick={doTamper} disabled={!seal}>Tamper (add one space)</Button>
             <Button variant="outline" onClick={doReverify} disabled={!seal}>Verify again</Button>
-            <Button variant="outline" onClick={() => seal && download("receipt.playground.json", seal)} disabled={!seal}>Download receipt</Button>
+            <Button variant="outline" onClick={() => seal && download("fingerprint.playground.json", seal)} disabled={!seal}>Download fingerprint file</Button>
           </div>
           {err && <p role="alert" className="text-sm text-destructive">{err}</p>}
           {seal && (
             <div className="border border-border rounded-md p-4 space-y-1">
               <p data-testid="verdict" className={`text-2xl font-black ${verdict === "VALID" ? "text-emerald-400" : "text-destructive"}`}>{verdict}</p>
+              <p className="text-xs text-muted-foreground">This shows the text has not changed. It is not yet a ledger receipt — a receipt needs the hosted notary, which adds a signature and a timestamp.</p>
               <Row k="payload sha256" v={seal.payload_sha256} />
               <Row k="sealed at" v={seal.sealed_at} />
               <Row k="public key" v={seal.public_key} />
               <Row k="signature" v={seal.signature} />
               <p className="text-xs text-muted-foreground pt-2">
-                Integrity only. This key was made just now in your browser, so the seal proves the text has not changed since sealing — not who sealed it, and not that the text is true. Receipts signed by the APEX notary key can be checked at <a className="underline" href="/verify">/verify</a>.
+                Integrity only. This key was made just now in your browser, so this fingerprint proves the text has not changed since it was made — not who sealed it, and not that the text is true. Receipts signed by the APEX notary key can be checked at <a className="underline" href="/verify">/verify</a>.
               </p>
             </div>
           )}
@@ -102,7 +103,7 @@ export default function Playground() {
         <section className="space-y-4">
           <h2 className="text-xl font-bold uppercase">2 · Agent flight recorder</h2>
           <p className="text-sm text-muted-foreground max-w-2xl">One line in your agent records every step as a fingerprint chain. Nothing leaves your machine.</p>
-          <pre className="bg-muted/40 border border-border rounded-md p-4 text-xs overflow-x-auto">{`pip install apex-psi   # from the repo: packages/apex-psi-python
+          <pre className="bg-muted/40 border border-border rounded-md p-4 text-xs overflow-x-auto">{`# The Python recorder is not published yet — download the sample bundle below to try it.
 
 from apex_psi import FlightRecorder
 rec = FlightRecorder()
@@ -118,8 +119,7 @@ rec.save("incident-bundle.json")`}</pre>
 
         <section className="space-y-4">
           <h2 className="text-xl font-bold uppercase">3 · Inspect an incident bundle</h2>
-          <pre className="bg-muted/40 border border-border rounded-md p-4 text-xs overflow-x-auto">npx apex-psi-verifier inspect incident-bundle.json</pre>
-          <p className="text-sm text-muted-foreground">Or drop the file here — it is checked in your browser.</p>
+          <p className="text-sm text-muted-foreground">Drop the file here to check it in your browser. (Command-line version coming with the next package release.)</p>
           <input aria-label="Incident bundle file" type="file" accept="application/json,.json" onChange={(e) => onFile(e.target.files?.[0])} className="text-sm" />
           {inc && (
             <div data-testid="incident-verdict" className="border border-border rounded-md p-4 font-mono text-xs space-y-1">
