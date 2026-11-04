@@ -5,7 +5,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { signEd25519Strict } from "../_shared/psi_core.ts";
+import { signEd25519Strict, rfc6962Root } from "../_shared/psi_core.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -150,7 +150,28 @@ Deno.serve(async (req) => {
         { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-    const merkleRoot = await hashSHA256(`${merkleLeafHash}|${timestamp}`);
+    // The root is a real RFC 9162 head over the rolling 256-leaf ledger
+    // window, the same construction the notary uses. The previous
+    // construction, SHA-256(leaf | timestamp), was a salted leaf digest:
+    // nobody outside this process could recompute it, because the commit
+    // timestamp was never published.
+    let merkleRoot: string;
+    try {
+      const { data: recentLeaves } = await supabase
+        .from("gallows_ledger")
+        .select("merkle_leaf_hash")
+        .order("sequence_number", { ascending: false })
+        .limit(255);
+
+      const prior = (recentLeaves?.map((r) => r.merkle_leaf_hash) || []).reverse();
+      merkleRoot = await rfc6962Root([...prior, merkleLeafHash]);
+    } catch (rootErr) {
+      console.error("[Engine] Window root failed:", rootErr);
+      return new Response(
+        JSON.stringify({ error: "Root computation unavailable; nothing was recorded. Please retry." }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     // Optional: Verify client-provided hashes match (if provided)
     let hashMismatch = false;
@@ -189,6 +210,8 @@ Deno.serve(async (req) => {
         merkle_leaf_hash: merkleLeafHash,
         ed25519_signature: ed25519Signature,
         merkle_root: merkleRoot,
+        merkle_profile: "PSI-W1",
+        merkle_root_kind: "window_head",
         timestamp,
         hash_verified_server_side: true,
         signature_attached: !!ed25519Signature,

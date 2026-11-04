@@ -1,4 +1,207 @@
 {
+  "binding_cases": [
+    {
+      "name": "real receipt 5934, published ledger key",
+      "record": {
+        "commit_hash": "07a826317ecd01519de493293de31ca8b38565d01f005e38a8c6d8a4215b3e1b",
+        "commit_id": "APEX-ED03CCF9-D897",
+        "ed25519_signature": "0fe4dc383cbd459907d44758f433eb2c4111472da8c489f493cf3cb9ae92985f34993db28f529724599e61fb1ac94a6d3c301d89c03815a41b3d6c9cd0ea7d0c",
+        "merkle_leaf_hash": "e804673732f57558f6d933af58c94d6c18af1ea9df4cd09e05637332ffdddf75",
+        "sequence_number": 5934
+      },
+      "trust_roots": [
+        {
+          "key_id": "apex-psi-ledger-ed25519",
+          "public_key": "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724"
+        }
+      ]
+    },
+    {
+      "name": "real receipt 5933, published ledger key",
+      "record": {
+        "commit_hash": "5686e9b0abd8b58830c00b4c8c08199e46966fdbdba108562b2cf63ad41be609",
+        "commit_id": "APEX-NTR-7E04134494028E1C",
+        "ed25519_signature": "f41f3f49439260c272d989fbe0eec6ee193f3d4a3ae62e12443969e4556224870b003cb353c8e5e8d331bfde01a2026c5fb2387c0e19519d435edd413e91530b",
+        "merkle_leaf_hash": "650c617f037650b5b754c35bfa804bd7e058005301c691420a9db209af977e0c",
+        "sequence_number": 5933
+      },
+      "trust_roots": [
+        {
+          "key_id": "apex-psi-ledger-ed25519",
+          "public_key": "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724"
+        }
+      ]
+    },
+    {
+      "name": "real receipt 5932, published ledger key",
+      "record": {
+        "commit_hash": "7ddc0564d259401a7e9204b3d8d39937c196ca4de3d7922cf81d96e54c8e0224",
+        "commit_id": "APEX-NTR-A9424BCF612A11D7",
+        "ed25519_signature": "2c770da27ebae2dd6d1e7d6ff50fb3318601ce6895eff063420e9a10709a8d0855d4b90c122c5e570d99472c9c1f545e2dcad1a4f9ce5a593a7148050ccc1a0a",
+        "merkle_leaf_hash": "b317cf0b3a2f8a654c0caa56ba159b85a30e6ca2e99f4dd345ceb9d75828ef42",
+        "sequence_number": 5932
+      },
+      "trust_roots": [
+        {
+          "key_id": "apex-psi-ledger-ed25519",
+          "public_key": "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724"
+        }
+      ]
+    },
+    {
+      "name": "ledger row signed over its own leaf",
+      "record": {
+        "commit_hash": "1fb9170f50037e173ee97d1066b88d1ff9560953a29ab5913493283111b2f25a",
+        "commit_id": "APEX-TEST-BINDING-0001",
+        "ed25519_signature": "c9332ac842cb1a4860c8237f117cab7e8f65f76a5d4f3e7a4586d93dd1d0addcdfc4b56927a6479a829dc42b3e5b2ecd8e5af043d73be75e7894f57f5967610d",
+        "merkle_leaf_hash": "5da4af78887f9bad8cebc2e62ae1213b14f7e38f45f075430787e61a65ece9ea"
+      },
+      "trust_roots": [
+        {
+          "key_id": "cross-language-key",
+          "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
+        }
+      ]
+    },
+    {
+      "name": "ledger signature transplanted into an envelope",
+      "record": {
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "Ed25519",
+          "seal_hash": "e804673732f57558f6d933af58c94d6c18af1ea9df4cd09e05637332ffdddf75",
+          "value": "0fe4dc383cbd459907d44758f433eb2c4111472da8c489f493cf3cb9ae92985f34993db28f529724599e61fb1ac94a6d3c301d89c03815a41b3d6c9cd0ea7d0c"
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      },
+      "trust_roots": [
+        {
+          "key_id": "apex-psi-ledger-ed25519",
+          "public_key": "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724"
+        }
+      ]
+    },
+    {
+      "name": "record that could mean two bindings and does not say",
+      "record": {
+        "commit_hash": "1fb9170f50037e173ee97d1066b88d1ff9560953a29ab5913493283111b2f25a",
+        "commit_id": "APEX-TEST-BINDING-0001",
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "Ed25519",
+          "seal_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "value": "d396d92f50d8911a03fa070070c539bf6774ef37ea238aa7195139887e807c94110c5d4564ab1d042fa29d6013fc3c731f96bd44df2d62633bf64d3e507d8d05"
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      },
+      "trust_roots": [
+        {
+          "key_id": "cross-language-key",
+          "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
+        }
+      ]
+    },
+    {
+      "name": "envelope declaring a binding it cannot recompute",
+      "record": {
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "Ed25519",
+          "binds": "merkle_leaf",
+          "seal_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "value": "d396d92f50d8911a03fa070070c539bf6774ef37ea238aa7195139887e807c94110c5d4564ab1d042fa29d6013fc3c731f96bd44df2d62633bf64d3e507d8d05"
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      },
+      "trust_roots": [
+        {
+          "key_id": "cross-language-key",
+          "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
+        }
+      ]
+    },
+    {
+      "name": "record declaring a binding nobody has heard of",
+      "record": {
+        "hash": "19254cb1c2ee886476485cf8096dd0139ee8659ac9844ebb326f9483796c0436",
+        "merkle": {
+          "leaf": "2a88bbe3c7a7a9e338191a5606d5fffee036d6a1185168f2a1532b5ededb29f5"
+        },
+        "schema": "PSI-SEAL/1.0.0",
+        "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+        "sealed_at": "2026-10-17T20:55:00.000Z",
+        "signature": {
+          "alg": "Ed25519",
+          "binds": "banana",
+          "seal_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+          "value": "d396d92f50d8911a03fa070070c539bf6774ef37ea238aa7195139887e807c94110c5d4564ab1d042fa29d6013fc3c731f96bd44df2d62633bf64d3e507d8d05"
+        },
+        "subject": {
+          "name": "revenue-ledger.csv",
+          "size_bytes": 22
+        }
+      },
+      "trust_roots": [
+        {
+          "key_id": "cross-language-key",
+          "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
+        }
+      ]
+    },
+    {
+      "name": "row whose stored leaf disagrees with its commit fields",
+      "record": {
+        "commit_hash": "1fb9170f50037e173ee97d1066b88d1ff9560953a29ab5913493283111b2f25a",
+        "commit_id": "APEX-TEST-BINDING-0001",
+        "ed25519_signature": "c9332ac842cb1a4860c8237f117cab7e8f65f76a5d4f3e7a4586d93dd1d0addcdfc4b56927a6479a829dc42b3e5b2ecd8e5af043d73be75e7894f57f5967610d",
+        "merkle_leaf_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "trust_roots": [
+        {
+          "key_id": "cross-language-key",
+          "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
+        }
+      ]
+    },
+    {
+      "name": "real receipt checked against nobody's key",
+      "record": {
+        "commit_hash": "07a826317ecd01519de493293de31ca8b38565d01f005e38a8c6d8a4215b3e1b",
+        "commit_id": "APEX-ED03CCF9-D897",
+        "ed25519_signature": "0fe4dc383cbd459907d44758f433eb2c4111472da8c489f493cf3cb9ae92985f34993db28f529724599e61fb1ac94a6d3c301d89c03815a41b3d6c9cd0ea7d0c",
+        "merkle_leaf_hash": "e804673732f57558f6d933af58c94d6c18af1ea9df4cd09e05637332ffdddf75",
+        "sequence_number": 5934
+      },
+      "trust_roots": []
+    }
+  ],
   "canonical_schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
   "cases": [
     {
@@ -7,7 +210,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
+            "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
           }
         ]
       },
@@ -22,7 +225,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "a626655db1b057e8f90c721630bbfa641d3b58cafb823099f350031243890c09990392680b9bf4a2d77e1d8af53ff89c415d12501423b4596dc315c95e548000"
+          "value": "d396d92f50d8911a03fa070070c539bf6774ef37ea238aa7195139887e807c94110c5d4564ab1d042fa29d6013fc3c731f96bd44df2d62633bf64d3e507d8d05"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -36,7 +239,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
+            "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
           }
         ]
       },
@@ -51,7 +254,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "39143f08c3ffae208c1de2a541c9e9947af8f526b0ec2ab343ffca37aef96ca6",
-          "value": "a626655db1b057e8f90c721630bbfa641d3b58cafb823099f350031243890c09990392680b9bf4a2d77e1d8af53ff89c415d12501423b4596dc315c95e548000"
+          "value": "d396d92f50d8911a03fa070070c539bf6774ef37ea238aa7195139887e807c94110c5d4564ab1d042fa29d6013fc3c731f96bd44df2d62633bf64d3e507d8d05"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -65,7 +268,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
+            "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
           }
         ]
       },
@@ -94,7 +297,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
+            "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
           }
         ]
       },
@@ -123,7 +326,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
+            "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c"
           }
         ]
       },
@@ -138,7 +341,7 @@
         "signature": {
           "alg": "ES256",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "a626655db1b057e8f90c721630bbfa641d3b58cafb823099f350031243890c09990392680b9bf4a2d77e1d8af53ff89c415d12501423b4596dc315c95e548000"
+          "value": "d396d92f50d8911a03fa070070c539bf6774ef37ea238aa7195139887e807c94110c5d4564ab1d042fa29d6013fc3c731f96bd44df2d62633bf64d3e507d8d05"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -160,7 +363,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "a626655db1b057e8f90c721630bbfa641d3b58cafb823099f350031243890c09990392680b9bf4a2d77e1d8af53ff89c415d12501423b4596dc315c95e548000"
+          "value": "d396d92f50d8911a03fa070070c539bf6774ef37ea238aa7195139887e807c94110c5d4564ab1d042fa29d6013fc3c731f96bd44df2d62633bf64d3e507d8d05"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -205,5 +408,77 @@
       }
     }
   ],
-  "public_key": "2c50b0746417b467b166877b30f7383ba8e9bb3d85077decb7aa186c864659e0"
+  "inclusion_cases": [
+    {
+      "name": "live proof from the public endpoint, 256 leaves",
+      "proof": {
+        "audit_path": [
+          "fd10ac1532b06a2ee2d5b9be84dc39295e1c39c3a6e2dac934ddeb8984b97bdc",
+          "0998fb306217e9d518817734691149d5ce8b2a7d3146e2b5390957866099aded",
+          "97ec21d6f0084a68a99d7bab66d0aa80ac9aead2d5762ff3ac9dfd3a653ca089",
+          "df9417324a7022517bad055d5ab132352981c0e3c30c515570b79a469a0b95d7",
+          "7aa4e2251be48dfcd9f71f6fe19de97d6b751d0914fbf10d66c3bca5d3629838",
+          "a249f6d1002b07a33ef06f63448a9bc49587465533ca1c21ee21e99f45107d36",
+          "3105929e7577eeaf6535db3c840603ee25626350680e52ac8bcbaf5fda06c1bb",
+          "c3776fcf03a223ce115723f28336be33af5b057495f359c2abb643168fe8db1c"
+        ],
+        "leaf": "e804673732f57558f6d933af58c94d6c18af1ea9df4cd09e05637332ffdddf75",
+        "leaf_index": 255,
+        "root": "187e00f3b8891fc2f94b6a5ecd3f3878deb1db1d513a6a1646859494e937ca53",
+        "tree_size": 256
+      }
+    },
+    {
+      "name": "the same proof with a head that does not match",
+      "proof": {
+        "audit_path": [
+          "fd10ac1532b06a2ee2d5b9be84dc39295e1c39c3a6e2dac934ddeb8984b97bdc",
+          "0998fb306217e9d518817734691149d5ce8b2a7d3146e2b5390957866099aded",
+          "97ec21d6f0084a68a99d7bab66d0aa80ac9aead2d5762ff3ac9dfd3a653ca089",
+          "df9417324a7022517bad055d5ab132352981c0e3c30c515570b79a469a0b95d7",
+          "7aa4e2251be48dfcd9f71f6fe19de97d6b751d0914fbf10d66c3bca5d3629838",
+          "a249f6d1002b07a33ef06f63448a9bc49587465533ca1c21ee21e99f45107d36",
+          "3105929e7577eeaf6535db3c840603ee25626350680e52ac8bcbaf5fda06c1bb",
+          "c3776fcf03a223ce115723f28336be33af5b057495f359c2abb643168fe8db1c"
+        ],
+        "leaf": "e804673732f57558f6d933af58c94d6c18af1ea9df4cd09e05637332ffdddf75",
+        "leaf_index": 255,
+        "root": "0000000000000000000000000000000000000000000000000000000000000000",
+        "tree_size": 256
+      }
+    },
+    {
+      "name": "a three-leaf tree, where the parity shortcut does not apply",
+      "proof": {
+        "audit_path": [
+          "34959128c8eb35cc38a329af9116b54ef78c6b044d0687478eab65e4b70078bb"
+        ],
+        "leaf": "bac57df66fe6368188d1d4521bcffaecee76a03a50ff297a13439f7164de0a5f",
+        "leaf_index": 2,
+        "root": "06e2e1946f3b546e28fec6b7d571e36753bbe5350e820315f0cb6945ec3ead03",
+        "tree_size": 3
+      }
+    },
+    {
+      "name": "a proof whose leaf index is outside its tree",
+      "proof": {
+        "audit_path": [
+          "fd10ac1532b06a2ee2d5b9be84dc39295e1c39c3a6e2dac934ddeb8984b97bdc",
+          "0998fb306217e9d518817734691149d5ce8b2a7d3146e2b5390957866099aded",
+          "97ec21d6f0084a68a99d7bab66d0aa80ac9aead2d5762ff3ac9dfd3a653ca089",
+          "df9417324a7022517bad055d5ab132352981c0e3c30c515570b79a469a0b95d7",
+          "7aa4e2251be48dfcd9f71f6fe19de97d6b751d0914fbf10d66c3bca5d3629838",
+          "a249f6d1002b07a33ef06f63448a9bc49587465533ca1c21ee21e99f45107d36",
+          "3105929e7577eeaf6535db3c840603ee25626350680e52ac8bcbaf5fda06c1bb",
+          "c3776fcf03a223ce115723f28336be33af5b057495f359c2abb643168fe8db1c"
+        ],
+        "leaf": "e804673732f57558f6d933af58c94d6c18af1ea9df4cd09e05637332ffdddf75",
+        "leaf_index": 256,
+        "root": "187e00f3b8891fc2f94b6a5ecd3f3878deb1db1d513a6a1646859494e937ca53",
+        "tree_size": 256
+      }
+    }
+  ],
+  "public_key": "4e10076350fd6fc7d67c22d5db5b42a072bcc4cfbfb6930f7ae810a2f2b1162c",
+  "published_schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9"
 }

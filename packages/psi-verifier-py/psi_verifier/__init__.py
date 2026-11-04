@@ -27,7 +27,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 PSI_VERIFIER_VERSION = __version__
 
 PSI_SCHEMA_ID = "PSI-SEAL/1.0.0"
@@ -49,6 +49,18 @@ PSI_SCHEMA_RULES: Sequence[str] = (
     "R12 Every seal MUST carry schema and schema_digest. Only schema-conformant seals are considered PSI-compliant.",
 )
 
+# The seal schema is FROZEN. Its digest is carried by every seal ever issued
+# and published at /.well-known/psi-schema.json; changing PSI_SCHEMA_RULES
+# would make every existing seal non-conformant. Verifier-side interpretation
+# rules live here instead.
+PSI_VERIFIER_RULES: Sequence[str] = (
+    "R11.6 A signature NAMES the digest it authenticates (binds: seal_hash | merkle_leaf) and the verifier RECOMPUTES that digest from the record. A declared digest is compared, never trusted. A record that does not say which digest it means and offers more than one is refused, not guessed.",
+    "R13.1 An inclusion proof is recomputed from the leaf, the leaf index, the tree size and the audit path, walking the RFC 9162 sec 2.1.3.2 split (the largest power of two smaller than the tree size). The leaf-index parity shortcut is valid only when the tree size is a power of two.",
+)
+
+PSI_BINDINGS: Sequence[str] = ("seal_hash", "merkle_leaf")
+PSI_LEAF_FORMATS: Sequence[str] = ("leaf-v1",)
+
 PSI_RULE_CITATIONS = {
     "not_object": "1.1",
     "closed_field_set": "2.1",
@@ -65,6 +77,14 @@ PSI_RULE_CITATIONS = {
     "signature_invalid": "11.3",
     "signature_unverifiable": "11.4",
     "signature_alg": "11.5",
+    "binding_declared_unknown": "11.6",
+    "binding_ambiguous": "11.7",
+    "binding_unresolvable": "11.8",
+    "binding_not_recomputable": "11.9",
+    "leaf_mismatch_ledger": "9.2",
+    "inclusion_malformed": "13.1",
+    "inclusion_mismatch": "13.2",
+    "inclusion_ok": "13.3",
 }
 
 
@@ -266,6 +286,333 @@ def psi_verify_signature(
         "key_id": None,
         "detail": f"Ed25519 signature does not verify against any of the {len(roots)} supplied trust root(s)",
         "rule": PSI_RULE_CITATIONS["signature_invalid"],
+    }
+
+
+# ── R11.6 NAMED BINDING (added v1.4.0) ─────────────────────────────────────
+# A signature says nothing until it says WHAT it signed. Measured 2026-11-04
+# against three real receipts from the public audit-mirror: the live ledger
+# signs the Merkle leaf (3/3 open over merkle_leaf_hash, 0/3 over the R10
+# seal_hash), so a verifier that only knows "the ASCII seal_hash" rejects our
+# own published receipts (0/3) — and one that trusts a DECLARED seal_hash
+# accepts a signature transplanted straight out of the public ledger.
+#
+# THE RULE. The signature names the digest it authenticates (`binds`) and the
+# verifier RECOMPUTES that digest from the record. A declared digest is
+# compared, never trusted. When a record does not say which digest it means
+# and more than one is possible, the verifier refuses rather than guesses.
+
+
+def _strip_signature_and_licence(record: Dict[str, Any]) -> Dict[str, Any]:
+    return {k: v for k, v in record.items() if k not in ("signature", "licence")}
+
+
+def psi_read_signature(record: Any) -> Optional[Dict[str, Any]]:
+    """The signature of a record: an envelope member, or the ledger's flat column."""
+    if not isinstance(record, dict):
+        return None
+    sig = record.get("signature")
+    if isinstance(sig, dict):
+        out: Dict[str, Any] = {
+            "alg": str(sig.get("alg") or ""),
+            "value": str(sig.get("value") or ""),
+            "seal_hash": str(sig.get("seal_hash") or ""),
+        }
+        for key in ("binds", "leaf_format", "pq_alg", "pq_value"):
+            if sig.get(key) is not None:
+                out[key] = str(sig[key])
+        return out
+    flat = record.get("ed25519_signature")
+    if isinstance(flat, str) and flat.strip():
+        return {"alg": "ed25519", "value": flat, "seal_hash": ""}
+    return None
+
+
+def psi_declared_binding(record: Any, signature: Optional[Dict[str, Any]] = None) -> Optional[str]:
+    sig = signature if signature is not None else psi_read_signature(record)
+    if isinstance(sig, dict):
+        declared = sig.get("binds")
+        if isinstance(declared, str) and declared.strip():
+            return declared.strip()
+    if isinstance(record, dict):
+        declared = record.get("signature_binds")
+        if isinstance(declared, str) and declared.strip():
+            return declared.strip()
+    return None
+
+
+def psi_resolve_binding(record: Any, declared: Optional[str] = None) -> Dict[str, Any]:
+    """Resolve which digest a record's signature authenticates, and recompute it."""
+    if not isinstance(record, dict):
+        return {
+            "binding": None,
+            "digest": None,
+            "candidates": [],
+            "error": {"detail": "record is not a JSON object", "rule": PSI_RULE_CITATIONS["not_object"]},
+        }
+    signature = psi_read_signature(record)
+    declaration = declared if declared is not None else psi_declared_binding(record, signature)
+
+    candidates: List[str] = []
+    digests: Dict[str, str] = {}
+
+    merkle = record.get("merkle")
+    if record.get("schema") == PSI_SCHEMA_ID and isinstance(merkle, dict):
+        candidates.append("seal_hash")
+        digests["seal_hash"] = _sha256_hex(jcs(_strip_signature_and_licence(record)))
+
+    commit_id = record.get("commit_id")
+    commit_hash = record.get("commit_hash")
+    if isinstance(commit_id, str) and isinstance(commit_hash, str):
+        candidates.append("merkle_leaf")
+        digests["merkle_leaf"] = _sha256_hex(f"{commit_id}|{commit_hash}")
+
+    def leaf_mismatch() -> Dict[str, Any]:
+        return {
+            "binding": None,
+            "digest": None,
+            "candidates": candidates,
+            "error": {
+                "detail": "merkle_leaf_hash does not equal the leaf recomputed from commit_id and commit_hash",
+                "rule": PSI_RULE_CITATIONS["leaf_mismatch_ledger"],
+            },
+        }
+
+    if declaration is not None:
+        if declaration not in PSI_BINDINGS:
+            return {
+                "binding": None,
+                "digest": None,
+                "candidates": candidates,
+                "error": {
+                    "detail": f'signature.binds is "{declaration}"; the only bindings are {", ".join(PSI_BINDINGS)}',
+                    "rule": PSI_RULE_CITATIONS["binding_declared_unknown"],
+                },
+            }
+        digest = digests.get(declaration)
+        if digest is None:
+            return {
+                "binding": None,
+                "digest": None,
+                "candidates": candidates,
+                "error": {
+                    "detail": f'signature.binds declares "{declaration}" but this record cannot recompute it',
+                    "rule": PSI_RULE_CITATIONS["binding_not_recomputable"],
+                },
+            }
+        if declaration == "merkle_leaf":
+            stored = record.get("merkle_leaf_hash")
+            if isinstance(stored, str) and stored.lower() != digest:
+                return leaf_mismatch()
+        return {"binding": declaration, "digest": digest, "candidates": candidates, "error": None}
+
+    if not candidates:
+        return {
+            "binding": None,
+            "digest": None,
+            "candidates": candidates,
+            "error": {
+                "detail": "this record carries no digest a signature could bind: neither a PSI-SEAL/1 envelope nor a ledger row",
+                "rule": PSI_RULE_CITATIONS["binding_unresolvable"],
+            },
+        }
+    if len(candidates) > 1:
+        return {
+            "binding": None,
+            "digest": None,
+            "candidates": candidates,
+            "error": {
+                "detail": f'ambiguous binding: this record can mean {" or ".join(candidates)}; declare which one the signature covers',
+                "rule": PSI_RULE_CITATIONS["binding_ambiguous"],
+            },
+        }
+    binding = candidates[0]
+    digest = digests[binding]
+    if binding == "merkle_leaf":
+        stored = record.get("merkle_leaf_hash")
+        if isinstance(stored, str) and stored.lower() != digest:
+            return leaf_mismatch()
+    return {"binding": binding, "digest": digest, "candidates": candidates, "error": None}
+
+
+def psi_verify_binding(record: Any, trust_roots: Sequence[Union[str, Dict[str, Any]]] = ()) -> Dict[str, Any]:
+    """Verify the signature of ANY record — a PSI-SEAL/1 envelope or a ledger row —
+    against the digest the record names, recomputed from its own content.
+
+    Never returns `verified` without a trust root the caller supplied.
+    """
+    signature = psi_read_signature(record)
+    resolution = psi_resolve_binding(record)
+    if resolution["error"]:
+        rule = resolution["error"]["rule"]
+        status = "unverifiable" if rule == PSI_RULE_CITATIONS["binding_unresolvable"] else "invalid"
+        return {
+            "status": status,
+            "key_id": None,
+            "detail": resolution["error"]["detail"],
+            "rule": rule,
+            "binding": None,
+            "digest": None,
+        }
+    if not signature:
+        return {
+            "status": "absent",
+            "key_id": None,
+            "detail": "record carries no signature member",
+            "rule": PSI_RULE_CITATIONS["signature_absent"],
+            "binding": resolution["binding"],
+            "digest": resolution["digest"],
+        }
+    check = psi_verify_signature(resolution["digest"], signature, trust_roots)
+    out = dict(check)
+    out["binding"] = resolution["binding"]
+    out["digest"] = resolution["digest"]
+    if check["status"] == "verified":
+        out["detail"] = f"Ed25519 signature verified over the ASCII {resolution['binding']}"
+    return out
+
+
+# ── RFC 9162 INCLUSION PROOF (added v1.4.0) ───────────────────────────────
+#
+# The public merkle-proof endpoint serves a receipt's leaf, its index in the
+# window tree, the tree size, the audit path and the tree head. A third party
+# must be able to recompute the head from the path.
+#
+# The common shortcut — take the parity of the leaf index to decide which side
+# the running node sits on — reproduces the head for every tree whose size is a
+# power of two (256, our live window) and FAILS for every other size. RFC 9162
+# sec 2.1.3.2 splits the tree at the largest power of two smaller than the
+# tree size, so the sibling's side is decided by that split, not by the leaf
+# index. The verifier walks the split.
+
+
+def _prefixed_hash(prefix: int, *parts: bytes) -> bytes:
+    return hashlib.sha256(bytes([prefix]) + b"".join(parts)).digest()
+
+
+def _strict_hex_bytes(value: Any) -> Optional[bytes]:
+    text = str(value if value is not None else "").strip()
+    if text.lower().startswith("sha256:"):
+        text = text[7:]
+    if len(text) % 2 != 0 or re.fullmatch(r"[0-9a-fA-F]*", text) is None:
+        return None
+    return bytes.fromhex(text)
+
+
+def psi_inclusion_root(
+    leaf: Any,
+    leaf_index: Any,
+    tree_size: Any,
+    audit_path: Sequence[Any],
+) -> Optional[str]:
+    """Recompute the tree head from a leaf and its audit path.
+
+    Walks the RFC 9162 sec 2.1.3.2 split: at each level k is the largest
+    power of two smaller than the remaining tree size, and the sibling sits on
+    the right when the leaf is in the left half, on the left when it is in the
+    right. Returns None when the proof cannot describe such a tree.
+    """
+    leaf_bytes = _strict_hex_bytes(leaf)
+    if leaf_bytes is None:
+        return None
+    if not isinstance(leaf_index, int) or isinstance(leaf_index, bool):
+        return None
+    if not isinstance(tree_size, int) or isinstance(tree_size, bool):
+        return None
+    if tree_size < 1 or leaf_index < 0 or leaf_index >= tree_size:
+        return None
+
+    node = _prefixed_hash(0x00, leaf_bytes)
+    m = leaf_index
+    n = tree_size
+    for sibling in audit_path:
+        if n <= 1:
+            return None
+        sib = _strict_hex_bytes(sibling)
+        if sib is None:
+            return None
+        k = 1
+        while k * 2 < n:
+            k *= 2
+        if m < k:
+            node = _prefixed_hash(0x01, node, sib)
+            n = k
+        else:
+            node = _prefixed_hash(0x01, sib, node)
+            n -= k
+            m -= k
+    if n != 1:
+        return None
+    return node.hex()
+
+
+def psi_verify_inclusion(proof: Dict[str, Any]) -> Dict[str, Any]:
+    """Verify an inclusion proof against the head it claims to reproduce.
+
+    `malformed` means the proof could not be checked at all. `mismatch` means
+    the check ran and said no. Only `included` is a pass.
+    """
+    leaf = str((proof or {}).get("leaf", ""))
+    root = str((proof or {}).get("root", "")).strip()
+    if root.lower().startswith("sha256:"):
+        root = root[7:]
+    path = (proof or {}).get("audit_path")
+    if not isinstance(path, (list, tuple)):
+        path = []
+    if _strict_hex_bytes(leaf) is None or _strict_hex_bytes(root) is None:
+        return {
+            "status": "malformed",
+            "included": False,
+            "recomputed_root": None,
+            "detail": "leaf and root must both be 64 hex characters",
+            "rule": PSI_RULE_CITATIONS["inclusion_malformed"],
+        }
+    leaf_index = (proof or {}).get("leaf_index")
+    tree_size = (proof or {}).get("tree_size")
+    if not isinstance(leaf_index, int) or isinstance(leaf_index, bool):
+        leaf_index = None
+    if not isinstance(tree_size, int) or isinstance(tree_size, bool):
+        tree_size = None
+    if leaf_index is None or tree_size is None:
+        return {
+            "status": "malformed",
+            "included": False,
+            "recomputed_root": None,
+            "detail": "leaf_index and tree_size must both be integers",
+            "rule": PSI_RULE_CITATIONS["inclusion_malformed"],
+        }
+    recomputed = psi_inclusion_root(leaf, leaf_index, tree_size, path)
+    if recomputed is None:
+        return {
+            "status": "malformed",
+            "included": False,
+            "recomputed_root": None,
+            "detail": (
+                "the audit path does not describe a tree of this size: the leaf index "
+                "must be inside the tree and the path must reach the root"
+            ),
+            "rule": PSI_RULE_CITATIONS["inclusion_malformed"],
+        }
+    if recomputed != root.lower():
+        return {
+            "status": "mismatch",
+            "included": False,
+            "recomputed_root": recomputed,
+            "detail": (
+                f"the head recomputed from the leaf and audit path is {recomputed}, "
+                f"not the supplied {root.lower()}"
+            ),
+            "rule": PSI_RULE_CITATIONS["inclusion_mismatch"],
+        }
+    return {
+        "status": "included",
+        "included": True,
+        "recomputed_root": recomputed,
+        "detail": (
+            f"leaf {leaf} is included: the head {recomputed} was recomputed from the "
+            f"audit path over a tree of {tree_size} leaves"
+        ),
+        "rule": PSI_RULE_CITATIONS["inclusion_ok"],
     }
 
 
@@ -576,6 +923,8 @@ __all__ = [
     "PSI_SCHEMA_ID",
     "PSI_RULE_CITATIONS",
     "PSI_VERIFIER_VERSION",
+    "PSI_BINDINGS",
+    "PSI_LEAF_FORMATS",
     "reject_line",
     "PSI_SCHEMA_RULES",
     "PSI_SEAL_URL",
@@ -592,6 +941,12 @@ __all__ = [
     "psi_schema_digest",
     "psi_schema_digest_from_document",
     "psi_seal_hash",
+    "psi_declared_binding",
+    "psi_inclusion_root",
+    "psi_read_signature",
+    "psi_resolve_binding",
+    "psi_verify_binding",
+    "psi_verify_inclusion",
     "psi_verify_signature",
     "verify_ed25519",
     "PSI_PUBLIC_KEY_HEX",

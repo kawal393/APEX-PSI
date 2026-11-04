@@ -41,7 +41,22 @@ Deno.serve(async (req) => {
       root,
       receipt_root: row.merkle_root,
       root_matches_receipt: root === row.merkle_root,
-      verify: "leaf_hash = SHA-256(0x00||leaf); node = SHA-256(0x01||L||R); recompute per RFC 9162 §2.1.3.2",
+      verification: {
+        rule: "R13.1",
+        leaf: "leaf_node = SHA-256(0x00 || leaf_bytes)",
+        node: "node = SHA-256(0x01 || left || right)",
+        path_order: "bottom-up from the leaf",
+        split:
+          "at each level k = the largest power of two smaller than the remaining tree size; the sibling is on the RIGHT when leaf_index < k and on the LEFT otherwise",
+        parity_shortcut:
+          "taking the parity of the leaf index instead of walking the split reproduces this head only when tree_size is a power of two; every live window is 256 leaves",
+        tree_size: leaves.length,
+        leaf_index: index,
+        implementation:
+          "npm apex-psi-verifier and PyPI psi-verifier — psiVerifyInclusion / psi_verify_inclusion",
+      },
+      verify:
+        "leaf_hash = SHA-256(0x00||leaf); node = SHA-256(0x01||L||R); walk the RFC 9162 §2.1.3.2 split using leaf_index and tree_size (rule R13.1)",
     });
   } catch (e) {
     return json({ error: (e as Error).message }, 500);

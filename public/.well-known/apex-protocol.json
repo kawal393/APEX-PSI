@@ -1,6 +1,6 @@
 {
   "protocol": "APEX PSI — Proof of Stateful Integrity",
-  "version": "1.3",
+  "version": "1.4",
   "canonical_domain": "https://ai-governance-standard.com",
   "ietf_drafts": [
     {
@@ -54,7 +54,21 @@
     "https://ai-governance-standard.com/verify-hash"
   ],
   "pq_signature_algs": ["LMS-W4-SHA256", "ML-DSA-65", "Ed25519"],
-  "canonicalization": "RFC 8785 (JCS)",
+  "verifier": {
+    "npm": "apex-psi-verifier",
+    "pypi": "psi-verifier",
+    "published_version": "1.3.0",
+    "source_version": "1.4.0",
+    "published_measured": "2026-11-04",
+    "note": "Verification is free and never asks for an account. 1.4.0 adds R11.6, below; the published registry versions are still 1.3.0 until the next release is cut, and 1.3.0 compares a declared digest instead of recomputing it."
+  },
+  "signature_binding": {
+    "rule": "R11.6",
+    "statement": "A signature names the digest it authenticates (binds: seal_hash | merkle_leaf), and the verifier recomputes that digest from the record. A declared digest is compared, never trusted. An ambiguous or unresolvable binding is refused, not guessed.",
+    "ledger": "Every published ledger row carries signature_binds: merkle_leaf. Its Ed25519 signature authenticates the Merkle leaf, and the leaf is SHA-256(commit_id | commit_hash), so any third party can recompute the leaf from the row and check the signature under the published ledger key.",
+    "trust_root": "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json"
+  },
+  "canonicalization": "PSI-SEAL/1.0.0 key-sorted JSON — this verifier's own canonical form. Not RFC 8785: measured 2026-11-04, the one-character string U+2028 digests 8aa716ff98153a8b under the published jcs() and 4e477cdb5d96343a under RFC 8785, and the published jcs() emits null for NaN and Infinity where RFC 8785 refuses the input. Key order is UTF-16 code unit order, which does match RFC 8785.",
   "hash": "SHA-256",
   "anchor_method": "opentimestamps",
   "anchor": {
@@ -78,7 +92,27 @@
   "compliance_receipt": "https://ai-governance-standard.com/.well-known/compliance-receipt",
   "security_txt": "https://ai-governance-standard.com/.well-known/security.txt",
   "interop": ["IETF RFC 9943 (SCITT architecture) — JSON bridge view, not COSE conformance", "C2PA — informative view, not a signed manifest"],
-  "merkle_profile": "RFC6962-SHA256 (0x00 leaf / 0x01 node prefixes, chronological leaf order) for receipts issued from 2026-10-13",
+  "merkle_profile": {
+    "construction": "RFC 9162 sec 2.1.3.2 — leaf = SHA-256(0x00 || leaf_bytes), node = SHA-256(0x01 || L || R), odd node promoted unchanged, leaves in ledger sequence order",
+    "profiles": {
+      "PSI-W1": "single-receipt notarisation, and every commit row written by the corrected commit path: the head over the rolling 256-leaf ledger window ending at that row. Reproducible; the mirror recomputes it over the published leaves and reports the match, and the public inclusion path is served at https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/merkle-proof?receipt_id=<commit_id>.",
+      "PSI-B1": "batch notarisation: the head over that batch's own leaves — the contiguous run of published leaves ending at the row. Reproducible; the mirror recomputes it over the run and reports the match.",
+      "PSI-C1": "commit rows written before the commit path was corrected: SHA-256(merkle_leaf_hash | commit timestamp). A salted leaf digest, not a tree head, and the commit timestamp is not published in the row, so a third party cannot recompute it.",
+      "PSI-P1": "challenge-and-prove rows: SHA-256 over the canonical-ordered concatenation of each node's hex string, with no domain-separation prefix and the odd node duplicated. Not RFC 9162. The stored audit path is replayed against the stored root.",
+      "PSI-L0": "issued before 2026-10-13, before this profile shipped. Construction not classified."
+    },
+    "per_row": "Every row published by the audit mirror carries merkle_profile, merkle_root_kind, merkle_reproducible and merkle_reproduction, so no row has to be guessed at.",
+    "correction": "Earlier versions of this document stated one RFC 6962 profile for every receipt issued from 2026-10-13. Measured 2026-11-04 against the live mirror, that held only for single-receipt notarisation rows: in the newest 40 published rows 11 were PSI-W1, 4 were PSI-B1 and 25 were PSI-C1. The commit path has been corrected to write the same RFC 9162 window head as the notary; until that correction is deployed, commit rows remain PSI-C1, and every row states which one it is rather than the document claiming one for all of them."
+  },
+  "inclusion_proof": {
+    "rule": "R13.1",
+    "endpoint": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/merkle-proof?receipt_id=<commit_id>",
+    "served": "leaf, leaf_index, tree_size, audit_path (bottom-up), root, receipt_root, root_matches_receipt",
+    "recompute": "leaf_node = SHA-256(0x00 || leaf_bytes); node = SHA-256(0x01 || left || right). Walk the RFC 9162 sec 2.1.3.2 split: at each level k = the largest power of two smaller than the remaining tree size; the sibling is on the right when leaf_index < k and on the left otherwise.",
+    "parity_shortcut": "Taking the parity of the leaf index instead of walking the split reproduces the head only when tree_size is a power of two. Measured 2026-11-04: the shortcut matches at tree sizes 1, 2, 4, 8, 16, 128, 256 and fails at 3, 5, 6, 7, 9, 11, 31, 100, 127, 200, 255, 257 and 300. Every live window is 256 leaves, so every live proof verifies either way, but the rule that works everywhere is the split.",
+    "implementation": "npm apex-psi-verifier and PyPI psi-verifier expose psiVerifyInclusion and psi_verify_inclusion, which walk the split and report included, mismatch or malformed.",
+    "measured": "2026-11-04: four live inclusion proofs re-fetched from the endpoint (ledger sequence 5928, 5932, 5933, 5934) each replay to the head the endpoint served alongside them."
+  },
   "regulatory_scope": ["EU AI Act Article 50", "EU AI Act Articles 11-15", "C2PA 2.1", "NIST SP 800-208"],
   "ecosystem": {
     "business": "https://apex-infrastructure.com",

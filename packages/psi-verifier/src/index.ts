@@ -25,6 +25,17 @@ export const PSI_SCHEMA_RULES = [
   "R12 Every seal MUST carry schema and schema_digest. Only schema-conformant seals are considered PSI-compliant.",
 ] as const;
 
+/**
+ * The seal schema is FROZEN. Its digest is carried by every seal ever issued
+ * and published at /.well-known/psi-schema.json; changing PSI_SCHEMA_RULES
+ * would make every existing seal non-conformant. Verifier-side interpretation
+ * rules live here instead.
+ */
+export const PSI_VERIFIER_RULES = [
+  "R11.6 A signature NAMES the digest it authenticates (binds: seal_hash | merkle_leaf) and the verifier RECOMPUTES that digest from the record. A declared digest is compared, never trusted. A record that does not say which digest it means and offers more than one is refused, not guessed.",
+  "R13.1 An inclusion proof is recomputed from the leaf, the leaf index, the tree size and the audit path, walking the RFC 9162 sec 2.1.3.2 split (the largest power of two smaller than the tree size). The leaf-index parity shortcut is valid only when the tree size is a power of two.",
+] as const;
+
 export interface PsiSealEnvelope {
   schema: string;
   schema_digest: string;
@@ -32,7 +43,17 @@ export interface PsiSealEnvelope {
   subject: { name: string; size_bytes: number; media_type?: string };
   hash: string;
   merkle: { leaf: string; root?: string; proof?: string[] };
-  signature?: { alg: string; value: string; seal_hash: string; pq_alg?: string; pq_value?: string };
+  signature?: {
+    alg: string;
+    value: string;
+    seal_hash: string;
+    /** Which digest this signature authenticates. Added v1.4.0 (R11.6). */
+    binds?: string;
+    /** Which leaf derivation the bound digest uses. Added v1.4.0 (R11.6). */
+    leaf_format?: string;
+    pq_alg?: string;
+    pq_value?: string;
+  };
   licence?: { engine: string; tier: string; terms: string; accepted_at: string };
 }
 
@@ -320,12 +341,428 @@ export async function psiVerifySignature(
 }
 
 
+// ── R11.6 NAMED BINDING (added v1.4.0) ────────────────────────────────────
+//
+// WHY THIS EXISTS. A signature says nothing until it says WHAT it signed.
+// Measured 2026-11-04 against three real receipts pulled from the public
+// audit-mirror stream:
+//
+//   signature opens over merkle_leaf_hash            : 3/3
+//   signature opens over the R10 seal_hash            : 0/3
+//   stored leaf == sha256(commit_id | commit_hash)    : 3/3
+//
+// The live ledger signs the Merkle LEAF. A verifier that only knows "the
+// ASCII seal_hash" rejects our own published receipts (0/3) — and a verifier
+// that trusts a DECLARED seal_hash accepts a signature transplanted straight
+// out of the public ledger, because the declared value is never recomputed.
+//
+// THE RULE. A signature names the digest it authenticates (`binds`), and the
+// verifier RECOMPUTES that digest from the record. A declared digest is
+// compared, never trusted. When a record does not say which digest it means
+// and more than one is possible, the verifier refuses rather than guesses.
+
+export const PSI_BINDINGS = ["seal_hash", "merkle_leaf"] as const;
+export type PsiBinding = (typeof PSI_BINDINGS)[number];
+
+/** Leaf derivations the verifier can recompute. `leaf-v1` is the ledger's. */
+export const PSI_LEAF_FORMATS = ["leaf-v1"] as const;
+export type PsiLeafFormat = (typeof PSI_LEAF_FORMATS)[number];
+
+export interface PsiBindingResolution {
+  /** The binding the signature authenticates, once resolved. */
+  binding: PsiBinding | null;
+  /** The RECOMPUTED digest. Never a value copied out of the record. */
+  digest: string | null;
+  /** Every binding this record could have meant. */
+  candidates: PsiBinding[];
+  error: { detail: string; rule: string } | null;
+}
+
+/** The envelope core R10 hashes: the envelope minus its signature and licence. */
+function stripSignatureAndLicence(record: Record<string, unknown>): Record<string, unknown> {
+  const { signature: _s, licence: _l, ...core } = record;
+  return core;
+}
+
+/**
+ * The signature of a record, whether it is an envelope member or the ledger's
+ * flat `ed25519_signature` column. A ledger row carries no `signature`
+ * object, so this is what lets one verifier read both.
+ */
+export function psiReadSignature(record: unknown): PsiSealEnvelope["signature"] | null {
+  if (!record || typeof record !== "object" || Array.isArray(record)) return null;
+  const rec = record as Record<string, unknown>;
+  const sig = rec.signature;
+  if (sig && typeof sig === "object" && !Array.isArray(sig)) {
+    const s = sig as Record<string, unknown>;
+    return {
+      alg: String(s.alg ?? ""),
+      value: String(s.value ?? ""),
+      seal_hash: String(s.seal_hash ?? ""),
+      binds: s.binds === undefined ? undefined : String(s.binds),
+      leaf_format: s.leaf_format === undefined ? undefined : String(s.leaf_format),
+      pq_alg: s.pq_alg === undefined ? undefined : String(s.pq_alg),
+      pq_value: s.pq_value === undefined ? undefined : String(s.pq_value),
+    };
+  }
+  const flat = rec.ed25519_signature;
+  if (typeof flat === "string" && flat.trim()) {
+    return { alg: "ed25519", value: flat, seal_hash: "" };
+  }
+  return null;
+}
+
+/** The declared binding: `signature.binds`, or the ledger row's `signature_binds`. */
+export function psiDeclaredBinding(record: unknown, signature?: PsiSealEnvelope["signature"] | null): string | null {
+  const sig = signature ?? psiReadSignature(record);
+  const fromSig = sig?.binds;
+  if (typeof fromSig === "string" && fromSig.trim()) return fromSig.trim();
+  if (record && typeof record === "object" && !Array.isArray(record)) {
+    const fromRow = (record as Record<string, unknown>).signature_binds;
+    if (typeof fromRow === "string" && fromRow.trim()) return fromRow.trim();
+  }
+  return null;
+}
+
+/**
+ * Resolve what a record's signature authenticates, and recompute it.
+ *
+ * Resolution order:
+ *   1. A declared binding wins. An unknown name is invalid (11.6).
+ *   2. A declared binding the record cannot recompute is invalid (11.9).
+ *   3. No declaration: exactly one recomputable candidate is used. Zero is
+ *      unverifiable (11.8). Two or more is invalid (11.7) — the record must
+ *      say which digest it means.
+ * The digest returned is ALWAYS the recomputed one. A digest copied out of the
+ * record is compared against it, never signed over in its place.
+ */
+export async function psiResolveBinding(
+  record: unknown,
+  declared?: string | null,
+): Promise<PsiBindingResolution> {
+  if (!record || typeof record !== "object" || Array.isArray(record)) {
+    return {
+      binding: null,
+      digest: null,
+      candidates: [],
+      error: { detail: "record is not a JSON object", rule: PSI_RULE_CITATIONS.not_object },
+    };
+  }
+  const rec = record as Record<string, unknown>;
+  const signature = psiReadSignature(rec);
+  const declaration = declared ?? psiDeclaredBinding(rec, signature);
+
+  const candidates: PsiBinding[] = [];
+  const digests: Partial<Record<PsiBinding, string>> = {};
+
+  // seal_hash — R10 over the envelope core. Only a PSI-SEAL/1 envelope has one.
+  const merkle = rec.merkle as { leaf?: unknown } | undefined;
+  if (rec.schema === PSI_SCHEMA_ID && merkle && typeof merkle === "object") {
+    candidates.push("seal_hash");
+    digests.seal_hash = await sha256Hex(jcs(stripSignatureAndLicence(rec)));
+  }
+
+  // merkle_leaf — leaf-v1 = SHA-256(commit_id | commit_hash). Only a ledger row has one.
+  const commitId = typeof rec.commit_id === "string" ? rec.commit_id : null;
+  const commitHash = typeof rec.commit_hash === "string" ? rec.commit_hash : null;
+  if (commitId !== null && commitHash !== null) {
+    candidates.push("merkle_leaf");
+    digests.merkle_leaf = await sha256Hex(`${commitId}|${commitHash}`);
+  }
+
+  const leafMismatch = (): PsiBindingResolution => ({
+    binding: null,
+    digest: null,
+    candidates,
+    error: {
+      detail: "merkle_leaf_hash does not equal the leaf recomputed from commit_id and commit_hash",
+      rule: PSI_RULE_CITATIONS.leaf_mismatch_ledger,
+    },
+  });
+
+  if (declaration !== null) {
+    if (!(PSI_BINDINGS as readonly string[]).includes(declaration)) {
+      return {
+        binding: null,
+        digest: null,
+        candidates,
+        error: {
+          detail: `signature.binds is "${declaration}"; the only bindings are ${PSI_BINDINGS.join(", ")}`,
+          rule: PSI_RULE_CITATIONS.binding_declared_unknown,
+        },
+      };
+    }
+    const binding = declaration as PsiBinding;
+    const digest = digests[binding];
+    if (!digest) {
+      return {
+        binding: null,
+        digest: null,
+        candidates,
+        error: {
+          detail: `signature.binds declares "${binding}" but this record cannot recompute it`,
+          rule: PSI_RULE_CITATIONS.binding_not_recomputable,
+        },
+      };
+    }
+    if (binding === "merkle_leaf") {
+      const stored = typeof rec.merkle_leaf_hash === "string" ? rec.merkle_leaf_hash.toLowerCase() : null;
+      if (stored && stored !== digest) return leafMismatch();
+    }
+    return { binding, digest, candidates, error: null };
+  }
+
+  if (candidates.length === 0) {
+    return {
+      binding: null,
+      digest: null,
+      candidates,
+      error: {
+        detail: "this record carries no digest a signature could bind: neither a PSI-SEAL/1 envelope nor a ledger row",
+        rule: PSI_RULE_CITATIONS.binding_unresolvable,
+      },
+    };
+  }
+  if (candidates.length > 1) {
+    return {
+      binding: null,
+      digest: null,
+      candidates,
+      error: {
+        detail: `ambiguous binding: this record can mean ${candidates.join(" or ")}; declare which one the signature covers`,
+        rule: PSI_RULE_CITATIONS.binding_ambiguous,
+      },
+    };
+  }
+  const binding = candidates[0];
+  const digest = digests[binding] as string;
+  if (binding === "merkle_leaf") {
+    const stored = typeof rec.merkle_leaf_hash === "string" ? rec.merkle_leaf_hash.toLowerCase() : null;
+    if (stored && stored !== digest) return leafMismatch();
+  }
+  return { binding, digest, candidates, error: null };
+}
+
+export interface PsiBindingCheck extends PsiSignatureCheck {
+  /** The binding that was resolved, or null when it could not be resolved. */
+  binding: PsiBinding | null;
+  /** The recomputed digest the signature was checked against. */
+  digest: string | null;
+}
+
+/**
+ * Verify the signature of ANY record — a PSI-SEAL/1 envelope or a ledger row
+ * — against the digest the record actually names, recomputed from its own
+ * content. Never returns `verified` without a trust root the caller supplied.
+ */
+export async function psiVerifyBinding(
+  record: unknown,
+  trustRoots: readonly (PsiTrustRoot | string)[] = [],
+): Promise<PsiBindingCheck> {
+  const signature = psiReadSignature(record);
+  const resolution = await psiResolveBinding(record);
+  if (resolution.error) {
+    const status =
+      resolution.error.rule === PSI_RULE_CITATIONS.binding_unresolvable ? "unverifiable" : "invalid";
+    return {
+      status,
+      key_id: null,
+      detail: resolution.error.detail,
+      rule: resolution.error.rule,
+      binding: null,
+      digest: null,
+    };
+  }
+  if (!signature) {
+    return {
+      status: "absent",
+      key_id: null,
+      detail: "record carries no signature member",
+      rule: PSI_RULE_CITATIONS.signature_absent,
+      binding: resolution.binding,
+      digest: resolution.digest,
+    };
+  }
+  const check = await psiVerifySignature(resolution.digest as string, signature, trustRoots);
+  return {
+    ...check,
+    binding: resolution.binding,
+    digest: resolution.digest,
+    detail:
+      check.status === "verified"
+        ? `Ed25519 signature verified over the ASCII ${resolution.binding}`
+        : check.detail,
+  };
+}
+
+// ── RFC 9162 INCLUSION PROOF (added v1.4.0) ───────────────────────────────
+//
+// WHAT THIS IS. The public merkle-proof endpoint serves a receipt's leaf,
+// its index in the window tree, the tree size, the audit path and the tree
+// head. A third party must be able to recompute the head from the path.
+//
+// WHY THE OBVIOUS SHORTCUT IS WRONG. Measured 2026-11-04 against our own
+// published proofs: the common shortcut — take the parity of the leaf index
+// to decide which side the running node sits on — reproduces the head for
+// every tree whose size is a power of two (256, our live window) and FAILS
+// for every other size. RFC 9162 sec 2.1.3.2 splits the tree at the largest
+// power of two smaller than the tree size, so the sibling's side is decided
+// by that split, not by the leaf index. The verifier walks the split.
+//
+// This is a verification, not an assertion: the head is recomputed here and
+// compared with the one the caller supplied.
+
+export interface PsiInclusionProof {
+  /** The row's Merkle leaf, 64 hex characters. */
+  leaf: string;
+  /** 0-based position of the leaf in the tree. */
+  leaf_index: number;
+  /** Number of leaves in the tree the path was taken from. */
+  tree_size: number;
+  /** Siblings, bottom-up from the leaf. */
+  audit_path: string[];
+  /** The tree head the path must reproduce. */
+  root: string;
+}
+
+export type PsiInclusionStatus = "included" | "mismatch" | "malformed";
+
+export interface PsiInclusionResult {
+  status: PsiInclusionStatus;
+  /** True only when the head was recomputed and matched. */
+  included: boolean;
+  /** The head this verifier computed, or null when the proof was malformed. */
+  recomputed_root: string | null;
+  detail: string;
+  rule: string;
+}
+
+async function prefixedHash(prefix: number, ...parts: Uint8Array[]): Promise<Uint8Array> {
+  const len = 1 + parts.reduce((n, p) => n + p.length, 0);
+  const buf = new Uint8Array(new ArrayBuffer(len));
+  buf[0] = prefix;
+  let o = 1;
+  for (const p of parts) {
+    buf.set(p, o);
+    o += p.length;
+  }
+  return new Uint8Array(await crypto.subtle.digest("SHA-256", buf as unknown as ArrayBuffer));
+}
+
+function strictHexBytes(value: string): Uint8Array | null {
+  return hexBytes(String(value ?? "").replace(/^sha256:/i, "").trim());
+}
+
+/**
+ * Recompute the tree head from a leaf and its audit path, walking the
+ * RFC 9162 sec 2.1.3.2 split: at each level k is the largest power of two
+ * smaller than the remaining tree size, and the sibling sits on the right
+ * when the leaf is in the left half, on the left when it is in the right.
+ */
+export async function psiInclusionRoot(
+  leaf: string,
+  leafIndex: number,
+  treeSize: number,
+  auditPath: readonly string[],
+): Promise<string | null> {
+  const leafBytes = strictHexBytes(leaf);
+  if (!leafBytes) return null;
+  if (!Number.isInteger(leafIndex) || !Number.isInteger(treeSize)) return null;
+  if (treeSize < 1 || leafIndex < 0 || leafIndex >= treeSize) return null;
+
+  let node = await prefixedHash(0x00, leafBytes);
+  let m = leafIndex;
+  let n = treeSize;
+  for (const sibling of auditPath) {
+    if (n <= 1) return null;
+    const sib = strictHexBytes(sibling);
+    if (!sib) return null;
+    let k = 1;
+    while (k * 2 < n) k *= 2;
+    if (m < k) {
+      node = await prefixedHash(0x01, node, sib);
+      n = k;
+    } else {
+      node = await prefixedHash(0x01, sib, node);
+      n -= k;
+      m -= k;
+    }
+  }
+  if (n !== 1) return null;
+  return bytesToHex(node);
+}
+
+/**
+ * Verify an inclusion proof against the head it claims to reproduce.
+ *
+ * `malformed` means the proof could not be checked at all — a bad hex leaf, a
+ * leaf index outside the tree, or an audit path that does not reach the root.
+ * `mismatch` means the check ran and said no. Only `included` is a pass.
+ */
+export async function psiVerifyInclusion(proof: PsiInclusionProof): Promise<PsiInclusionResult> {
+  const leaf = String(proof?.leaf ?? "");
+  const root = String(proof?.root ?? "").replace(/^sha256:/i, "").trim();
+  const path = Array.isArray(proof?.audit_path) ? proof.audit_path : [];
+  if (!strictHexBytes(leaf) || !strictHexBytes(root)) {
+    return {
+      status: "malformed",
+      included: false,
+      recomputed_root: null,
+      detail: "leaf and root must both be 64 hex characters",
+      rule: PSI_RULE_CITATIONS.inclusion_malformed,
+    };
+  }
+  const leafIndex = proof?.leaf_index;
+  const treeSize = proof?.tree_size;
+  if (
+    typeof leafIndex !== "number" ||
+    !Number.isInteger(leafIndex) ||
+    typeof treeSize !== "number" ||
+    !Number.isInteger(treeSize)
+  ) {
+    return {
+      status: "malformed",
+      included: false,
+      recomputed_root: null,
+      detail: "leaf_index and tree_size must both be integers",
+      rule: PSI_RULE_CITATIONS.inclusion_malformed,
+    };
+  }
+  const recomputed = await psiInclusionRoot(leaf, leafIndex, treeSize, path);
+  if (recomputed === null) {
+    return {
+      status: "malformed",
+      included: false,
+      recomputed_root: null,
+      detail:
+        "the audit path does not describe a tree of this size: the leaf index must be inside the tree and the path must reach the root",
+      rule: PSI_RULE_CITATIONS.inclusion_malformed,
+    };
+  }
+  if (recomputed !== root.toLowerCase()) {
+    return {
+      status: "mismatch",
+      included: false,
+      recomputed_root: recomputed,
+      detail: `the head recomputed from the leaf and audit path is ${recomputed}, not the supplied ${root.toLowerCase()}`,
+      rule: PSI_RULE_CITATIONS.inclusion_mismatch,
+    };
+  }
+  return {
+    status: "included",
+    included: true,
+    recomputed_root: recomputed,
+    detail: `leaf ${leaf} is included: the head ${recomputed} was recomputed from the audit path over a tree of ${proof.tree_size} leaves`,
+    rule: PSI_RULE_CITATIONS.inclusion_ok,
+  };
+}
+
 const HEX64 = /^[0-9a-f]{64}$/;
 const RFC3339_MS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const ALLOWED = ["schema", "schema_digest", "sealed_at", "subject", "hash", "merkle", "signature", "licence"];
 
 /** Verifier distribution version. Identical in the Python distribution. */
-export const PSI_VERIFIER_VERSION = "1.3.0";
+export const PSI_VERIFIER_VERSION = "1.4.0";
 
 /**
  * Human-readable rule citations. Every rejection line carries one:
@@ -349,6 +786,14 @@ export const PSI_RULE_CITATIONS = {
   signature_invalid: "11.3",
   signature_unverifiable: "11.4",
   signature_alg: "11.5",
+  binding_declared_unknown: "11.6",
+  binding_ambiguous: "11.7",
+  binding_unresolvable: "11.8",
+  binding_not_recomputable: "11.9",
+  leaf_mismatch_ledger: "9.2",
+  inclusion_malformed: "13.1",
+  inclusion_mismatch: "13.2",
+  inclusion_ok: "13.3",
 } as const;
 
 

@@ -10,6 +10,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   PSI_SCHEMA_ID,
   PSI_VERIFIER_VERSION,
@@ -18,6 +19,7 @@ import {
   psiSchemaDigest,
   psiSealHash,
   psiVerifySignature,
+  psiVerifyBinding,
   verifySeal,
   verify,
   formatAcceptance,
@@ -176,7 +178,91 @@ test("published hello-psi vectors are reproduced exactly (R5/R9 regression guard
   assert.notEqual(await psiLeaf(cases[0][1]), cases[0][1], "R9: the 'PSI1:' domain separator is applied");
 
   assert.equal(jcs({ b: 1, a: [2, 1] }), '{"a":[2,1],"b":1}', "R1: RFC 8785 key ordering");
-  assert.match(PSI_VERIFIER_VERSION, /^1\.3\.\d+$/);
+  assert.match(PSI_VERIFIER_VERSION, /^\d+\.\d+\.\d+$/, "the distribution version must be semver");
+  const [major, minor] = PSI_VERIFIER_VERSION.split(".").map(Number);
+  assert.ok(
+    major > 1 || (major === 1 && minor >= 4),
+    `R11.6 (named binding) shipped in v1.4.0; this build is ${PSI_VERIFIER_VERSION}`,
+  );
+  const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as {
+    version: string;
+  };
+  assert.equal(PSI_VERIFIER_VERSION, pkg.version, "the distribution version must equal the package version");
 });
 
 
+
+/**
+ * R11.6 named binding — added 4 Nov 2026 with v1.4.0.
+ *
+ * The live ledger signs the Merkle leaf (measured 2026-11-04: 3/3 real
+ * receipts open over merkle_leaf_hash, 0/3 over the R10 seal_hash). A
+ * verifier that only knows "the ASCII seal_hash" therefore rejects our own
+ * published receipts, and a verifier that trusts a DECLARED seal_hash accepts
+ * a signature transplanted out of the public ledger. These tests pin the fix:
+ * the binding is named, the digest is recomputed, and a record that could
+ * mean two things is refused rather than guessed.
+ */
+test("R11.6 named binding: the digest is named and recomputed, never trusted", async () => {
+  const pair = (await crypto.subtle.generateKey({ name: "Ed25519" } as AlgorithmIdentifier, true, [
+    "sign",
+    "verify",
+  ])) as CryptoKeyPair;
+  const publicHex = hex(new Uint8Array(await crypto.subtle.exportKey("raw", pair.publicKey)));
+  const digest = async (s: string) =>
+    hex(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s))));
+  const sign = async (m: string) =>
+    hex(
+      new Uint8Array(
+        await crypto.subtle.sign(
+          { name: "Ed25519" } as AlgorithmIdentifier,
+          pair.privateKey,
+          new TextEncoder().encode(m),
+        ),
+      ),
+    );
+
+  const commitId = "APEX-TEST-0001";
+  const commitHash = await digest("content");
+  const leaf = await digest(`${commitId}|${commitHash}`);
+  const signature = await sign(leaf);
+  const row = {
+    commit_id: commitId,
+    commit_hash: commitHash,
+    merkle_leaf_hash: leaf,
+    ed25519_signature: signature,
+  };
+  const trust = [{ public_key: publicHex, key_id: "unit-key" }];
+
+  const good = await psiVerifyBinding(row, trust);
+  assert.equal(good.status, "verified", "a ledger row must verify against the key that signed its leaf");
+  assert.equal(good.binding, "merkle_leaf");
+  assert.equal(good.digest, leaf, "the bound digest must be the recomputed one");
+
+  const hash = await digest("abc");
+  const envelope = {
+    schema: PSI_SCHEMA_ID,
+    schema_digest: await psiSchemaDigest(),
+    sealed_at: "2026-10-17T20:55:00.000Z",
+    subject: { name: "a.csv", size_bytes: 3 },
+    hash,
+    merkle: { leaf: await psiLeaf(hash) },
+    signature: { alg: "Ed25519", value: signature, seal_hash: leaf },
+  };
+  const transplanted = await psiVerifyBinding(envelope, trust);
+  assert.notEqual(transplanted.status, "verified", "a ledger signature must not authenticate an envelope");
+
+  const ambiguous = await psiVerifyBinding({ ...envelope, commit_id: commitId, commit_hash: commitHash }, trust);
+  assert.equal(ambiguous.status, "invalid", "a record that could mean two bindings must be refused");
+  assert.equal(ambiguous.rule, "11.7");
+
+  const unknown = await psiVerifyBinding(
+    { ...envelope, signature: { ...envelope.signature, binds: "banana" } },
+    trust,
+  );
+  assert.equal(unknown.status, "invalid");
+  assert.equal(unknown.rule, "11.6");
+
+  const orphan = await psiVerifyBinding(row, []);
+  assert.equal(orphan.status, "unverifiable", "no trust root is never a pass");
+});

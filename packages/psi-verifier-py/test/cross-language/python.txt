@@ -1,14 +1,14 @@
 case 1: conformant=true signature_status=verified authentic=true
-PSI-SEAL v1.3.0 ACCEPT: conformant seal; Ed25519 signature verified against cross-language-key
+PSI-SEAL v1.4.0 ACCEPT: conformant seal; Ed25519 signature verified against cross-language-key
 
 =====
 
 case 2: conformant=false signature_status=invalid authentic=false
-PSI-SEAL v1.3.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.3.0 REJECT: Ed25519 signature does not verify against any of the 1 supplied trust root(s) — rule 11.3
+  PSI-SEAL v1.4.0 REJECT: Ed25519 signature does not verify against any of the 1 supplied trust root(s) — rule 11.3
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -17,11 +17,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 3: conformant=false signature_status=invalid authentic=false
-PSI-SEAL v1.3.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.3.0 REJECT: signature.value is empty — no key signed this seal — rule 11.2
+  PSI-SEAL v1.4.0 REJECT: signature.value is empty — no key signed this seal — rule 11.2
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -30,11 +30,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 4: conformant=false signature_status=invalid authentic=false
-PSI-SEAL v1.3.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.3.0 REJECT: signature.value is neither 128 hex characters nor 64 base64 bytes, so it is not an Ed25519 signature — rule 11.3
+  PSI-SEAL v1.4.0 REJECT: signature.value is neither 128 hex characters nor 64 base64 bytes, so it is not an Ed25519 signature — rule 11.3
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -43,11 +43,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 5: conformant=false signature_status=invalid authentic=false
-PSI-SEAL v1.3.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.3.0 REJECT: signature.alg is "ES256"; R11 requires Ed25519, so nothing here can be checked — rule 11.5
+  PSI-SEAL v1.4.0 REJECT: signature.alg is "ES256"; R11 requires Ed25519, so nothing here can be checked — rule 11.5
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -56,11 +56,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 6: conformant=false signature_status=unverifiable authentic=false
-PSI-SEAL v1.3.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.3.0 REJECT: no trust root supplied: a signature nobody's public key was checked against proves nothing — rule 11.4
+  PSI-SEAL v1.4.0 REJECT: no trust root supplied: a signature nobody's public key was checked against proves nothing — rule 11.4
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -69,11 +69,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 7: conformant=false signature_status=absent authentic=false
-PSI-SEAL v1.3.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.3.0 REJECT: seal carries no signature member — rule 11.1
+  PSI-SEAL v1.4.0 REJECT: seal carries no signature member — rule 11.1
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -82,4 +82,78 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 8: conformant=true signature_status=absent authentic=false
-PSI-SEAL v1.3.0 PARTIAL: conformant to the schema, authenticity absent — a seal no key has signed is a formatting check, not a verification
+PSI-SEAL v1.4.0 PARTIAL: conformant to the schema, authenticity absent — a seal no key has signed is a formatting check, not a verification
+
+=====
+
+binding case 1: status=verified binding=merkle_leaf key=apex-psi-ledger-ed25519 rule=11
+detail: Ed25519 signature verified over the ASCII merkle_leaf
+
+=====
+
+binding case 2: status=verified binding=merkle_leaf key=apex-psi-ledger-ed25519 rule=11
+detail: Ed25519 signature verified over the ASCII merkle_leaf
+
+=====
+
+binding case 3: status=verified binding=merkle_leaf key=apex-psi-ledger-ed25519 rule=11
+detail: Ed25519 signature verified over the ASCII merkle_leaf
+
+=====
+
+binding case 4: status=verified binding=merkle_leaf key=cross-language-key rule=11
+detail: Ed25519 signature verified over the ASCII merkle_leaf
+
+=====
+
+binding case 5: status=invalid binding=seal_hash key=null rule=11.3
+detail: Ed25519 signature does not verify against any of the 1 supplied trust root(s)
+
+=====
+
+binding case 6: status=invalid binding=null key=null rule=11.7
+detail: ambiguous binding: this record can mean seal_hash or merkle_leaf; declare which one the signature covers
+
+=====
+
+binding case 7: status=invalid binding=null key=null rule=11.9
+detail: signature.binds declares "merkle_leaf" but this record cannot recompute it
+
+=====
+
+binding case 8: status=invalid binding=null key=null rule=11.6
+detail: signature.binds is "banana"; the only bindings are seal_hash, merkle_leaf
+
+=====
+
+binding case 9: status=invalid binding=null key=null rule=9.2
+detail: merkle_leaf_hash does not equal the leaf recomputed from commit_id and commit_hash
+
+=====
+
+binding case 10: status=unverifiable binding=merkle_leaf key=null rule=11.4
+detail: no trust root supplied: a signature nobody's public key was checked against proves nothing
+
+=====
+
+inclusion case 1: status=included included=true recomputed_root=187e00f3b8891fc2f94b6a5ecd3f3878deb1db1d513a6a1646859494e937ca53 rule=13.3
+detail: leaf e804673732f57558f6d933af58c94d6c18af1ea9df4cd09e05637332ffdddf75 is included: the head 187e00f3b8891fc2f94b6a5ecd3f3878deb1db1d513a6a1646859494e937ca53 was recomputed from the audit path over a tree of 256 leaves
+
+=====
+
+inclusion case 2: status=mismatch included=false recomputed_root=187e00f3b8891fc2f94b6a5ecd3f3878deb1db1d513a6a1646859494e937ca53 rule=13.2
+detail: the head recomputed from the leaf and audit path is 187e00f3b8891fc2f94b6a5ecd3f3878deb1db1d513a6a1646859494e937ca53, not the supplied 0000000000000000000000000000000000000000000000000000000000000000
+
+=====
+
+inclusion case 3: status=included included=true recomputed_root=06e2e1946f3b546e28fec6b7d571e36753bbe5350e820315f0cb6945ec3ead03 rule=13.3
+detail: leaf bac57df66fe6368188d1d4521bcffaecee76a03a50ff297a13439f7164de0a5f is included: the head 06e2e1946f3b546e28fec6b7d571e36753bbe5350e820315f0cb6945ec3ead03 was recomputed from the audit path over a tree of 3 leaves
+
+=====
+
+inclusion case 4: status=malformed included=false recomputed_root=null rule=13.1
+detail: the audit path does not describe a tree of this size: the leaf index must be inside the tree and the path must reach the root
+
+=====
+
+published schema document digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9 | matches the verifier's frozen digest: true
