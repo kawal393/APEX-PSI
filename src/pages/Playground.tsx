@@ -90,9 +90,9 @@ export default function Playground() {
               <p data-testid="verdict" className={`text-2xl font-black ${verdict === "VALID" ? "text-emerald-400" : "text-destructive"}`}>{verdict}</p>
               <p className="text-xs text-muted-foreground">This shows the text has not changed. It is not yet a ledger receipt — a receipt needs the hosted notary, which adds a signature and a timestamp.</p>
               <Row k="payload sha256" v={seal.payload_sha256} />
-              <Row k="sealed at" v={seal.sealed_at} />
-              <Row k="public key" v={seal.public_key} />
-              <Row k="signature" v={seal.signature} />
+              <Row k="fingerprint made at" v={seal.sealed_at} />
+              <Row k="browser public key" v={seal.public_key} />
+              <Row k="browser signature (yours, not APEX's)" v={seal.signature} />
               <p className="text-xs text-muted-foreground pt-2">
                 Integrity only. This key was made just now in your browser, so this fingerprint proves the text has not changed since it was made — not who sealed it, and not that the text is true. Receipts signed by the APEX notary key can be checked at <a className="underline" href="/verify">/verify</a>.
               </p>
@@ -132,7 +132,7 @@ rec.save("incident-bundle.json")`}</pre>
 
         <section className="space-y-2 text-sm text-muted-foreground max-w-2xl">
           <h2 className="text-xl font-bold uppercase text-foreground">Free vs hosted</h2>
-          <p>Local sealing, recording and verification are free with no limit. The hosted notary (independent timestamp, APEX signature, public ledger) is free up to 20 receipts a minute and 100 a day; above that it tells your code where to <a className="underline" href="/upgrade">upgrade</a>, or you keep sealing locally.</p>
+          <p>Local fingerprinting, recording and verification are free with no limit. The hosted notary (independent timestamp, APEX signature, public ledger) is free up to 20 receipts a minute and 100 a day; above that it tells your code where to <a className="underline" href="/upgrade">upgrade</a>, or you keep fingerprinting locally.</p>
         </section>
       </main>
       <Footer />
