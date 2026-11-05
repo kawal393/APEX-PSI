@@ -56,6 +56,25 @@ const Drafts = () => (
               </div>
             </section>
           ))}
+          <section className="mb-10">
+            <h2 className="text-sm font-bold tracking-widest uppercase text-muted-foreground mb-3">Prepared, not yet filed</h2>
+            <div className="border border-border divide-y divide-border">
+              <div className="p-4 flex flex-col md:flex-row md:items-center gap-3 justify-between">
+                <div className="min-w-0">
+                  <p className="font-mono text-sm text-primary break-all">draft-singh-psi-agent-02</p>
+                  <p className="text-sm text-foreground">Binding Decisions and Settlements to Agent Action Records</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Written 6 November 2026. The IETF submission window is closed until 15 November 2026,
+                    so this draft has no datatracker record, no expiry date and no revision number yet.
+                    It is not a standard, not an approved document and not adopted by any working group.
+                  </p>
+                </div>
+                <div className="flex gap-4 text-xs uppercase tracking-wider shrink-0">
+                  <a className="underline hover:text-primary" href="/ietf/draft-singh-psi-agent-02.txt" target="_blank" rel="noopener noreferrer">Working text</a>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
       <Footer />

@@ -1,0 +1,638 @@
+Network Working Group                                           K. Singh
+Internet-Draft                                       APEX Infrastructure
+Intended status: Experimental                          6 November 2026
+Expires: 10 May 2027
+
+
+        Binding Decisions and Settlements to Agent Action Records
+                     draft-singh-psi-agent-02
+
+Abstract
+
+   This document extends [I-D.psi-agent-01], which records what a
+   software agent did.  A record of an action does not show who said the
+   work was to be done, what the model asked to do, what a policy engine
+   permitted, or what was paid.
+
+   This document defines four statements -- a mandate, a proposal, a
+   decision, and a settlement -- and the rules that bind them to a chain
+   of action records under one run identifier.  Each statement is signed
+   by its own party with its own key.  A verifier that holds the
+   statements can test, offline and without trusting the agent, whether
+   the action chain is unbroken, whether the decision that permitted it
+   was signed by a key other than the one named as the acting key, and
+   whether the amount settled lay inside the limit the mandate declared.
+
+   A valid envelope shows that identified parties made these statements
+   and that the statements have not changed since they were sealed.  It
+   does not show that any statement was correct, sufficient, lawful, or
+   true, and it makes no legal representation of any kind.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 10 May 2027.
+
+Copyright Notice
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (https://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.
+
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+1.  Introduction
+
+   [I-D.psi-agent-01] seals a hash chain of agent actions.  That answers
+   one question: was this recorded action altered, or omitted from the
+   chain.  It does not answer the four questions an examiner of a
+   disputed run asks first.  Who said this work was to be done, and
+   within what limits.  What did the model ask to do.  What did a policy
+   engine permit.  What was paid.
+
+   Those four answers are normally produced by four different parties on
+   four different systems, and none of them is in a position to sign the
+   others.  This document gives each a statement of its own, sealed on
+   its own, and defines the checks that join them.
+
+   This document is a format and a verification procedure.  It is not a
+   runtime, a permission system, a policy language, a payment protocol,
+   an identity authority, or a legal rule.  It assumes a decision engine
+   that the agent runtime cannot write to and cannot invoke on the
+   agent's behalf; that assumption is a deployment property and this
+   profile cannot verify it.
+
+   The status of this document is Experimental as defined in [RFC2026].
+
+1.1.  Scope of the novelty claim
+
+   Action logs, signed allow or deny receipts, mandate and delegation
+   credentials, Merkle transparency logs, and machine payment rails each
+   exist separately as at the date of this document.  What this document
+   specifies, and states no prior document known to the authors as at 6
+   November 2026 specifies, is a settlement statement that a verifier
+   checks against the spend limit declared in a separately signed
+   mandate, bound to the same run as the action chain it paid for.
+   Removing that check removes the reason for this document to exist;
+   the remaining statements are conventional and are specified here only
+   so that the check has inputs.
+
+1.2.  Relationship to [I-D.psi-agent-01]
+
+   This document does not redefine the action record.  It extends it,
+   and Section 3.5 lists every extension and every new rule it imposes.
+   Where this document and [I-D.psi-agent-01] differ on the action
+   record, this document applies.
+
+2.  Conventions and Terminology
+
+2.1.  Requirements Language
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+2.2.  Terminology
+
+   Run:  a bounded sequence of actions taken by one software agent
+      against one declared objective.
+   Run identifier:  an opaque identifier, chosen before any statement is
+      written, shared by every statement of one run.
+   Statement:  one of the four objects defined in Section 3, or the
+      envelope of Section 5.  A statement is sealed by the party that
+      issues it and carries that party's signature.
+   Action record:  the record defined in [I-D.psi-agent-01].  It is
+      not a statement: it carries no signature of its own, and its
+      digest is the chain digest of [I-D.psi-agent-01].
+   Signed bytes:  the byte sequence defined in Section 4.1.
+   Seal:  a signature over the signed bytes, together with the
+      identifier of the key that produced it.
+   Digest reference:  the string "sha256:" followed by the sixty-four
+      lowercase hexadecimal digits of a SHA-256 digest.
+   Envelope:  the object of Section 5.
+   Issuer:  the party that seals a statement.
+   Verifier:  a party that performs Section 6.
+
+3.  Statements
+
+   Four statements are defined.  A statement that a run does not contain
+   is recorded in the envelope by the literal string "absent".  An empty
+   object, an empty string, and omission of the envelope field all mean
+   "malformed", not "absent".
+
+   Every statement carries: ver, the profile version, which is the
+   string "1"; the run identifier; its own identifier field; alg; kid;
+   and sig.
+
+3.1.  Mandate
+
+   {
+     "ver": "1",
+     "mid": <digest reference>,
+     "run": <run identifier>,
+     "principal": <string, who declared the work>,
+     "purpose": <string, free text, MAY be a commitment>,
+     "scope": [<string, tool, host, or dataset name>],
+     "limits": {
+       "max_actions": <decimal string>,
+       "max_spend": <decimal string>,
+       "currencies": [<string>]
+     },
+     "not_before": <RFC3339 date-time>,
+     "not_after": <RFC3339 date-time>,
+     "alg": <string>,
+     "kid": <string>,
+     "sig": <base64url>
+   }
+
+   ver, mid, run, principal, alg, kid and sig are MUST.  purpose, scope,
+   limits, not_before and not_after are SHOULD.  A mandate records that
+   a key attributed to a principal signed this declaration.  It does not
+   show that the principal was entitled to make it.
+
+3.2.  Proposal
+
+   {
+     "ver": "1",
+     "pid": <digest reference>,
+     "run": <run identifier>,
+     "mid": <digest reference of the mandate>,
+     "proposer": <string, model or planner identifier>,
+     "intent": <string, one line, no secrets and no personal data>,
+     "args_digest": <digest reference>,
+     "alg": <string>,
+     "kid": <string>,
+     "sig": <base64url>
+   }
+
+   ver, pid, run, mid, proposer, intent, args_digest, alg, kid and sig
+   are MUST.  A proposal is what was asked for, before permission.  It
+   is not evidence that anything was executed.
+
+3.3.  Decision
+
+   {
+     "ver": "1",
+     "did": <digest reference>,
+     "run": <run identifier>,
+     "pid": <digest reference of the proposal decided>,
+     "verdict": "allow" | "deny" | "require_human",
+     "policy_digest": <digest reference of the policy in force>,
+     "decided_by": <string, engine identifier>,
+     "reason": <string>,
+     "alg": <string>,
+     "kid": <string>,
+     "sig": <base64url>
+   }
+
+   ver, did, run, pid, verdict, policy_digest, decided_by, alg, kid and
+   sig are MUST.  reason is SHOULD.  The key named by kid is the key of
+   the decision authority.  Section 6.6 tests that it is not the key
+   named as the acting key of the actions the decision permits.
+
+   "require_human" records that the policy engine referred the proposal
+   to a person.  It does not record that the person approved it.  A
+   deployment that wants to record the human outcome records it as a
+   further decision.
+
+3.4.  Settlement
+
+   A settlement is a statement that a payment was made for this run.
+   The party that signs it SHOULD be the payment provider rather than
+   the agent, because the agent knows only what it asked for.
+
+   {
+     "ver": "1",
+     "sid": <digest reference>,
+     "run": <run identifier>,
+     "did": <digest reference of the decision, or "absent">,
+     "payer": <opaque string>,
+     "payee": <opaque string>,
+     "amount": <decimal string>,
+     "asset": <string>,
+     "status": "initiated" | "authorised" | "captured" | "settled"
+             | "failed" | "refunded" | "reversed" | "disputed",
+     "ref": <string, the provider's own transaction reference>,
+     "scheme": <string, the payment scheme that produced ref>,
+     "observed_at": <RFC3339 date-time>,
+     "alg": <string>,
+     "kid": <string>,
+     "sig": <base64url>
+   }
+
+   ver, sid, run, payer, payee, amount, asset, status, alg, kid and sig
+   are MUST.  did, ref, scheme and observed_at are SHOULD.
+
+   These statuses are different claims and MUST NOT be treated as one.
+   "authorised" records that a limit was reserved.  It does not record
+   that money moved, and a verifier MUST NOT report it as meaning so.
+
+3.5.  The action record
+
+   The action record is the object defined in [I-D.psi-agent-01].  This
+   profile makes four changes to it and no others.
+
+   a.  The field prev is REQUIRED on every record of a run except the
+       first, whose prev is the digest reference whose digest is sixty-
+       four zero digits.  [I-D.psi-agent-01] makes prev optional and
+       does not fix the first value.
+
+   b.  The field did is REQUIRED on every record.  It holds the digest
+       reference of the decision the action was taken under.
+
+   c.  The field kid is REQUIRED on every record.  It names the key of
+       the party that executed the action.  [I-D.psi-agent-01] does not
+       define this field.
+
+   d.  The field at is REQUIRED on every record.  It holds the RFC3339
+       date-time at which the executing party reports the action.
+
+   The kid of an action record names the key of the party that executed
+   the action.  The record is sealed by the issuer that holds it per
+   [I-D.psi-agent-01], and not by the named key.  The name is therefore
+   attested by the sealing party and is not a signature by the party it
+   names.  Section 6 compares names, and the comparison is only as
+   strong as that attestation.
+
+   The chain digest of an action record remains as defined in
+   [I-D.psi-agent-01]: SHA-256 over the canonical form of the record.
+
+4.  Canonical form, algorithms, keys and numbers
+
+4.1.  Signed bytes and identifiers
+
+   The signed bytes of a statement are the canonical form, per
+   [RFC8785], of the statement with two members removed: sig, and the
+   statement's own identifier member, which is mid, pid, did, sid or eid
+   as applicable.
+
+   The identifier of a statement is the digest reference of its signed
+   bytes.  The alg and kid members are present in the statement and are
+   covered by the signature.  A statement whose alg or kid is altered
+   after signing MUST fail verification.
+
+   The signed bytes of an envelope exclude a third member, anchor.  The
+   anchor is evidence about the envelope and is not part of what the
+   envelope asserts, so including it would make the envelope identifier
+   depend on a tree that contains the envelope identifier.
+
+   A signature is computed over the signed bytes.  The value of sig is
+   base64url without padding [RFC4648].
+
+4.2.  alg
+
+   Every sealed object names its algorithm.  "ed25519" MUST be
+   implemented [RFC8032].  "ml-dsa-65" MAY be implemented [FIPS204].  An
+   unknown alg value is not a defect in the statement: a verifier
+   reports algorithm_unavailable for that object, does not attempt to
+   verify its signature, and reports the result of its other checks
+   separately.
+
+4.3.  kid
+
+   kid names the key.  Its form is outside this profile.  A verifier
+   resolves it by whatever means its deployment provides.  Statements
+   are distinguished by the value of kid and not by a description of
+   who signed.
+
+4.4.  Dates
+
+   Dates are RFC3339 date-times with an explicit offset [RFC3339].
+   Precision to the second is sufficient.  A verifier MUST accept
+   fractional seconds and MUST NOT require them.
+
+4.5.  Decimal strings and assets
+   A decimal string is an optional minus sign, then digits, then at most
+   one full stop, then more digits.  No exponent, no floating point
+   value, no leading or trailing space.  Comparison of two decimal
+   strings is by integer part first and then by fractional part padded
+   to equal length.
+
+   asset and the entries of limits.currencies are compared as exact
+   case-sensitive strings.  asset is an ISO 4217 alphabetic code where
+   one exists and an upper-case ticker otherwise.
+
+4.6.  Alternative transports
+
+   A deployment MAY instead attach an HTTP Message Signature [RFC9421]
+   to the transport that carries a statement.  That signature attests to
+   the message and not to the statement.  A verifier that holds only the
+   statement MUST NOT rely on it.
+
+5.  The envelope
+
+   {
+     "ver": "1",
+     "eid": <digest reference>,
+     "run": <run identifier>,
+     "mandate": <digest reference | "absent">,
+     "proposal": <digest reference | "absent">,
+     "decision": <digest reference | "absent">,
+     "action_root": <digest reference | "absent">,
+     "settlement": <digest reference | "absent">,
+     "issued": <RFC3339 date-time>,
+     "anchor": {
+       "root": <hex digest>,
+       "index": <integer>,
+       "size": <integer>,
+       "path": [{"side": "left" | "right", "hash": <hex digest>}]
+     },
+     "alg": <string>,
+     "kid": <string>,
+     "sig": <base64url>
+   }
+
+   ver, eid, run, mandate, proposal, decision, action_root, settlement,
+   issued, alg, kid and sig are MUST.  anchor is MAY.
+
+   The run identifier is assigned before any statement is written and is
+   never derived from anything sealed later.  It is an opaque string
+   with at least 128 bits of unpredictability, encoded in lowercase
+   hexadecimal.  A value that a verifier could compute from the
+   statements is not a run identifier.  The run identifier is not an
+   authentication credential and MUST NOT be treated as proof of
+   authority.
+
+   action_root names the head of the chain: the record whose digest no
+   other record of the run carries as its prev.  A run MAY contain more
+   than one chain.  An envelope names one chain; a verifier given
+   records of another chain reports them as an additional chain and not
+   as an error.  Where the run has no action chain, action_root is the
+   literal string "absent" and no record is walked.
+
+   The envelope is itself a sealed statement, sealed by the party that
+   assembles the run.
+
+   One run has one current envelope.  When a settlement arrives after an
+   envelope was issued, the holder issues a second envelope whose
+   "replaces" member carries the eid of the first.  Both verify, and the
+   later issued time wins.  "replaces" is MAY and, when present, MUST
+   be a digest reference.
+
+   anchor commits this envelope to an append-only Merkle tree as
+   specified in [RFC6962], so that a party that does not hold the other
+   statements can still be shown that the envelope existed.  The leaf
+   of the tree is the UTF-8 encoding of the envelope's eid.  The path
+   is the inclusion path of that leaf at index within a tree of size
+   entries.  A verifier that is given an anchor MUST check the path
+   against the root, and MUST check the root against a tree head it
+   trusts.
+
+6.  Verification
+
+   A verifier is given the envelope and any subset of the statements.
+   It performs the steps below.  Each step yields one result.  The
+   result vocabulary is: ok, absent, invalid, algorithm_unavailable,
+   key_unresolved, not_anchored.  A step that fails yields invalid and a
+   reason code.  The reason codes used below are id_mismatch,
+   envelope_ref_mismatch, held_but_envelope_says_absent,
+   chain_broken, run_mismatch, decision_pid_mismatch,
+   proposal_mid_mismatch, action_did_mismatch, denied_but_executed,
+   decision_key_is_action_key, mandate_key_is_decision_key,
+   mandate_key_is_action_key, currency_not_permitted, over_spend,
+   over_actions, outside_window, inclusion_failed, signature_invalid.
+
+6.1.  Statements
+
+   1.  For each statement held, recompute the signed bytes and the
+       digest reference, and compare the digest reference with the
+       identifier member of the statement.  Fail with id_mismatch.
+
+   2.  Compare the identifier member of each statement held with the
+       corresponding member of the envelope.  Fail with
+       envelope_ref_mismatch.  Where the envelope names "absent" and
+       the verifier holds the statement, fail with
+       held_but_envelope_says_absent.
+
+   3.  Verify sig over the signed bytes under alg and kid.  Where the
+       verifier does not implement the alg, report algorithm_unavailable
+       and do not verify the signature.  Where the verifier cannot
+       resolve the kid, report key_unresolved.  Otherwise, where the
+       signature does not verify, fail with signature_invalid.
+
+6.2.  The envelope
+
+   4.  Recompute the signed bytes of the envelope and compare the
+       digest reference with eid.  Fail with id_mismatch.
+
+6.3.  The chain
+
+   5.  Where the envelope names action_root "absent", there is no chain
+       to walk and no record is walked, and the result is absent.
+       Otherwise, starting from the record whose digest reference is
+       action_root, follow prev to the record whose prev is the digest
+       reference whose digest is sixty-four zero digits.  The digest of
+       each record walked MUST be the digest reference that the next
+       record names in prev, and the digest of the head record MUST be
+       action_root.  Fail with chain_broken if no such record is
+       reached, if a record repeats, if the chain does not terminate, or
+       if a record walked lacks a field required by Section 3.5.
+       Holding only the head is not verification of the run.
+
+6.4.  Bindings
+
+   6.  Every statement held MUST carry the run identifier of the
+       envelope.  Fail with run_mismatch.
+
+   7.  The pid of the decision MUST equal the pid of the proposal.
+       Fail with decision_pid_mismatch.
+
+   8.  The mid of the proposal MUST equal the mid of the mandate.  Fail
+       with proposal_mid_mismatch.
+
+   9.  The did of every record walked MUST equal the decision named by
+       the envelope.  Fail with action_did_mismatch.
+
+   10.  Where the decision is held and its verdict is "deny", the
+       envelope MUST name action_root "absent" and MUST name the
+       settlement "absent".  Fail with denied_but_executed.
+
+6.5.  Keys, money and time
+
+   11. The kid of the decision MUST differ from the kid of every record
+       walked.  Fail with decision_key_is_action_key.  The kid of the
+       mandate MUST differ from the kid of the decision and from the kid
+       of every record walked.  Fail with mandate_key_is_decision_key
+       or mandate_key_is_action_key.  Where a deployment permits two
+       roles to share a key, the verifier reports the pair as a
+       warning naming both roles.  This compares names.  The kid of a
+       statement is signed by the party that issued it; the kid of an
+       action record is attested by the party that sealed it, as
+       Section 3.5 says.
+
+   12. Where the settlement and the mandate are both held and the
+       mandate declares limits.max_spend and limits.currencies: the
+       asset of the settlement MUST appear in currencies, and the amount
+       MUST NOT exceed max_spend.  Fail with currency_not_permitted or
+       over_spend.
+
+   13. Where the mandate declares limits.max_actions, the number of
+       records walked MUST NOT exceed it.  Fail with over_actions.
+
+   14. Where the mandate declares not_before and not_after, the field
+       at of every record walked MUST fall inside that window.  Fail
+       with outside_window.  These are times reported by the party that
+       executed the action, and Section 8 says what that is worth.
+
+6.6.  The anchor
+
+   15. Where the envelope carries an anchor, verify the inclusion path
+       against the root and the root against a tree head the verifier
+       trusts.  Fail with inclusion_failed.  Where no anchor is present
+       the result is not_anchored.
+
+6.7.  Reporting
+
+   A statement named in the envelope but not provided is reported
+   absent.  A statement reported absent is not reported false.  The
+   verifier reports the subset it held, and reports each step.
+
+   The checks on keys, money and time are the reason this document
+   exists.  A verifier that skips them has verified a bundle, not a run.
+
+7.  Privacy
+
+   The purpose and scope fields of a mandate, and the reason field of a
+   decision, carry personal and confidential data.  For a field of low
+   entropy the issuer SHOULD record a commitment instead of the value:
+   the digest of the value concatenated with a salt of at least 128
+   bits, the salt held by the principal.
+
+   Digests permit correlation across runs that share a run identifier.
+   An envelope is disclosable in more settings than the statements it
+   names, not all of them.
+
+   Statements MUST NOT contain secrets, credentials, or payment card
+   data.
+
+8.  Security Considerations
+
+   A runtime that is compromised, or an honest runtime whose parties
+   are colluding, can produce an envelope that satisfies every step of
+   Section 6 for a run that did not happen as recorded.  This profile
+   detects alteration of, and unrecorded omission from, the records it
+   was given.  It does not detect a record that was never written, and
+   it does not detect a set of statements all signed by parties acting
+   together.
+
+   Three things outside this profile carry the weight a reader may
+   place on the format.  An anchor shows that an envelope existed in a
+   tree the verifier already trusts.  Witnessing by parties outside the
+   runtime, per [I-D.psi-agent-01], is the only check against
+   collusion.  The independence of the decision engine is a deployment
+   property, restated here because a separate key is not by itself a
+   separate operator.
+
+   An envelope records what its issuer knew.  A settlement that occurred
+   and was not included is not detectable by this profile.
+
+   The ref field of a settlement describes an external transaction and
+   can be reused to describe a payment made for a different run.
+   Section 6 checks it against the mandate, not against the payment
+   system.  Where the scheme named by scheme permits a third party to
+   confirm ref, a verifier that cares about the payment confirms it and
+   says whether it did.
+
+   Compromise of a signing key lets a party issue statements after the
+   fact under an identity that verifiers trust.  Deployments MUST
+   define rotation and revocation, and a verifier checking historical
+   material MUST record what key status it assumed at what time.
+
+   A digest of low-entropy content can be reversed by guessing.
+   Section 7 requires salted commitments for that reason.
+
+9.  IANA Considerations
+
+   This document requests no IANA actions.  The enumerated values it
+   defines are closed within this profile: the verdict values, the
+   settlement status values, the alg values, and the statement types.  A
+   profile that extends one of them carries a different value of ver.
+   A verifier MUST report an unknown enumerated value as invalid and
+   MUST NOT guess its meaning.
+
+10.  References
+
+10.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC3339]  Klyne, G. and Newman, C., "Date and Time on the Internet:
+              Timestamps", RFC 3339, DOI 10.17487/RFC3339, July 2002,
+              <https://www.rfc-editor.org/info/rfc3339>.
+
+   [RFC4648]  Josefsson, S., "The Base16, Base32, and Base64 Data
+              Encodings", RFC 4648, DOI 10.17487/RFC4648, October 2006,
+              <https://www.rfc-editor.org/info/rfc4648>.
+
+   [RFC6962]  Laurie, B., Langley, A., and E. Kasper, "Certificate
+              Transparency", RFC 6962, DOI 10.17487/RFC6962,
+              June 2013, <https://www.rfc-editor.org/info/rfc6962>.
+
+   [RFC8032]  Josefsson, S. and Liusvaara, I., "Edwards-Curve Digital
+              Signature Algorithm (EdDSA)", RFC 8032,
+              DOI 10.17487/RFC8032, January 2017,
+              <https://www.rfc-editor.org/info/rfc8032>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174,
+              DOI 10.17487/RFC8174, May 2017,
+              <https://www.rfc-editor.org/info/rfc8174>.
+
+   [RFC8785]  Rundgren, A., Jordan, B., and S. Erdtman, "JSON
+              Canonicalization Scheme (JCS)", RFC 8785,
+              DOI 10.17487/RFC8785, June 2020,
+              <https://www.rfc-editor.org/info/rfc8785>.
+
+   [I-D.psi-agent-01]
+              Singh, K., "PSI Receipts for AI Agent Actions", Work in
+              Progress, Internet-Draft, draft-singh-psi-agent-01,
+              13 October 2026,
+              <https://datatracker.ietf.org/doc/draft-singh-psi-agent/>.
+
+   [FIPS204]  NIST, "Module-Lattice-Based Digital Signature Standard",
+              FIPS 204, August 2024,
+              <https://doi.org/10.6028/NIST.FIPS.204>.
+
+10.2.  Informative References
+
+   [RFC2026]  Peterson, L., "Internet Standards Process -- Revision 3",
+              BCP 9, RFC 2026, October 1996,
+              <https://www.rfc-editor.org/info/rfc2026>.
+
+   [RFC9421]  Backman, M., Richer, J., and M. Sporny, "HTTP Message
+              Signatures", RFC 9421, DOI 10.17487/RFC9421,
+              February 2024,
+              <https://www.rfc-editor.org/info/rfc9421>.
+
+11.  Author's Address
+
+   Kawaljeet Singh
+   APEX Infrastructure
+   Melbourne, Victoria, Australia
+   Email: business@apex-infrastructure.com
+   URI:   https://ai-governance-standard.com
