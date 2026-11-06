@@ -102,6 +102,11 @@ Prepared, not filed: `draft-singh-psi-agent-02`, "Binding Decisions and Settleme
 Agent Action Records", written 6 November 2026. It has no IETF record yet and is not a
 standard. Working text:
 https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-02.txt
+Fingerprint: https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-02.identity.json
+· sha256 `2592edc5dd4634d2ba6ee1c459d45d7372e0c6be358c2d3afe8e6353c43b68a1` · 27,279 bytes
+· first published 6 November 2026 10:47 AEDT at commit `481b871` in `kawal393/APEX-PSI`.
+Anybody can recompute that digest. It records that the text existed on that date and has
+not changed — not that it is correct, adopted, approved or lawful.
 
 ## For the auditor: a paragraph you can paste into a workpaper
 

@@ -71,7 +71,21 @@ const Drafts = () => (
                 </div>
                 <div className="flex gap-4 text-xs uppercase tracking-wider shrink-0">
                   <a className="underline hover:text-primary" href="/ietf/draft-singh-psi-agent-02.txt" target="_blank" rel="noopener noreferrer">Working text</a>
+                  <a className="underline hover:text-primary" href="/ietf/draft-singh-psi-agent-02.identity.json" target="_blank" rel="noopener noreferrer">Fingerprint</a>
                 </div>
+              </div>
+              <div className="p-4">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Its own fingerprint, checkable without us</p>
+                <pre className="font-mono text-[11px] leading-5 whitespace-pre-wrap break-all text-foreground/80">sha256   2592edc5dd4634d2ba6ee1c459d45d7372e0c6be358c2d3afe8e6353c43b68a1
+bytes    27,279 · lines 638
+first published  6 November 2026, 10:47 AEDT, commit 481b871 in kawal393/APEX-PSI
+check    sha256sum draft-singh-psi-agent-02.txt
+         curl -s https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-02.txt | sha256sum</pre>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Recompute the digest from the file above and it either matches or it does not. Nothing in
+                  this block asks you to trust us. It records that this text existed on that date and has not
+                  changed — not that it is correct, adopted or approved.
+                </p>
               </div>
             </div>
           </section>

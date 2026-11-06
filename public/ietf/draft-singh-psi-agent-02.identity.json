@@ -1,0 +1,25 @@
+{
+  "document": "draft-singh-psi-agent-02",
+  "title": "Binding Decisions and Settlements to Agent Action Records",
+  "status": "prepared. Not filed at the IETF as at 2026-11-07: the submission tool is closed to all authors until 2026-11-14 23:59 PST.",
+  "sha256": "2592edc5dd4634d2ba6ee1c459d45d7372e0c6be358c2d3afe8e6353c43b68a1",
+  "bytes": 27279,
+  "lines": 638,
+  "written": "2026-11-06",
+  "repository": "kawal393/APEX-PSI",
+  "commit": "481b871655a3465be112fd08c143316797ad8849",
+  "commit_datetime": "2026-11-06T10:47:01+11:00",
+  "served_urls": [
+    "https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-02.txt",
+    "https://raw.githubusercontent.com/kawal393/APEX-PSI/main/public/ietf/draft-singh-psi-agent-02.txt"
+  ],
+  "check_it_yourself": {
+    "from_a_file": "sha256sum draft-singh-psi-agent-02.txt",
+    "from_the_url": "curl -s https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-02.txt | sha256sum",
+    "expected_digest": "2592edc5dd4634d2ba6ee1c459d45d7372e0c6be358c2d3afe8e6353c43b68a1",
+    "no_account_needed": true,
+    "no_apex_tool_needed": true
+  },
+  "what_this_records": "that this exact text existed on the recorded date, in this repository, at this commit.",
+  "what_this_does_not_record": "that the text is correct, adopted, approved, lawful, or that anything it describes is true. It is a working document."
+}
