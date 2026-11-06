@@ -30,6 +30,7 @@ import MelbourneTestPlaque from "@/components/MelbourneTestPlaque";
 import PlainLanguageIntro from "@/components/PlainLanguageIntro";
 import VerticalsMatrix from "@/components/VerticalsMatrix";
 import GrandHero from "@/components/GrandHero";
+import AgentSpecAnchor from "@/components/AgentSpecAnchor";
 import ConstitutionLaws from "@/components/ConstitutionLaws";
 import GenesisAnchor from "@/components/GenesisAnchor";
 import WhatItIsAndIsnt from "@/components/WhatItIsAndIsnt";
