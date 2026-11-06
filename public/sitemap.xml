@@ -286,6 +286,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://www.ai-governance-standard.com/articles/cryptographic-truth-proving-what-ai-actually-did-osas7a</loc>
+    <lastmod>2026-11-06T03:06:15.048Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/nist-ai-rmf-vs-eu-ai-act-key-differences-5x0t0u</loc>
+    <lastmod>2026-11-06T03:06:15.048Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/what-is-ai-governance-technical-definition-for-2026-n50ryg</loc>
+    <lastmod>2026-11-06T03:06:15.048Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.ai-governance-standard.com/articles/ietf-draft-singh-psi-verifiable-ai-compliance-204axg</loc>
     <lastmod>2026-11-06T00:06:29.233Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6264,24 +6282,6 @@
   <url>
     <loc>https://www.ai-governance-standard.com/articles/ai-compliance-automation-what-can-and-cannot-be-automated-4tr4i4</loc>
     <lastmod>2026-08-21T18:07:27.184Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-uibwrv</loc>
-    <lastmod>2026-08-21T18:07:27.184Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-hu22b6</loc>
-    <lastmod>2026-08-21T18:07:27.184Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-audit-trail-requirements-guide-4p5czi</loc>
-    <lastmod>2026-08-21T15:07:17.078Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
