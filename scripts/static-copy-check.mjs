@@ -32,7 +32,7 @@ const SURFACES = [
     site: "https://apex-infrastructure.com",
     repo: join(homedir(), ".openhands", "apex-infra-site"),
     branches: ["origin/main"],
-    files: ["llms.txt", "SELF_AUDIT.md"],
+    files: ["llms.txt", "SELF_AUDIT.md", "PROOF_COVERAGE.md"],
     cards: [".well-known/mcp/server.json"],
   },
   {
