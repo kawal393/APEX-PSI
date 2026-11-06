@@ -138,12 +138,15 @@ const GrandHero = () => {
             >
               draft-singh-psi-agent-02
             </a>
-            <Link
-              to="/#agent-02-priority"
+            <button
+              type="button"
+              onClick={() =>
+                document.getElementById("agent-02-priority")?.scrollIntoView({ behavior: "smooth" })
+              }
               className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors hover:text-gold"
             >
               Bitcoin priority anchor
-            </Link>
+            </button>
           </div>
         </div>
       </div>
