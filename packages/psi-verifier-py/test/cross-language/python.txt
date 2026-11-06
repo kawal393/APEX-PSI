@@ -187,4 +187,17 @@ PSI-SEAL v1.5.0 ACCEPT: conformant seal; Ed25519 signature verified against cros
 
 =====
 
+post-quantum case 4: conformant=false signature_status=invalid authentic=false post_quantum_status=invalid
+PSI-SEAL v1.5.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
+received schema: PSI-SEAL/1.0.0 (digest match: true)
+findings:
+  PSI-SEAL v1.5.0 REJECT: Ed25519 signature does not verify against any of the 1 supplied trust root(s) — rule 11.3
+generate a conformant seal: https://ai-governance-standard.com/seal
+canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
+legacy escape hatch (report-only): enforce=false
+verified, not asserted; trust the math, not the maker.
+
+=====
+
 published schema document digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9 | matches the verifier's frozen digest: true

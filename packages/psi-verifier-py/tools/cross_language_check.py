@@ -362,6 +362,17 @@ PQ_CASES = [
     ("the same seal, with a checker that verifies the post-quantum signature", pq_seal, "accept"),
 ]
 
+# The declared half is reported whatever the classical half did. Measured
+# 7 Nov 2026: this seal came back with `post_quantum_status: "absent"` — a
+# verdict stating, wrongly, that a seal which DECLARES a post-quantum
+# signature declares none. Rejected either way, but the verdict must not
+# misstate the artefact.
+broken_pq_seal = dict(pq_seal)
+broken_pq_seal["signature"] = {**pq_seal["signature"], "value": "cd" * 64}
+PQ_CASES.append(
+    ("the same seal, with a broken Ed25519 half", broken_pq_seal, "refuse")
+)
+
 
 inclusion_lines = []
 for index, (name, proof) in enumerate(INCLUSION_CASES, start=1):

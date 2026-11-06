@@ -39,6 +39,14 @@ remains, free forever.
   updated in the same release. It is a second implementation of R11, and it had
   inherited the same blindness. It now carries the R11.7 verdict and checks
   ML-DSA-65 against the published anchor key when a seal declares it.
+- **The declared half is now reported whatever the classical half did.**
+  Measured 7 Nov 2026 in this release: a seal that DECLARES a post-quantum
+  signature but whose Ed25519 half does not verify came back with
+  `post_quantum_status: "absent"` — a verdict stating, wrongly, that the seal
+  declares no post-quantum signature at all. The seal was rejected either way,
+  so this was a false statement in the verdict rather than a false pass. The
+  post-quantum half is now examined independently of the Ed25519 half, and
+  every return path carries `post_quantum_status` and `post_quantum_detail`.
 
 ## 1.4.0 — Repository release, never published (Nov 2026)
 

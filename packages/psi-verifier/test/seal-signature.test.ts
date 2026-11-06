@@ -353,3 +353,31 @@ test("R11.7: a seal that declares pq_alg but carries no pq_value is invalid, not
   assert.equal(result.post_quantum_status, "invalid");
   assert.ok(result.failures.some((f) => f.includes("rule 11.13")));
 });
+
+test("R11.7: the declared post-quantum half is reported even when the Ed25519 half fails", async () => {
+  // Measured 7 Nov 2026: a seal that DECLARES a post-quantum signature but
+  // whose Ed25519 half does not verify came back with
+  // `post_quantum_status: "absent"` — a verdict stating, wrongly, that the
+  // seal declares no post-quantum signature at all. The seal was rejected
+  // either way, so this was a false statement in the verdict rather than a
+  // false pass. The declared half is now reported whatever the classical half
+  // did.
+  const { kp, publicKey } = await makeSigner();
+  const env = await seal("a seal whose classical half is wrong", kp.privateKey);
+  env.signature = {
+    ...env.signature,
+    value: "cd".repeat(64),
+    pq_alg: "ML-DSA-65",
+    pq_value: "ab".repeat(512),
+  } as PsiSealEnvelope["signature"];
+
+  const result = await verifySeal(env, {
+    trustRoots: [{ public_key: publicKey }],
+    postQuantum: [{ alg: "ML-DSA-65", public_key: "00".repeat(1952), verify: () => false }],
+  });
+
+  assert.equal(result.signature_status, "invalid");
+  assert.equal(result.post_quantum_status, "invalid", "the declared half must be reported, not called absent");
+  assert.match(result.post_quantum_detail ?? "", /ML-DSA-65/);
+  assert.equal(result.conformant, false);
+});

@@ -301,12 +301,21 @@ def psi_verify_signature(
     trust root, this platform has no Ed25519 primitive, or the seal declares a
     post-quantum signature no checker was supplied for. ``invalid`` is reserved
     for a check that actually ran and said no."""
+    # R11.7. The declared post-quantum half is examined on its own, apart from
+    # the classical half. Measured 7 Nov 2026: a seal that DECLARES a
+    # post-quantum signature but whose Ed25519 half does not verify came back
+    # with ``post_quantum_status: "absent"`` \u2014 a verdict stating, wrongly, that
+    # the seal declares no post-quantum signature at all. The declared half is
+    # now reported whatever the classical half did.
+    pq = psi_verify_post_quantum(seal_hash, signature, post_quantum)
     if not isinstance(signature, dict):
         return {
             "status": "absent",
             "key_id": None,
             "detail": "seal carries no signature member",
             "rule": PSI_RULE_CITATIONS["signature_absent"],
+            "post_quantum_status": pq["status"],
+            "post_quantum_detail": pq["detail"],
         }
     alg = str(signature.get("alg") or "").lower()
     if alg != "ed25519":
@@ -315,6 +324,8 @@ def psi_verify_signature(
             "key_id": None,
             "detail": f'signature.alg is "{signature.get("alg") or ""}"; R11 requires Ed25519, so nothing here can be checked',
             "rule": PSI_RULE_CITATIONS["signature_alg"],
+            "post_quantum_status": pq["status"],
+            "post_quantum_detail": pq["detail"],
         }
     value = str(signature.get("value") or "").strip()
     if not value:
@@ -323,6 +334,8 @@ def psi_verify_signature(
             "key_id": None,
             "detail": "signature.value is empty \u2014 no key signed this seal",
             "rule": PSI_RULE_CITATIONS["signature_empty"],
+            "post_quantum_status": pq["status"],
+            "post_quantum_detail": pq["detail"],
         }
     sig = _decode_material(value, 64)
     if sig is None:
@@ -331,6 +344,8 @@ def psi_verify_signature(
             "key_id": None,
             "detail": "signature.value is neither 128 hex characters nor 64 base64 bytes, so it is not an Ed25519 signature",
             "rule": PSI_RULE_CITATIONS["signature_invalid"],
+            "post_quantum_status": pq["status"],
+            "post_quantum_detail": pq["detail"],
         }
     roots = [{"public_key": r} if isinstance(r, str) else dict(r) for r in trust_roots]
     if not roots:
@@ -339,6 +354,8 @@ def psi_verify_signature(
             "key_id": None,
             "detail": "no trust root supplied: a signature nobody's public key was checked against proves nothing",
             "rule": PSI_RULE_CITATIONS["signature_unverifiable"],
+            "post_quantum_status": pq["status"],
+            "post_quantum_detail": pq["detail"],
         }
     message = str(seal_hash).encode("utf-8")
     ed25519 = _ed25519_verifier()
@@ -371,7 +388,6 @@ def psi_verify_signature(
         if not _check(sig, message, raw):
             continue
         label = root.get("key_id") or f"ed25519:{raw.hex()[:10]}"
-        pq = psi_verify_post_quantum(seal_hash, signature, post_quantum)
         if pq["status"] == "invalid":
             return {
                 "status": "invalid",
@@ -408,12 +424,16 @@ def psi_verify_signature(
             "key_id": None,
             "detail": "this platform exposes no Ed25519 verifier, so the signature was refused rather than assumed",
             "rule": PSI_RULE_CITATIONS["signature_unverifiable"],
+            "post_quantum_status": pq["status"],
+            "post_quantum_detail": pq["detail"],
         }
     return {
         "status": "invalid",
         "key_id": None,
         "detail": f"Ed25519 signature does not verify against any of the {len(roots)} supplied trust root(s)",
         "rule": PSI_RULE_CITATIONS["signature_invalid"],
+        "post_quantum_status": pq["status"],
+        "post_quantum_detail": pq["detail"],
     }
 
 

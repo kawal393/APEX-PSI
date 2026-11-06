@@ -401,8 +401,15 @@ export async function psiVerifySignature(
   trustRoots: readonly (PsiTrustRoot | string)[] = [],
   postQuantum: readonly PsiPostQuantumChecker[] = [],
 ): Promise<PsiSignatureCheck> {
+  // R11.7. The declared post-quantum half is examined on its own, apart from
+  // the classical half. Measured 7 Nov 2026: a seal that DECLARES a
+  // post-quantum signature but whose Ed25519 half does not verify came back
+  // with `post_quantum_status: "absent"` — a verdict stating, wrongly, that
+  // the seal declares no post-quantum signature at all. The declared half is
+  // now reported whatever the classical half did.
+  const pq = await psiVerifyPostQuantum(sealHash, signature, postQuantum);
   if (!signature) {
-    return { status: "absent", key_id: null, detail: "seal carries no signature member", rule: PSI_RULE_CITATIONS.signature_absent };
+    return { status: "absent", key_id: null, detail: "seal carries no signature member", rule: PSI_RULE_CITATIONS.signature_absent, post_quantum_status: pq.status, post_quantum_detail: pq.detail };
   }
   const alg = String(signature.alg ?? "").toLowerCase();
   if (alg !== "ed25519") {
@@ -411,11 +418,13 @@ export async function psiVerifySignature(
       key_id: null,
       detail: `signature.alg is "${String(signature.alg ?? "")}"; R11 requires Ed25519, so nothing here can be checked`,
       rule: PSI_RULE_CITATIONS.signature_alg,
+      post_quantum_status: pq.status,
+      post_quantum_detail: pq.detail,
     };
   }
   const value = String(signature.value ?? "").trim();
   if (!value) {
-    return { status: "invalid", key_id: null, detail: "signature.value is empty — no key signed this seal", rule: PSI_RULE_CITATIONS.signature_empty };
+    return { status: "invalid", key_id: null, detail: "signature.value is empty — no key signed this seal", rule: PSI_RULE_CITATIONS.signature_empty, post_quantum_status: pq.status, post_quantum_detail: pq.detail };
   }
   const sig = decodeMaterial(value, 64);
   if (!sig) {
@@ -424,6 +433,8 @@ export async function psiVerifySignature(
       key_id: null,
       detail: "signature.value is neither 128 hex characters nor 64 base64 bytes, so it is not an Ed25519 signature",
       rule: PSI_RULE_CITATIONS.signature_invalid,
+      post_quantum_status: pq.status,
+      post_quantum_detail: pq.detail,
     };
   }
 
@@ -434,6 +445,8 @@ export async function psiVerifySignature(
       key_id: null,
       detail: "no trust root supplied: a signature nobody's public key was checked against proves nothing",
       rule: PSI_RULE_CITATIONS.signature_unverifiable,
+      post_quantum_status: pq.status,
+      post_quantum_detail: pq.detail,
     };
   }
 
@@ -460,9 +473,8 @@ export async function psiVerifySignature(
     if (ok) {
       const keyId = root.key_id ?? `ed25519:${bytesToHex(raw).slice(0, 10)}`;
       // R11.7. The Ed25519 half passed. The seal may still declare a
-      // post-quantum signature, and that claim has to be checked too before the
-      // seal can be called verified.
-      const pq = await psiVerifyPostQuantum(sealHash, signature, postQuantum);
+      // post-quantum signature, and that claim has to have been checked too
+      // before the seal can be called verified.
       if (pq.status === "invalid") {
         return {
           status: "invalid",
@@ -501,6 +513,8 @@ export async function psiVerifySignature(
       key_id: null,
       detail: "this platform exposes no Ed25519 verifier, so the signature was refused rather than assumed",
       rule: PSI_RULE_CITATIONS.signature_unverifiable,
+      post_quantum_status: pq.status,
+      post_quantum_detail: pq.detail,
     };
   }
   return {
@@ -508,6 +522,8 @@ export async function psiVerifySignature(
     key_id: null,
     detail: `Ed25519 signature does not verify against any of the ${roots.length} supplied trust root(s)`,
     rule: PSI_RULE_CITATIONS.signature_invalid,
+    post_quantum_status: pq.status,
+    post_quantum_detail: pq.detail,
   };
 }
 
