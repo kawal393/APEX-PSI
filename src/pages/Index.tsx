@@ -30,6 +30,7 @@ import MelbourneTestPlaque from "@/components/MelbourneTestPlaque";
 import PlainLanguageIntro from "@/components/PlainLanguageIntro";
 import VerticalsMatrix from "@/components/VerticalsMatrix";
 import GrandHero from "@/components/GrandHero";
+import AgentSpecAnchor from "@/components/AgentSpecAnchor";
 import ConstitutionLaws from "@/components/ConstitutionLaws";
 import GenesisAnchor from "@/components/GenesisAnchor";
 import WhatItIsAndIsnt from "@/components/WhatItIsAndIsnt";
@@ -119,6 +120,7 @@ const Index = () => {
           {activeView === "what" && (
             <>
               <GrandHero />
+              <AgentSpecAnchor />
               <p className="my-6 text-center text-xs font-mono uppercase tracking-widest">
                 <a href="/playground" className="text-gold underline underline-offset-4">Try it in 5 seconds — seal in your browser, no sign-up</a>
               </p>

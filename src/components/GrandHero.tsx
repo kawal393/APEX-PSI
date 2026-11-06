@@ -116,6 +116,39 @@ const GrandHero = () => {
             Open the Engine
           </Link>
         </div>
+
+        <div className="mx-auto mt-10 max-w-3xl border border-gold/30 bg-card/40 px-6 py-5">
+          <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-gold sm:text-[10px]">
+            World first · published 6 November 2026
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-foreground/90 md:text-base">
+            The first open specification to bind an AI agent's{" "}
+            <span className="text-gold">spend mandate</span>,{" "}
+            <span className="text-gold">proposal</span>,{" "}
+            <span className="text-gold">independent policy decision</span> and{" "}
+            <span className="text-gold">financial settlement</span> into one envelope anyone can
+            verify offline.
+          </p>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            <a
+              href="/ietf/draft-singh-psi-agent-02.txt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold underline underline-offset-4 transition-colors hover:text-foreground"
+            >
+              draft-singh-psi-agent-02
+            </a>
+            <button
+              type="button"
+              onClick={() =>
+                document.getElementById("agent-02-priority")?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground transition-colors hover:text-gold"
+            >
+              Bitcoin priority anchor
+            </button>
+          </div>
+        </div>
       </div>
     </section>
   );
