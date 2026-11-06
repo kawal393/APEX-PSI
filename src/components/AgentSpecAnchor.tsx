@@ -56,9 +56,9 @@ const AgentSpecAnchor = () => {
           Priority of record
         </p>
         <h2 className="mt-4 text-center font-serif text-3xl font-bold tracking-tight md:text-5xl">
-          Authority, decision and payment,
+          The first specification to bind an agent's
           <span className="block bg-gradient-to-b from-gold via-gold/90 to-gold/50 bg-clip-text text-transparent">
-            bound into one record anyone can check
+            authority, decision and payment
           </span>
         </h2>
         <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-relaxed text-muted-foreground md:text-base">
@@ -69,11 +69,14 @@ const AgentSpecAnchor = () => {
           the same day — so the date does not rest on our say-so.
         </p>
         <p className="mx-auto mt-4 max-w-3xl text-center text-xs leading-relaxed text-muted-foreground/80">
-          We build beside the payment rails, not against them: Google AP2 signed mandates (donated
-          to the FIDO Alliance, April 2026), Mastercard Verifiable Intent (March 2026) and Visa
-          Trusted Agent Protocol (October 2025) authorise a payment. None of them, as at 7 November
-          2026, gives a stranger an offline check of the ordered record behind that payment. If one
-          does, publish it and this sentence is wrong — which is why we wrote it down.
+          First, and dated. As at 7 November 2026 we know of no published specification — among
+          Google AP2 signed mandates (donated to the FIDO Alliance, April 2026), Mastercard
+          Verifiable Intent (March 2026), Visa Trusted Agent Protocol (October 2025), C2PA 2.5,
+          RFC 6962 certificate transparency, Sigsum and draft-ietf-wimse-aims — that tests a
+          settlement against the limit declared in a separately signed mandate, bound to the same
+          run as a hash-chained record of the actions taken. Those rails authorise a payment; none
+          of them hands a stranger the ordered record behind it. Publish one and this sentence is
+          wrong — that is the price of putting our date on it, and we pay it gladly.
         </p>
 
         <dl className="mx-auto mt-10 max-w-3xl space-y-4 rounded-lg border border-border bg-card/40 p-6 font-mono text-sm md:p-8">
