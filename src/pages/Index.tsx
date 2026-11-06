@@ -120,6 +120,7 @@ const Index = () => {
           {activeView === "what" && (
             <>
               <GrandHero />
+              <AgentSpecAnchor />
               <p className="my-6 text-center text-xs font-mono uppercase tracking-widest">
                 <a href="/playground" className="text-gold underline underline-offset-4">Try it in 5 seconds — seal in your browser, no sign-up</a>
               </p>
