@@ -1,14 +1,14 @@
 case 1: conformant=true signature_status=verified authentic=true
-PSI-SEAL v1.4.0 ACCEPT: conformant seal; Ed25519 signature verified against cross-language-key
+PSI-SEAL v1.5.0 ACCEPT: conformant seal; Ed25519 signature verified against cross-language-key
 
 =====
 
 case 2: conformant=false signature_status=invalid authentic=false
-PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.5.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.4.0 REJECT: Ed25519 signature does not verify against any of the 1 supplied trust root(s) — rule 11.3
+  PSI-SEAL v1.5.0 REJECT: Ed25519 signature does not verify against any of the 1 supplied trust root(s) — rule 11.3
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -17,11 +17,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 3: conformant=false signature_status=invalid authentic=false
-PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.5.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.4.0 REJECT: signature.value is empty — no key signed this seal — rule 11.2
+  PSI-SEAL v1.5.0 REJECT: signature.value is empty — no key signed this seal — rule 11.2
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -30,11 +30,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 4: conformant=false signature_status=invalid authentic=false
-PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.5.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.4.0 REJECT: signature.value is neither 128 hex characters nor 64 base64 bytes, so it is not an Ed25519 signature — rule 11.3
+  PSI-SEAL v1.5.0 REJECT: signature.value is neither 128 hex characters nor 64 base64 bytes, so it is not an Ed25519 signature — rule 11.3
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -43,11 +43,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 5: conformant=false signature_status=invalid authentic=false
-PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.5.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.4.0 REJECT: signature.alg is "ES256"; R11 requires Ed25519, so nothing here can be checked — rule 11.5
+  PSI-SEAL v1.5.0 REJECT: signature.alg is "ES256"; R11 requires Ed25519, so nothing here can be checked — rule 11.5
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -56,11 +56,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 6: conformant=false signature_status=unverifiable authentic=false
-PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.5.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.4.0 REJECT: no trust root supplied: a signature nobody's public key was checked against proves nothing — rule 11.4
+  PSI-SEAL v1.5.0 REJECT: no trust root supplied: a signature nobody's public key was checked against proves nothing — rule 11.4
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -69,11 +69,11 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 7: conformant=false signature_status=absent authentic=false
-PSI-SEAL v1.4.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+PSI-SEAL v1.5.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
 received schema: PSI-SEAL/1.0.0 (digest match: true)
 findings:
-  PSI-SEAL v1.4.0 REJECT: seal carries no signature member — rule 11.1
+  PSI-SEAL v1.5.0 REJECT: seal carries no signature member — rule 11.1
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
@@ -82,7 +82,7 @@ verified, not asserted; trust the math, not the maker.
 =====
 
 case 8: conformant=true signature_status=absent authentic=false
-PSI-SEAL v1.4.0 PARTIAL: conformant to the schema, authenticity absent — a seal no key has signed is a formatting check, not a verification
+PSI-SEAL v1.5.0 PARTIAL: conformant to the schema, authenticity absent — a seal no key has signed is a formatting check, not a verification
 
 =====
 
@@ -153,6 +153,37 @@ detail: leaf bac57df66fe6368188d1d4521bcffaecee76a03a50ff297a13439f7164de0a5f is
 
 inclusion case 4: status=malformed included=false recomputed_root=null rule=13.1
 detail: the audit path does not describe a tree of this size: the leaf index must be inside the tree and the path must reach the root
+
+=====
+
+post-quantum case 1: conformant=false signature_status=unverifiable authentic=false post_quantum_status=unverifiable
+PSI-SEAL v1.5.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
+received schema: PSI-SEAL/1.0.0 (digest match: true)
+findings:
+  PSI-SEAL v1.5.0 REJECT: Ed25519 signature verified over the ASCII seal_hash against cross-language-key; seal declares a post-quantum signature (ML-DSA-65) that this verifier cannot check: a claimed post-quantum signature nobody verified is not a verified one — rule 11.11
+generate a conformant seal: https://ai-governance-standard.com/seal
+canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
+legacy escape hatch (report-only): enforce=false
+verified, not asserted; trust the math, not the maker.
+
+=====
+
+post-quantum case 2: conformant=false signature_status=invalid authentic=false post_quantum_status=invalid
+PSI-SEAL v1.5.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+canonical schema digest: 6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9
+received schema: PSI-SEAL/1.0.0 (digest match: true)
+findings:
+  PSI-SEAL v1.5.0 REJECT: the declared post-quantum signature (ML-DSA-65) does not verify — rule 11.12
+generate a conformant seal: https://ai-governance-standard.com/seal
+canonical schema: https://ai-governance-standard.com/.well-known/psi-schema.json
+legacy escape hatch (report-only): enforce=false
+verified, not asserted; trust the math, not the maker.
+
+=====
+
+post-quantum case 3: conformant=true signature_status=verified authentic=true post_quantum_status=verified
+PSI-SEAL v1.5.0 ACCEPT: conformant seal; Ed25519 signature verified against cross-language-key
 
 =====
 

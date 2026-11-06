@@ -27,7 +27,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 PSI_VERIFIER_VERSION = __version__
 
 PSI_SCHEMA_ID = "PSI-SEAL/1.0.0"
@@ -55,6 +55,7 @@ PSI_SCHEMA_RULES: Sequence[str] = (
 # rules live here instead.
 PSI_VERIFIER_RULES: Sequence[str] = (
     "R11.6 A signature NAMES the digest it authenticates (binds: seal_hash | merkle_leaf) and the verifier RECOMPUTES that digest from the record. A declared digest is compared, never trusted. A record that does not say which digest it means and offers more than one is refused, not guessed.",
+    "R11.7 A seal may DECLARE a post-quantum signature (signature.pq_alg / signature.pq_value). A declared post-quantum signature must itself be verified: the verifier checks it when the caller supplies a checker for that algorithm, and reports the seal `unverifiable` — never `verified` — when no checker is available for it. A post-quantum signature nobody checked is not a verified one.",
     "R13.1 An inclusion proof is recomputed from the leaf, the leaf index, the tree size and the audit path, walking the RFC 9162 sec 2.1.3.2 split (the largest power of two smaller than the tree size). The leaf-index parity shortcut is valid only when the tree size is a power of two.",
 )
 
@@ -81,6 +82,10 @@ PSI_RULE_CITATIONS = {
     "binding_ambiguous": "11.7",
     "binding_unresolvable": "11.8",
     "binding_not_recomputable": "11.9",
+    "post_quantum_absent": "11.10",
+    "post_quantum_unverifiable": "11.11",
+    "post_quantum_invalid": "11.12",
+    "post_quantum_empty": "11.13",
     "leaf_mismatch_ledger": "9.2",
     "inclusion_malformed": "13.1",
     "inclusion_mismatch": "13.2",
@@ -190,13 +195,111 @@ def _ed25519_verifier() -> Optional[Any]:
         return None
 
 
+def psi_verify_post_quantum(
+    seal_hash: str,
+    signature: Optional[Dict[str, Any]],
+    checkers: Sequence[Dict[str, Any]] = (),
+) -> Dict[str, Any]:
+    """R11.7 — check the post-quantum half a seal DECLARES.
+
+    A seal may carry ``signature.pq_alg`` and ``signature.pq_value``: a claim
+    that it is also protected by a post-quantum signature. Measured 7 Nov 2026:
+    the published verifier (npm apex-psi-verifier 1.3.0, PyPI psi-verifier 1.3.0)
+    and the 1.4.0 source in this repository all read ``pq_alg`` and ``pq_value``
+    without checking them, and reported a seal carrying 512 bytes of noise as
+    ``conformant: True``, ``signature_status: "verified"``, ``authentic: True``
+    with no failures at all. A claim is not a signature.
+
+    The answer is never better than the check that ran:
+
+    * no declaration          → ``absent``
+    * declaration, no checker → ``unverifiable`` (nobody checked it)
+    * declaration, check ran  → ``verified`` or ``invalid``
+
+    This distribution ships no post-quantum algorithm, so the checker comes from
+    the caller: ``{"alg": "ML-DSA-65", "public_key": "<hex>", "verify": fn}``
+    where ``fn(message_bytes, signature_text, public_key)`` returns True only on
+    a genuine verification.
+    """
+    sig = signature if isinstance(signature, dict) else {}
+    alg = str(sig.get("pq_alg") or "").strip()
+    value = str(sig.get("pq_value") or "").strip()
+    if not alg and not value:
+        return {
+            "status": "absent",
+            "key_id": None,
+            "detail": "seal declares no post-quantum signature",
+            "rule": PSI_RULE_CITATIONS["post_quantum_absent"],
+        }
+    if not alg:
+        return {
+            "status": "invalid",
+            "key_id": None,
+            "detail": "signature.pq_value is present but signature.pq_alg does not say which algorithm produced it",
+            "rule": PSI_RULE_CITATIONS["post_quantum_invalid"],
+        }
+    if not value:
+        return {
+            "status": "invalid",
+            "key_id": None,
+            "detail": f"signature.pq_value is empty — the seal declares a {alg} signature but carries none",
+            "rule": PSI_RULE_CITATIONS["post_quantum_empty"],
+        }
+    checker = None
+    for candidate in checkers or ():
+        if not isinstance(candidate, dict):
+            continue
+        if str(candidate.get("alg") or "").strip().lower() == alg.lower():
+            checker = candidate
+            break
+    if checker is None:
+        return {
+            "status": "unverifiable",
+            "key_id": None,
+            "detail": f"seal declares a post-quantum signature ({alg}) that this verifier cannot check: a claimed post-quantum signature nobody verified is not a verified one",
+            "rule": PSI_RULE_CITATIONS["post_quantum_unverifiable"],
+        }
+    verify = checker.get("verify")
+    if not callable(verify):
+        return {
+            "status": "unverifiable",
+            "key_id": None,
+            "detail": f"the {alg} checker could not run: no callable verify",
+            "rule": PSI_RULE_CITATIONS["post_quantum_unverifiable"],
+        }
+    try:
+        ok = bool(verify(str(seal_hash).encode("utf-8"), value, str(checker.get("public_key") or "")))
+    except Exception as exc:  # a checker that could not run is not a checker that said no
+        return {
+            "status": "unverifiable",
+            "key_id": None,
+            "detail": f"the {alg} checker could not run: {exc}",
+            "rule": PSI_RULE_CITATIONS["post_quantum_unverifiable"],
+        }
+    if not ok:
+        return {
+            "status": "invalid",
+            "key_id": None,
+            "detail": f"the declared post-quantum signature ({alg}) does not verify",
+            "rule": PSI_RULE_CITATIONS["post_quantum_invalid"],
+        }
+    return {
+        "status": "verified",
+        "key_id": f"pq:{alg}",
+        "detail": f"{alg} signature verified over the ASCII seal_hash",
+        "rule": "11.7",
+    }
+
+
 def psi_verify_signature(
     seal_hash: str,
     signature: Optional[Dict[str, Any]],
     trust_roots: Sequence[Union[str, Dict[str, Any]]] = (),
+    post_quantum: Sequence[Dict[str, Any]] = (),
 ) -> Dict[str, Any]:
     """Check R11. Returns ``unverifiable`` — never ``verified`` — when there is no
-    trust root or this platform has no Ed25519 primitive. ``invalid`` is reserved
+    trust root, this platform has no Ed25519 primitive, or the seal declares a
+    post-quantum signature no checker was supplied for. ``invalid`` is reserved
     for a check that actually ran and said no."""
     if not isinstance(signature, dict):
         return {
@@ -268,11 +371,36 @@ def psi_verify_signature(
         if not _check(sig, message, raw):
             continue
         label = root.get("key_id") or f"ed25519:{raw.hex()[:10]}"
+        pq = psi_verify_post_quantum(seal_hash, signature, post_quantum)
+        if pq["status"] == "invalid":
+            return {
+                "status": "invalid",
+                "key_id": label,
+                "detail": pq["detail"],
+                "rule": pq["rule"],
+                "post_quantum_status": pq["status"],
+                "post_quantum_detail": pq["detail"],
+            }
+        if pq["status"] == "unverifiable":
+            return {
+                "status": "unverifiable",
+                "key_id": label,
+                "detail": f"Ed25519 signature verified over the ASCII seal_hash against {label}; {pq['detail']}",
+                "rule": pq["rule"],
+                "post_quantum_status": pq["status"],
+                "post_quantum_detail": pq["detail"],
+            }
         return {
             "status": "verified",
             "key_id": label,
-            "detail": "Ed25519 signature verified over the ASCII seal_hash",
+            "detail": (
+                f"Ed25519 signature verified over the ASCII seal_hash against {label}; {pq['detail']}"
+                if pq["status"] == "verified"
+                else "Ed25519 signature verified over the ASCII seal_hash"
+            ),
             "rule": "11",
+            "post_quantum_status": pq["status"],
+            "post_quantum_detail": pq["detail"],
         }
     if not any_key_usable:
         return {
@@ -435,7 +563,11 @@ def psi_resolve_binding(record: Any, declared: Optional[str] = None) -> Dict[str
     return {"binding": binding, "digest": digest, "candidates": candidates, "error": None}
 
 
-def psi_verify_binding(record: Any, trust_roots: Sequence[Union[str, Dict[str, Any]]] = ()) -> Dict[str, Any]:
+def psi_verify_binding(
+    record: Any,
+    trust_roots: Sequence[Union[str, Dict[str, Any]]] = (),
+    post_quantum: Sequence[Dict[str, Any]] = (),
+) -> Dict[str, Any]:
     """Verify the signature of ANY record — a PSI-SEAL/1 envelope or a ledger row —
     against the digest the record names, recomputed from its own content.
 
@@ -463,12 +595,15 @@ def psi_verify_binding(record: Any, trust_roots: Sequence[Union[str, Dict[str, A
             "binding": resolution["binding"],
             "digest": resolution["digest"],
         }
-    check = psi_verify_signature(resolution["digest"], signature, trust_roots)
+    check = psi_verify_signature(resolution["digest"], signature, trust_roots, post_quantum)
     out = dict(check)
     out["binding"] = resolution["binding"]
     out["digest"] = resolution["digest"]
     if check["status"] == "verified":
-        out["detail"] = f"Ed25519 signature verified over the ASCII {resolution['binding']}"
+        pq_note = (
+            f"; {check['post_quantum_detail']}" if check.get("post_quantum_status") == "verified" else ""
+        )
+        out["detail"] = f"Ed25519 signature verified over the ASCII {resolution['binding']}{pq_note}"
     return out
 
 
@@ -627,6 +762,8 @@ class ConformanceResult:
     signature_status: str = "absent"
     authentic: bool = False
     trusted_key_id: Optional[str] = None
+    post_quantum_status: str = "absent"
+    post_quantum_detail: Optional[str] = None
 
 
 class PsiSealInvalidError(Exception):
@@ -773,6 +910,7 @@ def verify_seal(
     trust_roots: Union[str, Sequence[Union[str, Dict[str, Any]]], None] = None,
     require_valid_signature: bool = True,
     public_key_hex: Optional[str] = None,
+    post_quantum: Sequence[Dict[str, Any]] = (),
 ) -> ConformanceResult:
     """Conformance check plus the R11 authenticity verdict. Never raises.
 
@@ -780,6 +918,10 @@ def verify_seal(
     "5930…")` positionally, or `public_key_hex="5930…"`. Both spellings are read
     as one trusted key. Nothing is trusted by default — call it with no key and
     a signed seal comes back `unverifiable`, never as a pass.
+
+    `post_quantum` supplies post-quantum checkers for R11.7: a seal that
+    DECLARES a post-quantum signature is only reported as verified when that
+    declaration was itself checked.
     """
     roots: List[Union[str, Dict[str, Any]]] = []
     if isinstance(trust_roots, str):
@@ -856,7 +998,7 @@ def verify_seal(
 
     # R11 — authenticity, checked against the hash THIS verifier recomputed and
     # only against keys the caller supplied.
-    check = psi_verify_signature(computed_seal_hash, signature, roots)
+    check = psi_verify_signature(computed_seal_hash, signature, roots, post_quantum)
     if check["status"] == "invalid" or (require_valid_signature and check["status"] != "verified"):
         failures.append(reject_line(check["detail"], check["rule"]))
 
@@ -873,6 +1015,8 @@ def verify_seal(
         signature_status=check["status"],
         authentic=check["status"] == "verified",
         trusted_key_id=check["key_id"],
+        post_quantum_status=check.get("post_quantum_status", "absent"),
+        post_quantum_detail=check.get("post_quantum_detail"),
     )
 
 
@@ -882,6 +1026,7 @@ def verify(
     trust_roots: Union[str, Sequence[Union[str, Dict[str, Any]]], None] = None,
     require_valid_signature: bool = True,
     public_key_hex: Optional[str] = None,
+    post_quantum: Sequence[Dict[str, Any]] = (),
 ) -> ConformanceResult:
     """Primary entry point. Enforced by default (since v1.1.0).
 
@@ -889,7 +1034,7 @@ def verify(
     From v1.3.0 an unauthenticated seal is not conformant unless
     ``require_valid_signature=False`` is passed explicitly.
     """
-    result = verify_seal(seal, trust_roots, require_valid_signature, public_key_hex)
+    result = verify_seal(seal, trust_roots, require_valid_signature, public_key_hex, post_quantum)
     if not result.conformant and enforce:
         raise PsiSealInvalidError(result, psi_schema_digest())
     return result

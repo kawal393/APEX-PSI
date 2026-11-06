@@ -3,6 +3,54 @@
 All notable changes to the MIT-licensed PSI verifier. Verification is, and
 remains, free forever.
 
+## 1.5.0 — Post-quantum fail-closed release (7 Nov 2026)
+
+- **A declared post-quantum signature must now be checked.** Measured
+  7 Nov 2026 against the published 1.3.0 distribution — npm `apex-psi-verifier`
+  and PyPI `psi-verifier` alike: a seal carrying a GENUINE Ed25519 signature
+  over its `seal_hash`, plus `pq_alg: "ML-DSA-65"` and a `pq_value` of 512
+  bytes of random noise, was reported as `conformant: true`,
+  `signature_status: "verified"`, `authentic: true`, zero failures. The same
+  forgery passed against the 1.4.0 sources in this repository.
+- The cause is structural. R10 hashes the envelope WITHOUT the signature
+  member, so the Ed25519 half of a hybrid seal never covers `pq_value`. Every
+  shipped verifier read `pq_alg` / `pq_value` and acted on neither.
+- **R11.7**: a seal that DECLARES a post-quantum signature is reported
+  `verified` only when that half was actually verified. A declared signature
+  with no checker for it is `unverifiable`; one that was checked and failed is
+  `invalid`. A post-quantum signature nobody checked is not a verified one.
+- The verifier package ships no post-quantum algorithm and still has no
+  runtime dependency. The caller supplies a `PsiPostQuantumChecker`
+  (`postQuantum` / `post_quantum`); the verifier matches it against the
+  algorithm the seal declares. A checker that throws is treated as a check that
+  could not run, never as a check that said yes.
+- `ConformanceResult` gains `post_quantum_status` and `post_quantum_detail`.
+  New citations: `11.10` (no post-quantum declared), `11.11` (declared,
+  unverifiable), `11.12` (declared, does not verify), `11.13` (declared an
+  algorithm but carries no signature).
+- `psiVerifySignature()` / `psi_verify_signature()` take the checkers as a
+  fourth argument; `verifySeal()` / `verify_seal()` take `postQuantum` /
+  `post_quantum` in their options.
+- Tests: the forgery above is now encoded as a test in both distributions,
+  along with the empty-`pq_value` case. 29 tests in
+  `test/seal-signature.test.ts`, and cross-language parity holds byte for byte
+  (9299 B, sha256 `312395be408e06ff60bc528750adb00d568ef337700c14b304487b019dfea099`).
+- The flagship site's own browser checker (`src/lib/psi-schema.ts`) was
+  updated in the same release. It is a second implementation of R11, and it had
+  inherited the same blindness. It now carries the R11.7 verdict and checks
+  ML-DSA-65 against the published anchor key when a seal declares it.
+
+## 1.4.0 — Repository release, never published (Nov 2026)
+
+- **R11.6**: a signature NAMES the digest it authenticates (`binds: seal_hash`
+  or `binds: merkle_leaf`) and the verifier recomputes that digest instead of
+  trusting the declared value.
+- **R13.1**: an RFC 9162 inclusion proof is verified by walking the tree's
+  split rather than by the leaf-index parity shortcut.
+- This version was **never published** to npm or PyPI. Measured 7 Nov 2026:
+  the npm registry carries `1.2.0` and `1.3.0`, PyPI carries `1.3.0`. The
+  forgery that 1.5.0 fixes was accepted by 1.4.0 exactly as it was by 1.3.0.
+
 ## 1.3.0 — Authenticity release (17 Oct 2026)
 
 - **R11 is now actually checked.** Before this release neither distribution

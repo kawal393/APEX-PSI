@@ -329,6 +329,40 @@ def render_inclusion(check: dict) -> str:
     )
 
 
+# ── R11.7 POST-QUANTUM cases ─────────────────────────────────────────────
+# A seal that CLAIMS a post-quantum signature. Measured 7 Nov 2026: the
+# published verifier (npm 1.3.0, PyPI 1.3.0) and the 1.4.0 source both read
+# pq_alg and pq_value without checking them, and reported this seal as
+# `conformant: true`, `signature_status: "verified"`, `authentic: true` with
+# no failures — the post-quantum half was noise. Rule R11.7 makes a declared
+# post-quantum signature something that must itself be verified.
+pq_seal = build("revenue was 12,000 AUD")
+pq_seal_hash = pq_seal.pop("_seal_hash")
+pq_seal["signature"] = {
+    "alg": "Ed25519",
+    "value": real_signature,
+    "seal_hash": pq_seal_hash,
+    "pq_alg": "ML-DSA-65",
+    "pq_value": "ab" * 512,
+}
+
+PQ_CHECKERS = {
+    "none": (),
+    "refuse": (
+        {"alg": "ML-DSA-65", "public_key": "00" * 1952, "verify": lambda message, sig, key: False},
+    ),
+    "accept": (
+        {"alg": "ML-DSA-65", "public_key": "00" * 1952, "verify": lambda message, sig, key: True},
+    ),
+}
+
+PQ_CASES = [
+    ("a genuine seal that declares a post-quantum signature nobody checks", pq_seal, "none"),
+    ("the same seal, with a checker that refuses the post-quantum signature", pq_seal, "refuse"),
+    ("the same seal, with a checker that verifies the post-quantum signature", pq_seal, "accept"),
+]
+
+
 inclusion_lines = []
 for index, (name, proof) in enumerate(INCLUSION_CASES, start=1):
     check = psi_verify_inclusion(proof)
@@ -357,6 +391,16 @@ for index, (name, record, trust) in enumerate(BINDING_CASES, start=1):
     check = psi_verify_binding(record, trust)
     binding_lines.append(f"binding case {index}: {render_binding(check)}")
 
+pq_lines = []
+for index, (name, seal, checker) in enumerate(PQ_CASES, start=1):
+    result = verify_seal(seal, TRUST, post_quantum=PQ_CHECKERS[checker])
+    header = (
+        f"post-quantum case {index}: conformant={str(result.conformant).lower()} "
+        f"signature_status={result.signature_status} authentic={str(result.authentic).lower()} "
+        f"post_quantum_status={result.post_quantum_status}"
+    )
+    pq_lines.append(f"{header}\n{render(result)}")
+
 with open(os.path.join(OUT_DIR, "fixtures.json"), "w", encoding="utf-8", newline="\n") as fh:
     json.dump(
         {"canonical_schema_digest": psi_schema_digest(), "published_schema_digest": published_digest,
@@ -366,6 +410,8 @@ with open(os.path.join(OUT_DIR, "fixtures.json"), "w", encoding="utf-8", newline
             {"name": name, "record": record, "trust_roots": trust} for name, record, trust in BINDING_CASES
         ], "inclusion_cases": [
             {"name": name, "proof": proof} for name, proof in INCLUSION_CASES
+        ], "post_quantum_cases": [
+            {"name": name, "seal": seal, "checker": checker} for name, seal, checker in PQ_CASES
         ]},
         fh,
         indent=2,
@@ -373,10 +419,12 @@ with open(os.path.join(OUT_DIR, "fixtures.json"), "w", encoding="utf-8", newline
     )
 
 with open(os.path.join(OUT_DIR, "python.txt"), "w", encoding="utf-8", newline="\n") as fh:
-    fh.write("\n\n=====\n\n".join(py_lines + binding_lines + inclusion_lines + [schema_line]) + "\n")
+    fh.write(
+        "\n\n=====\n\n".join(py_lines + binding_lines + inclusion_lines + pq_lines + [schema_line]) + "\n"
+    )
 
 print("python: signed seal verifies locally =", verify_seal(signed, TRUST).conformant)
-print("python: cases =", len(CASES), "| binding cases =", len(BINDING_CASES))
+print("python: cases =", len(CASES), "| binding cases =", len(BINDING_CASES), "| post-quantum cases =", len(PQ_CASES))
 print("python: canonical schema digest =", psi_schema_digest())
 print("python:", schema_line)
 print("python: real receipts verified by the published ledger key =", sum(

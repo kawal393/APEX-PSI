@@ -24,9 +24,38 @@ The verifier enforces the **PSI-SEAL/1** canonical schema byte for byte:
 | R7 | Exact octet length, NFC-normalised subject name |
 | R8 / R9 | Domain-separated leaf `SHA-256("PSI1:" ‖ hash)`, promoted-odd Merkle |
 | R10 | `seal_hash = SHA-256(JCS(core envelope))` |
+| R11 | Ed25519 over the ASCII `seal_hash`, against public keys the caller supplies |
+| R11.7 | A declared post-quantum signature must itself be verified — unchecked is `unverifiable`, never `verified` |
 | R12 | `schema` + `schema_digest` present and matching |
 
 Anything that deviates — even if functionally similar — fails. **Only schema-conformant seals are PSI-compliant.**
+
+## Post-quantum signatures (R11.7)
+
+R10 hashes the envelope without the signature member, so the Ed25519 half of a
+hybrid seal never covers `signature.pq_value`. A seal may therefore *declare* a
+post-quantum signature that the Ed25519 half says nothing about. The verifier
+refuses to call such a seal verified: the declared half must be checked too.
+
+The package ships no post-quantum algorithm — it stays dependency-free — so the
+caller hands over a checker for the algorithm the seal declares:
+
+```ts
+import { verifySeal, type PsiPostQuantumChecker } from "apex-psi-verifier";
+
+const checker: PsiPostQuantumChecker = {
+  alg: "ML-DSA-65",                                   // matched case-insensitively
+  public_key: mldsa65PublicKeyHex,
+  verify: (message, signature, publicKey) => mldsa65Verify(message, signature, publicKey),
+};
+
+const result = await verifySeal(seal, { trustRoots, postQuantum: [checker] });
+// result.post_quantum_status === "verified" | "invalid" | "unverifiable" | "absent"
+```
+
+No checker for the declared algorithm → `unverifiable`. A checker that ran and
+said no → `invalid`. Either way the seal is not reported as verified, and under
+the default `requireValidSignature` it is not conformant.
 
 ## Licensing model
 

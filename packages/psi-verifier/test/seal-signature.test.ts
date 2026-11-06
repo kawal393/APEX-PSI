@@ -266,3 +266,90 @@ test("R11.6 named binding: the digest is named and recomputed, never trusted", a
   const orphan = await psiVerifyBinding(row, []);
   assert.equal(orphan.status, "unverifiable", "no trust root is never a pass");
 });
+
+// ── R11.7 THE POST-QUANTUM FORGERY (added v1.5.0) ────────────────────────
+//
+// WHY THIS TEST EXISTS. Measured 7 Nov 2026 against the PUBLISHED verifier
+// (npm apex-psi-verifier 1.3.0 and PyPI psi-verifier 1.3.0) and against the
+// 1.4.0 source that was on origin/main the same day:
+//
+//   a seal with a GENUINE Ed25519 signature and a fabricated post-quantum
+//   claim — pq_alg "ML-DSA-65", pq_value 512 bytes of random noise —
+//   came back from all three as:
+//
+//     conformant       true
+//     signature_status verified
+//     authentic        true
+//     failures         []
+//
+// The post-quantum half was read and never checked. A seal could therefore
+// CLAIM post-quantum protection and be blessed for it. The rule R11.7 adds
+// closes that: a declared post-quantum signature must itself be verified.
+
+test("R11.7 THE FORGERY: a seal that CLAIMS a post-quantum signature nobody checked is not verified", async () => {
+  const { kp, publicKey } = await makeSigner();
+  const env = await seal("the payload is genuine", kp.privateKey);
+
+  // 512 bytes of noise, wearing the label of a NIST FIPS 204 signature.
+  const noise = new Uint8Array(512);
+  crypto.getRandomValues(noise);
+  env.signature = {
+    ...env.signature,
+    pq_alg: "ML-DSA-65",
+    pq_value: hex(noise),
+  } as PsiSealEnvelope["signature"];
+
+  // The control: the identical seal with no post-quantum claim passes.
+  const control = { ...env, signature: { alg: "Ed25519", value: env.signature!.value, seal_hash: env.signature!.seal_hash } };
+  const controlResult = await verifySeal(control, { trustRoots: [{ public_key: publicKey }] });
+  assert.equal(controlResult.conformant, true, "the control seal is genuine and must still pass");
+  assert.equal(controlResult.post_quantum_status, "absent");
+
+  // The forgery: no checker for ML-DSA-65 was supplied, so the declared
+  // signature cannot be checked, so the seal cannot be called verified.
+  const forged = await verifySeal(env, { trustRoots: [{ public_key: publicKey }] });
+  assert.equal(forged.conformant, false, "a declared post-quantum signature nobody checked must fail the seal");
+  assert.equal(forged.signature_status, "unverifiable");
+  assert.equal(forged.authentic, false);
+  assert.equal(forged.post_quantum_status, "unverifiable");
+  assert.match(forged.post_quantum_detail ?? "", /ML-DSA-65/);
+  assert.ok(
+    forged.failures.some((f) => f.includes("rule 11.11")),
+    `the rejection must cite the post-quantum rule, got: ${JSON.stringify(forged.failures)}`,
+  );
+
+  // A checker that says no makes it invalid, not merely unverifiable.
+  const refused = await verifySeal(env, {
+    trustRoots: [{ public_key: publicKey }],
+    postQuantum: [{ alg: "ML-DSA-65", public_key: "00".repeat(1952), verify: () => false }],
+  });
+  assert.equal(refused.signature_status, "invalid");
+  assert.equal(refused.post_quantum_status, "invalid");
+  assert.ok(refused.failures.some((f) => f.includes("rule 11.12")));
+
+  // A checker that throws is a check that could not run: unverifiable.
+  const threw = await verifySeal(env, {
+    trustRoots: [{ public_key: publicKey }],
+    postQuantum: [{ alg: "ML-DSA-65", verify: () => { throw new Error("no primitive here"); } }],
+  });
+  assert.equal(threw.signature_status, "unverifiable");
+  assert.equal(threw.post_quantum_status, "unverifiable");
+
+  // A checker that says yes verifies the claim, and the seal passes.
+  const accepted = await verifySeal(env, {
+    trustRoots: [{ public_key: publicKey }],
+    postQuantum: [{ alg: "ML-DSA-65", public_key: "00".repeat(1952), verify: () => true }],
+  });
+  assert.equal(accepted.conformant, true, "a seal whose post-quantum half was checked and passed is conformant");
+  assert.equal(accepted.post_quantum_status, "verified");
+});
+
+test("R11.7: a seal that declares pq_alg but carries no pq_value is invalid, not unverifiable", async () => {
+  const { kp, publicKey } = await makeSigner();
+  const env = await seal("half a claim", kp.privateKey);
+  env.signature = { ...env.signature, pq_alg: "ML-DSA-65", pq_value: "" } as PsiSealEnvelope["signature"];
+  const result = await verifySeal(env, { trustRoots: [{ public_key: publicKey }] });
+  assert.equal(result.conformant, false);
+  assert.equal(result.post_quantum_status, "invalid");
+  assert.ok(result.failures.some((f) => f.includes("rule 11.13")));
+});

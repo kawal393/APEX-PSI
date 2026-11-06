@@ -33,6 +33,7 @@ export const PSI_SCHEMA_RULES = [
  */
 export const PSI_VERIFIER_RULES = [
   "R11.6 A signature NAMES the digest it authenticates (binds: seal_hash | merkle_leaf) and the verifier RECOMPUTES that digest from the record. A declared digest is compared, never trusted. A record that does not say which digest it means and offers more than one is refused, not guessed.",
+  "R11.7 A seal may DECLARE a post-quantum signature (signature.pq_alg / signature.pq_value). A declared post-quantum signature must itself be verified: the verifier checks it when the caller supplies a checker for that algorithm, and reports the seal `unverifiable` — never `verified` — when no checker is available for it. A post-quantum signature nobody checked is not a verified one.",
   "R13.1 An inclusion proof is recomputed from the leaf, the leaf index, the tree size and the audit path, walking the RFC 9162 sec 2.1.3.2 split (the largest power of two smaller than the tree size). The leaf-index parity shortcut is valid only when the tree size is a power of two.",
 ] as const;
 
@@ -74,6 +75,27 @@ export interface PsiTrustRoot {
   key_id?: string;
 }
 
+/**
+ * A post-quantum signature checker, supplied by the caller.
+ *
+ * The verifier package stays dependency-free, so it ships no post-quantum
+ * algorithm. The caller that has one — a browser with ML-DSA-65 compiled in, a
+ * service with LMS — hands it over here and the verifier uses it against the
+ * seal's declared algorithm.
+ */
+export interface PsiPostQuantumChecker {
+  /** The algorithm this checker implements, e.g. "ML-DSA-65". Matched case-insensitively. */
+  alg: string;
+  /** The public key the checker uses. Passed back to `verify`; empty when the checker holds its own. */
+  public_key?: string;
+  /**
+   * Verify the post-quantum signature. Return true ONLY on a genuine
+   * verification. A checker that throws is treated as a check that could not
+   * run, not as a check that said no.
+   */
+  verify(message: Uint8Array, signature: string, publicKey: string): boolean | Promise<boolean>;
+}
+
 export interface ConformanceResult {
   conformant: boolean;
   schema_id: string | null;
@@ -86,6 +108,10 @@ export interface ConformanceResult {
   /** True only when `signature_status === "verified"`. Schema conformance is NOT authenticity. */
   authentic: boolean;
   trusted_key_id: string | null;
+  /** R11.7 verdict for a declared post-quantum signature. "absent" when the seal declares none. */
+  post_quantum_status: PsiSignatureStatus;
+  /** Why the post-quantum half came out the way it did. */
+  post_quantum_detail: string | null;
 }
 
 /**
@@ -131,6 +157,13 @@ export interface VerifySealOptions {
    * is never demoted to a warning.
    */
   requireValidSignature?: boolean;
+  /**
+   * Post-quantum checkers, keyed by the algorithm a seal declares in
+   * `signature.pq_alg`. A declared post-quantum signature with no checker for
+   * it is reported `unverifiable` — the seal is never reported as verified on
+   * the strength of a post-quantum claim nobody checked (R11.7).
+   */
+  postQuantum?: readonly PsiPostQuantumChecker[];
 }
 
 /**
@@ -250,19 +283,123 @@ export interface PsiSignatureCheck {
   key_id: string | null;
   detail: string;
   rule: string;
+  /** R11.7 verdict for the post-quantum half, when the seal declared one. */
+  post_quantum_status?: PsiSignatureStatus;
+  /** Why the post-quantum half came out the way it did. */
+  post_quantum_detail?: string | null;
+}
+
+export interface PsiPostQuantumCheck {
+  status: PsiSignatureStatus;
+  /** The label of the key that verified, when status is `verified`. */
+  key_id: string | null;
+  detail: string;
+  rule: string;
 }
 
 /**
- * Verify the R11 Ed25519 signature over the ASCII `seal_hash`.
+ * R11.7 — check the post-quantum half a seal DECLARES.
  *
- * Returns `unverifiable` — never `verified` — when there is no trust root or
- * the platform has no Ed25519 primitive. `invalid` is reserved for a check that
+ * A seal may carry `signature.pq_alg` and `signature.pq_value`: a claim that
+ * it is also protected by a post-quantum signature. Measured 7 Nov 2026: the
+ * published verifier (npm apex-psi-verifier 1.3.0, PyPI psi-verifier 1.3.0) and
+ * the 1.4.0 source in this repository all read `pq_alg` and `pq_value` without
+ * checking them, and reported a seal carrying 512 bytes of noise as
+ * `conformant: true`, `signature_status: "verified"`, `authentic: true` with no
+ * failures at all. A claim is not a signature.
+ *
+ * So the declared half is checked here, and the answer is never better than
+ * the check that ran:
+ *   - no declaration          → `absent`
+ *   - declaration, no checker → `unverifiable` (nobody checked it)
+ *   - declaration, check ran  → `verified` or `invalid`
+ *
+ * The verifier package ships no post-quantum algorithm, so the checker comes
+ * from the caller. That keeps this package dependency-free and keeps the
+ * refusal honest: a declared post-quantum signature that cannot be checked is
+ * reported as unchecked, never as verified.
+ */
+export async function psiVerifyPostQuantum(
+  sealHash: string,
+  signature: PsiSealEnvelope["signature"],
+  checkers: readonly PsiPostQuantumChecker[] = [],
+): Promise<PsiPostQuantumCheck> {
+  const alg = String(signature?.pq_alg ?? "").trim();
+  const value = String(signature?.pq_value ?? "").trim();
+  if (!alg && !value) {
+    return {
+      status: "absent",
+      key_id: null,
+      detail: "seal declares no post-quantum signature",
+      rule: PSI_RULE_CITATIONS.post_quantum_absent,
+    };
+  }
+  if (!alg) {
+    return {
+      status: "invalid",
+      key_id: null,
+      detail: "signature.pq_value is present but signature.pq_alg does not say which algorithm produced it",
+      rule: PSI_RULE_CITATIONS.post_quantum_invalid,
+    };
+  }
+  if (!value) {
+    return {
+      status: "invalid",
+      key_id: null,
+      detail: `signature.pq_value is empty — the seal declares a ${alg} signature but carries none`,
+      rule: PSI_RULE_CITATIONS.post_quantum_empty,
+    };
+  }
+  const checker = checkers.find((c) => String(c.alg ?? "").trim().toLowerCase() === alg.toLowerCase());
+  if (!checker) {
+    return {
+      status: "unverifiable",
+      key_id: null,
+      detail: `seal declares a post-quantum signature (${alg}) that this verifier cannot check: a claimed post-quantum signature nobody verified is not a verified one`,
+      rule: PSI_RULE_CITATIONS.post_quantum_unverifiable,
+    };
+  }
+  let ok = false;
+  try {
+    ok = Boolean(await checker.verify(new TextEncoder().encode(sealHash), value, checker.public_key ?? ""));
+  } catch (e) {
+    return {
+      status: "unverifiable",
+      key_id: null,
+      detail: `the ${alg} checker could not run: ${(e as Error)?.message ?? "unknown error"}`,
+      rule: PSI_RULE_CITATIONS.post_quantum_unverifiable,
+    };
+  }
+  if (!ok) {
+    return {
+      status: "invalid",
+      key_id: null,
+      detail: `the declared post-quantum signature (${alg}) does not verify`,
+      rule: PSI_RULE_CITATIONS.post_quantum_invalid,
+    };
+  }
+  return {
+    status: "verified",
+    key_id: checker.public_key ? `pq:${alg}` : `pq:${alg}`,
+    detail: `${alg} signature verified over the ASCII seal_hash`,
+    rule: "11.7",
+  };
+}
+
+/**
+ * Verify the R11 Ed25519 signature over the ASCII `seal_hash`, and — when the
+ * seal declares a post-quantum signature — that half too.
+ *
+ * Returns `unverifiable` — never `verified` — when there is no trust root, the
+ * platform has no Ed25519 primitive, or the seal declares a post-quantum
+ * signature no checker was supplied for. `invalid` is reserved for a check that
  * actually ran and said no.
  */
 export async function psiVerifySignature(
   sealHash: string,
   signature: PsiSealEnvelope["signature"],
   trustRoots: readonly (PsiTrustRoot | string)[] = [],
+  postQuantum: readonly PsiPostQuantumChecker[] = [],
 ): Promise<PsiSignatureCheck> {
   if (!signature) {
     return { status: "absent", key_id: null, detail: "seal carries no signature member", rule: PSI_RULE_CITATIONS.signature_absent };
@@ -321,7 +458,41 @@ export async function psiVerifySignature(
       continue;
     }
     if (ok) {
-      return { status: "verified", key_id: root.key_id ?? `ed25519:${bytesToHex(raw).slice(0, 10)}`, detail: "Ed25519 signature verified over the ASCII seal_hash", rule: "11" };
+      const keyId = root.key_id ?? `ed25519:${bytesToHex(raw).slice(0, 10)}`;
+      // R11.7. The Ed25519 half passed. The seal may still declare a
+      // post-quantum signature, and that claim has to be checked too before the
+      // seal can be called verified.
+      const pq = await psiVerifyPostQuantum(sealHash, signature, postQuantum);
+      if (pq.status === "invalid") {
+        return {
+          status: "invalid",
+          key_id: keyId,
+          detail: pq.detail,
+          rule: pq.rule,
+          post_quantum_status: pq.status,
+          post_quantum_detail: pq.detail,
+        };
+      }
+      if (pq.status === "unverifiable") {
+        return {
+          status: "unverifiable",
+          key_id: keyId,
+          detail: `Ed25519 signature verified over the ASCII seal_hash against ${keyId}; ${pq.detail}`,
+          rule: pq.rule,
+          post_quantum_status: pq.status,
+          post_quantum_detail: pq.detail,
+        };
+      }
+      return {
+        status: "verified",
+        key_id: keyId,
+        detail: pq.status === "verified"
+          ? `Ed25519 signature verified over the ASCII seal_hash against ${keyId}; ${pq.detail}`
+          : "Ed25519 signature verified over the ASCII seal_hash",
+        rule: "11",
+        post_quantum_status: pq.status,
+        post_quantum_detail: pq.detail,
+      };
     }
   }
   if (!anyKeyUsable) {
@@ -558,6 +729,7 @@ export interface PsiBindingCheck extends PsiSignatureCheck {
 export async function psiVerifyBinding(
   record: unknown,
   trustRoots: readonly (PsiTrustRoot | string)[] = [],
+  postQuantum: readonly PsiPostQuantumChecker[] = [],
 ): Promise<PsiBindingCheck> {
   const signature = psiReadSignature(record);
   const resolution = await psiResolveBinding(record);
@@ -583,14 +755,14 @@ export async function psiVerifyBinding(
       digest: resolution.digest,
     };
   }
-  const check = await psiVerifySignature(resolution.digest as string, signature, trustRoots);
+  const check = await psiVerifySignature(resolution.digest as string, signature, trustRoots, postQuantum);
   return {
     ...check,
     binding: resolution.binding,
     digest: resolution.digest,
     detail:
       check.status === "verified"
-        ? `Ed25519 signature verified over the ASCII ${resolution.binding}`
+        ? `Ed25519 signature verified over the ASCII ${resolution.binding}${check.post_quantum_status === "verified" ? `; ${check.post_quantum_detail}` : ""}`
         : check.detail,
   };
 }
@@ -762,7 +934,7 @@ const RFC3339_MS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const ALLOWED = ["schema", "schema_digest", "sealed_at", "subject", "hash", "merkle", "signature", "licence"];
 
 /** Verifier distribution version. Identical in the Python distribution. */
-export const PSI_VERIFIER_VERSION = "1.4.0";
+export const PSI_VERIFIER_VERSION = "1.5.0";
 
 /**
  * Human-readable rule citations. Every rejection line carries one:
@@ -790,6 +962,10 @@ export const PSI_RULE_CITATIONS = {
   binding_ambiguous: "11.7",
   binding_unresolvable: "11.8",
   binding_not_recomputable: "11.9",
+  post_quantum_absent: "11.10",
+  post_quantum_unverifiable: "11.11",
+  post_quantum_invalid: "11.12",
+  post_quantum_empty: "11.13",
   leaf_mismatch_ledger: "9.2",
   inclusion_malformed: "13.1",
   inclusion_mismatch: "13.2",
@@ -819,6 +995,8 @@ export async function verifySeal(input: unknown, argument: VerifySealArgument = 
       signature_status: "absent",
       authentic: false,
       trusted_key_id: null,
+      post_quantum_status: "absent",
+      post_quantum_detail: null,
     };
   }
   const expected = await psiSchemaDigest();
@@ -863,6 +1041,7 @@ export async function verifySeal(input: unknown, argument: VerifySealArgument = 
     computedSealHash ?? String(env.signature?.seal_hash ?? ""),
     env.signature,
     trustRoots,
+    options.postQuantum ?? [],
   );
 
   if (check.status === "invalid" || (requireValidSignature && check.status !== "verified")) {
@@ -881,6 +1060,8 @@ export async function verifySeal(input: unknown, argument: VerifySealArgument = 
     signature_status: check.status,
     authentic: check.status === "verified",
     trusted_key_id: check.key_id,
+    post_quantum_status: check.post_quantum_status ?? "absent",
+    post_quantum_detail: check.post_quantum_detail ?? null,
   };
 }
 

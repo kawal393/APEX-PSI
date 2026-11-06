@@ -1,6 +1,6 @@
 {
   "name": "apex-psi-verifier",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "MIT-licensed verifier for the PSI-SEAL/1 canonical seal schema. Verification is free forever; a seal whose Ed25519 signature was not checked is never reported as a pass, R11.6 makes a signature name the digest it authenticates so the verifier recomputes it instead of trusting a declared value, and R13.1 verifies an RFC 9162 inclusion proof by walking the tree's split rather than the leaf-index parity shortcut.",
   "license": "MIT",
   "type": "module",

@@ -33,7 +33,34 @@ The PSI-SEAL/1 canonical schema, byte for byte: closed field set (R2/R3),
 64-char lowercase hex SHA-256 (R4/R5), RFC 3339 UTC with exactly three
 fractional digits (R6), exact octet length (R7), domain-separated leaf
 `SHA-256("PSI1:" + hash)` and promoted-odd Merkle assembly (R8/R9),
-`seal_hash = SHA-256(JCS(core envelope))` (R10), and matching `schema_digest` (R12).
+`seal_hash = SHA-256(JCS(core envelope))` (R10), Ed25519 over the ASCII
+`seal_hash` against public keys the caller supplies (R11), and matching
+`schema_digest` (R12).
+
+## Post-quantum signatures (R11.7)
+
+R10 hashes the envelope without the signature member, so the Ed25519 half of a
+hybrid seal never covers `signature.pq_value`. A seal that *declares* a
+post-quantum signature is reported verified only when that half was actually
+verified. The package ships no post-quantum algorithm, so the caller passes a
+checker for the algorithm the seal declares:
+
+```python
+from psi_verifier import verify_seal
+
+def check(message: bytes, signature: str, public_key: str) -> bool:
+    return mldsa65_verify(message, signature, public_key)
+
+result = verify_seal(seal, trust_roots=[key], post_quantum=[{
+    "alg": "ML-DSA-65",
+    "public_key": mldsa65_public_key_hex,
+    "verify": check,
+}])
+# result.post_quantum_status == "verified" | "invalid" | "unverifiable" | "absent"
+```
+
+No checker for the declared algorithm -> `unverifiable`. A checker that ran and
+said no -> `invalid`. Either way the seal is not reported as verified.
 
 ## Licensing
 

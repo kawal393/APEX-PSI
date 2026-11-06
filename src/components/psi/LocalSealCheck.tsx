@@ -12,8 +12,10 @@ import { CheckCircle2, XCircle, ShieldAlert, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatAcceptance, formatRejection } from "../../../packages/psi-verifier/src/index";
 import { psiSchemaDigest, verifySealConformance } from "@/lib/psi-schema";
+import { postQuantumCheckers } from "@/lib/psi-post-quantum";
 import {
   loadSealTrustRoots,
+  parsePostQuantumAnchorKeys,
   trustRootFromMaterial,
   sealSignerDescription,
   type SealTrustKey,
@@ -35,10 +37,19 @@ const PLAIN_ENGLISH: Record<string, string> = {
   unverifiable: "There is a signature, but no key was available to check it against, so no claim about authenticity is being made.",
 };
 
+const POST_QUANTUM_ENGLISH: Record<string, string> = {
+  verified: "The post-quantum signature this seal declares was checked against the published ML-DSA-65 key, and it passed.",
+  invalid: "This seal declares a post-quantum signature that does not verify. The declaration is false.",
+  absent: "This seal declares no post-quantum signature.",
+  unverifiable:
+    "This seal declares a post-quantum signature that this page could not check — no key for it, or no implementation of it. A post-quantum signature nobody verified is not a verified one, so this seal is not reported as signed.",
+};
+
 const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
   const { t } = useTranslation();
   const [raw, setRaw] = useState(initial);
   const [keys, setKeys] = useState<SealTrustKey[]>([]);
+  const [pqKeys, setPqKeys] = useState<SealTrustKey[]>([]);
   const [keySource, setKeySource] = useState("loading the published trust anchor…");
   const [extraKey, setExtraKey] = useState("");
   const [verdict, setVerdict] = useState<Verdict | null>(null);
@@ -54,10 +65,14 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
       .then((loaded) => {
         if (cancelled) return;
         setKeys(loaded.keys);
+        setPqKeys(loaded.pqKeys);
         setKeySource(loaded.source);
       })
       .catch(() => {
-        if (!cancelled) setKeySource("trust anchor unavailable — using the built-in copy of the published keys");
+        if (!cancelled) {
+          setKeySource("trust anchor unavailable — using the built-in copy of the published keys");
+          setPqKeys(parsePostQuantumAnchorKeys(null));
+        }
       });
     return () => {
       cancelled = true;
@@ -78,7 +93,7 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
     setBusy(true);
     try {
       const roots = extraRoot ? [...keys.map((k) => ({ public_key: k.public_key, key_id: k.kid })), extraRoot] : keys.map((k) => ({ public_key: k.public_key, key_id: k.kid }));
-      const result = await verifySealConformance(parsed, { trustRoots: roots });
+      const result = await verifySealConformance(parsed, { trustRoots: roots, postQuantum: postQuantumCheckers(pqKeys) });
       const canonical = await psiSchemaDigest();
       setVerdict(result);
       setPrinted(
@@ -136,6 +151,11 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
               </li>
             ))}
           </ul>
+          {pqKeys.length > 0 && (
+            <p className="mt-2 text-[11px] font-mono text-muted-foreground">
+              post-quantum keys checked against ({pqKeys.length}): {pqKeys.map((k) => `${k.kid} · ${k.algorithm}`).join(", ")}
+            </p>
+          )}
           <label className="mt-3 block text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
             add a public key you trust (64 hex or base64)
           </label>
@@ -180,8 +200,13 @@ const LocalSealCheck = ({ initial = "", showKeys = true }: Props) => {
           <p className="mt-2 font-mono text-[11px] text-muted-foreground">
             schema {verdict.schema_id ?? "—"} · digest match {String(verdict.schema_digest_match)} · seal_hash match{" "}
             {String(verdict.seal_hash_match)} · signature {verdict.signature_status}
-            {verdict.trusted_key_id ? ` · key ${verdict.trusted_key_id}` : ""}
+            {verdict.trusted_key_id ? ` · key ${verdict.trusted_key_id}` : ""} · post-quantum {verdict.post_quantum_status}
           </p>
+          {verdict.post_quantum_status !== "absent" && (
+            <p className="mt-2 text-sm text-muted-foreground max-w-3xl">
+              {POST_QUANTUM_ENGLISH[verdict.post_quantum_status] ?? `Post-quantum: ${verdict.post_quantum_status}.`}
+            </p>
+          )}
           {verdict.failures.length > 0 && (
             <ul className="mt-3 space-y-1">
               {verdict.failures.map((f) => (

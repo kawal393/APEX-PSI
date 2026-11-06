@@ -22,6 +22,7 @@ import { jcsCanonicalize } from "./psi-canonicalize";
 // website and a published package came to disagree about what "verified" means.
 import {
   psiVerifySignature,
+  type PsiPostQuantumChecker,
   type PsiSignatureStatus,
   type PsiTrustRoot,
 } from "../../packages/psi-verifier/src/index";
@@ -104,6 +105,16 @@ export interface ConformanceResult {
    * and passed — identical to `authentic`, never a proxy for `conformant`.
    */
   signature_valid: boolean;
+  /**
+   * R11.7 verdict for a declared post-quantum signature. "absent" when the seal
+   * declares none. A seal that DECLARES a post-quantum signature nobody
+   * checked is "unverifiable", never "verified" — measured 7 Nov 2026 against
+   * the published 1.3.0 verifier, which reported a seal carrying 512 bytes of
+   * random noise labelled ML-DSA-65 as a clean pass.
+   */
+  post_quantum_status: PsiSignatureStatus;
+  /** Why the post-quantum half came out the way it did. */
+  post_quantum_detail: string | null;
 }
 
 /** Caller-chosen trust. The verifier never invents a key and never passes on silence. */
@@ -111,6 +122,13 @@ export interface VerifySealOptions {
   trustRoots?: readonly (PsiTrustRoot | string)[];
   /** DEFAULT true. False restores the pre-1.3.0 schema-only verdict. */
   requireValidSignature?: boolean;
+  /**
+   * Post-quantum checkers for the algorithm a seal declares in `signature.pq_alg`.
+   * The verifier package ships no post-quantum algorithm; the caller hands one
+   * over. A declared post-quantum signature with no checker for it is reported
+   * `unverifiable` — never as verified (R11.7).
+   */
+  postQuantum?: readonly PsiPostQuantumChecker[];
 }
 
 
@@ -180,6 +198,7 @@ export async function verifySealConformance(input: unknown, options: VerifySealO
       conformant: false, schema_id: null, schema_digest_match: false, seal_hash_match: false,
       failures: ["Not a JSON object"],
       signature_status: "absent", authentic: false, trusted_key_id: null, signature_valid: false,
+      post_quantum_status: "absent", post_quantum_detail: null,
     };
   }
   if (env.schema !== PSI_SCHEMA_ID) failures.push(`R12: schema must be "${PSI_SCHEMA_ID}" (got ${String(env.schema)})`);
@@ -212,7 +231,12 @@ export async function verifySealConformance(input: unknown, options: VerifySealO
 
   // R11 — authenticity. Checked against the hash THIS verifier recomputed, and
   // only against keys the caller supplied.
-  const check = await psiVerifySignature(computedSealHash, env.signature, options.trustRoots ?? []);
+  const check = await psiVerifySignature(
+    computedSealHash,
+    env.signature,
+    options.trustRoots ?? [],
+    options.postQuantum ?? [],
+  );
   if (check.status === "invalid" || (requireValidSignature && check.status !== "verified")) {
     failures.push(`R11 (${check.rule}): ${check.detail}`);
   }
@@ -227,6 +251,8 @@ export async function verifySealConformance(input: unknown, options: VerifySealO
     authentic: check.status === "verified",
     trusted_key_id: check.key_id,
     signature_valid: check.status === "verified",
+    post_quantum_status: check.post_quantum_status ?? "absent",
+    post_quantum_detail: check.post_quantum_detail ?? null,
   };
 }
 

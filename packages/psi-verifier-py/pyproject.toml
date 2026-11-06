@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "psi-verifier"
-version = "1.4.0"
+version = "1.5.0"
 description = "MIT-licensed verifier for the PSI-SEAL/1 canonical seal schema. Verification is free forever; enforcement is on by default, rule R11 (Ed25519 over the ASCII seal_hash) is actually checked against caller-supplied public keys, R11.6 makes a signature name the digest it authenticates, and R13.1 verifies an RFC 9162 inclusion proof by walking the tree's split."
 readme = "README.md"
 requires-python = ">=3.8"

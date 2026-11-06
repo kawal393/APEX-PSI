@@ -39,6 +39,7 @@ const fixtures = JSON.parse(readFileSync(join(SHARED, "fixtures.json"), "utf8"))
   cases: { name: string; seal: unknown; options: VerifySealOptions }[];
   binding_cases: { name: string; record: unknown; trust_roots: readonly (string | { public_key: string; key_id?: string })[] }[];
   inclusion_cases: { name: string; proof: PsiInclusionProof }[];
+  post_quantum_cases: { name: string; seal: unknown; checker: "none" | "refuse" | "accept" }[];
 };
 
 const canonical = await psiSchemaDigest();
@@ -82,6 +83,31 @@ for (const [index, testCase] of fixtures.inclusion_cases.entries()) {
   );
 }
 
+// R11.7 — a seal that DECLARES a post-quantum signature. The same three
+// seals the Python half runs, with the same three checker settings.
+const pqCheckers = {
+  none: [],
+  refuse: [
+    { alg: "ML-DSA-65", public_key: "00".repeat(1952), verify: () => false },
+  ],
+  accept: [
+    { alg: "ML-DSA-65", public_key: "00".repeat(1952), verify: () => true },
+  ],
+} as const;
+
+for (const [index, testCase] of fixtures.post_quantum_cases.entries()) {
+  const result = await verifySeal(testCase.seal, {
+    trustRoots: [{ public_key: fixtures.public_key, key_id: "cross-language-key" }],
+    postQuantum: pqCheckers[testCase.checker],
+  });
+  blocks.push(
+    `post-quantum case ${index + 1}: conformant=${result.conformant} ` +
+      `signature_status=${result.signature_status} authentic=${result.authentic} ` +
+      `post_quantum_status=${result.post_quantum_status}\n` +
+      `${render(result)}`,
+  );
+}
+
 // The published schema document must hash to the verifier's frozen digest.
 // The seal schema is frozen: every seal ever issued carries this digest.
 const publishedDoc = JSON.parse(readFileSync(PUBLISHED_SCHEMA, "utf8")) as unknown;
@@ -92,7 +118,6 @@ const schemaLine =
   `matches the verifier's frozen digest: ${String(schemaMatch).toLowerCase()}`;
 
 writeFileSync(join(SHARED, "node.txt"), `${blocks.join("\n\n=====\n\n")}\n\n=====\n\n${schemaLine}\n`, "utf8");
-
 const signed = await verifySeal(fixtures.cases[0].seal, fixtures.cases[0].options);
 console.log(`node: python-signed seal verified here = ${signed.conformant} | key = ${signed.trusted_key_id}`);
 console.log(`node: cases = ${fixtures.cases.length} | binding cases = ${fixtures.binding_cases.length}`);
