@@ -19,24 +19,26 @@
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-// Every surface that a stranger or a model can read and quote, paired with the repository folder
-// that is its source of truth. Both pairs are asserted, because the domains ship different files:
-// SELF_AUDIT.md exists only on the flagship, llms-full.txt only on the standard domain. This
-// distinction is the whole reason for the table — on 2 Nov this guard was given SELF_AUDIT.md to
-// watch while still defaulting to the standard domain, so it compared a flagship file against
-// `public/` in whatever folder the scan happened to launch it from, reported "publish pending" and
-// could never have cleared. A guard that checks file X on the site that does not serve X is red
-// forever, and a permanently red guard is the same as no guard.
+// Every surface that a stranger or a model can read and quote, paired with the repository branch
+// that is its source of truth. The branch, not the folder this script happens to sit in: measured
+// on 6 Nov, ai-governance-standard.com serves content byte-identical to origin/main while the
+// working branch was nine commits elsewhere — so a guard that reads the working tree reports
+// "publish pending" for work that was never meant for the site, and stays silent about main
+// actually drifting. Both errors are the guard's, not the estate's.
+// Which branch a site publishes from is not a guess here: it is proved every run by finding the
+// branch whose committed bytes equal the live bytes, and that proof is printed.
 const SURFACES = [
   {
     site: "https://apex-infrastructure.com",
-    dir: join(homedir(), ".openhands", "apex-infra-site", "public"),
+    repo: join(homedir(), ".openhands", "apex-infra-site"),
+    branches: ["origin/main"],
     files: ["llms.txt", "SELF_AUDIT.md"],
     cards: [".well-known/mcp/server.json"],
   },
   {
     site: "https://www.ai-governance-standard.com",
-    dir: join(homedir(), ".openhands", "psi-hub-merge", "public"),
+    repo: join(homedir(), ".openhands", "psi-hub-merge"),
+    branches: ["origin/main", "origin/hub-merge", "origin/truth-badge-23oct"],
     files: ["llms.txt", "llms-full.txt"],
     cards: [".well-known/mcp/server.json", ".well-known/mcp/server-card.json"],
     // The hosted connector's card carries claims only this domain makes (tool set, OAuth, npm door).
@@ -87,16 +89,37 @@ async function get(url, init) {
   return null;
 }
 
-async function committedCopy(dir, file) {
-  const { readFileSync } = await import("node:fs");
+async function committedCopy(surface, ref, file) {
+  const { execFileSync } = await import("node:child_process");
   try {
-    return readFileSync(join(dir, file), "utf8");
+    return execFileSync("git", ["-C", surface.repo, "show", `${ref}:public/${file}`], { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 });
   } catch {
     return null;
   }
 }
 
+const norm = (s) => s.replace(/\r\n/g, "\n");
+
+// Which branch a site publishes from is proved, not assumed: it is the branch whose committed
+// bytes equal the live bytes. Reported once per domain, and every comparison below is against it,
+// because measuring live content against a working branch that was never shipped tells the reader
+// a lie in both directions at once.
+async function resolvePublishBranch(surface, live, host) {
+  for (const ref of surface.branches) {
+    const probe = await committedCopy(surface, ref, surface.files[0]);
+    if (probe !== null && norm(probe) === norm(live)) {
+      console.log(`PUBLISHES FROM ${ref}: ${host} is byte-identical to that branch's ${surface.files[0]}`);
+      return ref;
+    }
+  }
+  console.log(`UNKNOWN BRANCH: none of ${surface.branches.join(", ")} matches what ${host} serves — the site drifted from every branch, or the branches are not fetched`);
+  count("fatal", `${host} matches none of its candidate branches`);
+  return surface.branches[0];
+}
+
 for (const surface of SURFACES) {
+  const host = surface.site.replace(/^https:\/\//, "");
+  surface._ref = null;
   for (const file of surface.files) {
     const res = await get(`${surface.site}/${file}?t=${Date.now()}`);
     if (!res) {
@@ -110,19 +133,19 @@ for (const surface of SURFACES) {
       count("differs", `${file} not published on ${surface.site} (HTTP ${res.status})`);
       continue;
     }
-    const local = await committedCopy(surface.dir, file);
+    if (!surface._ref) surface._ref = await resolvePublishBranch(surface, live, host);
+    const local = await committedCopy(surface, surface._ref, file);
     if (local === null) {
-      console.log(`FAIL ${file}: no committed copy under ${surface.dir}`);
-      count("fatal", `${file} has no committed copy for ${surface.site}`);
+      console.log(`FAIL ${file}: no committed copy at ${surface._ref}:public/${file} in ${surface.repo}`);
+      count("fatal", `${file} has no committed copy on ${surface._ref}`);
       continue;
     }
-    const norm = (s) => s.replace(/\r\n/g, "\n");
     if (norm(live) === norm(local)) {
-      console.log(`MATCH ${file}: ${surface.site.replace(/^https:\/\//, "")} equals committed (${live.length} B)`);
+      console.log(`MATCH ${file}: ${host} equals ${surface._ref} (${live.length} B)`);
     } else {
-      const first = (norm(live).split("\n").findIndex((l, i) => l !== norm(local).split("\n")[i]));
-      console.log(`DRIFT ${file}: live ${live.length} B vs committed ${norm(local).length} B — first difference at line ${first + 1}. Either the site has not been republished from main, or the live copy drifted.`);
-      count("differs", `${file} on ${surface.site} differs from main at line ${first + 1} — publish pending`);
+      const first = norm(live).split("\n").findIndex((l, i) => l !== norm(local).split("\n")[i]);
+      console.log(`DRIFT ${file}: live ${live.length} B vs ${surface._ref} ${norm(local).length} B — first difference at line ${first + 1}.`);
+      count("differs", `${file} on ${host} differs from ${surface._ref} at line ${first + 1}`);
     }
     for (const [target, needles] of MUST_NOT) {
       if (target !== file) continue;
@@ -134,6 +157,23 @@ for (const surface of SURFACES) {
         }
       }
     }
+  }
+
+  // Work that is committed on a branch but has never reached the published one is invisible to
+  // every other check in this suite: it exists, it is honest, and no machine or person can read it.
+  try {
+    const { execFileSync } = await import("node:child_process");
+    const head = execFileSync("git", ["-C", surface.repo, "rev-parse", "--abbrev-ref", "HEAD"], { encoding: "utf8" }).trim();
+    const against = surface._ref || surface.branches[0];
+    const ahead = Number(execFileSync("git", ["-C", surface.repo, "rev-list", "--count", `${against}..HEAD`], { encoding: "utf8" }).trim());
+    const behind = Number(execFileSync("git", ["-C", surface.repo, "rev-list", "--count", `HEAD..${against}`], { encoding: "utf8" }).trim());
+    console.log(`BRANCH ${host}: HEAD is ${head}, ${ahead} commit(s) ahead of the published ${against}, ${behind} behind it`);
+    if (head !== against.replace(/^origin\//, "") && ahead > 0) {
+      count("differs", `${host}: ${ahead} commit(s) on ${head} have never reached the published ${against}`);
+    }
+  } catch (e) {
+    console.log(`FAIL ${host}: could not measure the branch state (${String(e.message).split("\n")[0]})`);
+    count("fatal", `${host}: branch-state measurement failed`);
   }
 }
 
@@ -178,9 +218,9 @@ for (const surface of SURFACES) for (const card of surface.cards) {
     continue;
   }
   const live = await res.text();
-  const local = await committedCopy(surface.dir, card);
+  const local = await committedCopy(surface, surface.branches[0], card);
   if (local === null) {
-    console.log(`FAIL ${card}: no committed copy under ${surface.dir}`);
+    console.log(`FAIL ${card}: no committed copy at ${surface.branches[0]}:public/${card} in ${surface.repo}`);
     count("fatal", `${card} has no committed copy for ${surface.site}`);
     continue;
   }
