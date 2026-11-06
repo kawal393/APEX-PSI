@@ -104,22 +104,33 @@ const norm = (s) => s.replace(/\r\n/g, "\n");
 // bytes equal the live bytes. Reported once per domain, and every comparison below is against it,
 // because measuring live content against a working branch that was never shipped tells the reader
 // a lie in both directions at once.
-async function resolvePublishBranch(surface, live, host) {
+async function resolvePublishBranch(surface, host) {
+  // Score every candidate branch by how many watched files it matches byte for byte. Requiring the
+  // first file alone to match made this guard shout "the site drifted from every branch" on
+  // 7 Nov, when the truth was ordinary: llms.txt had a new committed line awaiting publication and
+  // SELF_AUDIT.md still matched main. One pending sentence is not a lost branch.
+  let best = { ref: null, hits: -1 };
   for (const ref of surface.branches) {
-    const probe = await committedCopy(surface, ref, surface.files[0]);
-    if (probe !== null && norm(probe) === norm(live)) {
-      console.log(`PUBLISHES FROM ${ref}: ${host} is byte-identical to that branch's ${surface.files[0]}`);
-      return ref;
+    let hits = 0;
+    for (const file of surface.files) {
+      const copy = await committedCopy(surface, ref, file);
+      if (copy === null) continue;
+      if (surface.live?.[file] !== undefined && norm(copy) === norm(surface.live[file])) hits++;
     }
+    if (hits > best.hits) best = { ref, hits };
   }
-  console.log(`UNKNOWN BRANCH: none of ${surface.branches.join(", ")} matches what ${host} serves — the site drifted from every branch, or the branches are not fetched`);
-  count("fatal", `${host} matches none of its candidate branches`);
-  return surface.branches[0];
+  if (best.hits <= 0) {
+    console.log(`NO BRANCH MATCHES ${host}: not one watched file equals any of ${surface.branches.join(", ")} — comparing against ${surface.branches[0]}; either everything is awaiting publication or the site drifted`);
+    count("differs", `${host} matches no candidate branch at any watched file`);
+    return surface.branches[0];
+  }
+  console.log(`PUBLISHES FROM ${best.ref}: ${best.hits} of ${surface.files.length} watched file(s) on ${host} equal that branch byte for byte`);
+  return best.ref;
 }
 
 for (const surface of SURFACES) {
   const host = surface.site.replace(/^https:\/\//, "");
-  surface._ref = null;
+  surface.live = {};
   for (const file of surface.files) {
     const res = await get(`${surface.site}/${file}?t=${Date.now()}`);
     if (!res) {
@@ -133,7 +144,13 @@ for (const surface of SURFACES) {
       count("differs", `${file} not published on ${surface.site} (HTTP ${res.status})`);
       continue;
     }
-    if (!surface._ref) surface._ref = await resolvePublishBranch(surface, live, host);
+    surface.live[file] = live;
+  }
+  surface._ref = Object.keys(surface.live).length ? await resolvePublishBranch(surface, host) : surface.branches[0];
+
+  for (const file of surface.files) {
+    const live = surface.live[file];
+    if (live === undefined) continue;
     const local = await committedCopy(surface, surface._ref, file);
     if (local === null) {
       console.log(`FAIL ${file}: no committed copy at ${surface._ref}:public/${file} in ${surface.repo}`);
