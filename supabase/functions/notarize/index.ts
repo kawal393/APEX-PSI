@@ -1,15 +1,86 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { lmsSignInstitutional, LMS_ALGORITHM } from "../_shared/pq_lms.ts";
 import { rfc6962Root, signEd25519Strict, reserveLmsSlots, MERKLE_PROFILE, signMlDsa65Strict } from "../_shared/psi_core.ts";
+import {
+  readX402Config,
+  decodePaymentHeader,
+  checkPaymentPayload,
+  callFacilitator,
+  encodePaymentRequiredHeader,
+  settlementHeader,
+  type X402Config,
+  type PaymentPayload,
+  type Requirements,
+} from "../_shared/x402.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-apex-api-key, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-apex-api-key, payment-signature, x-payment, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 const RATE_LIMIT_PER_MINUTE = 20;
 const FREE_DAILY_LIMIT = 100;
+
+const X402_DESCRIPTION = "One hosted APEX PSI receipt, checkable by a stranger without an account.";
+const X402_EXPOSE_HEADERS = "PAYMENT-REQUIRED, PAYMENT-RESPONSE, Retry-After, X-RateLimit-Limit, X-RateLimit-Remaining";
+
+function x402Challenge(config: X402Config, resourceUrl: string, body: Record<string, unknown>) {
+  return new Response(JSON.stringify({
+    ...body,
+    pay_with: {
+      protocol: "x402",
+      version: 2,
+      scheme: "exact",
+      asset: config.asset,
+      network: config.network,
+      price_atomic_units: config.amountAtomic,
+      one_payment_buys: "one hosted receipt",
+    },
+    how_to_pay: "Replay this request with a PAYMENT-SIGNATURE header: base64 of the x402 v2 PaymentPayload for the requirement in the PAYMENT-REQUIRED header. We verify and settle through our facilitator; the amount is signed by you, not quoted by us.",
+  }), {
+    status: 402,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+      "PAYMENT-REQUIRED": encodePaymentRequiredHeader(config, resourceUrl, X402_DESCRIPTION, "Payment required for hosted issuance."),
+      "Access-Control-Expose-Headers": X402_EXPOSE_HEADERS,
+    },
+  });
+}
+
+function paymentRefusal(status: number, reason: string, detail: string | undefined, resource: string, config: X402Config) {  return new Response(JSON.stringify({
+    error: reason,
+    detail: detail || null,
+    message: "The payment you sent was not accepted. Nothing was charged and no receipt was minted.",
+  }), {
+    status,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+      "PAYMENT-RESPONSE": settlementHeader({ success: false, errorReason: reason }, config, true),
+      "PAYMENT-REQUIRED": encodePaymentRequiredHeader(config, resource, X402_DESCRIPTION, reason),
+      "Access-Control-Expose-Headers": X402_EXPOSE_HEADERS,
+    },
+  });
+}
+
+// A capped caller is either told to pay, or told to come back tomorrow. The 402
+// branch is the one that needs no human awake; the 429 branch is what runs until a
+// receive address is configured, and it keeps the keys today's clients read.
+function capResponse(config: X402Config | null, resource: string, body: Record<string, unknown>, rateHeaders: Record<string, string>) {
+  if (config) {
+    return x402Challenge(config, resource, {
+      ...body,
+      error: "Allowance reached — pay for this call instead",
+      allowance_error: body.error,
+    });
+  }
+  return new Response(JSON.stringify(body), {
+    status: 429,
+    headers: { ...corsHeaders, "Content-Type": "application/json", ...rateHeaders },
+  });
+}
 
 async function hashSHA256(data: string): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(data));
@@ -70,6 +141,71 @@ Deno.serve(async (req) => {
     const apiKey = req.headers.get("x-apex-api-key");
     let tier = "free";
     let dailyLimit = FREE_DAILY_LIMIT;
+
+    const clientIP = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const requesterDigest = await hashSHA256(`${supabaseKey}|${clientIP}`);
+
+    // x402 v2 door: a machine can buy this execution outright instead of borrowing a
+    // human's allowance. Payment is established before quota is consulted, and the
+    // price always comes from our configuration, never from what the caller brought.
+    const x402Door = readX402Config((name) => Deno.env.get(name));
+    const paymentHeader = req.headers.get("payment-signature") || req.headers.get("x-payment");
+    let paid: { payer: string; nonceKey: string; payload: PaymentPayload; requirements: Requirements } | null = null;
+
+    if (paymentHeader && !x402Door.ok) {
+      return new Response(JSON.stringify({
+        error: "apex_x402_door_not_configured",
+        detail: `no machine-payment door on this deployment; missing ${x402Door.missing.join(", ")}`,
+        human_purchase: `${Deno.env.get("SITE_URL") ?? "https://ai-governance-standard.com"}/upgrade`,
+      }), { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    if (paymentHeader && x402Door.ok) {
+      const resource = req.url;
+      const config = x402Door.config;
+      const payload = decodePaymentHeader(paymentHeader);
+      if (!payload) {
+        return paymentRefusal(400, "invalid_payload", "PAYMENT-SIGNATURE is not base64-encoded JSON", resource, config);
+      }
+      const check = await checkPaymentPayload(config, payload, Math.floor(Date.now() / 1000));
+      if (!check.ok) {
+        return paymentRefusal(check.status, check.reason, check.detail, resource, config);
+      }
+
+      const { data: claimed, error: claimError } = await supabase.rpc("claim_x402_payment", {
+        p_nonce_key: check.nonceKey,
+        p_payment_digest: check.paymentDigest,
+        p_network: config.network,
+        p_asset: config.asset,
+        p_pay_to: config.payTo,
+        p_amount_atomic: config.amountAtomic,
+        p_payer: check.payer,
+        p_resource_url: resource,
+        p_requester_digest: requesterDigest,
+      });
+      if (claimError) {
+        // Failing closed here is the point: without the claim we cannot promise that
+        // one payment bought one receipt.
+        console.error("[Notary] Payment claim failed:", claimError);
+        return paymentRefusal(402, "apex_payment_ledger_unavailable", claimError.message, resource, config);
+      }
+      if (!claimed) {
+        return paymentRefusal(402, "apex_payment_nonce_already_claimed", "this authorization has already bought a receipt", resource, config);
+      }
+
+      const verify = await callFacilitator(config, "/verify", payload, check.requirements, fetch);
+      if (!verify.ok) {
+        const reason = verify.result.invalidReason || verify.result.errorReason || `verify_http_${verify.httpStatus}`;
+        await supabase.from("x402_payments")
+          .update({ status: "verify_failed", reason })
+          .eq("nonce_key", check.nonceKey);
+        return paymentRefusal(402, reason, undefined, resource, config);
+      }
+
+      paid = { payer: verify.result.payer || check.payer, nonceKey: check.nonceKey, payload, requirements: check.requirements };
+      tier = "x402";
+    }
+
     if (apiKey) {
       const keyHash = await hashSHA256(apiKey);
       const { data: keyData } = await supabase
@@ -79,33 +215,32 @@ Deno.serve(async (req) => {
         .eq("revoked", false)
         .single();
       if (keyData) {
-        tier = keyData.tier;
+        // A caller that paid for this execution is not the key's tier any more;
+        // the key only tells us whose account the receipt belongs to.
+        if (!paid) tier = keyData.tier;
         dailyLimit = keyData.daily_limit;
         // Reset daily counter if needed
         const lastReset = new Date(keyData.last_reset);
         const now = new Date();
         if (now.toDateString() !== lastReset.toDateString()) {
           await supabase.from("notary_api_keys").update({ daily_used: 1, last_reset: now.toISOString() }).eq("id", keyData.id);
-        } else if (keyData.daily_used >= dailyLimit && dailyLimit !== -1) {
+        } else if (keyData.daily_used >= dailyLimit && dailyLimit !== -1 && !paid) {
           // Quiet metered door: a capped machine is told where to raise its own
           // limit. No human, no email. The public site still shows no price.
-          return new Response(JSON.stringify({
+          return capResponse(x402Door.ok ? x402Door.config : null, req.url, {
             error: "Daily limit exceeded",
             tier,
             limit: dailyLimit,
             remaining: 0,
             upgrade_url: `${Deno.env.get("SITE_URL") ?? "https://ai-governance-standard.com"}/upgrade`,
             offline_verification: "Verification and local sealing are always free and offline; only hosted issuance is metered.",
-          }), {
-            status: 429, headers: {
-              ...corsHeaders,
-              "Content-Type": "application/json",
-              "X-RateLimit-Limit": String(dailyLimit),
-              "X-RateLimit-Remaining": "0",
-              "Retry-After": String(Math.max(1, Math.ceil((function () { const n = new Date(); const m = new Date(n); m.setHours(24, 0, 0, 0); return (m.getTime() - n.getTime()) / 1000; }())))),
-            }
+          }, {
+            "X-RateLimit-Limit": String(dailyLimit),
+            "X-RateLimit-Remaining": "0",
+            "Retry-After": String(Math.max(1, Math.ceil((function () { const n = new Date(); const m = new Date(n); m.setHours(24, 0, 0, 0); return (m.getTime() - n.getTime()) / 1000; }())))),
+            "Access-Control-Expose-Headers": "Retry-After, X-RateLimit-Limit, X-RateLimit-Remaining",
           });
-        } else {
+        } else if (!paid) {
           await supabase.from("notary_api_keys").update({ daily_used: keyData.daily_used + 1 }).eq("id", keyData.id);
         }
         userId = keyData.user_id;
@@ -127,7 +262,7 @@ Deno.serve(async (req) => {
       }
       if (!reserved) {
         const site = Deno.env.get("SITE_URL") ?? "https://ai-governance-standard.com";
-        return new Response(JSON.stringify({
+        return capResponse(x402Door.ok ? x402Door.config : null, req.url, {
           error: "Public allowance reached",
           tier: "free",
           daily_limit: FREE_DAILY_LIMIT,
@@ -136,12 +271,11 @@ Deno.serve(async (req) => {
           retry_after: 60,
           upgrade_url: `${site}/upgrade`,
           offline_verification: "Verification is always free and offline; only hosted issuance is metered.",
-        }), {
-          status: 429, headers: {
-            ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60",
-            "X-RateLimit-Limit": String(FREE_DAILY_LIMIT), "X-RateLimit-Remaining": "0",
-            "Access-Control-Expose-Headers": "Retry-After, X-RateLimit-Limit, X-RateLimit-Remaining",
-          }
+        }, {
+          "Retry-After": "60",
+          "X-RateLimit-Limit": String(FREE_DAILY_LIMIT),
+          "X-RateLimit-Remaining": "0",
+          "Access-Control-Expose-Headers": "Retry-After, X-RateLimit-Limit, X-RateLimit-Remaining",
         });
       }
     }
@@ -223,9 +357,46 @@ Deno.serve(async (req) => {
 
     if (insertError) {
       console.error("[Notary] Insert failed:", insertError);
+      if (paid && x402Door.ok) {
+        // Nothing was charged and nothing was minted, so the claim is released with
+        // the verify-failed state that lets the payer retry the same authorization.
+        await supabase.from("x402_payments")
+          .update({ status: "verify_failed", reason: "apex_receipt_mint_failed" })
+          .eq("nonce_key", paid.nonceKey);
+      }
       return new Response(JSON.stringify({ error: "Failed to persist receipt" }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
+    }
+
+    // x402 `authorization` flow: verify -> resource -> settle. The work ran, so the
+    // money moves now. If it cannot move, the attempt is recorded, not discarded.
+    let paymentResponseHeader: string | null = null;
+    let paymentRecord: Record<string, unknown> | null = null;
+    if (paid && x402Door.ok) {
+      const settle = await callFacilitator(x402Door.config, "/settle", paid.payload, paid.requirements, fetch);
+      paymentResponseHeader = settlementHeader(settle.result, x402Door.config, !settle.ok);
+      paymentRecord = {
+        protocol: "x402",
+        version: 2,
+        scheme: "exact",
+        network: settle.result.network || x402Door.config.network,
+        asset: x402Door.config.asset,
+        payer: paid.payer,
+        amount_atomic: x402Door.config.amountAtomic,
+        pay_to: x402Door.config.payTo,
+        transaction: settle.result.transaction || null,
+        settled: settle.ok,
+        ...(!settle.ok ? { settlement_error: settle.result.errorReason || "unexpected_settle_error" } : {}),
+      };
+      await supabase.from("x402_payments").update({
+        status: settle.ok ? "settled" : "settle_failed",
+        transaction: settle.result.transaction || null,
+        reason: settle.ok ? null : (settle.result.errorReason || "unexpected_settle_error"),
+        receipt_commit_id: receiptId,
+        settled_at: new Date().toISOString(),
+      }).eq("nonce_key", paid.nonceKey);
+      if (!settle.ok) console.error("[Notary] Settle failed after execution:", settle.result.errorReason);
     }
 
     // Fire webhooks asynchronously (don't block response)
@@ -290,6 +461,7 @@ Deno.serve(async (req) => {
       receipt_version: "PSI-1.2",
       tier,
       engine: "APEX NOTARY v1.0 — Signed",
+      ...(paymentRecord ? { payment: paymentRecord } : {}),
     };
 
     // SCITT bridge (PSI-INTOP-SCITT-1): a JSON view of the same evidence shaped
@@ -324,7 +496,13 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify(responseBody), {
       status: 201,
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+        ...(paymentResponseHeader
+          ? { "PAYMENT-RESPONSE": paymentResponseHeader, "Access-Control-Expose-Headers": X402_EXPOSE_HEADERS }
+          : {}),
+      }
     });
   } catch (err) {
     console.error("[Notary] Error:", err);

@@ -75,6 +75,20 @@ jobs:
       # unless APEX_LIVE=1 is passed deliberately.
       - run: npm run test -- --run
 
+  # A paywall that has never been refused is a way of losing money, not making it.
+  # This job runs the door's own refusals against the module the notary imports:
+  # exact scheme only, price taken from our configuration and never from the caller,
+  # one signed authorization buys one receipt, and a tampered payload is refused
+  # before a facilitator call is spent.
+  x402-door:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run check:x402
+
   # Two AI builders shipped a "1.3.0 signature fix" to this repository on
   # 17 Oct 2026 within hours of each other, with different rule numbers and
   # different verdict shapes. This job is what stops that happening again: the
