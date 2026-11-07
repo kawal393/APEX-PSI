@@ -191,12 +191,53 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: latest
-      - run: supabase link --project-ref ${{ vars.SUPABASE_PROJECT_ID }}
+      # 7 Nov 2026: this job has never deployed. Both dispatch runs (#269 5 Nov, #278 7 Nov)
+      # died on the link step and the step name rendered as `--project-ref ` — blank. The
+      # project ref lived only in an Actions *variable* nobody ever set, so GitHub served an
+      # empty argument. The ref is already in the repo (supabase/config.toml), which is the
+      # copy the CLI itself reads locally, so it is the source of record here too. An unset
+      # variable is now an override, not a requirement, and both possible causes — no ref, no
+      # token — name themselves before the CLI is asked to guess.
+      - name: Resolve the project ref and refuse to fail silently
+        run: |
+          ref=$(node -e 'const t=require("fs").readFileSync("supabase/config.toml","utf8");
+            const m=t.match(/^project_id[^\S\n]*=[^\S\n]*"([^"]+)"/m); if(m) console.log(m[1]);')
+          echo "SUPABASE_PROJECT_REF=${SUPABASE_PROJECT_ID:-$ref}" >> "$GITHUB_ENV"
+          if [ -z "${SUPABASE_PROJECT_REF:-$ref}" ]; then
+            echo "::error::no project ref: supabase/config.toml has no project_id and the SUPABASE_PROJECT_ID variable is empty"
+            exit 1
+          fi
+          echo "project ref: $ref"
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "::error::SUPABASE_ACCESS_TOKEN secret is absent or empty. Supabase personal access tokens expire (the dashboard mints 7-day ones by default), so an expired key reads here as a missing key. Mint a new one at https://supabase.com/dashboard/account/tokens and replace the secret — no code change is needed."
+            exit 1
+          fi
+          echo "access token: present"
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      - run: supabase db push
+          SUPABASE_PROJECT_ID: ${{ vars.SUPABASE_PROJECT_ID }}
+      - run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      - run: supabase functions deploy --project-ref ${{ vars.SUPABASE_PROJECT_ID }}
+      - name: Apply migrations (needs the database password, which we deliberately do not hold)
+        # `supabase db push` opens a direct Postgres connection, so it wants the database
+        # password, not the API token. The password is Master's and stays his — putting it in
+        # Actions would make every CI runner root of the production ledger. So this step names
+        # the two ways the migration gets applied and never fails with an unexplained red X:
+        # either the DB_PASSWORD secret is provided, or the migration file is run in the
+        # dashboard's SQL editor (scripts are idempotent: IF NOT EXISTS / OR REPLACE).
+        continue-on-error: true
+        run: |
+          if [ -z "$SUPABASE_DB_PASSWORD" ]; then
+            echo "::warning::migrations were NOT applied by this run. supabase db push needs the database password, which this repository does not store. Apply the pending files under supabase/migrations in https://supabase.com/dashboard/project/$SUPABASE_PROJECT_REF/sql/new — or add a repository secret named SUPABASE_DB_PASSWORD if you accept a CI runner holding root over the ledger."
+            echo "pending migrations:"
+            ls supabase/migrations | sed 's/^/  /'
+            exit 0
+          fi
+          supabase db push --project-ref "$SUPABASE_PROJECT_REF" --db-password "$SUPABASE_DB_PASSWORD"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      - run: supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF"
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
