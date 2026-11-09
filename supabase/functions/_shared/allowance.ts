@@ -63,7 +63,9 @@ export function buildAllowance(opts: {
   const unlimited = opts.dailyLimit === -1;
   const used = Math.max(0, Math.floor(opts.used));
   const remaining = unlimited ? null : Math.max(0, opts.dailyLimit - used);
-  const resetsAt = new Date(opts.now.getTime() + secondsUntilUtcMidnight(opts.now) * 1000).toISOString();
+  const resetsAt = new Date(
+    Date.UTC(opts.now.getUTCFullYear(), opts.now.getUTCMonth(), opts.now.getUTCDate() + 1),
+  ).toISOString();
   const isFree = opts.tier === "free";
   const nextStep = isFree
     ? `Free public allowance: ${used} of ${opts.dailyLimit} hosted receipts used today. Moving to production? Pro raises hosted capacity to ${TIER_DAILY_LIMIT.pro.toLocaleString("en-US")}/day and Ultra to ${TIER_DAILY_LIMIT.ultra.toLocaleString("en-US")}/day — send your key as the x-apex-api-key header. Verification stays free.`
