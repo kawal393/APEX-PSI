@@ -118,11 +118,13 @@ export default function HomeLiveSeal() {
 
   const downloadReceipt = () => {
     if (!file || !receipt) return;
+    // The allowance meter is service status, not evidence; keep it out of the file.
+    const { allowance: _allowance, ...psiReceipt } = receipt;
     const payload = {
       profile: "PSI-INTOP-C2PA-1/json",
       conformance: "informative bridge — not a signed C2PA manifest; no C2PA conformance is claimed",
       asset: { name: file.name, format: file.type || "application/octet-stream", bytes: file.size, sha256: digest },
-      psi_receipt: receipt,
+      psi_receipt: psiReceipt,
     };
     const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
     const anchor = document.createElement("a");
