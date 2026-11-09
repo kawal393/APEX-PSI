@@ -12,6 +12,7 @@ import {
   type PaymentPayload,
   type Requirements,
 } from "../_shared/x402.ts";
+import { buildAllowance, allowanceHeaders, upgradePlans, type Allowance } from "../_shared/allowance.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -141,6 +142,7 @@ Deno.serve(async (req) => {
     const apiKey = req.headers.get("x-apex-api-key");
     let tier = "free";
     let dailyLimit = FREE_DAILY_LIMIT;
+    let usedToday: number | null = null;
 
     const clientIP = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
     const requesterDigest = await hashSHA256(`${supabaseKey}|${clientIP}`);
@@ -224,6 +226,7 @@ Deno.serve(async (req) => {
         const now = new Date();
         if (now.toDateString() !== lastReset.toDateString()) {
           await supabase.from("notary_api_keys").update({ daily_used: 1, last_reset: now.toISOString() }).eq("id", keyData.id);
+          if (!paid) usedToday = 1;
         } else if (keyData.daily_used >= dailyLimit && dailyLimit !== -1 && !paid) {
           // Quiet metered door: a capped machine is told where to raise its own
           // limit. No human, no email. The public site still shows no price.
@@ -233,6 +236,7 @@ Deno.serve(async (req) => {
             limit: dailyLimit,
             remaining: 0,
             upgrade_url: `${Deno.env.get("SITE_URL") ?? "https://ai-governance-standard.com"}/upgrade`,
+            plans: upgradePlans(),
             offline_verification: "Verification and local sealing are always free and offline; only hosted issuance is metered.",
           }, {
             "X-RateLimit-Limit": String(dailyLimit),
@@ -242,6 +246,7 @@ Deno.serve(async (req) => {
           });
         } else if (!paid) {
           await supabase.from("notary_api_keys").update({ daily_used: keyData.daily_used + 1 }).eq("id", keyData.id);
+          usedToday = keyData.daily_used + 1;
         }
         userId = keyData.user_id;
       }
@@ -270,6 +275,8 @@ Deno.serve(async (req) => {
           remaining: 0,
           retry_after: 60,
           upgrade_url: `${site}/upgrade`,
+          plans: upgradePlans(),
+          next_step: "Get an API key at /upgrade and send it as the x-apex-api-key header for 2,000 (Pro) or 20,000 (Ultra) hosted receipts per day. Verification stays free.",
           offline_verification: "Verification is always free and offline; only hosted issuance is metered.",
         }, {
           "Retry-After": "60",
@@ -278,6 +285,14 @@ Deno.serve(async (req) => {
           "Access-Control-Expose-Headers": "Retry-After, X-RateLimit-Limit, X-RateLimit-Remaining",
         });
       }
+      // Read back today's count for the meter. A failed read only drops the meter.
+      const { data: usageRow } = await supabase
+        .from("notary_public_usage")
+        .select("receipts_used")
+        .eq("visitor_digest", visitorDigest)
+        .eq("usage_day", new Date().toISOString().slice(0, 10))
+        .maybeSingle();
+      if (usageRow && typeof usageRow.receipts_used === "number") usedToday = usageRow.receipts_used;
     }
 
     const predicateId = predicate || "EU_ART_12";
@@ -487,6 +502,10 @@ Deno.serve(async (req) => {
       },
     };
 
+    const allowance: Allowance | null = usedToday === null || tier === "x402"
+      ? null
+      : buildAllowance({ tier, used: usedToday, dailyLimit, now: new Date(), site: Deno.env.get("SITE_URL") ?? undefined });
+
     const format = body.format === "scitt" || body.format === "both" ? body.format : "psi";
     const responseBody = format === "psi"
       ? psiReceipt
@@ -494,11 +513,15 @@ Deno.serve(async (req) => {
         ? { receipt_id: receiptId, format, scitt_statement: scittStatement }
         : { ...psiReceipt, format, scitt_statement: scittStatement };
 
-    return new Response(JSON.stringify(responseBody), {
+    // The allowance meter sits beside the receipt, never inside the signed payload.
+    return new Response(JSON.stringify(allowance ? { ...responseBody, allowance } : responseBody), {
       status: 201,
       headers: {
         ...corsHeaders,
         "Content-Type": "application/json",
+        ...(allowance
+          ? { ...allowanceHeaders(allowance), "Access-Control-Expose-Headers": X402_EXPOSE_HEADERS }
+          : {}),
         ...(paymentResponseHeader
           ? { "PAYMENT-RESPONSE": paymentResponseHeader, "Access-Control-Expose-Headers": X402_EXPOSE_HEADERS }
           : {}),

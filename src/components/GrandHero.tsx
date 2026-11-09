@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import ApiKeyHook from "@/components/ApiKeyHook";
 
 const PROJECT_STARTED_AT = new Date("2026-02-27T11:02:00Z").getTime();
 
@@ -116,6 +117,8 @@ const GrandHero = () => {
             Open the Engine
           </Link>
         </div>
+
+        <ApiKeyHook />
 
         <div className="mx-auto mt-10 max-w-3xl border border-gold/30 bg-card/40 px-6 py-5">
           <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-gold sm:text-[10px]">

@@ -10,6 +10,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { SITE_URL } from "@/lib/site";
 import { RAPIDAPI_URL, salesMailto } from "@/lib/commerce";
 import { reportFreeApiKeyConversion } from "@/lib/ads-consent";
+import { toast } from "sonner";
+
+const NOTARIZE_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize";
+const curlFor = (key: string) =>
+  `curl -X POST ${NOTARIZE_URL} \\\n  -H "Content-Type: application/json" \\\n  -H "x-apex-api-key: ${key}" \\\n  -d '{"decision":"hello world"}'`;
 
 type KeyRow = {
   id: string;
@@ -26,6 +31,8 @@ const Upgrade = () => {
   const [keys, setKeys] = useState<KeyRow[]>([]);
   const [freshKey, setFreshKey] = useState<string | null>(null);
   const [tier, setTier] = useState<string>("free");
+  const [planLimit, setPlanLimit] = useState<number | null>(null);
+  const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const status = params.get("status");
@@ -50,16 +57,47 @@ const Upgrade = () => {
     }
   }, []);
 
-  const syncPlan = useCallback(async () => {
+  const syncPlan = useCallback(async (): Promise<string> => {
     const { data } = await supabase.functions.invoke("sync-subscription", { body: {} });
     if (data?.tier) setTier(String(data.tier));
+    if (typeof data?.daily_limit === "number") setPlanLimit(data.daily_limit);
+    return data?.tier ? String(data.tier) : "free";
   }, []);
+
+  // After a card payment the plan can take a few seconds to confirm with Stripe.
+  // Retry briefly, then make sure the buyer leaves with a working key on screen.
+  const confirmAfterPayment = useCallback(async () => {
+    setConfirming(true);
+    let current = "free";
+    for (let attempt = 0; attempt < 6; attempt++) {
+      current = await syncPlan();
+      if (current !== "free") break;
+      await new Promise((r) => setTimeout(r, 3000));
+    }
+    const { data } = await supabase.functions.invoke("api-keys", { body: { action: "list" } });
+    const list = Array.isArray(data?.keys) ? (data.keys as KeyRow[]) : [];
+    const flag = `apex_paidkey_${current}`;
+    if (current !== "free" && !list.some((k) => k.tier === current) && !sessionStorage.getItem(flag)) {
+      sessionStorage.setItem(flag, "1");
+      const { data: created } = await supabase.functions.invoke("create-api-key", { body: { name: `${current}-production` } });
+      if (created?.apiKey) setFreshKey(created.apiKey);
+    }
+    sessionStorage.setItem("apex_autokey", "1");
+    await loadKeys();
+    setConfirming(false);
+  }, [syncPlan, loadKeys]);
 
   useEffect(() => {
     if (!signedIn) return;
-    syncPlan().finally(loadKeys);
+    if (status === "success") void confirmAfterPayment();
+    else syncPlan().finally(loadKeys);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signedIn, status]);
+
+  const copy = (text: string, label: string) => {
+    void navigator.clipboard.writeText(text);
+    toast.success(label);
+  };
 
   async function createKey() {
     setBusy("create");
@@ -110,7 +148,13 @@ const Upgrade = () => {
 
         {status === "success" && (
           <div className="mb-8 rounded-lg border border-gold/40 bg-gold/5 p-4 text-sm">
-            Payment received. Your plan is being confirmed — create a new API key below to use the higher daily cap.
+            {signedIn === false
+              ? "Payment received. Sign in with the same email you paid with and your key will be ready here."
+              : confirming
+                ? "Payment received. Confirming your plan with Stripe…"
+                : tier !== "free"
+                  ? `Plan active: ${tier.toUpperCase()}${planLimit && planLimit > 0 ? ` — ${planLimit.toLocaleString()} hosted receipts per day` : ""}. Every key below now carries this capacity.`
+                  : "Payment received. Stripe has not confirmed the plan yet — refresh this page in a minute. If you paid with a different email, contact us and we will link it."}
           </div>
         )}
         {status === "cancelled" && (
@@ -159,9 +203,17 @@ const Upgrade = () => {
               </p>
 
               {freshKey && (
-                <div className="mb-4 rounded-lg border border-gold/40 bg-gold/5 p-3">
-                  <p className="mb-1 text-xs text-muted-foreground">Copy now — shown only once:</p>
-                  <code className="break-all font-mono text-sm">{freshKey}</code>
+                <div className="mb-4 rounded-lg border border-gold/40 bg-gold/5 p-4">
+                  <p className="mb-1 text-xs text-muted-foreground">Your API key — copy it now, it is shown only once:</p>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <code className="min-w-0 flex-1 break-all font-mono text-sm">{freshKey}</code>
+                    <Button size="sm" variant="hero" onClick={() => copy(freshKey, "Key copied")}>Copy key</Button>
+                  </div>
+                  <p className="mb-1 mt-4 text-xs text-muted-foreground">Ready to run:</p>
+                  <pre className="overflow-x-auto rounded border border-border bg-background/60 p-3 font-mono text-[11px] leading-relaxed">{curlFor(freshKey)}</pre>
+                  <Button size="sm" variant="heroOutline" className="mt-2" onClick={() => copy(curlFor(freshKey), "Command copied")}>
+                    Copy command
+                  </Button>
                 </div>
               )}
 
