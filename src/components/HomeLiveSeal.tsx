@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createSHA256 } from "hash-wasm";
 import { CheckCircle2, Copy, Download, FileAudio, FileImage, FileText, FileVideo, Loader2, Upload } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AllowanceMeter, { type AllowanceInfo } from "@/components/AllowanceMeter";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ type Receipt = {
   merkle_leaf: string;
   merkle_root?: string;
   ed25519_signature: string;
+  allowance?: AllowanceInfo;
 };
 
 const bytes = (value: number) => {
@@ -32,6 +34,7 @@ const mediaKind = (file: File) => {
 
 export default function HomeLiveSeal() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -93,6 +96,13 @@ export default function HomeLiveSeal() {
       try {
         const context = (error as { context?: Response }).context;
         if (context) {
+          if (context.status === 429 || context.status === 402) {
+            toast.error(t("allowance.reached"), {
+              action: { label: t("allowance.reachedCta"), onClick: () => navigate("/upgrade") },
+              duration: 12000,
+            });
+            return;
+          }
           const payload = await context.json() as { error?: string };
           message = payload.error ?? message;
         }
@@ -237,6 +247,7 @@ export default function HomeLiveSeal() {
                           <Link to={`/r/${receipt.merkle_leaf.replace("sha256:", "")}`}>{t("homeSeal.verify")}</Link>
                         </Button>
                       </div>
+                      <AllowanceMeter allowance={receipt.allowance} />
                     </div>
                   )}
 

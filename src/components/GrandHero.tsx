@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import ApiKeyHook from "@/components/ApiKeyHook";
 
 const PROJECT_STARTED_AT = new Date("2026-02-27T11:02:00Z").getTime();
 
