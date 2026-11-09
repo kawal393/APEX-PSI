@@ -117,6 +117,8 @@ const GrandHero = () => {
           </Link>
         </div>
 
+        <ApiKeyHook />
+
         <div className="mx-auto mt-10 max-w-3xl border border-gold/30 bg-card/40 px-6 py-5">
           <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-gold sm:text-[10px]">
             World first · published 6 November 2026

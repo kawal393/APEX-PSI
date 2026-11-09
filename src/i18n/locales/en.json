@@ -32,6 +32,22 @@
       "plans": "Hosted plans", "operateAtScale": "Operate at scale", "partners": "Operators and partners", "foundation": "Foundation", "governance": "Governance", "contact": "Contact APEX"
     }
   },
+  "allowance": {
+    "label": "Hosted allowance used today",
+    "free": "Free public allowance",
+    "plan": "{{tier}} plan",
+    "usedOf": "{{used}} / {{limit}} today",
+    "nudge": "Moving to production? A Pro or Ultra key raises hosted capacity. Verification stays free.",
+    "cta": "Get an API key",
+    "reached": "Today's free hosted allowance is used up. Verification stays free.",
+    "reachedCta": "Get API key"
+  },
+  "apiKeyHook": {
+    "eyebrow": "Need production throughput?",
+    "body": "Free: 100 hosted receipts a day, no key. Pro {{proPrice}}/mo raises it to {{proCap}}/day; Ultra {{ultraPrice}}/mo to {{ultraCap}}/day. Pay by card and your key appears on screen.",
+    "cta": "Get instant API key",
+    "free": "Verification, the specification and self-hosting stay free forever · a plan buys capacity, never a finding"
+  },
   "homeSeal": {
     "eyebrow": "Universal compliance sandbox",
     "title": "Put a verifiable seal on any file.",
