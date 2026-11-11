@@ -123,7 +123,6 @@ import CookieConsent from "@/components/CookieConsent";
 
 
 
-import ChatWidget from "@/components/chat/ChatWidget";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import FeedbackWidget from "@/components/FeedbackWidget";
 import CanonicalDomainRedirect from "@/components/CanonicalDomainRedirect";
@@ -319,7 +318,6 @@ const App = () => (
             <ConnectAIButton />
             <CookieConsent />
             <ExitIntentPopup />
-            <ChatWidget />
             <FeedbackWidget />
           </AuthProvider>
         </BrowserRouter>

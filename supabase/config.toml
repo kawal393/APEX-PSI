@@ -36,9 +36,6 @@ verify_jwt = false
 [functions.translate]
 verify_jwt = false
 
-[functions.apex-chat]
-verify_jwt = false
-
 [functions.chat-analytics]
 verify_jwt = false
 
