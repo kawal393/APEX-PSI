@@ -62,6 +62,27 @@ const GrandHero = () => {
       className="relative border-b border-gold/20 bg-background px-4 pb-14 pt-12 text-center md:pb-20 md:pt-16"
     >
       <div className="mx-auto max-w-6xl">
+        <div className="mb-8 flex flex-col items-center gap-2">
+          <a
+            href="https://mcprush.com/to/apex-psi-mcp?ref=badge"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block transition-opacity hover:opacity-90"
+          >
+            <img
+              src="https://mcprush.com/badge/apex-psi-mcp/card.svg"
+              alt="APEX PSI MCP on mcprush: security grade A, no sign-in, 6 tools"
+              width={380}
+              height={200}
+              loading="eager"
+              className="h-auto w-[300px] max-w-full sm:w-[380px]"
+            />
+          </a>
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+            Independent listing · live figures measured by mcprush, not by APEX
+          </p>
+        </div>
+
         <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-gold md:text-sm md:tracking-[0.7em]">
           The First
         </p>

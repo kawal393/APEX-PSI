@@ -22,11 +22,6 @@ const EMPIRE_ASSETS: EmpireAsset[] = [
     descriptor: "Infrastructure & Operations",
   },
   {
-    name: "Apex Global Consumer Shield",
-    url: "https://global-shield.apex-infrastructure.com",
-    descriptor: "Consumer Protection Engine",
-  },
-  {
     name: "Sovereign AI Services",
     url: "https://sovereign-ai.services",
     descriptor: "AI Governance Charters",
