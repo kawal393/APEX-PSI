@@ -68,3 +68,9 @@
 - [x] Engine export includes the ledger signature and commit timestamp; odd-tree inclusion proofs fixed.
 - [x] Commit service fails closed instead of issuing a pseudo-signature (deployed, live-tested).
 - [ ] Publish the site so the live checker uses the strict rules.
+
+# Launch-day tidy (11 Nov 2026)
+- [x] Show the mcprush badge at the top of the home page.
+- [x] Remove the unpublished Consumer Shield site from the network menu.
+- [x] Check API key and paid-plan conversions.
+- [ ] Put the changes on the live site — requires publishing.
