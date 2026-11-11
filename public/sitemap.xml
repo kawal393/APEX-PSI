@@ -286,6 +286,42 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://www.ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-requirements-crw7h3</loc>
+    <lastmod>2026-11-11T06:06:23.929Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/c2pa-content-credentials-for-ai-outputs-p4nql8</loc>
+    <lastmod>2026-11-11T06:06:23.929Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-y3w4t1</loc>
+    <lastmod>2026-11-11T06:06:23.929Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/verifiable-ai-governance-cryptographic-evidence-97lu19</loc>
+    <lastmod>2026-11-11T03:06:41.610Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-y2253w</loc>
+    <lastmod>2026-11-11T03:06:41.610Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/c2pa-provenance-and-content-credentials-for-ai-uc8doy</loc>
+    <lastmod>2026-11-11T03:06:41.610Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.ai-governance-standard.com/articles/ai-accountability-why-logs-are-not-evidence-otutl2</loc>
     <lastmod>2026-11-11T00:06:35.920Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6246,42 +6282,6 @@
   <url>
     <loc>https://www.ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-b5wxkj</loc>
     <lastmod>2026-08-27T18:06:59.107Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-governance-framework-checklist-for-enterprises-32dul5</loc>
-    <lastmod>2026-08-27T18:06:59.107Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ietf-draft-singh-psi-00-verifiable-ai-compliance-2y7es3</loc>
-    <lastmod>2026-08-27T18:06:59.107Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/opentimestamps-for-permanent-ai-decision-records-j00yxo</loc>
-    <lastmod>2026-08-27T15:07:05.091Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ietf-draft-singh-psi-00-verifiable-ai-compliance-5hcopz</loc>
-    <lastmod>2026-08-27T15:07:05.091Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-i0gxiw</loc>
-    <lastmod>2026-08-27T15:07:05.091Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-insurance-underwriting-with-cryptographic-proofs-qwivtn</loc>
-    <lastmod>2026-08-27T12:07:34.399Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
