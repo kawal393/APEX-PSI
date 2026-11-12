@@ -59,6 +59,15 @@ jobs:
       - name: Test the built verifier
         run: npm test
 
+      # The `bin` entry point shipped for three releases without any rail ever running it:
+      # 1.5.0's build died on a top-level await inside it that no test touched. Prove the
+      # bytes strangers execute actually execute, in both module formats.
+      - name: The published CLI runs
+        run: |
+          node dist/cli.cjs 2>&1 | grep -q "^usage:" || { echo "STOP: dist/cli.cjs prints no usage line"; exit 1; }
+          node dist/cli.cjs inspect test/fixtures/incident-bundle.json | grep -q "^PASS" || { echo "STOP: the CJS CLI cannot read the shipped fixture"; exit 1; }
+          node dist/cli.js inspect test/fixtures/incident-bundle.json | grep -q "^PASS" || { echo "STOP: the ESM CLI cannot read the shipped fixture"; exit 1; }
+
       # A guard that cannot fail is not a guard: prove the tarball strangers receive
       # actually contains the built code, not just the manifest.
       - name: Prove dist is inside the tarball
