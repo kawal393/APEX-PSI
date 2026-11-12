@@ -50,6 +50,13 @@
       "when": 1794467614829,
       "tag": "0006_lock_ledger_and_compliance_writes",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794471046316,
+      "tag": "0007_harden_keys_forms_and_job_token",
+      "breakpoints": true
     }
   ]
 }
