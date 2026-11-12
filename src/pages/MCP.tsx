@@ -67,9 +67,12 @@ const HOSTED_LINKS: Record<string, { label: string; to: string }> = {
 
 // Both counts are derived from the measured lists, never typed. The hand-typed "6" that used
 // to sit here is what a third-party directory copied onto a listing we now manage.
+// These two mcprush tiles are fields their own badge publishes (aria-label, measured 11 Nov
+// 2026); they replaced a numeric score the badge has never carried. mcprush-claim-check
+// re-reads the badge and goes red if the tiles drift.
 const SIGNALS = [
-  { value: "A", label: "mcprush grade" },
-  { value: "100/100", label: "mcprush trust score" },
+  { value: "A", label: "mcprush security grade · 11 Nov 2026" },
+  { value: "14", label: "clients mcprush lists it works with" },
   { value: String(LOCAL_COUNT), label: "Tools in the npm package · no account" },
   { value: String(HOSTED_COUNT), label: "Tools on the hosted connector · sign-in" },
 ];
@@ -129,7 +132,7 @@ const MCP = () => {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 border border-gold/50 text-gold px-5 py-3 rounded font-semibold"
           >
-            mcprush · Grade A <ExternalLink className="w-4 h-4" />
+            mcprush · security A <ExternalLink className="w-4 h-4" />
           </a>
         </div>
         <div className="flex flex-wrap gap-2 font-mono">
@@ -153,15 +156,15 @@ const MCP = () => {
           ))}
         </div>
         <p className="mt-3 text-[11px] font-mono text-muted-foreground">
-          The grade and trust score are{" "}
+          What appears on these two tiles is{" "}
           <a href={MCPRUSH_URL} target="_blank" rel="noopener noreferrer" className="text-primary underline">
             mcprush
           </a>
-          &apos;s own security scan of this published code (Security &amp; Testing category,
-          scanned 22&nbsp;Oct&nbsp;2026). We claimed and manage that listing, so read it as a third
-          party&apos;s measurement of our public source — not as an endorsement, a partnership, or a
-          rating APEX PSI gives anything. APEX PSI issues no scores; a seal proves a record was made,
-          never that it is true.
+          &apos;s own measurement of this published code — as at 11&nbsp;Nov&nbsp;2026 their badge
+          reads security&nbsp;A, low access, no sign-in, 6&nbsp;tools, works with 14&nbsp;clients.
+          We claimed and manage that listing, so read it as a third party&apos;s measurement of our
+          public source — not as an endorsement, a partnership, or a rating APEX PSI gives anything.
+          APEX PSI issues no scores; a seal proves a record was made, never that it is correct.
         </p>
       </section>
 

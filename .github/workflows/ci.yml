@@ -164,6 +164,23 @@ jobs:
         # is an interface, so it is guarded like one.
         run: node scripts/tool-name-check.mjs
 
+  # Own job, nothing depends on it: it measures a third party's cached record, so it can be red
+  # because the registry has not refreshed while our own repository is already correct — and it
+  # must never hold the deploy rail hostage to someone else's cache.
+  # 11 Nov 2026: our site asserted "mcprush Grade A · 100/100 trust" in a stat tile, a strip, a
+  # button and two sentences. mcprush's badge, fetched live, publishes "security A, low access,
+  # no sign-in, 6 tools, works with 14 clients" — a letter and four findings, and no score out of
+  # 100 anywhere in it. A borrowed number is a claim about somebody else, so it is measured
+  # against them, not against what we remember being told.
+  registry-truth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run check:registry-truth
+
   supabase-deploy:
     # NOT on every push to main. `supabase db push` + `functions deploy` mutate
     # production, and the deploy job used to run silently behind a test suite

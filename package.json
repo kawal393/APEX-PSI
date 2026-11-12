@@ -16,7 +16,9 @@
     "test:watch": "vitest",
     "check:tools": "node scripts/tool-name-check.mjs",
     "check:badge-copy": "node scripts/badge-copy-check.mjs",
-    "check:x402": "node --experimental-strip-types scripts/x402-selftest.mjs"
+    "check:x402": "node --experimental-strip-types scripts/x402-selftest.mjs",
+    "check:registry-truth": "node scripts/mcprush-claim-check.mjs",
+    "check:registry-truth:live": "node scripts/mcprush-claim-check.mjs --live"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
