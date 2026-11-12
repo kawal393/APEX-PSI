@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resolveCaller } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -35,9 +36,28 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const { silo_id, silo_name, current_score, use_ai } = body;
 
-    if (!silo_id) {
+    if (!silo_id || typeof silo_id !== "string" || !/^[0-9a-f-]{36}$/i.test(silo_id)) {
       return new Response(JSON.stringify({ error: "silo_id required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Only internal calls, admins, or members assigned to this silo may read its data.
+    const caller = await resolveCaller(req, supabase);
+    let allowed = caller.service || caller.isAdmin;
+    if (!allowed && caller.userId) {
+      const { data: assignment } = await supabase
+        .from("silo_assignments")
+        .select("id")
+        .eq("user_id", caller.userId)
+        .eq("silo_id", silo_id)
+        .eq("is_active", true)
+        .limit(1);
+      allowed = !!assignment && assignment.length > 0;
+    }
+    if (!allowed) {
+      return new Response(JSON.stringify({ error: "Not authorized for this silo" }), {
+        status: caller.userId ? 403 : 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -118,7 +138,8 @@ Be specific to the ${silo_name} industry. Keep it under 200 words.`
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    console.error("ai-remediation error:", err);
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

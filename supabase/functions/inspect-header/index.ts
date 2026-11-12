@@ -2,6 +2,8 @@
 // Server-side fetch, header parsing, optional Ed25519 signature verification
 // against the issuer's /.well-known/compliance-receipt descriptor.
 
+import { safeFetch, assertPublicUrl, UnsafeUrlError } from "../_shared/safe-fetch.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -70,7 +72,7 @@ async function importEd25519Spki(pemOrB64: string): Promise<CryptoKey | null> {
 async function fetchWellKnown(issuerUrl: string): Promise<{ pem: string } | null> {
   try {
     const u = new URL(issuerUrl);
-    const res = await fetch(`${u.origin}/.well-known/compliance-receipt`, {
+    const res = await safeFetch(`${u.origin}/.well-known/compliance-receipt`, {
       headers: { Accept: "application/json" },
       signal: AbortSignal.timeout(4000),
     });
@@ -120,17 +122,12 @@ Deno.serve(async (req) => {
     });
   }
 
-  // Block private/loopback
+  // Only public internet hosts: refuses private, loopback, link-local and
+  // metadata addresses after DNS resolution, and re-checks every redirect.
   try {
-    const u = new URL(url);
-    if (/^(localhost|127\.|10\.|192\.168\.|169\.254\.|0\.0\.0\.0)/i.test(u.hostname)) {
-      return new Response(JSON.stringify({ error: "Refusing to fetch private address" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-  } catch {
-    return new Response(JSON.stringify({ error: "Invalid URL" }), {
+    await assertPublicUrl(url);
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e instanceof UnsafeUrlError ? e.message : "Invalid URL" }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -138,14 +135,16 @@ Deno.serve(async (req) => {
 
   let upstream: Response | null = null;
   try {
-    upstream = await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(6000), redirect: "follow" });
+    upstream = await safeFetch(url, { method: "HEAD", signal: AbortSignal.timeout(6000) });
     if (!upstream.headers.get("compliance-receipt")) {
       // Some servers don't reflect on HEAD; try GET without consuming much.
-      upstream = await fetch(url, { method: "GET", signal: AbortSignal.timeout(6000), redirect: "follow" });
+      await upstream.body?.cancel();
+      upstream = await safeFetch(url, { method: "GET", signal: AbortSignal.timeout(6000) });
     }
+    await upstream.body?.cancel();
   } catch (e) {
     return new Response(
-      JSON.stringify({ url, has_header: false, error: `Fetch failed: ${(e as Error).message}` }),
+      JSON.stringify({ url, has_header: false, error: e instanceof UnsafeUrlError ? e.message : "Fetch failed" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }

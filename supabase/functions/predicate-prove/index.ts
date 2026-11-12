@@ -14,6 +14,8 @@
 //   EU_ART_13_LABEL    — output carries an AI-generation disclosure marker
 // ═══════════════════════════════════════════════════════════════════════
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resolveCaller, sha256Hex as hashKey } from "../_shared/caller.ts";
+import { resolveNotaryKey } from "../_shared/receipt-links.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -130,6 +132,40 @@ Deno.serve(async (req) => {
     if (typeof input !== "string" || typeof output !== "string") return json({ error: "input & output must be strings" }, 400);
     if (input.length > 32768 || output.length > 32768) return json({ error: "input/output exceed 32KB" }, 400);
 
+    if (receipt_id.length > 128) return json({ error: "receipt_id too long" }, 400);
+
+    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+
+    // Only the owner of a receipt (signed in, or holding their notary API key) may
+    // attach a proof to it. Admins and internal calls may attach to any receipt.
+    const caller = await resolveCaller(req, supabase);
+    let callerUserId = caller.userId;
+    if (!callerUserId && !caller.service) {
+      const apiKey = resolveNotaryKey((n) => req.headers.get(n));
+      if (apiKey) {
+        const { data: keyRow } = await supabase
+          .from("notary_api_keys")
+          .select("user_id")
+          .eq("api_key_hash", await hashKey(apiKey))
+          .eq("revoked", false)
+          .maybeSingle();
+        callerUserId = keyRow?.user_id ?? null;
+      }
+    }
+    if (!callerUserId && !caller.service) {
+      return json({ error: "authentication_required", message: "Sign in or send your notary API key in x-apex-api-key." }, 401);
+    }
+
+    const [{ data: ledgerRow }, { data: actionRow }] = await Promise.all([
+      supabase.from("gallows_ledger").select("user_id").eq("commit_id", receipt_id).maybeSingle(),
+      supabase.from("notary_action_receipts").select("user_id").eq("receipt_id", receipt_id).maybeSingle(),
+    ]);
+    const receipt = ledgerRow ?? actionRow;
+    if (!receipt) return json({ error: "receipt_not_found" }, 404);
+    if (!caller.service && !caller.isAdmin && (!receipt.user_id || receipt.user_id !== callerUserId)) {
+      return json({ error: "forbidden", message: "Only the owner of this receipt can attach a proof to it." }, 403);
+    }
+
     const evaluator = REGISTRY[predicate_id];
     if (!evaluator) return json({ error: "unknown_predicate", available: Object.keys(REGISTRY) }, 400);
 
@@ -143,16 +179,18 @@ Deno.serve(async (req) => {
       verdict: result.verdict, evidence: result.evidence,
     });
     const proofHash = await sha256Hex(proofPayload);
-    const signature = await signEd25519(proofHash, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "psi");
+    // Fail closed: never sign with a fixed or guessable fallback seed.
+    const signingSeed = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!signingSeed) return json({ error: "signing_unavailable" }, 503);
+    const signature = await signEd25519(proofHash, signingSeed);
 
-    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const { error } = await supabase.from("predicate_proofs").insert({
       receipt_id, predicate_id, predicate_version: "v1",
       input_hash: inputHash, output_hash: outputHash,
       proof_hash: proofHash, verdict: result.verdict,
       evidence: result.evidence, ed25519_signature: signature,
     });
-    if (error) return json({ error: "persist_failed", detail: error.message }, 500);
+    if (error) { console.error("predicate proof persist failed:", error); return json({ error: "persist_failed" }, 500); }
 
     return json({
       receipt_id, predicate_id, predicate_version: "v1",
@@ -162,6 +200,7 @@ Deno.serve(async (req) => {
       engine: "APEX PSI Predicate Prover v1",
     }, 201);
   } catch (e: any) {
-    return json({ error: "internal_error", detail: e?.message }, 500);
+    console.error("predicate-prove error:", e);
+    return json({ error: "internal_error" }, 500);
   }
 });

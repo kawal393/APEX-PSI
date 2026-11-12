@@ -78,6 +78,7 @@ const result = await response.json();
 // {
 //   success: true,
 //   commit_id: "APEX-A1B2C3D4-E5F6",
+//   control_token: "ctl_...",  // shown once; keep private
 //   commit_hash: "sha256:abc123...",
 //   merkle_leaf_hash: "sha256:def456...",
 //   timestamp: "2026-03-08T12:00:00.000Z",
@@ -91,7 +92,8 @@ const response = await fetch(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      commit_id: 'APEX-A1B2C3D4-E5F6'
+      commit_id: 'APEX-A1B2C3D4-E5F6',
+      control_token: 'ctl_...' // from the commit response (or sign in as the owner)
     })
   }
 );
@@ -112,7 +114,8 @@ const response = await fetch(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      commit_id: 'APEX-A1B2C3D4-E5F6'
+      commit_id: 'APEX-A1B2C3D4-E5F6',
+      control_token: 'ctl_...' // same token as the challenge step
     })
   }
 );
@@ -653,7 +656,7 @@ const batch = await response.json();
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-engine-muted text-sm">
-              Query any entity's compliance status. No authentication required. The WHOIS of AI Compliance.
+              Look up an organisation's self-reported assessment status. No authentication required. These statuses are self-assessments, not independent verification or certification.
             </p>
             <div className="relative">
               <pre className="bg-engine-bg border border-engine-border rounded p-4 overflow-x-auto text-xs">
@@ -667,8 +670,12 @@ GET /verify-status?action=registry&limit=50&offset=0
 GET /verify-status?action=stats
 
 # Example response (entity lookup):
+# Scores come from the organisation's own questionnaire answers.
+# They are self-reported and are not independently verified by APEX.
 {
-  "verified": true,
+  "verified": false,
+  "assessment_basis": "self_reported",
+  "self_reported_status": "compliant",
   "entity": {
     "name": "Acme AI Corp",
     "status": "compliant",

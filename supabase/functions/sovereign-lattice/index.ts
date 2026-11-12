@@ -58,9 +58,12 @@ serve(async (req) => {
   const sourceNode = req.headers.get("x-node-id") || req.headers.get("X-Node-Id") || "unknown";
 
   let isAuthorized = false;
+  let isNode = false;
+  let isAdmin = false;
 
   if (platformKey && latticeKey && platformKey === latticeKey) {
     isAuthorized = true;
+    isNode = true;
   }
 
   const authHeader = req.headers.get("Authorization");
@@ -73,6 +76,13 @@ serve(async (req) => {
     const { data: claimsData } = await userClient.auth.getClaims(token);
     if (claimsData?.claims?.sub) {
       isAuthorized = true;
+      const { data: role } = await serviceClient
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", claimsData.claims.sub)
+        .eq("role", "admin")
+        .maybeSingle();
+      isAdmin = !!role;
     }
   }
 
@@ -82,6 +92,13 @@ serve(async (req) => {
 
   if (!isAuthorized && !isPublicRead) {
     return json({ error: "Unauthorized — valid X-Platform-Key or Bearer token required" }, 401);
+  }
+
+  // Actions that write lattice state or verification records are reserved for
+  // peer nodes holding the lattice key, or admins. Ordinary members may only read.
+  const WRITE_ACTIONS = new Set(["ingest-event", "lattice-heartbeat", "cross-node-sync", "verification-trigger"]);
+  if (WRITE_ACTIONS.has(action) && !isNode && !isAdmin) {
+    return json({ error: "Forbidden — this action requires a lattice node key or admin role" }, 403);
   }
 
 
@@ -137,7 +154,7 @@ serve(async (req) => {
     } catch { /* ignore */ }
 
     // If it's a verification-trigger event, handle it
-    if (event_type === "verification-trigger" && payload?.user_id && payload?.article_number) {
+    if (event_type === "verification-trigger" && typeof payload?.user_id === "string" && /^[0-9a-f-]{36}$/i.test(payload.user_id) && payload?.article_number) {
       try {
         await serviceClient.from("verification_history").insert({
           user_id: payload.user_id,
@@ -233,7 +250,7 @@ serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const { user_id, article_number, article_title, compliance_result_id } = body;
 
-    if (!user_id || !article_number) {
+    if (!user_id || typeof user_id !== "string" || !/^[0-9a-f-]{36}$/i.test(user_id) || !article_number) {
       return json({ error: "user_id and article_number required" }, 400);
     }
 
@@ -248,7 +265,7 @@ serve(async (req) => {
     return json({
       success: !error,
       verification: data,
-      error: error?.message,
+      error: error ? "insert_failed" : undefined,
       node: NODE_CONFIG.id,
       timestamp: now(),
     });

@@ -5,6 +5,8 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { newControlToken } from "../_shared/commit-control.ts";
+import { sha256Hex as controlHash } from "../_shared/caller.ts";
 import { signEd25519Strict, rfc6962Root } from "../_shared/psi_core.ts";
 
 const corsHeaders = {
@@ -180,6 +182,10 @@ Deno.serve(async (req) => {
       console.warn(`[Engine] Hash mismatch detected from ${clientIP}: client=${client_commit_hash}, server=${commitHash}`);
     }
 
+    // One-time control token: only the creator can later challenge/prove this commit.
+    const controlToken = newControlToken();
+    const controlTokenHash = await controlHash(controlToken);
+
     // Insert into ledger with server-computed hashes + signature
     const { data, error } = await supabase.from("gallows_ledger").insert({
       commit_id: commitId,
@@ -192,7 +198,8 @@ Deno.serve(async (req) => {
       merkle_leaf_hash: merkleLeafHash,
       ed25519_signature: ed25519Signature,
       merkle_root: merkleRoot,
-    }).select().single();
+      control_token_hash: controlTokenHash,
+    }).select("commit_id").single();
 
     if (error) {
       console.error("[Engine] Insert failed:", error);
@@ -206,6 +213,8 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         commit_id: commitId,
+        control_token: controlToken,
+        control_token_note: "Keep this private. It is shown once and is required to challenge or prove this commit.",
         commit_hash: commitHash,
         merkle_leaf_hash: merkleLeafHash,
         ed25519_signature: ed25519Signature,

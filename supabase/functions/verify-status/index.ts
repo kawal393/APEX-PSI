@@ -14,6 +14,12 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
+// Statuses in this registry come from each organisation's own questionnaire
+// answers. APEX does not audit them, so nothing here is reported as verified.
+const SELF_REPORTED_NOTICE =
+  "Self-reported: this status is computed from the organisation's own questionnaire answers. " +
+  "APEX has not independently verified it, and it is not a certification or a statement of legal compliance.";
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -46,7 +52,11 @@ Deno.serve(async (req) => {
         .eq("compliance_result_id", entityId);
 
       return json({
-        verified: comp.status === "compliant",
+        verified: false,
+        independently_verified: false,
+        assessment_basis: "self_reported",
+        self_reported_status: comp.status,
+        notice: SELF_REPORTED_NOTICE,
         found: true,
         entity: {
           id: comp.id,
@@ -54,9 +64,9 @@ Deno.serve(async (req) => {
           status: comp.status,
           score: comp.overall_score,
           mode: comp.trio_mode,
-          last_verified: comp.updated_at,
+          last_updated: comp.updated_at,
         },
-        articles: proofs || [],
+        articles: (proofs || []).map((p) => ({ ...p, basis: "self_reported" })),
         cryptographic_assurance: {
           hash_algorithm: "SHA-256",
           signature_scheme: "Ed25519",
@@ -87,9 +97,11 @@ Deno.serve(async (req) => {
           status: d.status,
           score: d.overall_score,
           mode: d.trio_mode,
-          last_verified: d.updated_at,
-          verified: d.status === "compliant",
+          last_updated: d.updated_at,
+          verified: false,
+          assessment_basis: "self_reported",
         })),
+        notice: SELF_REPORTED_NOTICE,
         total: count || 0,
         limit,
         offset,
@@ -105,7 +117,10 @@ Deno.serve(async (req) => {
 
       return json({
         total_entities: entries.length,
-        verified: entries.filter((e) => e.status === "compliant").length,
+        independently_verified: 0,
+        assessment_basis: "self_reported",
+        notice: SELF_REPORTED_NOTICE,
+        self_reported_compliant: entries.filter((e) => e.status === "compliant").length,
         mostly_compliant: entries.filter((e) => e.status === "mostly_compliant").length,
         partially_compliant: entries.filter((e) => e.status === "partially_compliant").length,
         non_compliant: entries.filter((e) => e.status === "non_compliant").length,
@@ -122,7 +137,7 @@ Deno.serve(async (req) => {
     // ── Usage info ──
     return json({
       engine: "APEX PSI Protocol v1.0 — Public Verification API",
-      description: "The DNS of AI Compliance. Query any entity's verification status against the EU AI Act.",
+      description: "Look up an organisation's self-reported EU AI Act questionnaire status. " + SELF_REPORTED_NOTICE,
       endpoints: {
         entity_lookup: "/verify-status?entity=<compliance_result_id>",
         registry: "/verify-status?action=registry&limit=50&offset=0",

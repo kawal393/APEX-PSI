@@ -145,12 +145,6 @@ const ComplianceQuestionnaire = ({ onComplete, existingData }: Props) => {
     if (!user) return;
     setSaving(true);
     try {
-      // Boost score if evidence is provided
-      const evidenceBonus = Object.keys(evidenceHashes).length * 2; // up to 10 extra points
-      const { score: rawScore, status: rawStatus } = calculateScore(data);
-      const score = Math.min(100, rawScore + evidenceBonus);
-      const status = score >= 90 ? "compliant" : score >= 70 ? "mostly_compliant" : score >= 50 ? "partially_compliant" : "non_compliant";
-
       // Build evidence hashes JSONB
       const evidenceData: Record<string, any> = {};
       for (const [key, val] of Object.entries(evidenceHashes)) {
@@ -168,16 +162,8 @@ const ComplianceQuestionnaire = ({ onComplete, existingData }: Props) => {
         } as any, { onConflict: "user_id" });
       if (qErr) throw qErr;
 
-      // Update compliance_results
-      const { error: cErr } = await supabase
-        .from("compliance_results")
-        .update({
-          overall_score: score,
-          status,
-          company_name: data.company_name,
-        })
-        .eq("user_id", user.id);
-      if (cErr) throw cErr;
+      // The overall score and status are computed by the server from the saved
+      // answers; the browser no longer writes them.
 
       // Update verification_history based on scoring
       const { score: _s, breakdown } = calculateScore(data);

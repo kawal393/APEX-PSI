@@ -6,6 +6,8 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { submitDigestToCalendars } from "../_shared/ots.ts";
+import { resolveCaller } from "../_shared/caller.ts";
+import { mayAdvanceCommit } from "../_shared/commit-control.ts";
 
 
 const corsHeaders = {
@@ -210,7 +212,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { commit_id } = body;
+    const { commit_id, control_token } = body ?? {};
 
     if (!commit_id || typeof commit_id !== "string") {
       return new Response(
@@ -226,7 +228,7 @@ Deno.serve(async (req) => {
     // Fetch the target commit
     const { data: commit, error: fetchError } = await supabase
       .from("gallows_ledger")
-      .select("*")
+      .select("commit_id, user_id, control_token_hash, phase, action, predicate_id, challenge_hash")
       .eq("commit_id", commit_id)
       .single();
 
@@ -234,6 +236,14 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ error: `Commit ${commit_id} not found` }),
         { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const caller = await resolveCaller(req, supabase);
+    if (!(await mayAdvanceCommit(caller, commit, control_token))) {
+      return new Response(
+        JSON.stringify({ error: "Only the creator of this commit can prove it. Sign in as the owner or send its control_token." }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -305,7 +315,7 @@ Deno.serve(async (req) => {
     if (updateError) {
       console.error("[Prove] Update failed:", updateError);
       return new Response(
-        JSON.stringify({ error: "Failed to update commit", details: updateError.message }),
+        JSON.stringify({ error: "Failed to update commit" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

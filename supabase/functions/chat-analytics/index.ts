@@ -33,6 +33,19 @@ serve(async (req) => {
     // Use service role for data access
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Admin only: these records contain every visitor conversation and lead.
+    const { data: adminRole } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (!adminRole) {
+      return new Response(JSON.stringify({ error: "Admin access required" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Get conversations summary
     const { data: conversations, count: totalConversations } = await supabase
       .from("chat_conversations")
@@ -106,7 +119,7 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("chat-analytics error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

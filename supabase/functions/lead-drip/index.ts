@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { isServiceCall, escapeHtml, EMAIL_RE } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -101,10 +102,18 @@ const DRIP_EMAILS = [
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  try {
-    const { lead_email, lead_name, lead_company, conversation_id, drip_index } = await req.json();
+  // Internal only: drip emails are sent by the lead pipeline holding the service key.
+  if (!isServiceCall(req)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 
-    if (!lead_email) {
+  try {
+    const { lead_email: rawEmail, lead_name, lead_company, conversation_id, drip_index } = await req.json();
+    const lead_email = typeof rawEmail === "string" ? rawEmail.trim() : "";
+
+    if (!lead_email || !EMAIL_RE.test(lead_email)) {
       return new Response(JSON.stringify({ error: "Missing lead_email" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -117,7 +126,7 @@ serve(async (req) => {
       });
     }
 
-    const index = drip_index || 0;
+    const index = Number.isInteger(drip_index) && drip_index >= 0 ? drip_index : 0;
     if (index >= DRIP_EMAILS.length) {
       return new Response(JSON.stringify({ message: "Drip sequence complete" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -125,8 +134,10 @@ serve(async (req) => {
     }
 
     const drip = DRIP_EMAILS[index];
-    const name = lead_name || "";
-    const company = lead_company || "";
+    const name = escapeHtml(String(lead_name ?? "").slice(0, 120));
+    const company = escapeHtml(String(lead_company ?? "").slice(0, 160));
+    const rawName = String(lead_name ?? "").slice(0, 120);
+    const rawCompany = String(lead_company ?? "").slice(0, 160);
 
     // Send the email
     const emailRes = await fetch("https://api.resend.com/emails", {
@@ -161,9 +172,9 @@ serve(async (req) => {
           html: `
             <h2>New Lead from APEX AI Chat</h2>
             <p><strong>Name:</strong> ${name || "Not provided"}</p>
-            <p><strong>Email:</strong> ${lead_email}</p>
+            <p><strong>Email:</strong> ${escapeHtml(lead_email)}</p>
             <p><strong>Company:</strong> ${company || "Not provided"}</p>
-            <p><strong>Conversation:</strong> ${conversation_id || "N/A"}</p>
+            <p><strong>Conversation:</strong> ${escapeHtml(conversation_id || "N/A")}</p>
             <p>Drip sequence started. 3 emails will be sent over 3 days.</p>
           `,
         }),
@@ -181,8 +192,8 @@ serve(async (req) => {
 
       await supabase.from("drip_queue").upsert({
         lead_email,
-        lead_name: name,
-        lead_company: company,
+        lead_name: rawName,
+        lead_company: rawCompany,
         conversation_id: conversation_id || null,
         drip_index: index + 1,
         send_at: new Date(Date.now() + nextDrip.delayMs).toISOString(),
@@ -202,7 +213,7 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("lead-drip error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

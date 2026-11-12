@@ -632,6 +632,7 @@ export type Database = {
           challenged_at: string | null
           commit_hash: string
           commit_id: string
+          control_token_hash: string | null
           created_at: string
           ed25519_signature: string | null
           id: string
@@ -662,6 +663,7 @@ export type Database = {
           challenged_at?: string | null
           commit_hash: string
           commit_id: string
+          control_token_hash?: string | null
           created_at?: string
           ed25519_signature?: string | null
           id?: string
@@ -692,6 +694,7 @@ export type Database = {
           challenged_at?: string | null
           commit_hash?: string
           commit_id?: string
+          control_token_hash?: string | null
           created_at?: string
           ed25519_signature?: string | null
           id?: string

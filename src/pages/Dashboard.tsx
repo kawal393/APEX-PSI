@@ -302,9 +302,11 @@ const Dashboard = () => {
             <TabsTrigger value="notary" className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Key className="h-3.5 w-3.5 mr-1" /> Notary
             </TabsTrigger>
+            {isAdmin && (
             <TabsTrigger value="analytics" className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BarChart3 className="h-3.5 w-3.5 mr-1" /> Analytics
             </TabsTrigger>
+            )}
             <TabsTrigger value="agents" className="text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Bot className="h-3.5 w-3.5 mr-1" /> Agent Monitor
             </TabsTrigger>
@@ -370,9 +372,11 @@ const Dashboard = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="analytics">
-            <ChatAnalytics />
-          </TabsContent>
+          {isAdmin && (
+            <TabsContent value="analytics">
+              <ChatAnalytics />
+            </TabsContent>
+          )}
 
           <TabsContent value="agents">
             <AgentMonitor />

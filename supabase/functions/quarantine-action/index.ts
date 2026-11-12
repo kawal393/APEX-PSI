@@ -9,6 +9,7 @@
 // GET /quarantine-action?model_id=…   → current status
 // ═══════════════════════════════════════════════════════════════════════
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resolveCaller } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -82,12 +83,18 @@ Deno.serve(async (req) => {
   // ── POST: submit signed quarantine action ──
   if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405);
 
+  // Recording a quarantine or clearance is an operator action: admins or internal calls only.
+  const caller = await resolveCaller(req, supabase);
+  if (!caller.service && !caller.isAdmin) {
+    return json({ error: "admin_required" }, caller.userId ? 403 : 401);
+  }
+
   try {
     const body = await req.json();
     const { model_id, action, reason, node_signatures } = body ?? {};
-    if (!model_id || typeof model_id !== "string") return json({ error: "model_id required" }, 400);
+    if (!model_id || typeof model_id !== "string" || model_id.length > 200) return json({ error: "model_id required" }, 400);
     if (action !== "QUARANTINE" && action !== "CLEAR") return json({ error: "action must be QUARANTINE or CLEAR" }, 400);
-    if (!reason || typeof reason !== "string") return json({ error: "reason required" }, 400);
+    if (!reason || typeof reason !== "string" || reason.length > 2000) return json({ error: "reason required" }, 400);
 
     const timestamp = new Date().toISOString();
     const message = `${model_id}|${action}|${reason}|${timestamp.substring(0, 13)}`; // hour-bucketed
@@ -132,7 +139,7 @@ Deno.serve(async (req) => {
       quorum_reached: quorumReached,
       event_hash: eventHash,
     }).select().single();
-    if (error) return json({ error: "persist_failed", detail: error.message }, 500);
+    if (error) { console.error("quarantine persist failed:", error); return json({ error: "persist_failed" }, 500); }
 
     return json({
       event_id: data.id,
@@ -148,6 +155,7 @@ Deno.serve(async (req) => {
       engine: "APEX PSI Quarantine v1 (t-of-n)",
     }, 201);
   } catch (e: any) {
-    return json({ error: "internal_error", detail: e?.message }, 500);
+    console.error("quarantine-action error:", e);
+    return json({ error: "internal_error" }, 500);
   }
 });

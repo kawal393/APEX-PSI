@@ -4,6 +4,7 @@
 // high-intent leads into the lead-drip sequence (Resend delivery).
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resolveCaller } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -107,6 +108,14 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } },
     );
 
+    // Internal or admin only: this reads private lead details.
+    const caller = await resolveCaller(req, supabase);
+    if (!caller.service && !caller.isAdmin) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: caller.userId ? 403 : 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Pull recently-captured leads (last 24h) that haven't been enrolled yet.
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     const { data: convos, error } = await supabase
@@ -175,7 +184,7 @@ Deno.serve(async (req) => {
     );
   } catch (e: any) {
     console.error("score-and-enroll-leads error:", e);
-    return new Response(JSON.stringify({ error: e.message }), {
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

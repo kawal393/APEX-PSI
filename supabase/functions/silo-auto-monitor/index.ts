@@ -5,6 +5,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resolveCaller } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -23,26 +24,19 @@ Deno.serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Auth: admin only OR service-role invocation
-    const authHeader = req.headers.get("Authorization");
-    let isAdmin = false;
-    let triggeredBy: string | null = null;
-
-    if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
-      const { data: userData } = await supabase.auth.getUser(token);
-      if (userData?.user) {
-        triggeredBy = userData.user.id;
-        const { data: roleCheck } = await supabase
-          .from("user_roles").select("role")
-          .eq("user_id", userData.user.id).eq("role", "admin").maybeSingle();
-        isAdmin = !!roleCheck;
-      }
+    // Auth: admin only OR internal service invocation. Everyone else is refused.
+    const caller = await resolveCaller(req, supabase);
+    if (!caller.service && !caller.isAdmin) {
+      return new Response(JSON.stringify({ error: "Admin access required" }), {
+        status: caller.userId ? 403 : 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
+    const triggeredBy: string | null = caller.userId;
 
-    // Parse optional threshold from body
+    // Parse optional threshold from body (bounded 0-100)
     const body = await req.json().catch(() => ({}));
-    const threshold = body.threshold ?? DEFAULT_THRESHOLD;
+    const rawThreshold = Number(body?.threshold ?? DEFAULT_THRESHOLD);
+    const threshold = Number.isFinite(rawThreshold) ? Math.min(100, Math.max(0, rawThreshold)) : DEFAULT_THRESHOLD;
 
     // Get all silos
     const { data: silos } = await supabase.from("industry_silos").select("*");
@@ -132,7 +126,8 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    console.error("silo-auto-monitor error:", err);
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

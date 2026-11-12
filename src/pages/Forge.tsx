@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Sparkles, Loader2, Download, Shield, Copy, Wand2 } from "lucide-react";
 import { embedInBandCredentials, EmbedResult } from "@/lib/c2pa-inband";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const FORGE_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/forge-image";
 const NOTARIZE_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize";
@@ -119,13 +120,27 @@ const Forge = () => {
     if (p.length < 3) { toast.error("Write a longer prompt"); return; }
     setBusy(true); setImgUrl(null); setMeta(null); setMarked(null);
     try {
+      // Image generation uses paid AI capacity, so it requires a signed-in account.
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) {
+        toast.error("Sign in to generate images", {
+          action: { label: "Sign in", onClick: () => { window.location.href = "/auth"; } },
+        });
+        return;
+      }
       setStage("Generating image via Lovable AI…");
       const res = await fetch(FORGE_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
         body: JSON.stringify({ prompt: p }),
       });
       const data = await res.json();
+      if (res.status === 401) throw new Error("Sign in to generate images");
       if (!res.ok) throw new Error(data?.error || `Forge failed (${res.status})`);
 
       setStage("Hashing image locally…");

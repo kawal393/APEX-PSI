@@ -6,6 +6,31 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { CommitRecord, MerkleProofPath } from "./engine-core";
 
+// One-time control tokens returned by commit-action. Only the creator holds them,
+// and the server requires them to challenge or prove an anonymous commit.
+const CONTROL_KEY = "apex_engine_control_tokens";
+function readControlTokens(): Record<string, string> {
+  try {
+    return JSON.parse(sessionStorage.getItem(CONTROL_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+function rememberControlToken(commitId: string, token: string) {
+  try {
+    const all = readControlTokens();
+    all[commitId] = token;
+    sessionStorage.setItem(CONTROL_KEY, JSON.stringify(all));
+  } catch {
+    /* storage unavailable: token stays usable only while the page is open */
+  }
+  memoryTokens[commitId] = token;
+}
+const memoryTokens: Record<string, string> = {};
+function controlTokenFor(commitId: string): string | undefined {
+  return memoryTokens[commitId] ?? readControlTokens()[commitId];
+}
+
 export interface LedgerEntry {
   id: string;
   commit_id: string;
@@ -93,6 +118,10 @@ export async function persistCommit(record: CommitRecord): Promise<ServerCommitR
       return { success: false, error: data.error };
     }
 
+    if (data.commit_id && typeof data.control_token === "string") {
+      rememberControlToken(data.commit_id, data.control_token);
+    }
+
     return {
       success: true,
       commit_id: data.commit_id,
@@ -117,7 +146,7 @@ export async function persistCommit(record: CommitRecord): Promise<ServerCommitR
 export async function challengeCommitServer(commitId: string): Promise<ServerChallengeResponse> {
   try {
     const { data, error } = await supabase.functions.invoke('challenge-action', {
-      body: { commit_id: commitId },
+      body: { commit_id: commitId, control_token: controlTokenFor(commitId) },
     });
 
     if (error) {
@@ -149,7 +178,7 @@ export async function challengeCommitServer(commitId: string): Promise<ServerCha
 export async function proveCommitServer(commitId: string): Promise<ServerProveResponse> {
   try {
     const { data, error } = await supabase.functions.invoke('prove-action', {
-      body: { commit_id: commitId },
+      body: { commit_id: commitId, control_token: controlTokenFor(commitId) },
     });
 
     if (error) {

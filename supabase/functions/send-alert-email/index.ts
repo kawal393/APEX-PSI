@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { isServiceCall, escapeHtml, EMAIL_RE } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -8,8 +9,28 @@ const corsHeaders = {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Internal only: alerts are sent by other backend functions holding the service key.
+  if (!isServiceCall(req)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
-    const { to, subject, company, score, status, mode, previous_status } = await req.json();
+    const body = await req.json();
+    const to = typeof body?.to === "string" ? body.to.trim() : "";
+    if (!EMAIL_RE.test(to)) {
+      return new Response(JSON.stringify({ error: "Invalid recipient" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const company = escapeHtml(body?.company);
+    const status = String(body?.status ?? "").slice(0, 40);
+    const statusHtml = escapeHtml(status.toUpperCase());
+    const score = Number.isFinite(Number(body?.score)) ? Math.round(Number(body.score)) : 0;
+    const mode = escapeHtml(body?.mode);
+    const previous_status = escapeHtml(body?.previous_status);
+    const subject = typeof body?.subject === "string" ? body.subject.slice(0, 150) : "";
 
     const resendKey = Deno.env.get("RESEND_API_KEY");
     if (!resendKey) {
@@ -30,7 +51,7 @@ serve(async (req) => {
   <div style="background:#1a1a2e;border-radius:8px;padding:20px;margin-bottom:20px;">
     <p style="margin:4px 0;"><strong style="color:#888;">Company:</strong> ${company || "N/A"}</p>
     <p style="margin:4px 0;"><strong style="color:#888;">Previous:</strong> ${previous_status || "N/A"}</p>
-    <p style="margin:4px 0;"><strong style="color:#888;">Current:</strong> <span style="color:${statusColor};font-weight:bold;">${(status || "").toUpperCase()}</span></p>
+    <p style="margin:4px 0;"><strong style="color:#888;">Current:</strong> <span style="color:${statusColor};font-weight:bold;">${statusHtml}</span></p>
     <p style="margin:4px 0;"><strong style="color:#888;">Score:</strong> ${score}%</p>
     <p style="margin:4px 0;"><strong style="color:#888;">Mode:</strong> ${mode || "SHIELD"}</p>
   </div>
@@ -57,8 +78,8 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return new Response(JSON.stringify({ error: msg }), {
+    console.error("send-alert-email error:", error);
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
