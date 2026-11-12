@@ -58,7 +58,7 @@ const ActiveSinceClock = () => {
 const GrandHero = () => {
   return (
     <section
-      aria-label="APEX PSI: the first open specification to bind an AI agent's spend mandate, proposal, policy decision and settlement into one envelope anyone can verify offline — published 6 November 2026. Verification is free."
+      aria-label="The first global open protocol for verifiable records — the proof layer of the AI economy"
       className="relative border-b border-gold/20 bg-background px-4 pb-14 pt-12 text-center md:pb-20 md:pt-16"
     >
       <div className="mx-auto max-w-6xl">
