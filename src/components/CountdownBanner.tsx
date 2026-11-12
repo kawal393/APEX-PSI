@@ -64,9 +64,9 @@ const CountdownBanner = () => {
               August 2, 2026 — Article 50 — Transparency obligations for synthetic content are live
             </p>
             <p className="text-[10px] sm:text-xs text-muted-foreground">
-              Maximum penalties: <span className="text-destructive font-bold">€35,000,000</span> or{" "}
-              <span className="text-destructive font-bold">7% of global annual turnover</span>
-              <span className="text-muted-foreground/60"> — EU AI Act Art. 99</span>
+              Maximum penalties for this tier: <span className="text-destructive font-bold">€15,000,000</span> or{" "}
+              <span className="text-destructive font-bold">3% of global annual turnover</span>
+              <span className="text-muted-foreground/60"> — EU AI Act Art. 99(4). The €35M / 7% tier (Art. 99(3)) applies to Article 5 prohibited practices, not to Article 50.</span>
             </p>
           </div>
 

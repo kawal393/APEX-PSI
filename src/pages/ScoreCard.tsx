@@ -99,7 +99,7 @@ const ScoreCard = () => {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            EU AI Act compliance assessment by <span className="text-gold">APEX PSI</span>
+            Article 50 self-assessment by <span className="text-gold">APEX PSI</span> — a tool you run, not a regulator's finding
           </p>
         </motion.div>
       </div>

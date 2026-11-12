@@ -850,7 +850,7 @@ const Verify = () => {
                     <p className="font-black text-compliant text-sm mb-1">ATTESTATION ANCHORED</p>
                     <p className="text-xs text-muted-foreground">
                       Your verification has been cryptographically hashed and recorded on the append-only public ledger.
-                      It can never be altered or deleted.
+                      It is recorded on the append-only public ledger, and every row can be re-checked by anyone.
                     </p>
                   </motion.div>
                 )}

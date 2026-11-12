@@ -69,7 +69,7 @@ const functionColors: Record<string, string> = {
 };
 
 const frameworkStats = [
-  { label: "PSI Predicates", value: "62+" },
+  { label: "PSI Predicates", value: "33" },
   { label: "NIST Controls Mapped", value: "24" },
   { label: "ISO 42001 Clauses", value: "8" },
   { label: "Jurisdictions", value: "14" },

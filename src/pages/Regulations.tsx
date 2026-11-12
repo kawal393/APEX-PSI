@@ -33,7 +33,7 @@ const statusConfig: Record<RegStatus, { label: string; color: string; icon: type
 
 const regulations: Regulation[] = [
   // EU & EEA
-  { country: "European Union", region: "Europe", flag: "🇪🇺", name: "EU AI Act (Reg. 2024/1689)", status: "enforced", enforcementDate: "Aug 2, 2026 (high-risk)", maxPenalty: "€35M or 7% global turnover", scope: "All AI systems marketed/used in EU", url: "https://eur-lex.europa.eu/eli/reg/2024/1689/oj" },
+  { country: "European Union", region: "Europe", flag: "🇪🇺", name: "EU AI Act (Reg. 2024/1689)", status: "enforced", enforcementDate: "Aug 2, 2026 (Art. 50 transparency); Annex III high-risk deferred to Dec 2, 2027", maxPenalty: "€15M or 3% global turnover (Art. 99(4)); €35M or 7% for Art. 5 prohibited practices", scope: "All AI systems marketed/used in EU", url: "https://eur-lex.europa.eu/eli/reg/2024/1689/oj" },
   { country: "United Kingdom", region: "Europe", flag: "🇬🇧", name: "AI Regulation Framework", status: "proposed", enforcementDate: "TBD", scope: "Sector-specific, principles-based", url: "https://www.gov.uk/government/publications/ai-regulation-a-pro-innovation-approach" },
   { country: "Switzerland", region: "Europe", flag: "🇨🇭", name: "Swiss AI Guidelines", status: "draft", scope: "Aligning with EU AI Act" },
   { country: "Norway", region: "Europe", flag: "🇳🇴", name: "EU AI Act (EEA)", status: "enacted", enforcementDate: "Aligning with EU timeline", scope: "EEA adoption of EU AI Act" },

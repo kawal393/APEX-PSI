@@ -44,15 +44,16 @@ Status:         ${statusLabels[status] || "N/A"}
 Assessment Date: ${new Date(date).toLocaleDateString()}
 ${merkleHash ? `Merkle Hash:    ${merkleHash}` : ""}
 
-This certificate confirms that the above company has
-undergone an EU AI Act compliance assessment via the
-APEX PSI verification platform.
+This record shows a self-assessment the company ran
+through the APEX PSI platform against the Article 50
+transparency checks. It is not a compliance decision, a
+legal opinion, or a regulator's finding.
 
-Deadline: August 2, 2026
+Article 50 became applicable 2 August 2026
 
 ═══════════════════════════════════════════════════════
          Issued by APEX Infrastructure Pty Ltd
-         ABN: [Registration Number]
+         ABN: 71 672 237 795
          Melbourne, Australia
 ═══════════════════════════════════════════════════════
 `.trim();

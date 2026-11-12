@@ -41,7 +41,7 @@ const HowToUse = () => {
               <p className="text-[11px] text-muted-foreground mb-3">
                 Adapter API shown as designed. The adapter packages are not published to npm — install them from source.
                 The verifier is published: <span className="font-mono">npm install apex-psi-verifier</span> or{" "}
-                <span className="font-mono">pip install psi-verifier</span>, version 1.3.0 on both.
+                <span className="font-mono">pip install psi-verifier</span>, version 1.5.0 on both.
               </p>
               <pre className="bg-black/60 border border-primary/20 rounded-md p-3 text-[11px] font-mono text-primary overflow-x-auto">
 {`git clone https://github.com/kawal393/APEX-PSI

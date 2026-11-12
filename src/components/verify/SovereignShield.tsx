@@ -50,7 +50,7 @@ const SovereignShield = ({ allPassed, passCount, totalCount }: SovereignShieldPr
             transition={{ delay: 0.4 }}
             className="font-mono text-xs sm:text-sm text-compliant/80 tracking-wide"
           >
-            MATHEMATICAL INTEGRITY CONFIRMED: NON-REPUDIATION GUARANTEED
+            MATHEMATICAL INTEGRITY CONFIRMED — RECOMPUTED BY ANYONE, NOT ASSERTED BY US
           </motion.p>
         </div>
 

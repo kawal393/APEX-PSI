@@ -164,13 +164,13 @@ const API = () => (
 
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-primary" /> Cryptographic guarantees
+          <ShieldCheck className="w-5 h-5 text-primary" /> What the signature proves
         </h2>
         <ul className="space-y-2 text-muted-foreground list-disc list-inside">
           <li>SHA-256 over RFC 8785 (JCS) canonical JSON for every decision.</li>
           <li>Ed25519 signature over every Merkle leaf.</li>
           <li>Binary Merkle root recomputed from the latest 255 ledger leaves on every commit.</li>
-          <li>Seals carry the <code>PSI-SEAL/1.0.0</code> schema identifier; the filed IETF text is <code>draft-singh-psi</code> revision 01 (Informational, not an approved standard).</li>
+          <li>Seals carry the <code>PSI-SEAL/1.0.0</code> schema identifier; the filed IETF text is <code>draft-singh-psi</code> revision 02 (Informational, not an approved standard).</li>
           <li>Root anchoring to Bitcoin (via OpenTimestamps) and Polygon — see <Link to="/protocol" className="text-primary underline">/protocol</Link>.</li>
         </ul>
       </section>
