@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ApiKeyHook from "@/components/ApiKeyHook";
 
-const PROJECT_STARTED_AT = new Date("2026-02-27T11:02:00Z").getTime();
+const PROJECT_STARTED_AT = new Date("2026-02-27T11:25:56Z").getTime();
+const FIRST_COMMIT = "e78a7e968497597ed0f7396a2ea7dccccde94872";
 
 const getElapsed = (now: number) => {
   const totalSeconds = Math.max(0, Math.floor((now - PROJECT_STARTED_AT) / 1000));
@@ -34,7 +35,7 @@ const ActiveSinceClock = () => {
   return (
     <div className="mx-auto mt-7 w-full max-w-2xl border-y border-gold/20 py-4" aria-live="off">
       <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.32em] text-gold sm:text-[10px]">
-        Active since 27 February 2026 · 11:02 UTC
+        Active since 27 February 2026 · 11:25 UTC
       </p>
       <div className="mt-3 grid grid-cols-4" aria-label="Time active">
         {units.map(({ label, value }, index) => (
@@ -51,6 +52,16 @@ const ActiveSinceClock = () => {
           </div>
         ))}
       </div>
+      <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[10px]">
+        <a
+          href={`https://github.com/kawal393/APEX-PSI/commit/${FIRST_COMMIT}`}
+          target="_blank"
+          rel="noreferrer"
+          className="underline decoration-gold/40 underline-offset-4 hover:text-gold"
+        >
+          Anchored to first commit {FIRST_COMMIT.slice(0, 7)} — check it yourself
+        </a>
+      </p>
     </div>
   );
 };

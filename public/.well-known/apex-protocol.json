@@ -1,5 +1,12 @@
 {
   "protocol": "APEX PSI — Proof of Stateful Integrity",
+  "project_started": {
+    "at": "2026-02-27T11:25:56Z",
+    "anchor": "first commit e78a7e968497597ed0f7396a2ea7dccccde94872 in kawal393/APEX-PSI (author and committer date)",
+    "check": "git log --reverse --format=%cI | head -1",
+    "note": "The commit before it is a Lovable template dated 2025-01-01, so this is the first commit of this project. The public ledger is a different thing with a later date: its first row is 2026-08-22T10:43:09Z, read live from https://ai-governance-standard.com/functions/v1/ledger-stats (founded_at). Both dates are stated with their subject so neither is read as the other.",
+    "measured": "2026-11-12"
+  },
   "version": "1.4",
   "canonical_domain": "https://ai-governance-standard.com",
   "ietf_drafts_measured": "2026-11-12",
