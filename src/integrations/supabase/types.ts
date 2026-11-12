@@ -2617,6 +2617,19 @@ export type Database = {
         Returns: boolean
       }
       next_lms_slot: { Args: { p_count?: number }; Returns: number }
+      recent_witness_contradictions: {
+        Args: { p_limit?: number }
+        Returns: {
+          created_at: string
+          earlier_hash: string
+          earlier_observed_at: string
+          id: string
+          later_hash: string
+          later_observed_at: string
+          source: string
+          source_id: string
+        }[]
+      }
       reserve_public_notary_quota: {
         Args: {
           p_count: number

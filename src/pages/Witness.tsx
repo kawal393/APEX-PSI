@@ -14,7 +14,7 @@ export default function Witness() {
   useEffect(() => {
     (supabase as any).from("public_witness_records").select("*").order("observed_at", { ascending: false }).limit(100)
       .then(({ data, error }: { data: Row[] | null; error: unknown }) => { if (error) setErr(true); else setRows(data ?? []); });
-    (supabase as any).from("witness_contradictions").select("*").order("created_at", { ascending: false }).limit(50)
+    (supabase as any).rpc("recent_witness_contradictions", { p_limit: 50 })
       .then(({ data }: { data: Change[] | null }) => setChanges(data ?? []));
   }, []);
 
