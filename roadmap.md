@@ -74,3 +74,12 @@
 - [x] Remove the unpublished Consumer Shield site from the network menu.
 - [x] Check API key and paid-plan conversions.
 - [ ] Put the changes on the live site — requires publishing.
+
+# Distribution & enterprise pull (12 Nov 2026)
+- [x] Every hosted receipt carries a public receipt page link and copy-paste verify/proof commands (unsigned convenience fields).
+- [x] Hosted receipt service accepts a notary key sent as `Authorization: Bearer apex_ntry_…` (what the MCP package already sends).
+- [x] MCP package 1.2.0 patch: send key correctly, surface receipt page + allowance + upgrade step — ready for the laptop/npm publisher.
+- [ ] Publish apex-psi-mcp 1.2.0 to npm — requires the GitHub/npm publisher on the laptop.
+- [ ] Publish the website so /pilot and /recipe/agent-payment go live — requires the Publish button.
+- [x] /pilot — 14-day parallel evidence pilot page with request form (no prices).
+- [x] /recipe/agent-payment — agent payment + evidence walkthrough, stating the machine-payment door is dormant until configured.

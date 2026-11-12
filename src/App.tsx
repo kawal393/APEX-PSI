@@ -52,6 +52,8 @@ import Registry from "./pages/Registry";
 import SubmissionKit from "./pages/SubmissionKit";
 import IETFDraft from "./pages/IETFDraft";
 import Drafts from "./pages/Drafts";
+import Pilot from "./pages/Pilot";
+import AgentPaymentRecipe from "./pages/AgentPaymentRecipe";
 import Paper from "./pages/Paper";
 import Notary from "./pages/Notary";
 import Explorer from "./pages/Explorer";
@@ -234,6 +236,8 @@ const App = () => (
               <Route path="/submission-kit" element={<SubmissionKit />} />
               <Route path="/draft" element={<IETFDraft />} />
               <Route path="/drafts" element={<Drafts />} />
+              <Route path="/pilot" element={<Pilot />} />
+              <Route path="/recipe/agent-payment" element={<AgentPaymentRecipe />} />
               <Route path="/paper" element={<Paper />} />
               <Route
                 path="/tribunal"

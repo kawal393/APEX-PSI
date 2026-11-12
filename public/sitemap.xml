@@ -286,6 +286,24 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-8te10x</loc>
+    <lastmod>2026-11-12T00:06:37.910Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/ed25519-signatures-for-ai-audit-trails-8i74es</loc>
+    <lastmod>2026-11-12T00:06:37.910Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/ai-accountability-why-logs-are-not-evidence-kfbm07</loc>
+    <lastmod>2026-11-12T00:06:37.910Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.ai-governance-standard.com/articles/how-to-prove-an-ai-decision-existed-at-a-specific-time-693n5n</loc>
     <lastmod>2026-11-11T21:06:41.074Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6268,21 +6286,13 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-fq1aa2</loc>
-    <lastmod>2026-08-30T00:06:50.156Z</lastmod>
+    <loc>https://www.ai-governance-standard.com/pilot</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.ai-governance-standard.com/articles/nist-ai-rmf-vs-eu-ai-act-key-differences-68k3vu</loc>
-    <lastmod>2026-08-29T21:07:13.388Z</lastmod>
+    <loc>https://www.ai-governance-standard.com/recipe/agent-payment</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-mi7i2k</loc>
-    <lastmod>2026-08-29T21:07:13.388Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 </urlset>

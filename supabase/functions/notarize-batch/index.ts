@@ -1,5 +1,6 @@
 import { rfc6962Root, signEd25519Strict, signMlDsa65Strict, MERKLE_PROFILE } from "../_shared/psi_core.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { buildReceiptLinks, resolveNotaryKey, isNotaryKeyBearer } from "../_shared/receipt-links.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -56,14 +57,15 @@ Deno.serve(async (req) => {
     // Auth
     let userId: string | null = null;
     const authHeader = req.headers.get("authorization");
-    if (authHeader) {
+    const headerOf = (n: string) => req.headers.get(n);
+    if (authHeader && !isNotaryKeyBearer(headerOf)) {
       const token = authHeader.replace("Bearer ", "");
       const { data: { user } } = await supabase.auth.getUser(token);
       userId = user?.id ?? null;
     }
 
-    // API key check
-    const apiKey = req.headers.get("x-apex-api-key");
+    // API key check (x-apex-api-key, or a notary key sent as a bearer)
+    const apiKey = resolveNotaryKey(headerOf);
     let tier = "free";
     if (apiKey) {
       const keyHash = await hashSHA256(apiKey);
@@ -137,6 +139,7 @@ Deno.serve(async (req) => {
         merkle_leaf: `sha256:${merkleLeaf}`, ed25519_signature: signature,
         mldsa65_signature: mldsa.sig, mldsa65_public_key: mldsa.pk, merkle_profile: MERKLE_PROFILE,
         merkle_scope: "batch", predicate_applied: predicateId, receipt_version: "PSI-1.2",
+        ...buildReceiptLinks({ receiptId, merkleLeaf, apiBase: `${supabaseUrl}/functions/v1` }),
       });
 
       ledgerRows.push({

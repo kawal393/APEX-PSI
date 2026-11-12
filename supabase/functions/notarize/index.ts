@@ -13,6 +13,7 @@ import {
   type Requirements,
 } from "../_shared/x402.ts";
 import { buildAllowance, allowanceHeaders, upgradePlans, type Allowance } from "../_shared/allowance.ts";
+import { buildReceiptLinks, resolveNotaryKey, isNotaryKeyBearer } from "../_shared/receipt-links.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -132,14 +133,15 @@ Deno.serve(async (req) => {
     // Authenticate if token provided
     let userId: string | null = null;
     const authHeader = req.headers.get("authorization");
-    if (authHeader) {
+    const headerOf = (n: string) => req.headers.get(n);
+    if (authHeader && !isNotaryKeyBearer(headerOf)) {
       const token = authHeader.replace("Bearer ", "");
       const { data: { user } } = await supabase.auth.getUser(token);
       userId = user?.id ?? null;
     }
 
-    // Check API key for higher limits
-    const apiKey = req.headers.get("x-apex-api-key");
+    // Check API key for higher limits (x-apex-api-key, or a notary key sent as a bearer)
+    const apiKey = resolveNotaryKey(headerOf);
     let tier = "free";
     let dailyLimit = FREE_DAILY_LIMIT;
     let usedToday: number | null = null;
@@ -477,6 +479,12 @@ Deno.serve(async (req) => {
       tier,
       engine: "APEX NOTARY v1.0 — Signed",
       ...(paymentRecord ? { payment: paymentRecord } : {}),
+      // Unsigned pointers so whoever receives this receipt can re-check it themselves.
+      ...buildReceiptLinks({
+        receiptId,
+        merkleLeaf,
+        apiBase: `https://${projectId}.supabase.co/functions/v1`,
+      }),
     };
 
     // SCITT bridge (PSI-INTOP-SCITT-1): a JSON view of the same evidence shaped

@@ -28,7 +28,7 @@ const moreGroups: { title: string; links: MoreLink[] }[] = [
   { title: "Developers", links: [
     { label: "API", href: "/api" }, { label: "SDK", href: "/sdk" }, { label: "MCP", href: "/mcp" }, { label: "Engine", href: "/engine" },
     { label: "Lattice", href: "/lattice" }, { label: "Robustness", href: "/robustness" }, { label: "In-Band", href: "/inband" },
-    { label: "Hardening", href: "/hardening" }, { label: "Plans", href: "/products" },
+    { label: "Hardening", href: "/hardening" }, { label: "Agent Payment Recipe", href: "/recipe/agent-payment" }, { label: "14-Day Pilot", href: "/pilot" }, { label: "Plans", href: "/products" },
   ]},
   { title: "Compliance", links: [
     { label: "EU AI Act", href: "/eu-ai-act" }, { label: "EU Code", href: "/eu-code" }, { label: "Regulations", href: "/regulations" },
