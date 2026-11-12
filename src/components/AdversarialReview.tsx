@@ -39,7 +39,7 @@ const critiques = [
       "One company runs the hosted notary and holds the signing key. If it disappears or misbehaves, what happens to the evidence?",
     responseTitle: "You never have to trust us",
     response:
-      "Every receipt verifies offline with the MIT verifier, without contacting APEX — v1.3.0 onward recomputes the digest and checks the Ed25519 signature itself, rather than reporting format alone. The public key is published, Merkle roots are anchored to Bitcoin, and anyone can self-host. If APEX vanished tomorrow, every receipt ever issued would still verify. The math must survive its maker.",
+      "Every receipt verifies offline with the MIT verifier, without contacting APEX — v1.3.0 onward recomputes the digest and checks the Ed25519 signature itself, rather than reporting format alone, and v1.5.0 onward refuses a seal that claims a post-quantum signature nobody checked. The public key is published, Merkle roots are anchored to Bitcoin, and anyone can self-host. If APEX vanished tomorrow, every receipt ever issued would still verify. The math must survive its maker.",
     sources: [
       { label: "Trust anchor", url: "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json" },
       { label: "Verify a receipt", url: "https://ai-governance-standard.com/verify" },

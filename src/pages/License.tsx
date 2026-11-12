@@ -59,7 +59,7 @@ const License = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               {[
                 "packages/psi-verifier (TypeScript) and packages/psi-verifier-py (Python) — zero dependencies, browser / Node / Deno / Bun / workers",
-                "Both verifiers are published: pip install psi-verifier==1.3.0 and npm i apex-psi-verifier@1.3.0 — signature checking, zero dependencies, built by CI with no stored token. Pin 1.3.0: apex-psi-verifier@1.2.0 is still installable and does not check signatures.",
+                "Both verifiers are published: pip install psi-verifier==1.5.0 and npm i apex-psi-verifier@1.5.0 — signature checking, zero dependencies, built by CI with no stored token. Pin 1.5.0: 1.2.0 does not check signatures at all, and 1.3.0 accepts a seal that only claims a post-quantum signature.",
                 "No key, no account, no permission — the code you run offline has no rate limit. The hosted lookup does: /verify-hash allows 20 lookups per minute per address.",
                 "Byte-exact conformance checks against PSI-SEAL/1",
               ].map((t) => (

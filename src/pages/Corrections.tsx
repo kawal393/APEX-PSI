@@ -8,6 +8,15 @@ const DESCRIPTION =
 
 const ENTRIES = [
   {
+    date: "12 November 2026",
+    said:
+      "The pages that name an install command — /license, /sdk, /verify, /pramaan, the technical-specifications card and this file's own entry of 19 October — told every visitor to pin apex-psi-verifier@1.3.0 and psi-verifier==1.3.0, and recorded 1.3.0 as the release that rejects a forged seal.",
+    now:
+      "Measured from the artifacts the indexes serve, on 7 November and again today: 1.3.0 does check the Ed25519 signature and does reject that forgery, but it reads a declared post-quantum signature without verifying it. A seal carrying a genuine Ed25519 signature plus pq_alg \"ML-DSA-65\" and 512 bytes of random noise came back conformant=true, signature_status=verified, authentic=true from npm 1.3.0 and from PyPI 1.3.0 — the claim was copied into the verdict instead of checked. Rule R11.7 closes that gap and verifier 1.5.0 carries the rule; the text both languages emit is \"a claimed post-quantum signature nobody verified is not a verified one — rule 11.11\". As of today both indexes serve 1.5.0 as latest, the same forged envelope is refused in Node and in Python, and every install instruction on this site names 1.5.0. The npm rail's first attempt at 1.5.0 failed before publishing, and the reason is recorded here rather than quietly fixed: the packaged CLI used a top-level await, which has no CommonJS emission, and the package inherited this website's root tsconfig, so the declaration step died on node:fs, process and a .ts specifier. Three releases shipped a bin entry point that no rail had ever executed; one step now runs dist/cli.cjs and dist/cli.js against the fixture inside the tarball.",
+    undertaking:
+      "scripts/registry-truth-check.mjs drives three envelopes — genuine, hash-forged, and genuine-wearing-a-fabricated-post-quantum-claim — through the bytes npm and PyPI actually serve, and fails if either index accepts the second or the third; the 1.2.0 artifact is kept as the demonstrated failure case so the guard cannot go blind by passing everything. The job that runs it reports rather than gates, because a registry outage is not a defect in the verifier, and the 07:00 scan reads its answer. A release is measured by what a stranger installs, not by what our build directory contains.",
+  },
+  {
     date: "21 October 2026",
     said:
       "public/llms.txt — the plain-text summary this site publishes for AI answer engines — stated that the Compliance-Receipt specification \u201cis in preparation and has not been filed\u201d, and named draft-singh-psi revision 01 as the PSI document on the IETF record. The correction of 19 October 2026 records that nineteen public surfaces were re-read against the datatracker and fixed. This file was not one of them.",

@@ -13,9 +13,10 @@
  *   node scripts/registry-truth-check.mjs            # installs from the registries
  *   node scripts/registry-truth-check.mjs --offline  # use dirs already in .registry-check
  *
- * Exits 0 only when: latest npm rejects the forgery, latest PyPI rejects the same
- * bytes, and 1.2.0 accepts them. Needs node >= 22 and python 3 on PATH. No
- * credentials, no network writes — both installs are read-only pulls.
+ * Exits 0 only when: latest npm rejects the hash forgery AND rejects a genuine seal that
+ * declares a post-quantum signature nobody checked, the same is true of latest PyPI, and
+ * 1.2.0 accepts the hash forgery. Needs node >= 22 and python 3 on PATH. No credentials,
+ * no network writes — both installs are read-only pulls.
  */
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
@@ -75,7 +76,18 @@ async function seals(mod, key) {
   // The attacker recomputes every hash and keeps the shape of a real signature,
   // because he holds no key. This is precisely the move 1.2.0 accepted.
   forged.signature = { alg: "Ed25519", value: env.signature.value, seal_hash: await mod.psiSealHash(forged) };
-  return { honest: env, forged };
+
+  // The second attack is cheaper and was accepted by everything up to 1.4.0: keep the
+  // seal entirely genuine and ADD a post-quantum claim. 512 bytes of noise wearing the
+  // label ML-DSA-65. Measured 7 Nov 2026 against npm 1.3.0 and PyPI 1.3.0, both answered
+  // conformant=true / authentic=true, because the declared half was read and never
+  // checked. R11.7 is the rule that closes it, so a release that passes this line while
+  // failing the next one is a release that lets a stranger claim protection he never bought.
+  const pq_forged = structuredClone(env);
+  const noise = new Uint8Array(512);
+  crypto.getRandomValues(noise);
+  pq_forged.signature = { ...env.signature, pq_alg: "ML-DSA-65", pq_value: hex(noise) };
+  return { honest: env, forged, pq_forged };
 }
 
 async function main() {
@@ -86,7 +98,7 @@ async function main() {
 
   const latest = await load("node-latest");
   const unsafe = await load("node-unsafe");
-  const { honest, forged } = await seals(latest, key);
+  const { honest, forged, pq_forged } = await seals(latest, key);
   // 1.2.0 disagrees with 1.3.0 about the schema digest, so its own copy of the
   // story has to be told with its own helpers, or it fails for the wrong reason.
   const unsafePair = await seals(unsafe, key);
@@ -94,24 +106,26 @@ async function main() {
   const verdict = async (mod, env) => mod.verifySeal(env, { trustRoots: trust });
   const nLatestHonest = await verdict(latest, honest);
   const nLatestForged = await verdict(latest, forged);
+  const nLatestPq = await verdict(latest, pq_forged);
   const nUnsafeForged = await verdict(unsafe, unsafePair.forged);
   console.log(`\nnpm ${latest.PSI_VERIFIER_VERSION}  honest -> ${nLatestHonest.conformant ? "PASS" : "REJECT"} (sig ${nLatestHonest.signature_status})`);
   console.log(`npm ${latest.PSI_VERIFIER_VERSION}  FORGED -> ${nLatestForged.conformant ? "PASS" : "REJECT"} (sig ${nLatestForged.signature_status})`);
+  console.log(`npm ${latest.PSI_VERIFIER_VERSION}  PQ-CLAIM FORGED -> ${nLatestPq.conformant ? "PASS" : "REJECT"} (pq ${nLatestPq.post_quantum_status ?? "field absent: this release does not read a post-quantum claim"})`);
   console.log(`npm ${unsafe.PSI_VERIFIER_VERSION}  FORGED -> ${nUnsafeForged.conformant ? "PASS" : "REJECT"} (sig ${nUnsafeForged.signature_status ?? "not checked — no signature code in this release"})`);
 
-  // Hand the exact same two envelopes to the Python artifact the index serves.
+  // Hand the exact same envelopes to the Python artifact the index serves.
   const dir = path.join(root, "py-latest");
-  await writeFile(path.join(root, "seals.json"), JSON.stringify({ public_key: publicKey, honest, forged }));
+  await writeFile(path.join(root, "seals.json"), JSON.stringify({ public_key: publicKey, honest, forged, pq_forged }));
   const py = `
 import json, sys
 sys.path.insert(0, r"${dir}")
 import psi_verifier as pv
 d = json.load(open(r"${path.join(root, "seals.json")}", encoding="utf-8"))
 tr = [{"public_key": d["public_key"], "key_id": "registry-truth-check"}]
-for name in ("honest", "forged"):
+for name in ("honest", "forged", "pq_forged"):
     r = pv.verify_seal(d[name], trust_roots=tr)
     verdict = "PASS" if r.conformant else "REJECT"
-    print(f"pypi {pv.PSI_VERIFIER_VERSION} {name} -> {verdict} (sig {r.signature_status})")
+    print(f"pypi {pv.PSI_VERIFIER_VERSION} {name} -> {verdict} (sig {r.signature_status} pq {getattr(r, 'post_quantum_status', None)})")
 `;
   const pyFile = path.join(root, "py_check.py");
   await writeFile(pyFile, py);
@@ -119,14 +133,17 @@ for name in ("honest", "forged"):
   console.log(pyOut.trim());
 
   const pyLines = pyOut.trim().split("\n").filter(Boolean);
-  const pyForged = pyLines.find((l) => l.includes("forged")) ?? "";
+  const pyForged = pyLines.find((l) => l.includes(" forged")) ?? "";
+  const pyPq = pyLines.find((l) => l.includes("pq_forged")) ?? "";
   const pyVersion = (pyLines[0]?.match(/pypi\s+(\S+)\s/) ?? [])[1] ?? "?";
   const checks = [
     [nLatestHonest.conformant === true, "npm latest accepts the genuine seal"],
     [nLatestForged.conformant === false, "npm latest REJECTS the forgery"],
+    [nLatestPq.conformant === false, "npm latest REJECTS a genuine seal wearing a fabricated post-quantum claim"],
     [nUnsafeForged.conformant === true, "npm 1.2.0 accepts the forgery (the guard's failure case is real)"],
     [pyLines.some((l) => l.includes("honest") && l.includes("PASS")), "PyPI latest accepts the genuine seal"],
     [pyForged.includes("REJECT"), "PyPI latest REJECTS the same forged bytes"],
+    [pyPq.includes("REJECT"), "PyPI latest REJECTS the fabricated post-quantum claim"],
     [pyVersion === latest.PSI_VERIFIER_VERSION, `both indexes serve the same version (${latest.PSI_VERIFIER_VERSION} / ${pyVersion})`],
   ];
   console.log("");
