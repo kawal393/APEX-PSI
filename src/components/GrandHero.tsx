@@ -71,7 +71,7 @@ const GrandHero = () => {
           >
             <img
               src="https://mcprush.com/badge/apex-psi-mcp/card.svg"
-              alt="APEX PSI MCP on mcprush: security grade A, no sign-in, 6 tools"
+              alt="APEX PSI MCP on mcprush: security A, low access, no sign-in"
               width={380}
               height={200}
               loading="eager"
