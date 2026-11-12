@@ -112,8 +112,9 @@ const FreeAssessment = () => {
     }
     setSaving(true);
     try {
-      // Generate a short share_id
-      const sid = Math.random().toString(36).substring(2, 10);
+      // Unguessable share id (24 random base-36 characters from the browser's secure generator)
+      const bytes = crypto.getRandomValues(new Uint8Array(24));
+      const sid = Array.from(bytes, (b) => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]).join("");
       setShareId(sid);
 
       await supabase.from("assessment_leads").upsert(

@@ -116,13 +116,23 @@ Deno.serve(async (req) => {
     // Search across all hash columns
     // Normalize: accept "sha256:<hex>" prefixed hashes and receipt IDs
     const clean = hash.trim().replace(/^sha256:/i, "");
+    // Strictly a 64-hex digest or an APEX receipt id, so it cannot alter the lookup filter.
+    const isDigest = /^[a-f0-9]{64}$/i.test(clean);
+    const isReceiptId = !isDigest && /^(APEX|GENESIS)-[A-Za-z0-9-]{4,80}$/.test(clean);
+    if (!isDigest && !isReceiptId) {
+      return new Response(
+        JSON.stringify({ error: "Expected a 64-character SHA-256 hex digest or an APEX receipt id", verified: false }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const needle = isDigest ? clean.toLowerCase() : clean;
 
     const { data, error } = await supabase
       .from("gallows_ledger")
       .select("*")
-      .or(
-        `commit_hash.eq.${clean},merkle_leaf_hash.eq.${clean},proof_hash.eq.${clean},challenge_hash.eq.${clean},commit_id.eq.${clean}`
-      )
+      .or(isDigest
+        ? `commit_hash.eq.${needle},merkle_leaf_hash.eq.${needle},proof_hash.eq.${needle},challenge_hash.eq.${needle}`
+        : `commit_id.eq.${needle}`)
       .limit(1);
 
     if (error) {

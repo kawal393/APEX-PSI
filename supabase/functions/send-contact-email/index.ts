@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { escapeHtml, EMAIL_RE } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,14 +14,33 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { name, email, company, role, message } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const text = (v: unknown, n: number) => (typeof v === "string" ? v.trim().slice(0, n) : "");
+    const rawName = text(body?.name, 120);
+    const rawEmail = text(body?.email, 254).toLowerCase();
+    const rawCompany = text(body?.company, 160);
+    const rawRole = text(body?.role, 120);
+    const rawMessage = text(body?.message, 5000);
 
-    if (!name || !email || !company) {
+    if (!rawName || !rawEmail || !rawCompany) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+    if (!EMAIL_RE.test(rawEmail)) {
+      return new Response(
+        JSON.stringify({ error: "A valid email address is required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    // HTML-safe copies for the emails; the stored record keeps the plain text.
+    const name = escapeHtml(rawName);
+    const email = escapeHtml(rawEmail);
+    const company = escapeHtml(rawCompany);
+    const role = escapeHtml(rawRole);
+    const message = escapeHtml(rawMessage).replace(/\n/g, "<br>");
+    const subjectSafe = (v: string) => v.replace(/[\r\n]+/g, " ");
 
     // Store in database
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -28,11 +48,11 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { error: dbError } = await supabase.from("contact_submissions").insert({
-      name,
-      email,
-      company,
-      role: role || null,
-      message: message || null,
+      name: rawName,
+      email: rawEmail,
+      company: rawCompany,
+      role: rawRole || null,
+      message: rawMessage || null,
     });
 
     if (dbError) {
@@ -52,7 +72,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           from: "APEX PSI <onboarding@resend.dev>",
           to: [TARGET_EMAIL],
-          subject: `New Demo Request from ${name} (${company})`,
+          subject: `New Demo Request from ${subjectSafe(rawName)} (${subjectSafe(rawCompany)})`,
           html: `
             <h2>New Demo Request</h2>
             <p><strong>Name:</strong> ${name}</p>
@@ -77,7 +97,7 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           from: "APEX PSI <onboarding@resend.dev>",
-          to: [email],
+          to: [rawEmail],
           subject: "We received your request — APEX PSI",
           html: `
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#ffffff;">

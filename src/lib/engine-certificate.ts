@@ -210,7 +210,25 @@ export function downloadCertificateJSON(cert: ComplianceCertificate): void {
 /**
  * Generate certificate HTML for printing/PDF
  */
-export function generateCertificateHTML(cert: ComplianceCertificate): string {
+/** HTML-escape every text value so record text can never become markup. */
+function escapeDeep<T>(v: T): T {
+  if (typeof v === "string") {
+    return v
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;") as unknown as T;
+  }
+  if (Array.isArray(v)) return v.map(escapeDeep) as unknown as T;
+  if (v && typeof v === "object") {
+    return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, escapeDeep(x)])) as T;
+  }
+  return v;
+}
+
+export function generateCertificateHTML(raw: ComplianceCertificate): string {
+  const cert = escapeDeep(raw);
+  if (cert.qrCodeDataUrl && !/^data:image\/(png|svg\+xml|jpeg);base64,[A-Za-z0-9+/=]+$/.test(raw.qrCodeDataUrl ?? "")) {
+    cert.qrCodeDataUrl = undefined;
+  }
   const statusColor = cert.status === 'APPROVED' ? '#00ff88' : '#ff4466';
   const statusIcon = cert.status === 'APPROVED' ? '✓' : '✗';
   

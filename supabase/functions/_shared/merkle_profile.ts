@@ -49,7 +49,7 @@ const MERKLE_PROOF_BASE = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1
 const sha256 = (data: Uint8Array): Uint8Array =>
   new Uint8Array(createHash("sha256").update(data).digest());
 
-const toHex = (b: Uint8Array): string => Buffer.from(b).toString("hex");
+const toHex = (b: Uint8Array): string => Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
 
 /** Same acceptance as psi_core.hexToBytes: hex when it is hex, UTF-8 otherwise. */
 const hexToBytes = (h: string): Uint8Array => {

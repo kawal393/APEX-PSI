@@ -105,7 +105,9 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const action = String(body.action ?? "");
     const db = admin();
-    await sweepLapsed();
+    // Lapsing stale reservations is operator housekeeping (see OPERATOR below);
+    // public reads hide stale reservations by date instead of writing.
+    const lapseCutoff = new Date(Date.now() - LAPSE_DAYS * 86400000).toISOString();
 
     // ---------- APPROVED PARTNER SCRIPT (public, read-only) ----------
     if (action === "script") {
@@ -123,6 +125,7 @@ Deno.serve(async (req) => {
         .from("founding_applications")
         .select("seat_number")
         .eq("status", "RESERVED")
+        .gte("reserved_at", lapseCutoff)
         .not("seat_number", "is", null);
       return json({
         total_seats: TOTAL_SEATS,
@@ -162,7 +165,9 @@ Deno.serve(async (req) => {
         .eq("email", email)
         .not("status", "eq", "LAPSED")
         .maybeSingle();
-      if (existing) return json({ applicant_id: existing.applicant_id, status: existing.status, duplicate: true });
+      // Same answer whether or not this email already applied, so nobody can probe
+      // another person's application; the owner sees their status after signing in.
+      if (existing) return json({ received: true, status: "PENDING", sign_in_to_view: true }, 201);
 
       const applicant_id = `APEX-APP-${(await sha256(`${email}|${Date.now()}`)).slice(0, 8).toUpperCase()}`;
       const { error } = await db.from("founding_applications").insert({
@@ -174,7 +179,7 @@ Deno.serve(async (req) => {
         status: "PENDING",
       });
       if (error) return json({ error: "Could not record application" }, 500);
-      return json({ applicant_id, status: "PENDING" }, 201);
+      return json({ applicant_id, received: true, status: "PENDING" }, 201);
     }
 
     // ---------- OWN STATUS (also flips VERIFIED once the email is confirmed) ----------
@@ -190,7 +195,18 @@ Deno.serve(async (req) => {
       if (!app) return json({ application: null });
 
       let record = app;
-      if (app.status === "PENDING") {
+      // The caller's own stale reservation lapses here (their row only).
+      if (app.status === "RESERVED" && app.reserved_at && app.reserved_at < lapseCutoff) {
+        const { data: lapsed } = await db
+          .from("founding_applications")
+          .update({ status: "LAPSED" })
+          .eq("applicant_id", app.applicant_id)
+          .eq("status", "RESERVED")
+          .select("applicant_id, display_name, email, witness_line, status, seat_number, reserved_at, created_at, ack_hash")
+          .maybeSingle();
+        if (lapsed) record = lapsed;
+      }
+      if (record.status === "PENDING") {
         const { data: updated } = await db
           .from("founding_applications")
           .update({ email_verified: true, status: "VERIFIED" })
@@ -246,11 +262,16 @@ Deno.serve(async (req) => {
 
       const { data: app } = await db
         .from("founding_applications")
-        .select("applicant_id, display_name, seat_number, status, ack_hash")
+        .select("applicant_id, display_name, seat_number, status, ack_hash, reserved_at")
         .eq("email", email)
         .maybeSingle();
       if (!app) return json({ error: "No application found" }, 404);
       if (app.status !== "RESERVED" || !app.seat_number) return json({ error: "Seat is not reserved" }, 409);
+      if (app.reserved_at && app.reserved_at < lapseCutoff) {
+        await db.from("founding_applications").update({ status: "LAPSED" })
+          .eq("applicant_id", app.applicant_id).eq("status", "RESERVED");
+        return json({ error: "This reservation has lapsed" }, 409);
+      }
 
       const leaf = await sha256(artifact);
       const notarizeRes = await fetch(`${SUPABASE_URL}/functions/v1/notarize`, {
@@ -291,6 +312,7 @@ Deno.serve(async (req) => {
     // ---------- OPERATOR ----------
     const { userId } = await callerEmail(req);
     const operator = await isOperator(userId);
+    if (operator) await sweepLapsed();
 
     if (action === "admin-list") {
       if (!operator) return json({ error: "Operator login required" }, 403);

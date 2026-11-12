@@ -83,3 +83,10 @@
 - [ ] Publish the website so /pilot and /recipe/agent-payment go live — requires the Publish button.
 - [x] /pilot — 14-day parallel evidence pilot page with request form (no prices).
 - [x] /recipe/agent-payment — agent payment + evidence walkthrough, stating the machine-payment door is dormant until configured.
+
+# Security sweep (12 Nov 2026)
+- [x] Fix 32 code-level findings and 8 database form/read findings; mark 13 intentional public records as public by design.
+- [x] Fix public ledger mirror crash and remove free text from it.
+- [ ] Re-create the hourly lead-email, hourly post-quantum signing and daily social-proof schedules with the platform scheduler — the scheduling tool was not available in this session; the old schedules are now refused (two had nothing pending).
+- [ ] Decide whether the public company status lookup stays public — needs owner decision.
+- [ ] Publish the website so visitors get the sign-in redirect, certificate and score-card fixes.

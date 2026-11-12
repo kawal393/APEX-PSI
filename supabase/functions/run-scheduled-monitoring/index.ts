@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
+import { isInternalCall, resolveCaller } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,6 +15,16 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     { auth: { persistSession: false } }
   );
+
+  // Only the scheduler, another backend function, or an admin may run due schedules.
+  if (!isInternalCall(req)) {
+    const caller = await resolveCaller(req);
+    if (!caller.isAdmin) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+  }
 
   try {
     // Find all schedules that are due

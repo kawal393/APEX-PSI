@@ -20,6 +20,7 @@ const corsHeaders = {
 };
 
 import { reserveLmsSlots } from "../_shared/psi_core.ts";
+import { isInternalCall, resolveCaller } from "../_shared/caller.ts";
 import {
   lmsSignInstitutional,
   lmsInstitutionalPublicKey,
@@ -43,6 +44,12 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } },
     );
+
+    // Institutional signing runs only for the scheduler, backend functions or an admin.
+    if (!isInternalCall(req)) {
+      const caller = await resolveCaller(req);
+      if (!caller.isAdmin) return json({ error: "Unauthorized" }, 401);
+    }
 
     let requested = 60;
     if (req.method === "POST") {

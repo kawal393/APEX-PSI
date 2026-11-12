@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { safeNextPath } from "@/lib/safe-next";
 
 interface SubscriptionInfo {
   subscribed: boolean;
@@ -50,10 +51,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
       if (session) {
         setTimeout(() => checkSubscription(), 0);
-        const next = sessionStorage.getItem("apex_auth_next");
-        if (next?.startsWith("/") && !next.startsWith("//")) {
+        const stored = sessionStorage.getItem("apex_auth_next");
+        if (stored) {
           sessionStorage.removeItem("apex_auth_next");
-          window.location.assign(next);
+          const next = safeNextPath(stored, "");
+          if (next) window.location.assign(next);
         }
       } else {
         setSubscription({ subscribed: false, tier: null, subscriptionEnd: null });

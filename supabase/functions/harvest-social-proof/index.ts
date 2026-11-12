@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { isInternalCall, resolveCaller } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -42,6 +43,16 @@ Deno.serve(async (req) => {
   }
 
   const supabase = createClient(supabaseUrl, serviceKey);
+
+  // Paid crawling and AI runs only for the daily scheduler or an admin.
+  if (!isInternalCall(req)) {
+    const caller = await resolveCaller(req);
+    if (!caller.isAdmin) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+  }
 
   // Create harvest log entry
   const { data: logEntry, error: logErr } = await supabase

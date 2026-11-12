@@ -155,7 +155,7 @@ serve(async (req) => {
     });
 
     const emailData = await emailRes.json();
-    console.log(`Drip email ${index + 1} sent to ${lead_email}:`, emailRes.status, JSON.stringify(emailData));
+    console.log(`Drip email ${index + 1} sent:`, emailRes.status, emailData?.id ?? "");
 
     // Notify admin on first email
     if (index === 0) {
@@ -168,7 +168,7 @@ serve(async (req) => {
         body: JSON.stringify({
           from: "APEX PSI <onboarding@resend.dev>",
           to: [TARGET_EMAIL],
-          subject: `🎯 New Lead Captured: ${lead_email}`,
+          subject: `🎯 New Lead Captured: ${lead_email.slice(0, 254)}`,
           html: `
             <h2>New Lead from APEX AI Chat</h2>
             <p><strong>Name:</strong> ${name || "Not provided"}</p>

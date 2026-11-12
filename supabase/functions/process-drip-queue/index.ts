@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { isInternalCall } from "../_shared/caller.ts";
 
 // This function processes pending drip emails from the drip_queue table.
 // Call it periodically (e.g., via cron or manual trigger) to send scheduled emails.
@@ -11,6 +12,13 @@ const corsHeaders = {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  // Internal only: the hourly scheduler or another backend function.
+  if (!isInternalCall(req)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -59,7 +67,7 @@ serve(async (req) => {
           processed++;
         } else {
           const errText = await dripRes.text();
-          console.error(`Failed to send drip for ${drip.lead_email}:`, errText);
+          console.error(`Failed to send drip ${drip.id} (step ${drip.drip_index}):`, dripRes.status, errText.slice(0, 200));
           await supabase.from("drip_queue")
             .update({ status: "failed" })
             .eq("id", drip.id);

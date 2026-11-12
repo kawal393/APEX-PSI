@@ -91,7 +91,7 @@ const loadTranslation = async (lang: string): Promise<any> => {
     const resp = await fetch(`https://${projectId}.supabase.co/functions/v1/translate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ target_lang: lang, source: en }),
+      body: JSON.stringify({ target_lang: lang }),
     });
 
     if (!resp.ok) {

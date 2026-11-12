@@ -3,6 +3,7 @@
 // - userId / isAdmin: a verified sign-in token, with the admin role read from user_roles
 // Never trusts client-supplied role claims.
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { authenticateCronRequest } from "./cron-auth.ts";
 
 export interface Caller {
   service: boolean;
@@ -29,6 +30,21 @@ export function isServiceCall(req: Request): boolean {
   const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   const token = bearerToken(req);
   return !!key && !!token && token === key;
+}
+
+/** True only for the platform-managed scheduler (Bearer LOVABLE_CRON_SECRET). */
+export function isScheduledJob(req: Request): boolean {
+  if (!Deno.env.get("LOVABLE_CRON_SECRET")) return false;
+  try {
+    return authenticateCronRequest(req) === null;
+  } catch {
+    return false;
+  }
+}
+
+/** Another backend function (service key) or the managed scheduler. */
+export function isInternalCall(req: Request): boolean {
+  return isServiceCall(req) || isScheduledJob(req);
 }
 
 export async function resolveCaller(req: Request, db: SupabaseClient = adminClient()): Promise<Caller> {

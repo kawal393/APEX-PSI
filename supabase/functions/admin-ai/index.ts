@@ -207,8 +207,16 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { messages } = await req.json();
-    if (!messages || !Array.isArray(messages)) {
+    const { messages: rawMessages } = await req.json();
+    // Only plain user/assistant turns from the browser; the system prompt and tool
+    // results are set here, never by the request.
+    const messages = Array.isArray(rawMessages)
+      ? rawMessages
+          .filter((m: any) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string")
+          .slice(-30)
+          .map((m: any) => ({ role: m.role, content: String(m.content).slice(0, 8000) }))
+      : null;
+    if (!messages || messages.length === 0) {
       return new Response(JSON.stringify({ error: "messages required" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

@@ -108,8 +108,9 @@ async function authenticate(req: Request, supabase: any): Promise<AuthResult> {
       .from("notary_api_keys")
       .select("*")
       .eq("api_key_hash", keyHash)
+      .eq("revoked", false)
       .maybeSingle();
-    if (!data) return { ok: false, error: "Invalid notary key" };
+    if (!data) return { ok: false, error: "Invalid or revoked notary key" };
     return {
       ok: true, userId: data.user_id, tier: data.tier,
       scopes: ["notarize:write", "verify:read"],
@@ -234,18 +235,24 @@ async function handleVerify(hash: string | null, supabase: any, auth: AuthResult
     return json({ error: "insufficient_scope", required: "verify:read" }, 403);
   // Accept a hex digest OR a receipt id (APEX-NTR-…): a buyer holding only a
   // receipt number must be able to verify it with no key and no account.
-  if (!hash || typeof hash !== "string" || !/^[A-Za-z0-9:._-]{4,128}$/.test(hash))
+  const clean = typeof hash === "string" ? hash.trim().replace(/^sha256:/i, "") : "";
+  // Strictly a 64-hex digest or an APEX receipt id, so it cannot alter the lookup filter.
+  const isDigest = /^[a-f0-9]{64}$/i.test(clean);
+  const isReceiptId = !isDigest && /^(APEX|GENESIS)-[A-Za-z0-9-]{4,80}$/.test(clean);
+  if (!isDigest && !isReceiptId)
     return json({ error: "Invalid or missing hash or receipt id" }, 400);
-
-  const clean = hash.replace(/^sha256:/, "");
+  const needle = isDigest ? clean.toLowerCase() : clean;
   // commit_id is included so a receipt NUMBER resolves, not only a digest. Its
   // shape is `APEX-NTR-` + 16 uppercase hex, which cannot collide with the
   // 64-char lowercase-hex digest columns — so this widens the lookup without
   // introducing ambiguity. (The public verify-hash function already did this.)
   const { data, error } = await supabase
     .from("gallows_ledger")
-    .select("*")
-    .or(`commit_hash.eq.${clean},merkle_leaf_hash.eq.${clean},proof_hash.eq.${clean},challenge_hash.eq.${clean},commit_id.eq.${clean}`)
+    // Public verification fields only — never the owner or the action text.
+    .select("commit_id, predicate_id, phase, status, merkle_root, merkle_leaf_hash, ed25519_signature, pq_signature, pq_public_key, pq_algorithm, created_at")
+    .or(isDigest
+      ? `commit_hash.eq.${needle},merkle_leaf_hash.eq.${needle},proof_hash.eq.${needle},challenge_hash.eq.${needle}`
+      : `commit_id.eq.${needle}`)
     .limit(1);
   if (error) return json({ error: "query_failed", detail: error.message }, 500);
 

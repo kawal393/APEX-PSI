@@ -61,18 +61,30 @@ Deno.serve(async (req) => {
 
     // Every row names its own Merkle construction. The sealed fields are
     // published byte for byte as stored; the profile labels are appended.
-    const rows = published.map((r) => ({
-      ...r,
-      signature_binds: LEDGER_SIGNATURE_BINDING,
+    // The free-text action can carry a customer's own words, so the public
+    // mirror publishes its SHA-256 fingerprint instead; the sealed hashes,
+    // signatures and Merkle fields are published byte for byte as stored.
+    const rows = await Promise.all(published.map(async (r) => {
+      const { action, ...rest } = r as unknown as Record<string, unknown> & { sequence_number?: number };
+      const text = typeof action === "string" ? action : "";
+      // System notarisation markers carry only fingerprints and drive the public
+      // Merkle classification, so they stay readable; anything else is fingerprinted.
+      const systemMarker = /^NOTARIZE(-BATCH)?: sha256:[a-f0-9]{8,64}/.test(text);
+      return {
+        ...rest,
+        action: systemMarker ? text : null,
+        action_sha256: text.length ? await sha256Hex(text) : null,
+        signature_binds: LEDGER_SIGNATURE_BINDING,
+      };
     }));
     const lines = rows.map((r) => JSON.stringify(r)).join("\n");
     const bodyHash = await sha256Hex(lines);
-    const latestSeq = rows[0]?.sequence_number ?? null;
+    const latestSeq = (rows[0] as { sequence_number?: number } | undefined)?.sequence_number ?? null;
 
     if (wantManifest) {
       const manifest = {
         protocol: "apex-psi/audit-mirror",
-        version: "1.1",
+        version: "1.2",
         issuer_key_id: ISSUER_KEY_ID,
         generated_at: new Date().toISOString(),
         count: rows.length,
@@ -82,6 +94,7 @@ Deno.serve(async (req) => {
         verify_via: "https://ai-governance-standard.com/verify",
         well_known: "https://ai-governance-standard.com/.well-known/compliance-receipt",
         signature_binds: LEDGER_SIGNATURE_BINDING,
+        privacy_note: "Free-text actions are published as action_sha256 fingerprints only; system NOTARIZE markers (fingerprints themselves) are published as stored.",
         merkle_profiles: {
           "PSI-W1": "RFC 9162 head over the rolling 256-leaf ledger window ending at this row",
           "PSI-B1": "RFC 9162 head over the batch's own leaves (contiguous published run ending at this row)",

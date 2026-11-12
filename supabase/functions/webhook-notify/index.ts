@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { isServiceCall, escapeHtml as e } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,8 +11,18 @@ const TARGET_EMAIL = "apex.manraj888@gmail.com";
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Internal only: notifications are raised by other backend functions.
+  if (!isServiceCall(req)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
-    const { event, data } = await req.json();
+    const body = await req.json();
+    const event = String(body?.event ?? "");
+    const data = body?.data && typeof body.data === "object" ? body.data : {};
+    const line = (v: unknown, n = 160) => String(v ?? "").replace(/[\r\n]+/g, " ").slice(0, n);
 
     const resendKey = Deno.env.get("RESEND_API_KEY");
     if (!resendKey) {
@@ -27,25 +37,25 @@ serve(async (req) => {
 
     switch (event) {
       case "lead_captured":
-        subject = `🎯 New Lead: ${data.email || "Unknown"}`;
+        subject = `🎯 New Lead: ${line(data.email) || "Unknown"}`;
         html = `
           <h2 style="color:#d4a017;">New Lead Captured via Chat</h2>
-          <p><strong>Name:</strong> ${data.name || "N/A"}</p>
-          <p><strong>Email:</strong> ${data.email}</p>
-          <p><strong>Company:</strong> ${data.company || "N/A"}</p>
+          <p><strong>Name:</strong> ${e(data.name) || "N/A"}</p>
+          <p><strong>Email:</strong> ${e(data.email)}</p>
+          <p><strong>Company:</strong> ${e(data.company) || "N/A"}</p>
           <p><strong>Time:</strong> ${new Date().toISOString()}</p>
           <p>💡 Drip sequence has been initiated.</p>
         `;
         break;
 
       case "compliance_change":
-        subject = `📊 Compliance Change: ${data.company || "User"} → ${data.status}`;
+        subject = `📊 Compliance Change: ${line(data.company) || "User"} → ${line(data.status, 40)}`;
         html = `
           <h2 style="color:#d4a017;">Compliance Status Changed</h2>
-          <p><strong>Company:</strong> ${data.company || "N/A"}</p>
-          <p><strong>New Score:</strong> ${data.score}%</p>
-          <p><strong>Status:</strong> ${data.status}</p>
-          <p><strong>Mode:</strong> ${data.mode || "SHIELD"}</p>
+          <p><strong>Company:</strong> ${e(data.company) || "N/A"}</p>
+          <p><strong>New Score:</strong> ${Number.isFinite(Number(data.score)) ? Math.round(Number(data.score)) : 0}%</p>
+          <p><strong>Status:</strong> ${e(data.status)}</p>
+          <p><strong>Mode:</strong> ${e(data.mode) || "SHIELD"}</p>
           <p><strong>Time:</strong> ${new Date().toISOString()}</p>
         `;
         break;
@@ -54,8 +64,8 @@ serve(async (req) => {
         subject = `⚠️ Knowledge Gap: Bot couldn't answer`;
         html = `
           <h2 style="color:#d4a017;">Knowledge Gap Detected</h2>
-          <p><strong>Question:</strong> ${data.question}</p>
-          <p><strong>Conversation:</strong> ${data.conversation_id || "N/A"}</p>
+          <p><strong>Question:</strong> ${e(data.question)}</p>
+          <p><strong>Conversation:</strong> ${e(data.conversation_id) || "N/A"}</p>
           <p><strong>Time:</strong> ${new Date().toISOString()}</p>
           <p>Consider updating the system prompt to cover this topic.</p>
         `;
@@ -65,8 +75,8 @@ serve(async (req) => {
         subject = `👎 Negative Feedback on Chat`;
         html = `
           <h2 style="color:#d4a017;">Negative Chat Feedback</h2>
-          <p><strong>Message:</strong> ${data.message_content || "N/A"}</p>
-          <p><strong>Conversation:</strong> ${data.conversation_id || "N/A"}</p>
+          <p><strong>Message:</strong> ${e(data.message_content) || "N/A"}</p>
+          <p><strong>Conversation:</strong> ${e(data.conversation_id) || "N/A"}</p>
           <p><strong>Time:</strong> ${new Date().toISOString()}</p>
         `;
         break;
@@ -96,9 +106,9 @@ serve(async (req) => {
     return new Response(JSON.stringify({ success: true, event }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e) {
-    console.error("webhook-notify error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
+  } catch (err) {
+    console.error("webhook-notify error:", err);
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

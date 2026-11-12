@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EN_SOURCE, TARGET_LANGUAGES } from "./source.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,26 +16,33 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { target_lang, source } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const target_lang = typeof body?.target_lang === "string" ? body.target_lang : "";
 
-    if (!target_lang || !source) {
-      return new Response(JSON.stringify({ error: "Missing target_lang or source" }), {
+    // Only the site's own languages, and only the site's own English text: the
+    // request can choose a language but never supply the text or instructions.
+    const languageName = Object.prototype.hasOwnProperty.call(TARGET_LANGUAGES, target_lang)
+      ? TARGET_LANGUAGES[target_lang]
+      : null;
+    if (!languageName) {
+      return new Response(JSON.stringify({ error: "Unsupported language" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    const source = EN_SOURCE;
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Check cache first
+    // Check cache first — each language is translated once, then served from cache.
     const { data: cached } = await supabase
       .from("translation_cache")
       .select("translations")
       .eq("lang", target_lang)
-      .single();
+      .maybeSingle();
 
-    if (cached?.translations) {
+    if (cached?.translations && Object.keys(cached.translations as Record<string, unknown>).length > 0) {
       return new Response(JSON.stringify({ translations: cached.translations, cached: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -63,7 +71,7 @@ Deno.serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a professional translator. Translate the following JSON object values from English to ${target_lang}. Keep all JSON keys exactly the same. Only translate the values. Return ONLY valid JSON, no markdown, no explanation. Maintain the same JSON structure. Keep brand names (APEX, APEX PSI, PSI, EU AI Act, MiFID II, DORA, SHIELD, SWORD, JUDGE) untranslated.`,
+            content: `You are a professional translator. Translate the following JSON object values from English to ${languageName} (${target_lang}). Keep all JSON keys exactly the same. Only translate the values. Return ONLY valid JSON, no markdown, no explanation. Maintain the same JSON structure. Keep brand names (APEX, APEX PSI, PSI, EU AI Act, MiFID II, DORA, SHIELD, SWORD, JUDGE) untranslated.`,
           },
           {
             role: "user",
@@ -99,7 +107,13 @@ Deno.serve(async (req) => {
     }
 
     // Unflatten back to nested structure
-    const translations = unflattenObject(translatedFlat);
+    // Keep only the site's own keys, as plain text.
+    const safeFlat: Record<string, string> = {};
+    for (const k of Object.keys(flatSource)) {
+      const v = (translatedFlat as Record<string, unknown>)[k];
+      safeFlat[k] = typeof v === "string" && v.length <= 4 * flatSource[k].length + 200 ? v : flatSource[k];
+    }
+    const translations = unflattenObject(safeFlat);
 
     // Cache the translation
     await supabase
@@ -110,8 +124,8 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err: any) {
-    console.error("[Translate] Error:", err.message);
-    return new Response(JSON.stringify({ error: err.message }), {
+    console.error("[Translate] Error:", err?.message);
+    return new Response(JSON.stringify({ error: "Translation failed" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

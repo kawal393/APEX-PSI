@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Lock, Mail, Eye, EyeOff } from "lucide-react";
+import { safeNextPath } from "@/lib/safe-next";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,7 +20,7 @@ const AuthForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const requestedNext = new URLSearchParams(location.search).get("next");
-  const next = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/dashboard";
+  const next = safeNextPath(requestedNext);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

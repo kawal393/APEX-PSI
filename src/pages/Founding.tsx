@@ -110,7 +110,7 @@ const Founding = () => {
         setFormError(data?.error ?? "Application could not be recorded.");
         return;
       }
-      setSubmittedId(data.applicant_id);
+      setSubmittedId(data.applicant_id ?? "APPLICATION RECEIVED");
       await supabase.auth.signInWithOtp({
         email: email.trim(),
         options: { emailRedirectTo: `${window.location.origin}/founding` },

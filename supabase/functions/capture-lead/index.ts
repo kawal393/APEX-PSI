@@ -4,6 +4,7 @@
 // high-intent leads into the existing drip sequence.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { escapeHtml, EMAIL_RE } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -41,7 +42,7 @@ function scoreLead(email: string, intent: string, company: string | null): numbe
 }
 
 function packEmail(name: string | null): { subject: string; html: string } {
-  const greeting = name ? `Hi ${name},` : "Hi,";
+  const greeting = name ? `Hi ${escapeHtml(name)},` : "Hi,";
   return {
     subject: "Your EU AI Act Article 50 Compliance Pack",
     html: `
@@ -74,7 +75,7 @@ Deno.serve(async (req) => {
     const sourcePage = typeof body.source_page === "string" ? body.source_page.slice(0, 200) : null;
     const visitorId = typeof body.visitor_id === "string" ? body.visitor_id.slice(0, 100) : null;
 
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) && email.length <= 255;
+    const emailOk = EMAIL_RE.test(email) && email.length <= 254;
     if (!emailOk) {
       return new Response(JSON.stringify({ error: "A valid email address is required" }), {
         status: 400,
@@ -146,7 +147,7 @@ Deno.serve(async (req) => {
       const operatorPayload = {
         to: [OPERATOR_EMAIL],
         subject: `New lead (${score}): ${email}${company ? " · " + company : ""}`,
-        html: `<pre style="font-family:ui-monospace,monospace;font-size:13px">${JSON.stringify(
+        html: `<pre style="font-family:ui-monospace,monospace;font-size:13px">${escapeHtml(JSON.stringify(
           {
             email, name, company, intent, score,
             source_page: sourcePage,
@@ -158,7 +159,7 @@ Deno.serve(async (req) => {
           },
           null,
           2,
-        )}</pre>`,
+        ))}</pre>`,
       };
 
       const opRes = await send({ from: FROM_ADDRESS, ...operatorPayload }).catch(() => null);

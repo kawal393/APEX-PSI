@@ -1,0 +1,1 @@
+COMMENT ON TABLE public.internal_job_tokens IS 'DEPRECATED: unused; scheduled jobs authenticate with the platform-managed scheduler secret instead. Private, no client access.';

@@ -43,7 +43,15 @@ Deno.serve(async (req) => {
     const priceId = TIER_PRICE_ID[tier];
     if (!priceId) return json({ error: `Price not configured for tier ${tier}` }, 500);
 
-    const origin = req.headers.get("origin") || Deno.env.get("SITE_URL") || "https://ai-governance-standard.com";
+    // Return only to APEX's own sites; any other Origin falls back to the canonical domain.
+    const ALLOWED_ORIGINS = new Set([
+      "https://www.ai-governance-standard.com",
+      "https://ai-governance-standard.com",
+      "https://apex-psi.lovable.app",
+      "https://id-preview--7a59558c-b76e-45ca-8fe0-1249ccd99539.lovable.app",
+    ]);
+    const requested = (req.headers.get("origin") || "").replace(/\/+$/, "");
+    const origin = ALLOWED_ORIGINS.has(requested) ? requested : "https://www.ai-governance-standard.com";
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
       httpClient: Stripe.createFetchHttpClient(),
     });
@@ -66,6 +74,7 @@ Deno.serve(async (req) => {
 
     return json({ url: session.url, tier, label: TIER_LABEL[tier] });
   } catch (err) {
-    return json({ error: String((err as Error)?.message || err) }, 500);
+    console.error("create-checkout error:", (err as Error)?.message || err);
+    return json({ error: "Checkout could not be started" }, 500);
   }
 });
