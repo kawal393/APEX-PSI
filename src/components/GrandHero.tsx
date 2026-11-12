@@ -58,7 +58,7 @@ const ActiveSinceClock = () => {
 const GrandHero = () => {
   return (
     <section
-      aria-label="The first global open protocol for verifiable records — the proof layer of the AI economy"
+      aria-label="APEX PSI: an open protocol for verifiable records — PSI-SEAL/1.0.0, free to verify"
       className="relative border-b border-gold/20 bg-background px-4 pb-14 pt-12 text-center md:pb-20 md:pt-16"
     >
       <div className="mx-auto max-w-6xl">
