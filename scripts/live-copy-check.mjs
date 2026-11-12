@@ -40,6 +40,15 @@ const MUST = [
   // Lovable publishes main.
   ['hero names records not truth', 'for Verifiable Records'],
   ['hero states the seal limit', 'has not changed since its timestamp'],
+  // 13 Nov: the -02 priority anchor. The headline was scoped to "no OTHER published
+  // specification" because we publish our own, and the date now rests on the fingerprint the
+  // visitor recomputes in their own browser rather than on a calendar's word. RED until
+  // Lovable publishes main.
+  ['priority claim is scoped', 'no other published specification'],
+  ['priority claim names the limit', 'against the limit a signed mandate declared'],
+  ['priority date is recomputed in the browser', 'recomputed in your browser from the file this page'],
+  ['priority anchor names no block', 'never names a block the chain has not shown it'],
+  ['priority anchor states the pending state', 'the anchor ledger holds an OpenTimestamps proof dated'],
 ];
 
 // Claims that are false today. `has not been filed` appears once on the live site and
@@ -68,6 +77,13 @@ const MUST_NOT = [
   ['hero claims digital truth', 'for Digital Truth'],
   ['mcp hero claims cryptographic truth', 'Cryptographic truth'],
   ['product line claims a verified badge', 'APEX Verified badge'],
+  // 13 Nov: the anchor's own promises. The proof we hold does not carry the draft's
+  // digest, so the calendar never accepted it and no block has committed it. These
+  // phrases would each be a claim the chain has not earned.
+  ['anchor claims calendar acceptance', 'accepted by the OpenTimestamps calendar'],
+  ['anchor claims the calendar took the fingerprint', 'fingerprint went to the Bitcoin calendar'],
+  ['anchor claims it upgrades itself', 'upgrades itself when the block confirms'],
+  ['anchor claims the whole chain', 'authority, decision and payment'],
 ];
 
 const count = (haystack, needle) => haystack.split(needle).length - 1;

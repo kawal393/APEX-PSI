@@ -1,10 +1,29 @@
 // APEX PSI — Bitcoin anchor confirmation poller.
 //
-// For every ots_proofs row still marked `submitted` (or pending) that carries a
-// txid, ask mempool.space whether a real Bitcoin block includes it. A row is
-// promoted to `confirmed` ONLY on a confirmed API response. Any API failure is
-// swallowed: a record is never flipped to a state the chain has not proven.
+// For every ots_proofs row that has not confirmed, ask the calendar to upgrade
+// the stored proof, read the Bitcoin attestation out of it, and ask the chain
+// whether the attested transaction is really in the block the attestation
+// names.
+//
+// Three rules, each of which closes a defect that shipped before:
+//
+//   1. BINDING. The proof must carry the digest it is filed under. The proof we
+//      hold for draft-singh-psi-agent-02 does not, so it can never be
+//      confirmed — no matter what height it names.
+//   2. NO SELF-SUPPORTED CONFIRMATION. The transaction id comes from the
+//      attestation, and the chain must list it in that block. The coinbase of
+//      a block proves nothing and is never published.
+//   3. NO SILENT FLIPS. An API failure leaves the row exactly as it was. A
+//      record is never moved to a state the chain has not proven.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
+import {
+  base64ToBytes,
+  bytesToBase64,
+  proofCoversDigest,
+  readBitcoinAttestation,
+  upgradeTimestamp,
+  verifyAttestedTransaction,
+} from "../_shared/ots.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -25,24 +44,6 @@ async function tipHeight(): Promise<number | null> {
   }
 }
 
-interface TxStatus {
-  confirmed: boolean;
-  block_height?: number | null;
-}
-
-async function txStatus(txid: string): Promise<TxStatus | null> {
-  try {
-    const r = await fetch(`${MEMPOOL}/tx/${txid}`);
-    if (!r.ok) return null;
-    const body = await r.json();
-    const s = body?.status;
-    if (!s || typeof s.confirmed !== "boolean") return null;
-    return { confirmed: s.confirmed, block_height: s.block_height ?? null };
-  } catch {
-    return null;
-  }
-}
-
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
@@ -51,14 +52,22 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
   );
 
-  const summary = { checked: 0, confirmed: 0, still_submitted: 0, unreachable: 0 };
+  const summary = {
+    checked: 0,
+    confirmed: 0,
+    still_pending: 0,
+    unreachable: 0,
+    upgraded: 0,
+    upgrade_failed: 0,
+    proof_does_not_cover_digest: 0,
+    no_attested_transaction: 0,
+  };
 
   try {
     const { data: rows, error } = await supabase
       .from("ots_proofs")
-      .select("id, status, bitcoin_txid, bitcoin_block_height, confirmations")
+      .select("id, status, target_hash, calendar_url, ots_base64")
       .in("status", ["submitted", "pending"])
-      .not("bitcoin_txid", "is", null)
       .limit(200);
 
     if (error) {
@@ -72,32 +81,74 @@ Deno.serve(async (req) => {
 
     for (const row of rows ?? []) {
       summary.checked++;
-      const status = await txStatus(row.bitcoin_txid as string);
       const polled = { last_polled_at: new Date().toISOString() };
 
-      if (!status) {
+      let bytes: Uint8Array;
+      try {
+        bytes = base64ToBytes(row.ots_base64 as string);
+      } catch {
         summary.unreachable++;
-        // API unreachable or malformed: record the attempt only. No state change.
         await supabase.from("ots_proofs").update(polled).eq("id", row.id);
         continue;
       }
 
-      if (status.confirmed && typeof status.block_height === "number") {
-        const confirmations = tip !== null ? Math.max(1, tip - status.block_height + 1) : 1;
-        await supabase
-          .from("ots_proofs")
-          .update({
-            ...polled,
-            status: "confirmed",
-            bitcoin_block_height: status.block_height,
-            confirmations,
-          })
-          .eq("id", row.id);
-        summary.confirmed++;
-      } else {
-        summary.still_submitted++;
-        await supabase.from("ots_proofs").update({ ...polled, status: "submitted" }).eq("id", row.id);
+      // 1. Ask the calendar for the upgraded proof. The calendar is the only
+      //    party that can move a pending timestamp to a Bitcoin attestation.
+      try {
+        const up = await upgradeTimestamp(
+          row.calendar_url ?? "",
+          bytes,
+          row.target_hash as string,
+        );
+        if (up.ok && up.bytes && up.bytes.length > bytes.length) {
+          bytes = up.bytes;
+          summary.upgraded++;
+          await supabase
+            .from("ots_proofs")
+            .update({ ...polled, ots_base64: bytesToBase64(bytes) })
+            .eq("id", row.id);
+        } else if (!up.ok) {
+          summary.upgrade_failed++;
+        }
+      } catch {
+        summary.upgrade_failed++;
       }
+
+      // 2. The proof must carry the digest it is filed under.
+      if (!proofCoversDigest(bytes, row.target_hash as string)) {
+        summary.proof_does_not_cover_digest++;
+        await supabase.from("ots_proofs").update(polled).eq("id", row.id);
+        continue;
+      }
+
+      // 3. The attestation must name a transaction, not only a block.
+      const attestation = readBitcoinAttestation(bytes);
+      if (attestation.height === null || !attestation.txid) {
+        summary.no_attested_transaction++;
+        await supabase.from("ots_proofs").update(polled).eq("id", row.id);
+        continue;
+      }
+
+      // 4. The chain must list that transaction in that block.
+      const check = await verifyAttestedTransaction(attestation.height, attestation.txid);
+      if (!check.confirmed) {
+        summary.still_pending++;
+        await supabase.from("ots_proofs").update(polled).eq("id", row.id);
+        continue;
+      }
+
+      const confirmations = tip !== null ? Math.max(1, tip - attestation.height + 1) : 1;
+      await supabase
+        .from("ots_proofs")
+        .update({
+          ...polled,
+          status: "confirmed",
+          bitcoin_block_height: attestation.height,
+          bitcoin_txid: attestation.txid,
+          confirmations,
+        })
+        .eq("id", row.id);
+      summary.confirmed++;
     }
 
     // Refresh confirmation counts for already-confirmed rows so the public

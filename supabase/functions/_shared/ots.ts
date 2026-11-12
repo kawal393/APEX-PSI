@@ -5,6 +5,15 @@
 //   • OpenTimestamps public calendars  → the raw .ots timestamp proof bytes
 //   • mempool.space (Esplora REST API) → real Bitcoin tip height / txids
 //
+// Two rules hold this module together:
+//
+//   1. BINDING. A proof is only evidence for a digest if it actually carries
+//      that digest. The proof we hold for draft-singh-psi-agent-02 does not
+//      carry it, so nothing in this module will confirm it.
+//   2. NO SELF-SUPPORTED CONFIRMATION. A height is a lookup hint. A
+//      confirmation requires a transaction id that the chain itself reports,
+//      inside the block the attestation names.
+//
 // A proof is `pending` until a real Bitcoin block confirms it. It is NEVER
 // reported as `confirmed` without a txid returned by a block explorer.
 // ═══════════════════════════════════════════════════════════════════════
@@ -172,17 +181,45 @@ export async function getTransactionStatus(txid: string): Promise<TxStatus> {
 }
 
 /**
- * Scan the raw .ots serialization for a Bitcoin attestation.
- * The OTS Bitcoin attestation tag is the 8-byte magic below, followed by a
- * varint block height. If absent the proof is still calendar-pending, which is
- * the normal state for the first few hours after submission.
+ * The Bitcoin attestation inside an OpenTimestamps proof.
+ *
+ * The attestation is the 8-byte tag below, followed by a length-prefixed
+ * payload. The payload holds a base-128 varint block height and, once the
+ * calendar has upgraded the timestamp, the 32-byte transaction id that
+ * committed it. Both are read here; neither is trusted on its own.
  */
 const BITCOIN_ATTESTATION_TAG = [0x05, 0x88, 0x96, 0x0d, 0x73, 0xd7, 0x19, 0x01];
 
 const MIN_PLAUSIBLE_HEIGHT = 100000;
 const MAX_PLAUSIBLE_HEIGHT = 1500000;
 
+export interface BitcoinAttestation {
+  /** Block height the calendar attested, or null when the proof names none. */
+  height: number | null;
+  /** The attesting transaction, or null when the proof names none. */
+  txid: string | null;
+}
+
+/**
+ * Bitcoin CompactSize (the varint Bitcoin and OpenTimestamps both use):
+ * one byte below 0xfd, then 2, 4 or 8 little-endian bytes. Reading this as a
+ * 7-bit continuation scheme misreads every block: a 2,717-transaction block
+ * reads as 167,805 and the walker derails on the first transaction.
+ */
 function readVarint(bytes: Uint8Array, offset: number): { value: number; next: number } | null {
+  if (offset >= bytes.length) return null;
+  const first = bytes[offset];
+  if (first < 0xfd) return { value: first, next: offset + 1 };
+  const width = first === 0xfd ? 2 : first === 0xfe ? 4 : 8;
+  if (offset + 1 + width > bytes.length) return null;
+  let value = 0;
+  for (let i = 0; i < width; i++) value += bytes[offset + 1 + i] * Math.pow(2, 8 * i);
+  if (!Number.isSafeInteger(value)) return null;
+  return { value, next: offset + 1 + width };
+}
+
+/** Base-128 varint (7 bits per byte, least significant first). */
+function readBase128Varint(bytes: Uint8Array, offset: number): { value: number; next: number } | null {
   let value = 0;
   let shift = 0;
   let p = offset;
@@ -197,36 +234,151 @@ function readVarint(bytes: Uint8Array, offset: number): { value: number; next: n
 }
 
 /**
- * Scan the raw .ots serialization for a Bitcoin attestation. The height is the
- * LEB128 varint after the 8-byte attestation tag (skipping an optional 0xFF
- * separator, and an attestation payload-length varint when one is present, as
- * the public calendars emit). Sanity range 100000–1500000.
+ * The payload bytes that may follow an attestation tag.
+ *
+ * A calendar's proof length-prefixes the payload. A proof assembled by a
+ * client may not. Both framings are offered to the reader, and the reader
+ * accepts neither on faith: the height and the transaction id have to fall
+ * out of the payload cleanly before anything is returned.
  */
-export function extractBitcoinBlockHeight(otsBytes: Uint8Array): number | null {
-  for (let i = 0; i + BITCOIN_ATTESTATION_TAG.length + 1 < otsBytes.length; i++) {
+function attestationPayloads(bytes: Uint8Array, at: number): Uint8Array[] {
+  const out: Uint8Array[] = [];
+  const len = readVarint(bytes, at);
+  if (len && len.value > 0 && len.value <= 64 && len.next + len.value <= bytes.length) {
+    out.push(bytes.slice(len.next, len.next + len.value));
+  }
+  out.push(bytes.slice(at, Math.min(at + 64, bytes.length)));
+  return out;
+}
+
+/**
+ * Read the Bitcoin attestation out of a proof.
+ *
+ * The height is a lookup hint. The transaction id is the only thing that can
+ * be published, and it is published only after `verifyAttestedTransaction`
+ * finds it inside the block the height names.
+ */
+export function readBitcoinAttestation(bytes: Uint8Array): BitcoinAttestation {
+  const none: BitcoinAttestation = { height: null, txid: null };
+  const tag = BITCOIN_ATTESTATION_TAG;
+  for (let i = 0; i + tag.length <= bytes.length; i++) {
     let match = true;
-    for (let j = 0; j < BITCOIN_ATTESTATION_TAG.length; j++) {
-      if (otsBytes[i + j] !== BITCOIN_ATTESTATION_TAG[j]) {
+    for (let j = 0; j < tag.length; j++) {
+      if (bytes[i + j] !== tag[j]) {
         match = false;
         break;
       }
     }
     if (!match) continue;
 
-    let p = i + BITCOIN_ATTESTATION_TAG.length;
-    if (otsBytes[p] === 0xff) p++;
-    const first = readVarint(otsBytes, p);
-    if (!first) continue;
-    if (first.value >= MIN_PLAUSIBLE_HEIGHT && first.value <= MAX_PLAUSIBLE_HEIGHT) {
-      return first.value;
-    }
-    // The first varint was the attestation payload length — the height follows.
-    const second = readVarint(otsBytes, first.next);
-    if (second && second.value >= MIN_PLAUSIBLE_HEIGHT && second.value <= MAX_PLAUSIBLE_HEIGHT) {
-      return second.value;
+    for (const payload of attestationPayloads(bytes, i + tag.length)) {
+      const height = readBase128Varint(payload, 0);
+      if (!height) continue;
+      if (height.value < MIN_PLAUSIBLE_HEIGHT || height.value > MAX_PLAUSIBLE_HEIGHT) continue;
+      const rest = payload.subarray(height.next);
+      return { height: height.value, txid: rest.length === 32 ? toHex(rest) : null };
     }
   }
-  return null;
+  return none;
+}
+
+/** The attested block height, or null when the proof carries no attestation. */
+export function extractBitcoinBlockHeight(otsBytes: Uint8Array): number | null {
+  return readBitcoinAttestation(otsBytes).height;
+}
+
+/**
+ * True when the proof carries this digest.
+ *
+ * An OpenTimestamps proof is a chain that starts at the digest, so a proof
+ * that does not contain the digest is not a proof of that digest. The search
+ * is byte-aligned on purpose: a half-byte hit is a coincidence, not a
+ * commitment. A hex search that is not aligned will happily "find" a
+ * commitment that is not in the proof at all.
+ */
+export function proofCoversDigest(bytes: Uint8Array, digestHex: string): boolean {
+  let digest: Uint8Array;
+  try {
+    digest = hexToBytes(digestHex);
+  } catch {
+    return false;
+  }
+  if (digest.length !== 32) return false;
+  outer: for (let i = 0; i + digest.length <= bytes.length; i++) {
+    for (let j = 0; j < digest.length; j++) {
+      if (bytes[i + j] !== digest[j]) continue outer;
+    }
+    return true;
+  }
+  return false;
+}
+
+export interface AttestationCheck {
+  confirmed: boolean;
+  block_hash?: string;
+  source?: string;
+  error?: string;
+}
+
+/**
+ * Confirm an attested transaction against the Bitcoin chain.
+ *
+ * Two independent facts are required from the same explorer: the transaction
+ * reports itself confirmed IN THE NAMED BLOCK, and the block's own list of
+ * transactions contains it. A status endpoint that says "confirmed" on its own
+ * is not enough — that is the same endpoint that could be wrong.
+ */
+export async function verifyAttestedTransaction(
+  height: number,
+  txid: string,
+): Promise<AttestationCheck> {
+  if (!/^[0-9a-fA-F]{64}$/.test(txid)) {
+    return { confirmed: false, error: "Invalid txid format" };
+  }
+  const errors: string[] = [];
+  for (const base of ESPLORA_ENDPOINTS) {
+    try {
+      const [statusRes, hashRes] = await Promise.all([
+        fetch(`${base}/tx/${txid}/status`),
+        fetch(`${base}/block-height/${height}`),
+      ]);
+      if (!statusRes.ok) {
+        errors.push(`${base} -> tx status ${statusRes.status}`);
+        continue;
+      }
+      const status = await statusRes.json();
+      if (status?.confirmed !== true) {
+        errors.push(`${base} -> transaction not confirmed`);
+        continue;
+      }
+      if (status.block_height !== height) {
+        errors.push(`${base} -> confirmed in block ${status.block_height}, not ${height}`);
+        continue;
+      }
+      if (!hashRes.ok) {
+        errors.push(`${base} -> block-height ${hashRes.status}`);
+        continue;
+      }
+      const blockHash = (await hashRes.text()).trim();
+      const txidsRes = await fetch(`${base}/block/${blockHash}/txids`);
+      if (!txidsRes.ok) {
+        errors.push(`${base} -> block txids ${txidsRes.status}`);
+        continue;
+      }
+      const txids = await txidsRes.json();
+      if (
+        !Array.isArray(txids) ||
+        !txids.some((t: string) => String(t).toLowerCase() === txid.toLowerCase())
+      ) {
+        errors.push(`${base} -> transaction not listed in block ${height}`);
+        continue;
+      }
+      return { confirmed: true, block_hash: blockHash, source: base };
+    } catch (e) {
+      errors.push(`${base} -> ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+  return { confirmed: false, error: errors.join(" | ") };
 }
 
 

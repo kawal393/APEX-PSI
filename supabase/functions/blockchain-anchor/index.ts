@@ -15,10 +15,12 @@ import {
   submitDigestToCalendars,
   getBitcoinTip,
   getTransactionStatus,
-  extractBitcoinBlockHeight,
   base64ToBytes,
+  bytesToBase64,
   sha256Hex,
-  ESPLORA_ENDPOINTS,
+  proofCoversDigest,
+  readBitcoinAttestation,
+  verifyAttestedTransaction,
   OTS_CALENDARS,
   buildDetachedProof,
   upgradeTimestamp,
@@ -36,26 +38,6 @@ function json(body: unknown, status = 200) {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
-}
-
-/** Find the coinbase txid of a real block — the transaction the OTS proof commits into. */
-async function getBlockTxid(height: number): Promise<{ txid?: string; block_hash?: string }> {
-  for (const base of ESPLORA_ENDPOINTS) {
-    try {
-      const hashRes = await fetch(`${base}/block-height/${height}`);
-      if (!hashRes.ok) continue;
-      const blockHash = (await hashRes.text()).trim();
-      const txRes = await fetch(`${base}/block/${blockHash}/txids`);
-      if (!txRes.ok) continue;
-      const txids: string[] = await txRes.json();
-      if (Array.isArray(txids) && txids.length > 0) {
-        return { txid: txids[0], block_hash: blockHash };
-      }
-    } catch {
-      // try next explorer
-    }
-  }
-  return {};
 }
 
 Deno.serve(async (req) => {
@@ -218,6 +200,7 @@ Deno.serve(async (req) => {
         .limit(50);
 
       const updated: unknown[] = [];
+      let unbound = 0;
       for (const anchor of pending ?? []) {
         const { data: proof } = await supabase
           .from("ots_proofs")
@@ -233,7 +216,6 @@ Deno.serve(async (req) => {
         const calendar = proof.calendar_url ?? OTS_CALENDARS[0];
         const upgraded = await upgradeTimestamp(calendar, storedBytes, anchor.anchor_hash);
         const bytes = upgraded.ok ? upgraded.bytes! : storedBytes;
-        const height = extractBitcoinBlockHeight(bytes);
 
         if (upgraded.ok) {
           try {
@@ -246,38 +228,109 @@ Deno.serve(async (req) => {
           }
         }
 
-        if (!height) continue; // still calendar-pending — leave status alone
+        // A proof that does not carry the digest it is filed under is not
+        // evidence for that digest. It can never be confirmed.
+        if (!proofCoversDigest(bytes, anchor.anchor_hash)) {
+          unbound++;
+          continue;
+        }
 
-        const { txid, block_hash } = await getBlockTxid(height);
-        if (!txid) continue;
+        const attestation = readBitcoinAttestation(bytes);
+        if (attestation.height === null || !attestation.txid) continue; // still pending
 
-        const status = await getTransactionStatus(txid);
-        if (!status.confirmed) continue; // never confirm without a real block
+        // The chain must list the attested transaction in the attested block.
+        const check = await verifyAttestedTransaction(attestation.height, attestation.txid);
+        if (!check.confirmed) continue;
 
         await supabase
           .from("anchor_records")
           .update({
             status: "confirmed",
-            bitcoin_txid: txid,
-            block_height: height,
-            explorer_url: `https://mempool.space/tx/${txid}`,
+            bitcoin_txid: attestation.txid,
+            block_height: attestation.height,
+            explorer_url: `https://mempool.space/tx/${attestation.txid}`,
             confirmed_at: new Date().toISOString(),
           })
           .eq("id", anchor.id);
 
         await supabase
           .from("ots_proofs")
-          .update({ status: "confirmed", bitcoin_block_height: height, bitcoin_txid: txid })
+          .update({
+            status: "confirmed",
+            bitcoin_block_height: attestation.height,
+            bitcoin_txid: attestation.txid,
+          })
           .eq("id", proof.id);
 
-        updated.push({ anchor_hash: anchor.anchor_hash, block_height: height, txid, block_hash });
+        updated.push({
+          anchor_hash: anchor.anchor_hash,
+          block_height: attestation.height,
+          txid: attestation.txid,
+          block_hash: check.block_hash,
+        });
+      }
+
+      // ── Standalone proofs: rows with no anchor_records entry ─────────
+      // A specification fingerprint is anchored on its own, so it has an
+      // ots_proofs row and no aggregate anchor row. Those rows are refreshed
+      // here too, or they can never leave `pending`.
+      const { data: standalone } = await supabase
+        .from("ots_proofs")
+        .select("id, commit_id, target_hash, ots_base64, calendar_url")
+        .in("status", ["pending", "submitted"])
+        .is("bitcoin_txid", null)
+        .limit(100);
+
+      const refreshed: unknown[] = [];
+      for (const proof of standalone ?? []) {
+        let storedBytes: Uint8Array;
+        try {
+          storedBytes = base64ToBytes(proof.ots_base64 as string);
+        } catch {
+          continue;
+        }
+
+        const calendar = proof.calendar_url ?? OTS_CALENDARS[0];
+        const upgraded = await upgradeTimestamp(calendar, storedBytes, proof.target_hash);
+        const bytes = upgraded.ok && upgraded.bytes ? upgraded.bytes : storedBytes;
+
+        if (!proofCoversDigest(bytes, proof.target_hash as string)) {
+          unbound++;
+          continue;
+        }
+
+        const attestation = readBitcoinAttestation(bytes);
+        if (attestation.height === null || !attestation.txid) continue;
+
+        const check = await verifyAttestedTransaction(attestation.height, attestation.txid);
+        if (!check.confirmed) continue;
+
+        await supabase
+          .from("ots_proofs")
+          .update({
+            status: "confirmed",
+            bitcoin_txid: attestation.txid,
+            bitcoin_block_height: attestation.height,
+            confirmations: 1,
+            last_polled_at: new Date().toISOString(),
+            ots_base64: bytesToBase64(bytes),
+          })
+          .eq("id", proof.id);
+
+        refreshed.push({
+          commit_id: proof.commit_id,
+          block_height: attestation.height,
+          txid: attestation.txid,
+        });
       }
 
       return json({
         success: true,
         checked: pending?.length ?? 0,
-        confirmed: updated.length,
+        confirmed: updated.length + refreshed.length,
+        proof_does_not_cover_digest: unbound,
         confirmations: updated,
+        refreshed,
       });
     }
 
