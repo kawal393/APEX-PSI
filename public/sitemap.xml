@@ -131,6 +131,16 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.ai-governance-standard.com/pilot</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/recipe/agent-payment</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.ai-governance-standard.com/media</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -6284,15 +6294,5 @@
     <lastmod>2026-08-30T00:06:50.156Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/pilot</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/recipe/agent-payment</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
   </url>
 </urlset>
