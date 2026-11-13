@@ -23,11 +23,14 @@ from psi_verifier import (  # noqa: E402
     ConformanceResult,
     format_acceptance,
     format_rejection,
+    psi_consistency_path,
     psi_leaf,
     psi_schema_digest,
     psi_schema_digest_from_document,
     psi_seal_hash,
+    psi_tree_head,
     psi_verify_binding,
+    psi_verify_consistency,
     psi_verify_inclusion,
     verify_seal,
 )
@@ -329,6 +332,73 @@ def render_inclusion(check: dict) -> str:
     )
 
 
+# ── RFC 9162 CONSISTENCY PROOF cases (R13.2) ──────────────────────────────
+# Inclusion says a receipt is in a tree. Consistency says the tree never
+# forgot it — which is the part a single operator could fake. The cases below
+# are the shapes that matter: a genuine proof, a proof with one node altered,
+# two heads of the same size that disagree, a proof checked against the wrong
+# newer head, and a proof that does not describe two trees at all.
+CONSISTENCY_LEAVES = [sha_hex(f"consistency leaf {i}") for i in range(16)]
+
+
+def _consistency_proof(first: int, second: int) -> dict:
+    return {
+        "first_size": first,
+        "second_size": second,
+        "first_root": psi_tree_head(CONSISTENCY_LEAVES[:first]),
+        "second_root": psi_tree_head(CONSISTENCY_LEAVES[:second]),
+        "consistency_path": psi_consistency_path(
+            CONSISTENCY_LEAVES[:first], CONSISTENCY_LEAVES[:second]
+        ),
+    }
+
+
+GENUINE_CONSISTENCY = _consistency_proof(5, 9)
+
+ALTERED_CONSISTENCY = _consistency_proof(5, 9)
+_altered = list(ALTERED_CONSISTENCY["consistency_path"])
+_node_bytes = bytearray(bytes.fromhex(_altered[0]))
+_node_bytes[0] ^= 0x01
+_altered[0] = _node_bytes.hex()
+ALTERED_CONSISTENCY["consistency_path"] = _altered
+
+FORKED_HEADS = {
+    "first_size": 8,
+    "second_size": 8,
+    "first_root": psi_tree_head(CONSISTENCY_LEAVES[:8]),
+    "second_root": psi_tree_head(CONSISTENCY_LEAVES[:7] + [sha_hex("forked leaf")]),
+    "consistency_path": [],
+}
+
+WRONG_SECOND_HEAD = _consistency_proof(5, 9)
+WRONG_SECOND_HEAD["second_root"] = psi_tree_head(CONSISTENCY_LEAVES[:6])
+
+MALFORMED_CONSISTENCY = {
+    "first_size": 9,
+    "second_size": 4,
+    "first_root": psi_tree_head(CONSISTENCY_LEAVES[:9]),
+    "second_root": psi_tree_head(CONSISTENCY_LEAVES[:4]),
+    "consistency_path": [],
+}
+
+CONSISTENCY_CASES = [
+    ("a genuine consistency proof between two heads", GENUINE_CONSISTENCY),
+    ("the same proof with one node altered", ALTERED_CONSISTENCY),
+    ("two heads of the same size that disagree", FORKED_HEADS),
+    ("a proof checked against the wrong newer head", WRONG_SECOND_HEAD),
+    ("a proof that does not describe two trees", MALFORMED_CONSISTENCY),
+]
+
+
+def render_consistency(check: dict) -> str:
+    return (
+        f"status={check['status']} consistent={str(check['consistent']).lower()} "
+        f"recomputed_first_root={_tok(check['recomputed_first_root'])} "
+        f"recomputed_second_root={_tok(check['recomputed_second_root'])} rule={check['rule']}\n"
+        f"detail: {check['detail']}"
+    )
+
+
 # ── R11.7 POST-QUANTUM cases ─────────────────────────────────────────────
 # A seal that CLAIMS a post-quantum signature. Measured 7 Nov 2026: the
 # published verifier (npm 1.3.0, PyPI 1.3.0) and the 1.4.0 source both read
@@ -379,6 +449,11 @@ for index, (name, proof) in enumerate(INCLUSION_CASES, start=1):
     check = psi_verify_inclusion(proof)
     inclusion_lines.append(f"inclusion case {index}: {render_inclusion(check)}")
 
+consistency_lines = []
+for index, (name, proof) in enumerate(CONSISTENCY_CASES, start=1):
+    check = psi_verify_consistency(proof)
+    consistency_lines.append(f"consistency case {index}: {render_consistency(check)}")
+
 
 # ── the PUBLISHED schema document must hash to the verifier's frozen digest ──
 # The seal schema is frozen: every seal ever issued carries this digest. If the
@@ -421,6 +496,8 @@ with open(os.path.join(OUT_DIR, "fixtures.json"), "w", encoding="utf-8", newline
             {"name": name, "record": record, "trust_roots": trust} for name, record, trust in BINDING_CASES
         ], "inclusion_cases": [
             {"name": name, "proof": proof} for name, proof in INCLUSION_CASES
+        ], "consistency_cases": [
+            {"name": name, "proof": proof} for name, proof in CONSISTENCY_CASES
         ], "post_quantum_cases": [
             {"name": name, "seal": seal, "checker": checker} for name, seal, checker in PQ_CASES
         ]},
@@ -431,7 +508,10 @@ with open(os.path.join(OUT_DIR, "fixtures.json"), "w", encoding="utf-8", newline
 
 with open(os.path.join(OUT_DIR, "python.txt"), "w", encoding="utf-8", newline="\n") as fh:
     fh.write(
-        "\n\n=====\n\n".join(py_lines + binding_lines + inclusion_lines + pq_lines + [schema_line]) + "\n"
+        "\n\n=====\n\n".join(
+            py_lines + binding_lines + inclusion_lines + consistency_lines + pq_lines + [schema_line]
+        )
+        + "\n"
     )
 
 print("python: signed seal verifies locally =", verify_seal(signed, TRUST).conformant)

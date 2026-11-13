@@ -21,9 +21,11 @@ import {
   psiSchemaDigest,
   psiSchemaDigestFromDocument,
   psiVerifyBinding,
+  psiVerifyConsistency,
   psiVerifyInclusion,
   verifySeal,
   type ConformanceResult,
+  type PsiConsistencyProof,
   type PsiInclusionProof,
   type VerifySealOptions,
 } from "../../src/index.ts";
@@ -39,6 +41,7 @@ const fixtures = JSON.parse(readFileSync(join(SHARED, "fixtures.json"), "utf8"))
   cases: { name: string; seal: unknown; options: VerifySealOptions }[];
   binding_cases: { name: string; record: unknown; trust_roots: readonly (string | { public_key: string; key_id?: string })[] }[];
   inclusion_cases: { name: string; proof: PsiInclusionProof }[];
+  consistency_cases: { name: string; proof: PsiConsistencyProof }[];
   post_quantum_cases: { name: string; seal: unknown; checker: "none" | "refuse" | "accept" }[];
 };
 
@@ -78,6 +81,18 @@ for (const [index, testCase] of fixtures.inclusion_cases.entries()) {
   blocks.push(
     `inclusion case ${index + 1}: status=${check.status} included=${String(check.included)} ` +
       `recomputed_root=${check.recomputed_root === null ? "null" : check.recomputed_root} ` +
+      `rule=${check.rule}\n` +
+      `detail: ${check.detail}`,
+  );
+}
+
+// RFC 9162 consistency proofs (R13.2) — the same proofs, the same verdicts.
+for (const [index, testCase] of fixtures.consistency_cases.entries()) {
+  const check = await psiVerifyConsistency(testCase.proof);
+  blocks.push(
+    `consistency case ${index + 1}: status=${check.status} consistent=${String(check.consistent)} ` +
+      `recomputed_first_root=${check.recomputed_first_root === null ? "null" : check.recomputed_first_root} ` +
+      `recomputed_second_root=${check.recomputed_second_root === null ? "null" : check.recomputed_second_root} ` +
       `rule=${check.rule}\n` +
       `detail: ${check.detail}`,
   );

@@ -27,6 +27,8 @@ The verifier enforces the **PSI-SEAL/1** canonical schema byte for byte:
 | R11 | Ed25519 over the ASCII `seal_hash`, against public keys the caller supplies |
 | R11.7 | A declared post-quantum signature must itself be verified — unchecked is `unverifiable`, never `verified` |
 | R12 | `schema` + `schema_digest` present and matching |
+| R13.1 | An inclusion proof is recomputed from the leaf, its index, the tree size and the audit path |
+| R13.2 | A consistency proof is recomputed from both tree heads it claims to relate |
 
 Anything that deviates — even if functionally similar — fails. **Only schema-conformant seals are PSI-compliant.**
 
@@ -56,6 +58,34 @@ const result = await verifySeal(seal, { trustRoots, postQuantum: [checker] });
 No checker for the declared algorithm → `unverifiable`. A checker that ran and
 said no → `invalid`. Either way the seal is not reported as verified, and under
 the default `requireValidSignature` it is not conformant.
+
+## Consistency proofs (R13.2)
+
+An inclusion proof says a leaf is in a tree. Only a consistency proof says the
+tree never forgot — it is what stops one operator from showing two different
+histories of the same log, each with its own valid inclusion proofs.
+
+`psiVerifyConsistency()` walks RFC 9162 sec 2.1.4.2 step for step and reports
+`consistent` only when the head of **both** trees is recomputed from the
+supplied path and matches the head that was supplied:
+
+```ts
+import { psiVerifyConsistency, psiConsistencyPath, psiTreeHead } from "apex-psi-verifier";
+
+const path = await psiConsistencyPath(oldLeaves, newLeaves);
+
+const result = await psiVerifyConsistency({
+  first_size: oldLeaves.length,
+  second_size: newLeaves.length,
+  first_root: await psiTreeHead(oldLeaves),
+  second_root: await psiTreeHead(newLeaves),
+  consistency_path: path,
+});
+// result.status === "consistent" | "mismatch" | "malformed"
+```
+
+`malformed` means the proof could not be checked at all. `mismatch` means the
+check ran and said no. Only `consistent` is a pass.
 
 ## Licensing model
 

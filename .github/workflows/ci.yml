@@ -110,6 +110,8 @@ jobs:
         working-directory: packages/psi-verifier
       - run: npm run test:cross-language
         working-directory: packages/psi-verifier
+      - name: The Python distribution must run its own consistency proof suite
+        run: python packages/psi-verifier-py/test/consistency_proof_test.py
       - name: TS and Python versions must agree
         run: |
           ts=$(node -p "require('./packages/psi-verifier/package.json').version")

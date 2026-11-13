@@ -35,6 +35,7 @@ export const PSI_VERIFIER_RULES = [
   "R11.6 A signature NAMES the digest it authenticates (binds: seal_hash | merkle_leaf) and the verifier RECOMPUTES that digest from the record. A declared digest is compared, never trusted. A record that does not say which digest it means and offers more than one is refused, not guessed.",
   "R11.7 A seal may DECLARE a post-quantum signature (signature.pq_alg / signature.pq_value). A declared post-quantum signature must itself be verified: the verifier checks it when the caller supplies a checker for that algorithm, and reports the seal `unverifiable` — never `verified` — when no checker is available for it. A post-quantum signature nobody checked is not a verified one.",
   "R13.1 An inclusion proof is recomputed from the leaf, the leaf index, the tree size and the audit path, walking the RFC 9162 sec 2.1.3.2 split (the largest power of two smaller than the tree size). The leaf-index parity shortcut is valid only when the tree size is a power of two.",
+  "R13.2 A consistency proof is recomputed from the two tree heads it claims to relate, walking the RFC 9162 sec 2.1.4.2 procedure. It is reported `consistent` only when the head of the older tree AND the head of the newer tree are both recomputed from the supplied path. Inclusion proves a leaf is in a tree; only consistency proves the tree never forgets.",
 ] as const;
 
 export interface PsiSealEnvelope {
@@ -945,12 +946,295 @@ export async function psiVerifyInclusion(proof: PsiInclusionProof): Promise<PsiI
   };
 }
 
+// ── RFC 9162 CONSISTENCY PROOF (added v1.6.0) ──────────────────────────────
+//
+// Inclusion proves a leaf is in a tree. It does not prove the tree never
+// forgets: an operator who holds the log can show one client a tree that
+// includes a receipt, and another client a different tree at the same moment.
+// Only a consistency proof between two heads rules that out — it proves the
+// older tree is a prefix of the newer one.
+//
+// RFC 9162 sec 2.1.4.1 defines the proof; sec 2.1.4.2 defines how a verifier
+// checks one. The verifier below follows sec 2.1.4.2 step for step and never
+// reports `consistent` unless the head of BOTH trees is recomputed from the
+// supplied path and matches the head that was supplied.
+
+export interface PsiConsistencyProof {
+  /** Number of leaves in the older tree. */
+  first_size: number;
+  /** Number of leaves in the newer tree. */
+  second_size: number;
+  /** The head of the older tree. */
+  first_root: string;
+  /** The head of the newer tree. */
+  second_root: string;
+  /** The RFC 9162 sec 2.1.4.1 consistency path between the two heads. */
+  consistency_path: string[];
+}
+
+export type PsiConsistencyStatus = "consistent" | "mismatch" | "malformed";
+
+export interface PsiConsistencyResult {
+  status: PsiConsistencyStatus;
+  /** True only when both heads were recomputed and matched. */
+  consistent: boolean;
+  recomputed_first_root: string | null;
+  recomputed_second_root: string | null;
+  detail: string;
+  rule: string;
+}
+
+/** MTH of an ordered list of leaf hashes (RFC 9162 sec 2.1.3.1). */
+async function rfc9162Head(leaves: readonly Uint8Array[]): Promise<Uint8Array> {
+  if (leaves.length === 0) return new Uint8Array(0);
+  if (leaves.length === 1) return prefixedHash(0x00, leaves[0]);
+  let k = 1;
+  while (k * 2 < leaves.length) k *= 2;
+  const left = await rfc9162Head(leaves.slice(0, k));
+  const right = await rfc9162Head(leaves.slice(k));
+  return prefixedHash(0x01, left, right);
+}
+
+/** RFC 9162 Merkle Tree Hash of an ordered list of leaf digests. */
+export async function psiTreeHead(leaves: readonly string[]): Promise<string> {
+  const parsed: Uint8Array[] = [];
+  for (const leaf of leaves) {
+    const raw = strictHexBytes(leaf);
+    if (!raw) throw new Error("every leaf must be 64 hex characters");
+    parsed.push(raw);
+  }
+  return bytesToHex(await rfc9162Head(parsed));
+}
+
+/** RFC 9162 sec 2.1.4.1 SUBPROOF(m, D_n, b). */
+async function consistencySubproof(
+  m: number,
+  leaves: readonly Uint8Array[],
+  complete: boolean,
+): Promise<Uint8Array[]> {
+  const n = leaves.length;
+  if (m === n) {
+    if (complete) return [];
+    return [await rfc9162Head(leaves)];
+  }
+  let k = 1;
+  while (k * 2 < n) k *= 2;
+  if (m <= k) {
+    const sub = await consistencySubproof(m, leaves.slice(0, k), complete);
+    const right = await rfc9162Head(leaves.slice(k));
+    return [...sub, right];
+  }
+  const sub = await consistencySubproof(m - k, leaves.slice(k), false);
+  const left = await rfc9162Head(leaves.slice(0, k));
+  return [...sub, left];
+}
+
+/**
+ * The RFC 9162 consistency proof between two ordered lists of leaf digests.
+ * The older list must be a prefix of the newer one: the proof says the older
+ * tree is contained in the newer, so there is nothing to prove otherwise.
+ */
+export async function psiConsistencyPath(
+  oldLeaves: readonly string[],
+  newLeaves: readonly string[],
+): Promise<string[]> {
+  const older: string[] = [];
+  for (const leaf of oldLeaves) {
+    if (!strictHexBytes(leaf)) throw new Error("every leaf must be 64 hex characters");
+    older.push(String(leaf).replace(/^sha256:/i, "").trim().toLowerCase());
+  }
+  const newer: string[] = [];
+  for (const leaf of newLeaves) {
+    if (!strictHexBytes(leaf)) throw new Error("every leaf must be 64 hex characters");
+    newer.push(String(leaf).replace(/^sha256:/i, "").trim().toLowerCase());
+  }
+  if (older.length === 0 || older.length >= newer.length) {
+    throw new Error("the older tree must be smaller than the newer tree");
+  }
+  for (let i = 0; i < older.length; i += 1) {
+    if (older[i] !== newer[i]) {
+      throw new Error("the older tree must be a prefix of the newer tree");
+    }
+  }
+  const parsed: Uint8Array[] = newer.map((leaf) => strictHexBytes(leaf) as Uint8Array);
+  const nodes = await consistencySubproof(older.length, parsed, true);
+  return nodes.map(bytesToHex);
+}
+
+/**
+ * Verify a consistency proof between two tree heads.
+ *
+ * `malformed` means the proof could not be checked at all. `mismatch` means
+ * the check ran and said no. Only `consistent` is a pass.
+ */
+export async function psiVerifyConsistency(proof: PsiConsistencyProof): Promise<PsiConsistencyResult> {
+  const firstSize = proof?.first_size;
+  const secondSize = proof?.second_size;
+  const firstRoot = String(proof?.first_root ?? "").trim();
+  const secondRoot = String(proof?.second_root ?? "").trim();
+  const rawPath = Array.isArray(proof?.consistency_path) ? proof.consistency_path : [];
+
+  const sizesAreIntegers =
+    typeof firstSize === "number" &&
+    Number.isInteger(firstSize) &&
+    typeof secondSize === "number" &&
+    Number.isInteger(secondSize);
+  if (!sizesAreIntegers || (firstSize as number) < 1 || (secondSize as number) < (firstSize as number)) {
+    return {
+      status: "malformed",
+      consistent: false,
+      recomputed_first_root: null,
+      recomputed_second_root: null,
+      detail:
+        "first_size and second_size must both be integers, with 1 <= first_size <= second_size",
+      rule: PSI_RULE_CITATIONS.consistency_malformed,
+    };
+  }
+
+  const firstBytes = strictHexBytes(firstRoot);
+  const secondBytes = strictHexBytes(secondRoot);
+  if (!firstBytes || !secondBytes) {
+    return {
+      status: "malformed",
+      consistent: false,
+      recomputed_first_root: null,
+      recomputed_second_root: null,
+      detail: "first_root and second_root must both be 64 hex characters",
+      rule: PSI_RULE_CITATIONS.consistency_malformed,
+    };
+  }
+
+  const nodes: Uint8Array[] = [];
+  for (const node of rawPath) {
+    const raw = strictHexBytes(node);
+    if (!raw) {
+      return {
+        status: "malformed",
+        consistent: false,
+        recomputed_first_root: null,
+        recomputed_second_root: null,
+        detail: "consistency_path must hold 64 hex characters",
+        rule: PSI_RULE_CITATIONS.consistency_malformed,
+      };
+    }
+    nodes.push(raw);
+  }
+
+  if (firstSize === secondSize) {
+    if (nodes.length > 0) {
+      return {
+        status: "malformed",
+        consistent: false,
+        recomputed_first_root: null,
+        recomputed_second_root: null,
+        detail: "two heads of the same tree size must carry an empty consistency path",
+        rule: PSI_RULE_CITATIONS.consistency_malformed,
+      };
+    }
+    if (bytesToHex(firstBytes) !== bytesToHex(secondBytes)) {
+      return {
+        status: "mismatch",
+        consistent: false,
+        recomputed_first_root: null,
+        recomputed_second_root: null,
+        detail:
+          "the two heads claim the same tree size but carry different roots, so one of them is not this tree",
+        rule: PSI_RULE_CITATIONS.consistency_mismatch,
+      };
+    }
+    return {
+      status: "consistent",
+      consistent: true,
+      recomputed_first_root: bytesToHex(firstBytes),
+      recomputed_second_root: bytesToHex(secondBytes),
+      detail: `both heads describe the same tree of ${firstSize} leaves`,
+      rule: PSI_RULE_CITATIONS.consistency_ok,
+    };
+  }
+
+  if (nodes.length === 0) {
+    return {
+      status: "malformed",
+      consistent: false,
+      recomputed_first_root: null,
+      recomputed_second_root: null,
+      detail: "a consistency proof between two different trees must carry at least one node",
+      rule: PSI_RULE_CITATIONS.consistency_malformed,
+    };
+  }
+
+  // RFC 9162 sec 2.1.4.2, step for step.
+  // Step 2: when the older tree is an exact power of two its head is a
+  // complete subtree, so the proof does not carry it and the verifier
+  // prepends the supplied head. A caller who already included that head in
+  // the path is not prepended twice — the check below is unchanged either way.
+  const path =
+    (firstSize & (firstSize - 1)) === 0 && !(nodes.length > 0 && bytesToHex(nodes[0]) === bytesToHex(firstBytes))
+      ? [firstBytes, ...nodes]
+      : nodes;
+  let fn = firstSize - 1;
+  let sn = secondSize - 1;
+  while (fn & 1) {
+    fn >>= 1;
+    sn >>= 1;
+  }
+  let fr = path[0];
+  let sr = path[0];
+  for (const node of path.slice(1)) {
+    if (sn === 0) {
+      return {
+        status: "mismatch",
+        consistent: false,
+        recomputed_first_root: bytesToHex(fr),
+        recomputed_second_root: bytesToHex(sr),
+        detail: "the consistency path is longer than the two heads allow",
+        rule: PSI_RULE_CITATIONS.consistency_mismatch,
+      };
+    }
+    if ((fn & 1) !== 0 || fn === sn) {
+      fr = await prefixedHash(0x01, node, fr);
+      sr = await prefixedHash(0x01, node, sr);
+      if ((fn & 1) === 0) {
+        while ((fn & 1) === 0 && fn !== 0) {
+          fn >>= 1;
+          sn >>= 1;
+        }
+      }
+    } else {
+      sr = await prefixedHash(0x01, sr, node);
+    }
+    fn >>= 1;
+    sn >>= 1;
+  }
+
+  const firstHex = bytesToHex(firstBytes);
+  const secondHex = bytesToHex(secondBytes);
+  if (bytesToHex(fr) !== firstHex || bytesToHex(sr) !== secondHex || sn !== 0) {
+    return {
+      status: "mismatch",
+      consistent: false,
+      recomputed_first_root: bytesToHex(fr),
+      recomputed_second_root: bytesToHex(sr),
+      detail: `the consistency proof does not reproduce the supplied heads: recomputed ${bytesToHex(fr)} and ${bytesToHex(sr)}`,
+      rule: PSI_RULE_CITATIONS.consistency_mismatch,
+    };
+  }
+  return {
+    status: "consistent",
+    consistent: true,
+    recomputed_first_root: bytesToHex(fr),
+    recomputed_second_root: bytesToHex(sr),
+    detail: `the tree of ${firstSize} leaves is a prefix of the tree of ${secondSize} leaves: both heads were recomputed from the consistency proof`,
+    rule: PSI_RULE_CITATIONS.consistency_ok,
+  };
+}
+
 const HEX64 = /^[0-9a-f]{64}$/;
 const RFC3339_MS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const ALLOWED = ["schema", "schema_digest", "sealed_at", "subject", "hash", "merkle", "signature", "licence"];
 
 /** Verifier distribution version. Identical in the Python distribution. */
-export const PSI_VERIFIER_VERSION = "1.5.0";
+export const PSI_VERIFIER_VERSION = "1.6.0";
 
 /**
  * Human-readable rule citations. Every rejection line carries one:
@@ -986,6 +1270,9 @@ export const PSI_RULE_CITATIONS = {
   inclusion_malformed: "13.1",
   inclusion_mismatch: "13.2",
   inclusion_ok: "13.3",
+  consistency_malformed: "13.4",
+  consistency_mismatch: "13.5",
+  consistency_ok: "13.6",
 } as const;
 
 

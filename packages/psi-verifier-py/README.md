@@ -35,7 +35,8 @@ fractional digits (R6), exact octet length (R7), domain-separated leaf
 `SHA-256("PSI1:" + hash)` and promoted-odd Merkle assembly (R8/R9),
 `seal_hash = SHA-256(JCS(core envelope))` (R10), Ed25519 over the ASCII
 `seal_hash` against public keys the caller supplies (R11), and matching
-`schema_digest` (R12).
+`schema_digest` (R12). Inclusion (R13.1) and consistency (R13.2) proofs are
+verified on request.
 
 ## Post-quantum signatures (R11.7)
 
@@ -61,6 +62,34 @@ result = verify_seal(seal, trust_roots=[key], post_quantum=[{
 
 No checker for the declared algorithm -> `unverifiable`. A checker that ran and
 said no -> `invalid`. Either way the seal is not reported as verified.
+
+## Consistency proofs (R13.2)
+
+An inclusion proof says a leaf is in a tree. Only a consistency proof says the
+tree never forgot — it is what stops one operator from showing two different
+histories of the same log, each with its own valid inclusion proofs.
+
+`psi_verify_consistency()` walks RFC 9162 sec 2.1.4.2 step for step and reports
+`consistent` only when the head of **both** trees is recomputed from the
+supplied path and matches the head that was supplied:
+
+```python
+from psi_verifier import psi_verify_consistency, psi_consistency_path, psi_tree_head
+
+path = psi_consistency_path(old_leaves, new_leaves)
+
+result = psi_verify_consistency({
+    "first_size": len(old_leaves),
+    "second_size": len(new_leaves),
+    "first_root": psi_tree_head(old_leaves),
+    "second_root": psi_tree_head(new_leaves),
+    "consistency_path": path,
+})
+# result["status"] == "consistent" | "mismatch" | "malformed"
+```
+
+`malformed` means the proof could not be checked at all. `mismatch` means the
+check ran and said no. Only `consistent` is a pass.
 
 ## Licensing
 

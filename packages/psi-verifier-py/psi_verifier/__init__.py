@@ -16,6 +16,11 @@ CALLER supplies, and a seal whose signature was never checked can no longer
 report a pass. ``conformant`` still means "the bytes match the schema";
 ``authentic`` is the new, separate answer to "did a trusted key sign this".
 Rejection and acceptance lines stay byte-identical to the TypeScript build.
+
+v1.6.0 — CONSISTENCY RELEASE: R13.2 verifies an RFC 9162 consistency proof
+between two tree heads. Inclusion proves a receipt is in a tree; consistency
+proves the tree never forgot it, which is what a single operator could not
+fake.
 """
 
 from __future__ import annotations
@@ -27,7 +32,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
-__version__ = "1.5.0"
+__version__ = "1.6.0"
 PSI_VERIFIER_VERSION = __version__
 
 PSI_SCHEMA_ID = "PSI-SEAL/1.0.0"
@@ -57,6 +62,7 @@ PSI_VERIFIER_RULES: Sequence[str] = (
     "R11.6 A signature NAMES the digest it authenticates (binds: seal_hash | merkle_leaf) and the verifier RECOMPUTES that digest from the record. A declared digest is compared, never trusted. A record that does not say which digest it means and offers more than one is refused, not guessed.",
     "R11.7 A seal may DECLARE a post-quantum signature (signature.pq_alg / signature.pq_value). A declared post-quantum signature must itself be verified: the verifier checks it when the caller supplies a checker for that algorithm, and reports the seal `unverifiable` — never `verified` — when no checker is available for it. A post-quantum signature nobody checked is not a verified one.",
     "R13.1 An inclusion proof is recomputed from the leaf, the leaf index, the tree size and the audit path, walking the RFC 9162 sec 2.1.3.2 split (the largest power of two smaller than the tree size). The leaf-index parity shortcut is valid only when the tree size is a power of two.",
+    "R13.2 A consistency proof is recomputed from the two tree heads it claims to relate, walking the RFC 9162 sec 2.1.4.2 procedure. It is reported `consistent` only when the head of the older tree AND the head of the newer tree are both recomputed from the supplied path. Inclusion proves a leaf is in a tree; only consistency proves the tree never forgets.",
 )
 
 PSI_BINDINGS: Sequence[str] = ("seal_hash", "merkle_leaf")
@@ -90,6 +96,9 @@ PSI_RULE_CITATIONS = {
     "inclusion_malformed": "13.1",
     "inclusion_mismatch": "13.2",
     "inclusion_ok": "13.3",
+    "consistency_malformed": "13.4",
+    "consistency_mismatch": "13.5",
+    "consistency_ok": "13.6",
 }
 
 
@@ -771,6 +780,239 @@ def psi_verify_inclusion(proof: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+# ── RFC 9162 CONSISTENCY PROOF (added v1.6.0) ──────────────────────────────
+#
+# Inclusion proves a leaf is in a tree. It does not prove the tree never
+# forgets: an operator who holds the log can show one client a tree that
+# includes a receipt, and another client a different tree at the same moment.
+# Only a consistency proof between two heads rules that out — it proves the
+# older tree is a prefix of the newer one.
+#
+# RFC 9162 sec 2.1.4.1 defines the proof; sec 2.1.4.2 defines how a verifier
+# checks one. The verifier below follows sec 2.1.4.2 step for step and never
+# reports `consistent` unless the head of BOTH trees is recomputed from the
+# supplied path and matches the head that was supplied.
+
+
+def _rfc9162_head(leaves: Sequence[bytes]) -> bytes:
+    """MTH of an ordered list of leaf hashes (RFC 9162 sec 2.1.3.1)."""
+    if not leaves:
+        return b""
+    if len(leaves) == 1:
+        return _prefixed_hash(0x00, leaves[0])
+    k = 1
+    while k * 2 < len(leaves):
+        k *= 2
+    return _prefixed_hash(0x01, _rfc9162_head(leaves[:k]), _rfc9162_head(leaves[k:]))
+
+
+def psi_tree_head(leaves: Sequence[Any]) -> str:
+    """RFC 9162 Merkle Tree Hash of an ordered list of leaf digests."""
+    parsed: List[bytes] = []
+    for leaf in leaves:
+        raw = _strict_hex_bytes(leaf)
+        if raw is None:
+            raise ValueError("every leaf must be 64 hex characters")
+        parsed.append(raw)
+    return _rfc9162_head(parsed).hex()
+
+
+def _consistency_subproof(m: int, leaves: Sequence[bytes], complete: bool) -> List[bytes]:
+    """RFC 9162 sec 2.1.4.1 SUBPROOF(m, D_n, b)."""
+    n = len(leaves)
+    if m == n:
+        return [] if complete else [_rfc9162_head(leaves)]
+    k = 1
+    while k * 2 < n:
+        k *= 2
+    if m <= k:
+        return _consistency_subproof(m, leaves[:k], complete) + [_rfc9162_head(leaves[k:])]
+    return _consistency_subproof(m - k, leaves[k:], False) + [_rfc9162_head(leaves[:k])]
+
+
+def psi_consistency_path(old_leaves: Sequence[Any], new_leaves: Sequence[Any]) -> List[str]:
+    """The RFC 9162 consistency proof between two ordered lists of leaf digests.
+
+    `old_leaves` must be a prefix of `new_leaves`: the proof says the older
+    tree is contained in the newer one, so there is nothing to prove when the
+    older tree is not a prefix of the newer.
+    """
+    old: List[bytes] = []
+    for leaf in old_leaves:
+        raw = _strict_hex_bytes(leaf)
+        if raw is None:
+            raise ValueError("every leaf must be 64 hex characters")
+        old.append(raw)
+    new: List[bytes] = []
+    for leaf in new_leaves:
+        raw = _strict_hex_bytes(leaf)
+        if raw is None:
+            raise ValueError("every leaf must be 64 hex characters")
+        new.append(raw)
+    if not old or len(old) >= len(new):
+        raise ValueError("the older tree must be smaller than the newer tree")
+    if new[: len(old)] != old:
+        raise ValueError("the older tree must be a prefix of the newer tree")
+    return [node.hex() for node in _consistency_subproof(len(old), new, True)]
+
+
+def psi_verify_consistency(proof: Dict[str, Any]) -> Dict[str, Any]:
+    """Verify a consistency proof between two tree heads.
+
+    `malformed` means the proof could not be checked at all. `mismatch` means
+    the check ran and said no. Only `consistent` is a pass.
+    """
+    first_size = (proof or {}).get("first_size")
+    second_size = (proof or {}).get("second_size")
+    first_root = str((proof or {}).get("first_root") or "").strip()
+    second_root = str((proof or {}).get("second_root") or "").strip()
+    raw_path = (proof or {}).get("consistency_path")
+    path = list(raw_path) if isinstance(raw_path, (list, tuple)) else []
+
+    if not isinstance(first_size, int) or isinstance(first_size, bool):
+        first_size = None
+    if not isinstance(second_size, int) or isinstance(second_size, bool):
+        second_size = None
+    if first_size is None or second_size is None or first_size < 1 or second_size < first_size:
+        return {
+            "status": "malformed",
+            "consistent": False,
+            "recomputed_first_root": None,
+            "recomputed_second_root": None,
+            "detail": (
+                "first_size and second_size must both be integers, "
+                "with 1 <= first_size <= second_size"
+            ),
+            "rule": PSI_RULE_CITATIONS["consistency_malformed"],
+        }
+
+    first_bytes = _strict_hex_bytes(first_root)
+    second_bytes = _strict_hex_bytes(second_root)
+    if first_bytes is None or second_bytes is None:
+        return {
+            "status": "malformed",
+            "consistent": False,
+            "recomputed_first_root": None,
+            "recomputed_second_root": None,
+            "detail": "first_root and second_root must both be 64 hex characters",
+            "rule": PSI_RULE_CITATIONS["consistency_malformed"],
+        }
+
+    nodes: List[bytes] = []
+    for node in path:
+        raw = _strict_hex_bytes(node)
+        if raw is None:
+            return {
+                "status": "malformed",
+                "consistent": False,
+                "recomputed_first_root": None,
+                "recomputed_second_root": None,
+                "detail": "consistency_path must hold 64 hex characters",
+                "rule": PSI_RULE_CITATIONS["consistency_malformed"],
+            }
+        nodes.append(raw)
+
+    if first_size == second_size:
+        if nodes:
+            return {
+                "status": "malformed",
+                "consistent": False,
+                "recomputed_first_root": None,
+                "recomputed_second_root": None,
+                "detail": "two heads of the same tree size must carry an empty consistency path",
+                "rule": PSI_RULE_CITATIONS["consistency_malformed"],
+            }
+        if first_bytes != second_bytes:
+            return {
+                "status": "mismatch",
+                "consistent": False,
+                "recomputed_first_root": None,
+                "recomputed_second_root": None,
+                "detail": (
+                    "the two heads claim the same tree size but carry different roots, "
+                    "so one of them is not this tree"
+                ),
+                "rule": PSI_RULE_CITATIONS["consistency_mismatch"],
+            }
+        return {
+            "status": "consistent",
+            "consistent": True,
+            "recomputed_first_root": first_bytes.hex(),
+            "recomputed_second_root": second_bytes.hex(),
+            "detail": f"both heads describe the same tree of {first_size} leaves",
+            "rule": PSI_RULE_CITATIONS["consistency_ok"],
+        }
+
+    if not nodes:
+        return {
+            "status": "malformed",
+            "consistent": False,
+            "recomputed_first_root": None,
+            "recomputed_second_root": None,
+            "detail": "a consistency proof between two different trees must carry at least one node",
+            "rule": PSI_RULE_CITATIONS["consistency_malformed"],
+        }
+
+    # RFC 9162 sec 2.1.4.2, step for step.
+    # Step 2: when the older tree is an exact power of two its head is a
+    # complete subtree, so the proof does not carry it and the verifier
+    # prepends the supplied head. A caller who already included that head in
+    # the path is not prepended twice — the check below is unchanged either way.
+    if first_size & (first_size - 1) == 0 and not (nodes and nodes[0] == first_bytes):
+        nodes = [first_bytes] + nodes
+    fn = first_size - 1
+    sn = second_size - 1
+    while fn & 1:
+        fn >>= 1
+        sn >>= 1
+    fr = sr = nodes[0]
+    for node in nodes[1:]:
+        if sn == 0:
+            return {
+                "status": "mismatch",
+                "consistent": False,
+                "recomputed_first_root": fr.hex(),
+                "recomputed_second_root": sr.hex(),
+                "detail": "the consistency path is longer than the two heads allow",
+                "rule": PSI_RULE_CITATIONS["consistency_mismatch"],
+            }
+        if (fn & 1) or fn == sn:
+            fr = _prefixed_hash(0x01, node, fr)
+            sr = _prefixed_hash(0x01, node, sr)
+            if not (fn & 1):
+                while not (fn & 1) and fn != 0:
+                    fn >>= 1
+                    sn >>= 1
+        else:
+            sr = _prefixed_hash(0x01, sr, node)
+        fn >>= 1
+        sn >>= 1
+
+    if fr != first_bytes or sr != second_bytes or sn != 0:
+        return {
+            "status": "mismatch",
+            "consistent": False,
+            "recomputed_first_root": fr.hex(),
+            "recomputed_second_root": sr.hex(),
+            "detail": (
+                "the consistency proof does not reproduce the supplied heads: "
+                f"recomputed {fr.hex()} and {sr.hex()}"
+            ),
+            "rule": PSI_RULE_CITATIONS["consistency_mismatch"],
+        }
+    return {
+        "status": "consistent",
+        "consistent": True,
+        "recomputed_first_root": fr.hex(),
+        "recomputed_second_root": sr.hex(),
+        "detail": (
+            f"the tree of {first_size} leaves is a prefix of the tree of {second_size} leaves: "
+            "both heads were recomputed from the consistency proof"
+        ),
+        "rule": PSI_RULE_CITATIONS["consistency_ok"],
+    }
+
+
 @dataclass
 class ConformanceResult:
     conformant: bool
@@ -1107,10 +1349,13 @@ __all__ = [
     "psi_schema_digest_from_document",
     "psi_seal_hash",
     "psi_declared_binding",
+    "psi_consistency_path",
     "psi_inclusion_root",
     "psi_read_signature",
     "psi_resolve_binding",
+    "psi_tree_head",
     "psi_verify_binding",
+    "psi_verify_consistency",
     "psi_verify_inclusion",
     "psi_verify_signature",
     "verify_ed25519",

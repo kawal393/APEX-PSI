@@ -3,6 +3,34 @@
 All notable changes to the MIT-licensed PSI verifier. Verification is, and
 remains, free forever.
 
+## 1.6.0 — Consistency-proof release (14 Nov 2026)
+
+- **The log can now prove it never forgot.** Measured 14 Nov 2026: the
+  published verifier shipped RFC 9162 INCLUSION proofs (R13.1) and nothing
+  else. An inclusion proof says a receipt is in a tree; it does not say the
+  tree is the same tree an hour later. An operator holding the log could
+  still show one client a tree that includes a receipt and another client a
+  different tree at the same moment — the split view.
+- **R13.2**: `psiVerifyConsistency()` / `psi_verify_consistency()` verify a
+  consistency proof between two tree heads, walking the RFC 9162 sec 2.1.4.2
+  procedure step for step. The verdict is `consistent` only when the head of
+  the OLDER tree AND the head of the NEWER tree are both recomputed from the
+  supplied path and match the heads that were supplied. Anything else is
+  `mismatch`; anything that cannot be checked is `malformed`.
+- New in both distributions: `psiTreeHead()` / `psi_tree_head()` (the RFC
+  9162 Merkle Tree Hash) and `psiConsistencyPath()` / `psi_consistency_path()`
+  (the generator, so a log can serve the proof it is then judged by). The
+  generator refuses to invent a proof for a tree that is not a prefix of the
+  newer one.
+- New citations: `13.4` (malformed), `13.5` (mismatch), `13.6` (consistent).
+  The seal schema digest is untouched — R13.2 is a verifier-side rule, so
+  every seal ever issued still verifies.
+- Tests: every size pair up to 64 leaves is generated and verified, and every
+  single-node mutation of a valid proof is refused — 2,080 pairs and 2,223
+  tampered proofs in Python, the same shapes plus an independent reference
+  implementation in TypeScript. Cross-language parity holds byte for byte
+  (11,756 B, sha256 `16960ad032b9d42e3ee28289dd4cfee812e52350834def84a5390c5be57223d6`).
+
 ## 1.5.0 — Post-quantum fail-closed release (7 Nov 2026)
 
 - **A declared post-quantum signature must now be checked.** Measured
