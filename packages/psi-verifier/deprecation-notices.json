@@ -1,0 +1,6 @@
+{
+  "1.2.0": "Security advisory: this release does not verify the seal's Ed25519 signature. Upgrade to 1.6.1 or later.",
+  "1.3.0": "Security advisory: this release reports a declared post-quantum signature as verified without checking it. Upgrade to 1.6.1 or later.",
+  "1.5.0": "Superseded by 1.6.1, which adds RFC 9162 consistency-proof verification (R13.2).",
+  "0.0.0-stage": "Temporary publishing placeholder, not a release. Install apex-psi-verifier@1.6.1."
+}

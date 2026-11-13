@@ -21,6 +21,10 @@ v1.6.0 — CONSISTENCY RELEASE: R13.2 verifies an RFC 9162 consistency proof
 between two tree heads. Inclusion proves a receipt is in a tree; consistency
 proves the tree never forgot it, which is what a single operator could not
 fake.
+
+v1.6.1 — DEPRECATION-METADATA RELEASE: no code change. This release exists so
+that the npm distribution of the same verifier can carry machine-readable
+deprecation labels on its earlier releases.
 """
 
 from __future__ import annotations
@@ -32,7 +36,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
-__version__ = "1.6.0"
+__version__ = "1.6.1"
 PSI_VERIFIER_VERSION = __version__
 
 PSI_SCHEMA_ID = "PSI-SEAL/1.0.0"

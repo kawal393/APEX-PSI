@@ -3,6 +3,24 @@
 All notable changes to the MIT-licensed PSI verifier. Verification is, and
 remains, free forever.
 
+## 1.6.1 — Deprecation-metadata release (14 Nov 2026)
+
+- **No code change.** The verifier is byte-identical to 1.6.0: the same RFC 9162
+  consistency-proof verification (R13.2), the same inclusion proofs (R13.1), the
+  same fail-closed Ed25519 and post-quantum handling. Nothing was weakened and
+  nothing was added.
+- **Why a release exists.** A deprecation is a machine-readable label on a
+  release, and npm's token-free trusted-publishing session cannot write a label
+  onto an existing release: every metadata-only write is refused with 404
+  (measured across five body shapes on 14 Nov 2026). The registry's publish
+  route accepts a release body that carries the earlier releases alongside the
+  new one, so 1.6.1 is the release that carries the labels for 1.2.0, 1.3.0,
+  1.5.0 and the 0.0.0-stage placeholder.
+- The labels themselves are in `deprecation-notices.json`, which is the single
+  source of truth for them in this repository. 1.2.0 and 1.3.0 carry security
+  advisories: 1.2.0 does not verify the seal's Ed25519 signature, and 1.3.0
+  reports a declared post-quantum signature as verified without checking it.
+
 ## 1.6.0 — Consistency-proof release (14 Nov 2026)
 
 - **The log can now prove it never forgot.** Measured 14 Nov 2026: the

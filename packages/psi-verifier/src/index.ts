@@ -1234,7 +1234,7 @@ const RFC3339_MS = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 const ALLOWED = ["schema", "schema_digest", "sealed_at", "subject", "hash", "merkle", "signature", "licence"];
 
 /** Verifier distribution version. Identical in the Python distribution. */
-export const PSI_VERIFIER_VERSION = "1.6.0";
+export const PSI_VERIFIER_VERSION = "1.6.1";
 
 /**
  * Human-readable rule citations. Every rejection line carries one:
