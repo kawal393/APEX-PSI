@@ -4,7 +4,7 @@ name: Deprecate superseded apex-psi-verifier releases
 # identity, so no token exists on any machine to leak. The versions below are
 # named explicitly - the workflow never deprecates anything it was not told to.
 #
-# It fires on a tag, so it can be run without a GitHub API token:
+# It fires on a tag, so it can be run without a GitHub API token either:
 #   git tag deprecate-apex-psi-verifier-2026-11-14
 #   git push origin deprecate-apex-psi-verifier-2026-11-14
 #
@@ -37,24 +37,59 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
+      # `npm deprecate` does not ride the OIDC rail - npm's own code wires the
+      # exchange into `publish` and `dist-tag` only - so the session token is
+      # minted here exactly the way npm's oidc.js does it: ask GitHub for an
+      # OIDC token, exchange it at the registry for a package session, and use
+      # that session. No long-lived credential exists at any point.
+      - name: Mint a package session from the OIDC identity
+        run: |
+          set -euo pipefail
+          OIDC_TOKEN=$(curl -sS -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm:registry.npmjs.org" | jq -r .value)
+          if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" = "null" ]; then
+            echo "STOP: GitHub would not mint an OIDC token for this run"
+            exit 1
+          fi
+          SESSION=$(curl -sS -X POST -H "Content-Type: application/json" \
+            -d "$(jq -nc --arg t "$OIDC_TOKEN" '{oidcToken:$t}')" \
+            https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/apex-psi-verifier \
+            | jq -r '.token // empty')
+          if [ -z "$SESSION" ]; then
+            echo "STOP: the registry did not exchange the OIDC token for a session"
+            exit 1
+          fi
+          echo "session minted for apex-psi-verifier"
+          echo "SESSION=$SESSION" >> "$GITHUB_ENV"
+
       # Each line says what is true of that release and nothing more. A release
       # that is merely superseded says so; a release that skips a security check
       # says that.
       - name: Deprecate the named releases
+        env:
+          ENTRIES: |
+            0.0.0-stage|Temporary publishing placeholder, not a release. Install apex-psi-verifier@1.6.0.
+            1.2.0|Security advisory: this release does not verify the seal's Ed25519 signature. Upgrade to 1.6.0.
+            1.3.0|Security advisory: this release reports a declared post-quantum signature as verified without checking it. Upgrade to 1.6.0.
+            1.5.0|Superseded by 1.6.0, which adds RFC 9162 consistency-proof verification (R13.2).
         run: |
           set -euo pipefail
-          ENTRIES=(
-            "0.0.0-stage|Temporary publishing placeholder, not a release. Install apex-psi-verifier@1.6.0."
-            "1.2.0|Security advisory: this release does not verify the seal's Ed25519 signature. Upgrade to 1.6.0."
-            "1.3.0|Security advisory: this release reports a declared post-quantum signature as verified without checking it. Upgrade to 1.6.0."
-            "1.5.0|Superseded by 1.6.0, which adds RFC 9162 consistency-proof verification (R13.2)."
-          )
-          for ENTRY in "${ENTRIES[@]}"; do
-            VERSION="${ENTRY%%|*}"
-            MESSAGE="${ENTRY#*|}"
+          while IFS='|' read -r VERSION MESSAGE; do
+            [ -z "$VERSION" ] && continue
             echo "deprecating $VERSION"
-            npm deprecate "apex-psi-verifier@$VERSION" "$MESSAGE"
-          done
+            STATUS=$(curl -sS -o response.json -w "%{http_code}" -X PUT \
+              -H "Authorization: Bearer ${SESSION}" -H "Content-Type: application/json" \
+              -d "$(jq -nc --arg m "$MESSAGE" '{deprecated:$m}')" \
+              "https://registry.npmjs.org/-/package/apex-psi-verifier/${VERSION}")
+            echo "  HTTP $STATUS"
+            cat response.json; echo
+            if [ "$STATUS" != "200" ]; then
+              echo "STOP: the registry refused to deprecate $VERSION (HTTP $STATUS)"
+              echo "If this is a permission refusal, npmjs.com/package/apex-psi-verifier/access"
+              echo "must grant the trusted publisher write access to deprecate releases."
+              exit 1
+            fi
+          done <<< "$ENTRIES"
 
       # A guard that cannot fail is not a guard: read the registry back and prove
       # the labels are actually there.
