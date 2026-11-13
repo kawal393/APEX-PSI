@@ -9,11 +9,17 @@ name: Publish apex-psi-verifier to npm
 #
 # Fires on a version tag:  git tag apex-psi-verifier-v1.3.0 && git push origin apex-psi-verifier-v1.3.0
 # and can also be started by hand from the Actions tab.
+#
+# The same file also carries the `deprecate` job, which fires on a
+# deprecate-apex-psi-verifier-* tag. It has to live HERE: npm's trusted
+# publisher is registered against this workflow's filename, so no other
+# workflow file can mint a package session.
 on:
   workflow_dispatch:
   push:
     tags:
       - "apex-psi-verifier-v*"
+      - "deprecate-apex-psi-verifier-*"
 
 permissions:
   contents: read
@@ -21,6 +27,8 @@ permissions:
 
 jobs:
   publish:
+    # A deprecate-* tag must not try to publish anything.
+    if: startsWith(github.ref_name, 'apex-psi-verifier-v')
     runs-on: ubuntu-latest
     # Must match the "Environment name" field on the npm trusted-publisher form.
     environment: npm
@@ -112,3 +120,132 @@ jobs:
             exit 1
           fi
           node -e "fetch('https://registry.npmjs.org/apex-psi-verifier/'+process.env.PKG).then(r=>r.json()).then(d=>{console.log('probed tarball:',d.dist.tarball,'| provenance:',!!d.dist.attestations);if(!d.version||d.version!==process.env.PKG)process.exit(1)})"
+
+  # A deprecation is a machine-readable label on a release. Without it, a known
+  # defective version stays installable and the only warning a stranger gets is
+  # in the words of whoever happens to remember the defect.
+  #
+  # `npm deprecate` does not ride the OIDC rail - npm's own code wires the token
+  # exchange into `publish` and `dist-tag` only - so the session is minted here
+  # the way npm's oidc.js does it, and the deprecation is written with it. No
+  # long-lived credential exists at any point.
+  deprecate:
+    if: startsWith(github.ref_name, 'deprecate-apex-psi-verifier-')
+    runs-on: ubuntu-latest
+    # Must match the "Environment name" field on the npm trusted-publisher form.
+    environment: npm
+    defaults:
+      run:
+        working-directory: packages/psi-verifier
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Mint a package session from the OIDC identity
+        run: |
+          set -uo pipefail
+          {
+            echo "### deprecate: minting a package session"
+          } >> "$GITHUB_STEP_SUMMARY"
+          OIDC_RESPONSE=$(curl -sS -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm:registry.npmjs.org")
+          OIDC_TOKEN=$(printf '%s' "$OIDC_RESPONSE" | jq -r '.value // empty')
+          {
+            echo ""
+            echo "OIDC response (first 300 chars):"
+            echo '```'
+            printf '%s' "$OIDC_RESPONSE" | head -c 300
+            echo ""
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -z "$OIDC_TOKEN" ]; then
+            echo "STOP: GitHub would not mint an OIDC token for this run"
+            exit 1
+          fi
+          EXCHANGE_RESPONSE=$(curl -sS -X POST -H "Content-Type: application/json" \
+            -d "$(jq -nc --arg t "$OIDC_TOKEN" '{oidcToken:$t}')" \
+            https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/apex-psi-verifier)
+          SESSION=$(printf '%s' "$EXCHANGE_RESPONSE" | jq -r '.token // empty')
+          {
+            echo ""
+            echo "Exchange response (first 300 chars):"
+            echo '```'
+            printf '%s' "$EXCHANGE_RESPONSE" | head -c 300
+            echo ""
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -z "$SESSION" ]; then
+            echo "STOP: the registry did not exchange the OIDC token for a session"
+            exit 1
+          fi
+          echo "session minted for apex-psi-verifier"
+          echo "SESSION=$SESSION" >> "$GITHUB_ENV"
+
+      # Each line says what is true of that release and nothing more. A release
+      # that is merely superseded says so; a release that skips a security check
+      # says that.
+      - name: Deprecate the named releases
+        env:
+          ENTRIES: |
+            0.0.0-stage|Temporary publishing placeholder, not a release. Install apex-psi-verifier@1.6.0.
+            1.2.0|Security advisory: this release does not verify the seal's Ed25519 signature. Upgrade to 1.6.0.
+            1.3.0|Security advisory: this release reports a declared post-quantum signature as verified without checking it. Upgrade to 1.6.0.
+            1.5.0|Superseded by 1.6.0, which adds RFC 9162 consistency-proof verification (R13.2).
+        run: |
+          set -uo pipefail
+          {
+            echo "### deprecate: writing the labels"
+          } >> "$GITHUB_STEP_SUMMARY"
+          while IFS='|' read -r VERSION MESSAGE; do
+            [ -z "$VERSION" ] && continue
+            echo "deprecating $VERSION"
+            STATUS=$(curl -sS -o response.json -w "%{http_code}" -X PUT \
+              -H "Authorization: Bearer ${SESSION}" -H "Content-Type: application/json" \
+              -d "$(jq -nc --arg m "$MESSAGE" '{deprecated:$m}')" \
+              "https://registry.npmjs.org/-/package/apex-psi-verifier/${VERSION}")
+            {
+              echo ""
+              echo "deprecating $VERSION -> HTTP $STATUS"
+              echo '```'
+              head -c 400 response.json
+              echo ""
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "  HTTP $STATUS"
+            cat response.json; echo
+            if [ "$STATUS" != "200" ]; then
+              echo "STOP: the registry refused to deprecate $VERSION (HTTP $STATUS)"
+              exit 1
+            fi
+          done <<< "$ENTRIES"
+
+      # A guard that cannot fail is not a guard: read the registry back and prove
+      # the labels are actually there.
+      - name: The registry must now carry the labels
+        run: |
+          node -e "
+          const https = require('https');
+          const want = ['0.0.0-stage', '1.2.0', '1.3.0', '1.5.0'];
+          https.get('https://registry.npmjs.org/apex-psi-verifier', (r) => {
+            let body = '';
+            r.on('data', (c) => { body += c; });
+            r.on('end', () => {
+              const d = JSON.parse(body);
+              const labelled = want.filter((v) => d.versions[v] && d.versions[v].deprecated);
+              const missing = want.filter((v) => !d.versions[v] || !d.versions[v].deprecated);
+              const lines = ['### deprecate: registry state', '', ...labelled.map((v) => '- ' + v + ' -> ' + d.versions[v].deprecated)];
+              if (missing.length) lines.push('', 'STILL UNLABELLED: ' + missing.join(', '));
+              require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
+              console.log('deprecated now:', labelled.join(', ') || '(none)');
+              for (const v of labelled) console.log('  ', v, '->', d.versions[v].deprecated);
+              if (missing.length) {
+                console.error('STILL UNLABELLED:', missing.join(', '));
+                process.exit(1);
+              }
+            });
+          });
+          "
