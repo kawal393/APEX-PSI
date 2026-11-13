@@ -55,7 +55,7 @@ interface VerificationResult extends ProofReceiptData {
 
 const VERIFY_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/verify-hash`;
 
-// ZK Visualization steps
+// Verification pipeline steps
 const zkSteps = [
   { label: "Raw Event", icon: FileJson, color: "text-muted-foreground" },
   { label: "JCS Canonicalize", icon: Hash, color: "text-primary" },
@@ -749,7 +749,7 @@ const Verify = () => {
 
 
 
-                {/* ZK Visualization */}
+                {/* Verification pipeline */}
                 {!bundleResult && (
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                     className="rounded-xl border border-border bg-card/60 p-6">

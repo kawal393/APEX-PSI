@@ -64,8 +64,8 @@ async function hashSHA256(data: string): Promise<string> {
 }
 
 /**
- * Generate a Groth16-compatible ZK commitment that proves compliance without revealing action.
- * Server-side complement to the client-side BN128 field arithmetic in engine-zk.ts.
+ * Salted SHA-256 hash commitment over the action, predicate and result.
+ * NOT zero-knowledge, NOT Groth16: it hides the action text behind a hash only.
  */
 async function generateZKCommitment(
   actionHash: string,

@@ -125,12 +125,12 @@ const Compare = () => {
           <p className="text-sm text-muted-foreground leading-relaxed mb-4">
             Microsoft's Agent Governance Toolkit and TaskHawk (Kevros) are strong vendor products — but they are <strong className="text-foreground">vendor products</strong>.
             Every enterprise that competes with Microsoft's other services faces a conflict of interest adopting their governance standard.
-            TaskHawk has Microsoft Marketplace distribution but no IETF draft, no ZK proofs, no cross-jurisdictional coverage.
+            TaskHawk has Microsoft Marketplace distribution but no public IETF draft.
             GuardianChain is proprietary. Attested Intelligence has a patent pending.
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            APEX PSI is the only protocol with an <strong className="text-foreground">IETF Internet Draft</strong> (draft-singh-psi),
-            full MIT open-source code, and zero vendor lock-in. Standards bodies reference protocols, not products.
+            APEX PSI pairs an <strong className="text-foreground">IETF Internet-Draft</strong> (draft-singh-psi, an individual draft, not an approved standard)
+            with MIT open-source verification code and no vendor lock-in. Standards bodies reference protocols, not products.
             <strong className="text-foreground"> Products get replaced. Standards get built upon.</strong>
           </p>
         </motion.section>

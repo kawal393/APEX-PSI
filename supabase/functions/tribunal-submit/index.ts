@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
 
     // ── SLA CHECK: 48h auto-escalation ──
     // If the commit has been in VERIFIED state for >48h without 3 votes,
-    // the MPC verdict stands with a TRIBUNAL_TIMEOUT flag.
+    // the quorum verdict stands with a TRIBUNAL_TIMEOUT flag.
     let slaTimeout = false;
     if (commit) {
       const { data: ledgerEntry } = await serviceClient
@@ -167,7 +167,7 @@ Deno.serve(async (req) => {
 
       ratified = true;
     } else if (slaTimeout) {
-      // SLA TIMEOUT: MPC verdict stands, mark as auto-escalated
+      // SLA TIMEOUT: quorum verdict stands, mark as auto-escalated
       const timeoutSig = `TRIBUNAL_TIMEOUT|${commit_id}|${new Date().toISOString()}`;
       const encoder = new TextEncoder();
       const hashBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(timeoutSig));
@@ -209,7 +209,7 @@ Deno.serve(async (req) => {
       ratificationHash,
       slaTimeout,
       threshold: "3-of-5",
-      slaPolicy: "48h auto-escalation: MPC verdict stands if <3 votes within 48 hours",
+      slaPolicy: "48h auto-escalation: quorum verdict stands if <3 votes within 48 hours",
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
