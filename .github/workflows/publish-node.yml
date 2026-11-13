@@ -163,22 +163,25 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           if [ -z "$OIDC_TOKEN" ]; then
+            echo "::error title=GitHub minted no OIDC token::$(printf '%s' "$OIDC_RESPONSE" | head -c 300 | tr '\n' ' ')"
             echo "STOP: GitHub would not mint an OIDC token for this run"
             exit 1
           fi
-          EXCHANGE_RESPONSE=$(curl -sS -X POST -H "Content-Type: application/json" \
-            -d "$(jq -nc --arg t "$OIDC_TOKEN" '{oidcToken:$t}')" \
+          EXCHANGE_RESPONSE=$(curl -sS -X POST \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer ${OIDC_TOKEN}" \
             https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/apex-psi-verifier)
           SESSION=$(printf '%s' "$EXCHANGE_RESPONSE" | jq -r '.token // empty')
           {
             echo ""
-            echo "Exchange response (first 300 chars):"
+            echo "Exchange response (token removed):"
             echo '```'
-            printf '%s' "$EXCHANGE_RESPONSE" | head -c 300
+            printf '%s' "$EXCHANGE_RESPONSE" | jq -c 'del(.token)' 2>/dev/null || printf '%s' "$EXCHANGE_RESPONSE" | head -c 300
             echo ""
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           if [ -z "$SESSION" ]; then
+            echo "::error title=npm refused the OIDC exchange::$(printf '%s' "$EXCHANGE_RESPONSE" | head -c 300 | tr '\n' ' ')"
             echo "STOP: the registry did not exchange the OIDC token for a session"
             exit 1
           fi
@@ -218,6 +221,7 @@ jobs:
             echo "  HTTP $STATUS"
             cat response.json; echo
             if [ "$STATUS" != "200" ]; then
+              echo "::error title=npm refused to deprecate $VERSION::HTTP $STATUS $(head -c 300 response.json | tr '\n' ' ')"
               echo "STOP: the registry refused to deprecate $VERSION (HTTP $STATUS)"
               exit 1
             fi
