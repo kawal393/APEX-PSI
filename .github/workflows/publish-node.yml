@@ -186,11 +186,18 @@ jobs:
             exit 1
           fi
           echo "session minted for apex-psi-verifier"
+          echo "::add-mask::${SESSION}"
           echo "SESSION=$SESSION" >> "$GITHUB_ENV"
 
       # Each line says what is true of that release and nothing more. A release
       # that is merely superseded says so; a release that skips a security check
       # says that.
+      #
+      # This is npm's own deprecate, byte for byte: GET the packument with
+      # `?write=true`, set `versions[v].deprecated`, PUT the packument back.
+      # The version-scoped endpoint `PUT /-/package/<pkg>/<version>` accepts the
+      # write and discards it, so a 200 there proves nothing - run 43513775791
+      # got 200 from it and the registry still carried no label.
       - name: Deprecate the named releases
         env:
           ENTRIES: |
@@ -199,65 +206,106 @@ jobs:
             1.5.0|Superseded by 1.6.0, which adds RFC 9162 consistency-proof verification (R13.2).
             0.0.0-stage|Temporary publishing placeholder, not a release. Install apex-psi-verifier@1.6.0.
         run: |
-          set -uo pipefail
-          {
-            echo "### deprecate: writing the labels"
-          } >> "$GITHUB_STEP_SUMMARY"
-          while IFS='|' read -r VERSION MESSAGE; do
-            [ -z "$VERSION" ] && continue
-            echo "deprecating $VERSION"
-            STATUS=$(curl -sS -o response.json -w "%{http_code}" -X PUT \
-              -H "Authorization: Bearer ${SESSION}" -H "Content-Type: application/json" \
-              -d "$(jq -nc --arg m "$MESSAGE" '{deprecated:$m}')" \
-              "https://registry.npmjs.org/-/package/apex-psi-verifier/${VERSION}")
-            {
-              echo ""
-              echo "deprecating $VERSION -> HTTP $STATUS"
-              echo '```'
-              head -c 400 response.json
-              echo ""
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
-            echo "  HTTP $STATUS"
-            cat response.json; echo
-            if [ "$STATUS" != "200" ]; then
-              if [ "$STATUS" = "404" ]; then
-                echo "  HTTP 404 - the registry does not carry $VERSION; nothing to label"
-                continue
-              fi
-              echo "::error title=npm refused to deprecate $VERSION::HTTP $STATUS $(head -c 300 response.json | tr '\n' ' ')"
-              echo "STOP: the registry refused to deprecate $VERSION (HTTP $STATUS)"
-              exit 1
-            fi
-          done <<< "$ENTRIES"
+          cat > deprecate.mjs <<'EOF'
+          const NAME = 'apex-psi-verifier';
+          const REGISTRY = 'https://registry.npmjs.org';
+          const headers = {
+            'authorization': `Bearer ${process.env.SESSION}`,
+            'accept': 'application/json',
+            'content-type': 'application/json',
+          };
+          const entries = (process.env.ENTRIES || '').trim().split('\n')
+            .map((line) => line.trim()).filter(Boolean)
+            .map((line) => {
+              const cut = line.indexOf('|');
+              return { version: line.slice(0, cut), message: line.slice(cut + 1) };
+            });
+
+          const got = await fetch(`${REGISTRY}/${NAME}?write=true`, { headers });
+          if (!got.ok) {
+            const body = await got.text();
+            console.error(`::error title=could not read the packument for writing::HTTP ${got.status} ${body.slice(0, 300).replace(/\n/g, ' ')}`);
+            process.exit(1);
+          }
+          const packument = await got.json();
+          if (!packument.versions) {
+            console.error('::error title=the packument carries no versions::nothing to label');
+            process.exit(1);
+          }
+          console.log(`packument read: ${Object.keys(packument.versions).length} versions, _rev ${packument._rev || '(none)'}`);
+
+          const labelled = [];
+          for (const { version, message } of entries) {
+            if (!packument.versions[version]) {
+              console.log(`  ${version}: the registry does not carry it; skipped`);
+              continue;
+            }
+            packument.versions[version].deprecated = message;
+            labelled.push(version);
+          }
+
+          const put = await fetch(`${REGISTRY}/${NAME}`, {
+            method: 'PUT', headers, body: JSON.stringify(packument),
+          });
+          const putBody = await put.text();
+          if (!put.ok) {
+            console.error(`::error title=npm refused the deprecation::HTTP ${put.status} ${putBody.slice(0, 300).replace(/\n/g, ' ')}`);
+            process.exit(1);
+          }
+          console.log(`registry accepted the update: HTTP ${put.status} ${putBody.slice(0, 120)}`);
+          console.log(`labelled in this write: ${labelled.join(', ') || '(none)'}`);
+          EOF
+          node deprecate.mjs
 
       # A guard that cannot fail is not a guard: read the registry back and prove
-      # the labels are actually there.
+      # the labels are actually there. The reason for a failure is published as a
+      # check annotation, because step logs are not readable without admin rights
+      # and a guard nobody can diagnose is half a guard.
       - name: The registry must now carry the labels
         run: |
-          node -e "
-          const https = require('https');
+          cat > verify.mjs <<'EOF'
+          import fs from 'node:fs';
+          const NAME = 'apex-psi-verifier';
+          const REGISTRY = 'https://registry.npmjs.org';
           const want = ['1.2.0', '1.3.0', '1.5.0'];
           const best = ['0.0.0-stage'];
-          https.get('https://registry.npmjs.org/apex-psi-verifier', (r) => {
-            let body = '';
-            r.on('data', (c) => { body += c; });
-            r.on('end', () => {
-              const d = JSON.parse(body);
-              const labelled = want.filter((v) => d.versions[v] && d.versions[v].deprecated);
-              const missing = want.filter((v) => !d.versions[v] || !d.versions[v].deprecated);
-              const lines = ['### deprecate: registry state', '', ...labelled.map((v) => '- ' + v + ' -> ' + d.versions[v].deprecated)];
-              for (const v of best) {
-                lines.push('- ' + v + ' -> ' + (d.versions[v] && d.versions[v].deprecated ? d.versions[v].deprecated : 'not labelled (the registry does not carry it as a writable version)'));
-              }
-              if (missing.length) lines.push('', 'STILL UNLABELLED: ' + missing.join(', '));
-              require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
-              console.log('deprecated now:', labelled.join(', ') || '(none)');
-              for (const v of labelled) console.log('  ', v, '->', d.versions[v].deprecated);
-              if (missing.length) {
-                console.error('STILL UNLABELLED:', missing.join(', '));
-                process.exit(1);
-              }
-            });
-          });
-          "
+          const summary = [];
+
+          let packument = null;
+          for (let attempt = 1; attempt <= 12; attempt++) {
+            const res = await fetch(`${REGISTRY}/${NAME}?cb=${attempt}`, { headers: { accept: 'application/json' } });
+            if (!res.ok) {
+              console.error(`::error title=could not read the packument back::HTTP ${res.status}`);
+              process.exit(1);
+            }
+            packument = await res.json();
+            const missing = want.filter((v) => !(packument.versions[v] || {}).deprecated);
+            if (!missing.length) break;
+            console.log(`attempt ${attempt}: still unlabelled -> ${missing.join(', ')}`);
+            await new Promise((r) => setTimeout(r, 5000));
+          }
+
+          const labelled = want.filter((v) => (packument.versions[v] || {}).deprecated);
+          const missing = want.filter((v) => !(packument.versions[v] || {}).deprecated);
+          summary.push('### deprecate: registry state', '');
+          for (const v of want) {
+            const line = `- ${v} -> ${(packument.versions[v] || {}).deprecated || 'NOT LABELLED'}`;
+            summary.push(line);
+            console.log(line);
+          }
+          for (const v of best) {
+            const line = `- ${v} -> ${(packument.versions[v] || {}).deprecated || 'not labelled (best effort)'}`;
+            summary.push(line);
+            console.log(line);
+          }
+          if (missing.length) {
+            const msg = `STILL UNLABELLED: ${missing.join(', ')}`;
+            summary.push('', msg);
+            console.error(`::error title=npm did not carry the deprecation labels::${msg}`);
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary.join('\n') + '\n');
+            process.exit(1);
+          }
+          console.log(`::notice title=deprecation labels confirmed::${labelled.join(', ')}`);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary.join('\n') + '\n');
+          EOF
+          node verify.mjs
