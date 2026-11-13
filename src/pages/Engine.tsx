@@ -208,10 +208,10 @@ const Engine = () => {
         if (updatedRecord) {
           setCurrentRecord(updatedRecord);
           
-          // Generate certificate with MPC and ZK data
+          // Generate certificate with rule-ensemble data
           const cert = await generateCertificate(updatedRecord);
           if (cert) {
-            // Attach MPC consensus data
+            // Attach rule-ensemble quorum data (redundancy, not MPC)
             if (mpcData) {
               cert.mpcConsensus = {
                 nodesResponded: mpcData.nodes_responded,

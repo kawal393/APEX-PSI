@@ -129,17 +129,6 @@ const CertificatePanel = ({ certificate }: CertificatePanelProps) => {
             </div>
           )}
 
-          {/* ZK Proof */}
-          {certificate.zkProof && (
-            <div className="p-2 rounded bg-engine-bg border border-engine-border">
-              <span className="text-[10px] font-mono text-engine-muted block mb-1">BN128 COMMITMENT (EXPERIMENTAL — NOT ZERO-KNOWLEDGE)</span>
-              <div className="text-[11px] font-mono text-engine-text space-y-0.5">
-                <div>Protocol: <span className="text-engine-approved">BN128 field arithmetic only (no circuit, no Groth16 proof)</span> • Curve: <span className="text-engine-approved">BN128</span></div>
-                <div>Privacy: <span className="text-engine-approved">Action content hidden</span></div>
-              </div>
-            </div>
-          )}
-
           {/* Institutional Anchor Panel */}
           {certificate.tribunal && (
             <div className={`p-2 rounded bg-engine-bg border ${certificate.tribunal.ratified ? 'border-engine-approved/20' : 'border-engine-border'}`}>

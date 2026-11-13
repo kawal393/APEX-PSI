@@ -23,9 +23,9 @@ const critiques = [
     critiqueTitle: "\"The ZK / MPC claims outrun the code\"",
     critique:
       "Zero-knowledge and multi-party signing are described, but a reviewer cannot find them as production primitives. Claims ahead of code are a liability.",
-    responseTitle: "V1 is live. ZK / MPC is a labelled research track",
+    responseTitle: "Withdrawn. PSI uses no ZK and no MPC",
     response:
-      "Production today: RFC 8785 canonical JSON, SHA-256 and Ed25519 — reproducible offline with the MIT verifier. Records are aggregated into Merkle roots and anchored to Bitcoin through OpenTimestamps; that anchor is proved with the OpenTimestamps reference client (`ots verify`), not with our verifier. Zero-knowledge and MPC are an experimental V2 research track and are marked as such. Nothing experimental is required to verify a receipt.",
+      "Production today: RFC 8785 canonical JSON, SHA-256 and Ed25519 — reproducible offline with the MIT verifier. Records are aggregated into Merkle roots and anchored to Bitcoin through OpenTimestamps; that anchor is proved with the OpenTimestamps reference client (`ots verify`), not with our verifier. draft-singh-psi-02 withdraws every zero-knowledge and MPC claim; PSI contains neither, and the 2-of-3 check is redundancy on one operator.",
     sources: [
       { label: "Conformance vectors", url: "https://ai-governance-standard.com/conformance" },
       { label: "MIT verifier", url: "https://github.com/kawal393/APEX-PSI/tree/main/packages/psi-verifier" },

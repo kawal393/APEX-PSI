@@ -47,8 +47,8 @@ const legalMapping = [
       "DETERMINISTIC MODE: UNACCEPTABLE/HIGH-risk actions blocked BEFORE commit — no non-compliant action enters the ledger",
       "3-node redundant quorum with 2/3 threshold verification (all nodes currently APEX-operated — software redundancy; independent operator seats opening)",
       "Ed25519 digital signatures on every Merkle root for non-repudiation",
-      "Experimental BN128 field commitments (not zero-knowledge, no pairing check) demonstrate a privacy path; the production privacy property is that only digests are published",
-      "Distributed verification prevents single-point-of-failure attacks",
+      "Privacy: only SHA-256 digests are published; no zero-knowledge or MPC system is used",
+      "Redundant checks reduce single-node faults; all nodes are run by one operator",
     ],
     icon: Lock,
     color: "text-compliant",
@@ -58,9 +58,9 @@ const legalMapping = [
 const cryptoSpecs = [
   { algorithm: "SHA-256", purpose: "Commit hashing & Merkle tree", standard: "FIPS 180-4", strength: "256-bit" },
   { algorithm: "Ed25519", purpose: "Merkle root digital signatures", standard: "RFC 8032", strength: "~128-bit equivalent" },
-  { algorithm: "BN128 field arithmetic", purpose: "Experimental commitments — not zero-knowledge, no pairing check", standard: "alt_bn128 field", strength: "Demonstration only" },
+  { algorithm: "ML-DSA-65", purpose: "Post-quantum receipt signatures", standard: "FIPS 204", strength: "NIST level 3" },
   { algorithm: "JCS", purpose: "JSON canonicalization for deterministic hashing", standard: "RFC 8785", strength: "N/A (format)" },
-  { algorithm: "2-of-3 node quorum", purpose: "Redundant verification consensus (multi-signature) — not MPC", standard: "Threshold agreement", strength: "2/3 threshold" },
+  { algorithm: "2-of-3 node quorum", purpose: "Redundant rule checks on one operator — not MPC, not threshold signatures", standard: "Threshold agreement", strength: "2/3 threshold" },
 ];
 
 // The frozen PSI-SEAL/1 core rule set — the contract a stranger can implement to

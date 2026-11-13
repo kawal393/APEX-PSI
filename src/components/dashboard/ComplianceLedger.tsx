@@ -27,7 +27,7 @@ const statusBadge: Record<string, string> = {
 const legalMathMap: Record<string, string> = {
   "Article 12": "Append-only event stream active. RFC 8785 Canonicalization applied.",
   "Article 14": "Protocol Intervention Layer (PIL) — 5s oversight pause enabled.",
-  "Article 15": "Experimental BN128 commitment generated for session (not a zero-knowledge proof).",
+  "Article 15": "Ed25519 signature and Merkle inclusion proof recorded for session.",
 };
 
 const ComplianceLedger = ({ verifications }: Props) => {
