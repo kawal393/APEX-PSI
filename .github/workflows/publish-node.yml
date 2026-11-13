@@ -211,80 +211,99 @@ jobs:
           import { execFileSync } from 'node:child_process';
           const NAME = 'apex-psi-verifier';
           const REGISTRY = 'https://registry.npmjs.org';
+          const AUDIENCE = 'npm:registry.npmjs.org';
           const entries = (process.env.ENTRIES || '').trim().split('\n')
             .map((line) => line.trim()).filter(Boolean)
             .map((line) => {
               const cut = line.indexOf('|');
               return { version: line.slice(0, cut), message: line.slice(cut + 1) };
             });
-          const auth = `Bearer ${process.env.SESSION}`;
           // Step logs need admin rights to read, so every diagnostic is published
           // as a check annotation. A failure nobody can diagnose is half a guard.
           const say = (msg) => {
             console.log(msg);
-            console.log(`::notice title=deprecate diagnostic::${msg.replace(/\s+/g, ' ').slice(0, 900)}`);
+            console.log(`::notice title=deprecate diagnostic::${String(msg).replace(/\s+/g, ' ').slice(0, 1400)}`);
+          };
+
+          // The session the registry hands back for an OIDC identity is spent by
+          // its first write: the second write with the same session is refused
+          // with "OIDC publish authorize: Route already used with token"
+          // (run 43515166096). Every attempt therefore mints its own session,
+          // and each GitHub OIDC token is requested fresh so the exchange itself
+          // is never repeated.
+          let minted = 0;
+          const mint = async () => {
+            const oidcRes = await fetch(`${process.env.ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${AUDIENCE}`, {
+              headers: { authorization: `bearer ${process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN}` },
+            });
+            const oidc = await oidcRes.json();
+            if (!oidc.value) throw new Error(`no OIDC token: HTTP ${oidcRes.status} ${JSON.stringify(oidc).slice(0, 200)}`);
+            const exchange = await fetch(`${REGISTRY}/-/npm/v1/oidc/token/exchange/package/${NAME}`, {
+              method: 'POST',
+              headers: { accept: 'application/json', authorization: `Bearer ${oidc.value}` },
+            });
+            const body = await exchange.json();
+            if (!body.token) throw new Error(`exchange refused: HTTP ${exchange.status} ${JSON.stringify(body).slice(0, 200)}`);
+            minted += 1;
+            return body.token;
           };
 
           say(`npm ${execFileSync('npm', ['--version'], { encoding: 'utf8' }).trim()}`);
 
-          // 1. Let npm's CLI write it. npm 11.5.1 wires the OIDC exchange into
-          //    `publish` only, so `deprecate` takes the session token straight
-          //    from NODE_AUTH_TOKEN and nothing else has to be invented here.
-          for (const { version, message } of entries) {
-            try {
-              const out = execFileSync('npm', ['deprecate', `${NAME}@${version}`, message, '--registry', REGISTRY], {
-                env: { ...process.env, NODE_AUTH_TOKEN: process.env.SESSION },
-                encoding: 'utf8',
-                stdio: ['ignore', 'pipe', 'pipe'],
-              });
-              say(`npm deprecate ${version}: ${out.trim().slice(0, 200)}`);
-            } catch (err) {
-              const detail = `${err.stdout || ''}${err.stderr || ''}`.trim().replace(/\s+/g, ' ').slice(0, 400);
-              say(`npm deprecate ${version} refused: ${detail}`);
-            }
+          // 0. Read the packument the registry serves for writing, and mark the
+          //    versions that must carry a label.
+          const packument = await (await fetch(`${REGISTRY}/${NAME}?write=true`, { headers: { accept: 'application/json' } })).json();
+          for (const e of entries) {
+            if (packument.versions[e.version]) packument.versions[e.version].deprecated = e.message;
+          }
+          const want = entries.filter((e) => packument.versions[e.version]);
+          say(`packument rev ${packument._rev}; marking ${want.map((e) => e.version).join(', ')}`);
+
+          // 1. npm's own CLI, with a session of its own.
+          try {
+            const session = await mint();
+            const out = execFileSync('npm', ['deprecate', `${NAME}@${want[0].version}`, want[0].message, '--registry', REGISTRY], {
+              env: { ...process.env, NODE_AUTH_TOKEN: session },
+              encoding: 'utf8',
+              stdio: ['ignore', 'pipe', 'pipe'],
+            });
+            say(`npm deprecate ${want[0].version}: ${out.trim().slice(0, 300)}`);
+          } catch (err) {
+            say(`npm deprecate ${want[0].version} refused: ${`${err.stdout || ''}${err.stderr || ''}`.trim().replace(/\s+/g, ' ').slice(0, 1200)}`);
           }
 
-          // 2. Read the packument back. Anything still unlabelled gets written
-          //    here with the same shape npm uses, so one run carries both paths.
-          const got = await fetch(`${REGISTRY}/${NAME}?write=true`, { headers: { authorization: auth, accept: 'application/json' } });
-          if (!got.ok) {
-            say(`packument read back -> HTTP ${got.status}`);
-            process.exit(1);
-          }
-          const packument = await got.json();
-          const missing = entries.filter((e) => packument.versions[e.version] && !packument.versions[e.version].deprecated);
-          say(`unlabelled after npm deprecate: ${missing.map((e) => e.version).join(', ') || '(none)'}`);
-          if (missing.length) {
-            for (const e of missing) packument.versions[e.version].deprecated = e.message;
-            const put = await fetch(`${REGISTRY}/${NAME}`, {
+          // 2. The packument route, with a session of its own.
+          try {
+            const session = await mint();
+            const res = await fetch(`${REGISTRY}/-/package/${NAME}`, {
               method: 'PUT',
-              headers: {
-                authorization: auth,
-                accept: 'application/json',
-                'content-type': 'application/json',
-                'npm-command': 'deprecate',
-              },
+              headers: { authorization: `Bearer ${session}`, accept: 'application/json', 'content-type': 'application/json' },
               body: JSON.stringify(packument),
             });
-            const body = await put.text();
-            say(`direct packument PUT -> HTTP ${put.status} ${body.slice(0, 200)}`);
+            say(`PUT /-/package/${NAME} -> HTTP ${res.status} ${(await res.text()).slice(0, 400)}`);
+          } catch (err) {
+            say(`PUT /-/package/${NAME} failed: ${err.message.slice(0, 300)}`);
           }
 
-          // 3. Last shape: the version-scoped route, fed the whole version
-          //    manifest instead of a one-field body. Run 43513775791 sent only
-          //    {"deprecated": ...} there and the registry answered 200 and
-          //    changed nothing.
-          const fresh = await (await fetch(`${REGISTRY}/${NAME}?write=true&cb=2`, { headers: { authorization: auth, accept: 'application/json' } })).json();
-          const stillMissing = entries.filter((e) => fresh.versions[e.version] && !fresh.versions[e.version].deprecated);
-          for (const e of stillMissing) {
-            const manifest = { ...fresh.versions[e.version], deprecated: e.message };
-            const res = await fetch(`${REGISTRY}/-/package/${NAME}/${e.version}`, {
+          // 3. The version-scoped route, with a session of its own, fed the
+          //    whole version manifest instead of a one-field body. Run
+          //    43513775791 sent only {"deprecated": ...} and the registry
+          //    answered 200 and changed nothing.
+          try {
+            const session = await mint();
+            const target = want[0];
+            const manifest = { ...packument.versions[target.version], deprecated: target.message };
+            const res = await fetch(`${REGISTRY}/-/package/${NAME}/${target.version}`, {
               method: 'PUT',
-              headers: { authorization: auth, accept: 'application/json', 'content-type': 'application/json' },
+              headers: { authorization: `Bearer ${session}`, accept: 'application/json', 'content-type': 'application/json' },
               body: JSON.stringify(manifest),
             });
-            say(`version-scoped PUT ${e.version} -> HTTP ${res.status} ${(await res.text()).slice(0, 160)}`);
+            say(`PUT /-/package/${NAME}/${target.version} -> HTTP ${res.status} ${(await res.text()).slice(0, 400)}`);
+          } catch (err) {
+            say(`PUT /-/package/${NAME}/${target.version} failed: ${err.message.slice(0, 300)}`);
           }
+
+          say(`sessions minted in this run: ${minted}`);
           EOF
           node deprecate.mjs
 
