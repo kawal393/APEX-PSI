@@ -194,10 +194,10 @@ jobs:
       - name: Deprecate the named releases
         env:
           ENTRIES: |
-            0.0.0-stage|Temporary publishing placeholder, not a release. Install apex-psi-verifier@1.6.0.
             1.2.0|Security advisory: this release does not verify the seal's Ed25519 signature. Upgrade to 1.6.0.
             1.3.0|Security advisory: this release reports a declared post-quantum signature as verified without checking it. Upgrade to 1.6.0.
             1.5.0|Superseded by 1.6.0, which adds RFC 9162 consistency-proof verification (R13.2).
+            0.0.0-stage|Temporary publishing placeholder, not a release. Install apex-psi-verifier@1.6.0.
         run: |
           set -uo pipefail
           {
@@ -221,6 +221,10 @@ jobs:
             echo "  HTTP $STATUS"
             cat response.json; echo
             if [ "$STATUS" != "200" ]; then
+              if [ "$STATUS" = "404" ]; then
+                echo "  HTTP 404 - the registry does not carry $VERSION; nothing to label"
+                continue
+              fi
               echo "::error title=npm refused to deprecate $VERSION::HTTP $STATUS $(head -c 300 response.json | tr '\n' ' ')"
               echo "STOP: the registry refused to deprecate $VERSION (HTTP $STATUS)"
               exit 1
@@ -233,7 +237,8 @@ jobs:
         run: |
           node -e "
           const https = require('https');
-          const want = ['0.0.0-stage', '1.2.0', '1.3.0', '1.5.0'];
+          const want = ['1.2.0', '1.3.0', '1.5.0'];
+          const best = ['0.0.0-stage'];
           https.get('https://registry.npmjs.org/apex-psi-verifier', (r) => {
             let body = '';
             r.on('data', (c) => { body += c; });
@@ -242,6 +247,9 @@ jobs:
               const labelled = want.filter((v) => d.versions[v] && d.versions[v].deprecated);
               const missing = want.filter((v) => !d.versions[v] || !d.versions[v].deprecated);
               const lines = ['### deprecate: registry state', '', ...labelled.map((v) => '- ' + v + ' -> ' + d.versions[v].deprecated)];
+              for (const v of best) {
+                lines.push('- ' + v + ' -> ' + (d.versions[v] && d.versions[v].deprecated ? d.versions[v].deprecated : 'not labelled (the registry does not carry it as a writable version)'));
+              }
               if (missing.length) lines.push('', 'STILL UNLABELLED: ' + missing.join(', '));
               require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
               console.log('deprecated now:', labelled.join(', ') || '(none)');
