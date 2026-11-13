@@ -218,8 +218,14 @@ jobs:
               return { version: line.slice(0, cut), message: line.slice(cut + 1) };
             });
           const auth = `Bearer ${process.env.SESSION}`;
+          // Step logs need admin rights to read, so every diagnostic is published
+          // as a check annotation. A failure nobody can diagnose is half a guard.
+          const say = (msg) => {
+            console.log(msg);
+            console.log(`::notice title=deprecate diagnostic::${msg.replace(/\s+/g, ' ').slice(0, 900)}`);
+          };
 
-          console.log(`npm ${execFileSync('npm', ['--version'], { encoding: 'utf8' }).trim()}`);
+          say(`npm ${execFileSync('npm', ['--version'], { encoding: 'utf8' }).trim()}`);
 
           // 1. Let npm's CLI write it. npm 11.5.1 wires the OIDC exchange into
           //    `publish` only, so `deprecate` takes the session token straight
@@ -231,10 +237,10 @@ jobs:
                 encoding: 'utf8',
                 stdio: ['ignore', 'pipe', 'pipe'],
               });
-              console.log(`npm deprecate ${version}: ${out.trim().slice(0, 200)}`);
+              say(`npm deprecate ${version}: ${out.trim().slice(0, 200)}`);
             } catch (err) {
-              const detail = `${err.stdout || ''}${err.stderr || ''}`.trim().replace(/\s+/g, ' ').slice(0, 300);
-              console.log(`npm deprecate ${version} refused: ${detail}`);
+              const detail = `${err.stdout || ''}${err.stderr || ''}`.trim().replace(/\s+/g, ' ').slice(0, 400);
+              say(`npm deprecate ${version} refused: ${detail}`);
             }
           }
 
@@ -242,12 +248,12 @@ jobs:
           //    here with the same shape npm uses, so one run carries both paths.
           const got = await fetch(`${REGISTRY}/${NAME}?write=true`, { headers: { authorization: auth, accept: 'application/json' } });
           if (!got.ok) {
-            console.error(`::error title=could not read the packument back::HTTP ${got.status}`);
+            say(`packument read back -> HTTP ${got.status}`);
             process.exit(1);
           }
           const packument = await got.json();
           const missing = entries.filter((e) => packument.versions[e.version] && !packument.versions[e.version].deprecated);
-          console.log(`after npm deprecate, unlabelled: ${missing.map((e) => e.version).join(', ') || '(none)'}`);
+          say(`unlabelled after npm deprecate: ${missing.map((e) => e.version).join(', ') || '(none)'}`);
           if (missing.length) {
             for (const e of missing) packument.versions[e.version].deprecated = e.message;
             const put = await fetch(`${REGISTRY}/${NAME}`, {
@@ -261,7 +267,7 @@ jobs:
               body: JSON.stringify(packument),
             });
             const body = await put.text();
-            console.log(`direct packument PUT -> HTTP ${put.status} ${body.slice(0, 200)}`);
+            say(`direct packument PUT -> HTTP ${put.status} ${body.slice(0, 200)}`);
           }
 
           // 3. Last shape: the version-scoped route, fed the whole version
@@ -277,9 +283,8 @@ jobs:
               headers: { authorization: auth, accept: 'application/json', 'content-type': 'application/json' },
               body: JSON.stringify(manifest),
             });
-            console.log(`version-scoped PUT ${e.version} -> HTTP ${res.status} ${(await res.text()).slice(0, 160)}`);
+            say(`version-scoped PUT ${e.version} -> HTTP ${res.status} ${(await res.text()).slice(0, 160)}`);
           }
-          console.log(`::notice title=deprecation write attempt::unlabelled after npm deprecate: ${missing.map((e) => e.version).join(', ') || 'none'}; still unlabelled after the fallback writes: ${stillMissing.map((e) => e.version).join(', ') || 'none'}`);
           EOF
           node deprecate.mjs
 
