@@ -199,6 +199,28 @@ jobs:
           node-version: 20
       - run: npm run check:registry-labels
 
+  # The 15-second drop-in is a promise to a stranger: install one package and
+  # check a receipt. This job proves the promise against the PUBLIC registries
+  # — the published npm package, the published PyPI package and the published
+  # MCP door — and not against this source tree, which is the only way the
+  # promise can fail without anyone noticing.
+  #
+  # Own job, nothing depends on it: it measures three third-party indexes, so
+  # it can be red because a registry is slow while this repository is already
+  # correct. It must never hold the deploy rail hostage to somebody else's
+  # cache.
+  drop-in:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: npm run check:drop-in
+
   supabase-deploy:
     # NOT on every push to main. `supabase db push` + `functions deploy` mutate
     # production, and the deploy job used to run silently behind a test suite

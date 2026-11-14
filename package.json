@@ -21,6 +21,8 @@
     "check:registry-truth": "node scripts/mcprush-claim-check.mjs",
     "check:registry-truth:live": "node scripts/mcprush-claim-check.mjs --live",
     "check:registry-labels": "node scripts/registry-labels-check.mjs",
+    "check:drop-in": "node scripts/drop-in-check.mjs",
+    "check:emit-conformance": "node --experimental-strip-types scripts/emit-conformance.mjs",
     "label:old-releases": "node scripts/npm-label-old-releases.mjs"
   },
   "dependencies": {

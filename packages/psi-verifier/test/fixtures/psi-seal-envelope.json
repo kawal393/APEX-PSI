@@ -1,0 +1,24 @@
+{
+  "note": "A canonical signed PSI-SEAL/1 envelope, published so that anyone can check that an installed verifier answers a real question. The key pair below is a test key and is published on purpose: the private half is the Ed25519 seed, so anyone can re-sign this envelope and get the same bytes.",
+  "content": "APEX PSI canonical drop-in vector: the receipt says this text existed at this time.",
+  "public_key": "af60fb87b58ecd15479563e5a29a46b591c509cdacad4385e59b1b78187afac7",
+  "private_key_seed": "e9de96b295e5994c1d4a73e3a7973abd33a8450e3c4cd6460b3901f555446944",
+  "envelope": {
+    "schema": "PSI-SEAL/1.0.0",
+    "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
+    "sealed_at": "2026-11-15T06:00:00.000Z",
+    "subject": {
+      "name": "apex-psi-drop-in-vector.txt",
+      "size_bytes": 83
+    },
+    "hash": "4ed36c51aaf4b7b222427583a60ad64e97267c33d62dd979c958cff5f10f327b",
+    "merkle": {
+      "leaf": "b795f4af8c88f009552a704f2c94ef477f7a24723eee3580f037efc40ce98374"
+    },
+    "signature": {
+      "alg": "Ed25519",
+      "value": "3f9e26078ad5cfe800e06fae68107698b073eaeeb689016c25b023e40313967abc66e0c6df428180b4324cd0cdc75e6bc4332c56fba4da49c5da13ee284d940e",
+      "seal_hash": "23e30f6c34ec37ffa5342ba7838819aaba0c77fa6d65729a0929d432fa50cf60"
+    }
+  }
+}
