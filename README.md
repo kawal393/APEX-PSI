@@ -41,18 +41,20 @@ curl -X POST https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize \
 Verify offline, forever, for free:
 
 ```bash
-pip install psi-verifier==1.3.0      # Python verifier (MIT, free forever)
-npm i apex-psi-verifier@1.3.0        # Node verifier (MIT, free forever)
+pip install psi-verifier==1.6.0      # Python verifier (MIT, free forever)
+npm i apex-psi-verifier@1.6.0        # Node verifier (MIT, free forever)
 ```
 
 **Read this before you install anything.** Both verifiers are published. `psi-verifier`
-**1.3.0** is on PyPI and `apex-psi-verifier` **1.3.0** is on npm, each built from this
+**1.6.0** is on PyPI and `apex-psi-verifier` **1.6.0** is on npm, each built from this
 repository by CI with no stored credential of any kind, and the npm release carries a
 provenance attestation that points back at that build. Both check signatures: a seal whose
 Ed25519 signature was not made by the key it names is **rejected**, not annotated.
-**1.2.0 is still installable and it does not check signatures** — a forged seal passes it —
-so pin `@1.3.0` rather than trusting `latest`, and treat any tool reporting `1.2.0` as
-unsafe. Pin the version you rely on; that is the whole discipline this standard is about.
+**1.2.0, 1.3.0 and 1.5.0 are still installable and each carries a defect** — a forged seal
+passes 1.2.0, 1.3.0 reports an unchecked post-quantum claim as verified, and 1.5.0 cannot
+verify an RFC 9162 consistency proof — so pin `@1.6.0` rather than trusting `latest`, and
+treat any tool reporting `1.2.0`, `1.3.0` or `1.5.0` as unsafe. Pin the version you rely
+on; that is the whole discipline this standard is about.
 
 | Try it live | What it does |
 |---|---|

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { supabase } from "@/integrations/supabase/client";
+import { rewriteArticleSlug } from "@/lib/article-slug";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -19,22 +20,57 @@ type Article = {
 
 export default function Article() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!slug) return;
-    supabase
-      .from("seo_articles")
-      .select("*")
-      .eq("slug", slug)
-      .eq("published", true)
-      .maybeSingle()
-      .then(({ data }) => {
-        setArticle(data as Article | null);
+    let cancelled = false;
+
+    const lookup = (s: string) =>
+      supabase
+        .from("seo_articles")
+        .select("*")
+        .eq("slug", s)
+        .eq("published", true)
+        .maybeSingle();
+
+    const fail = () => {
+      if (cancelled) return;
+      setArticle(null);
+      setLoading(false);
+    };
+
+    lookup(slug).then(({ data }) => {
+      if (cancelled) return;
+      if (data) {
+        setArticle(data as Article);
         setLoading(false);
+        return;
+      }
+      // A correction may have renamed the article. The old address is still in
+      // search results and in other people's links, so it is looked up under the
+      // current slug rules before the reader is told the article does not exist.
+      const rewritten = rewriteArticleSlug(slug);
+      if (rewritten === slug) {
+        fail();
+        return;
+      }
+      lookup(rewritten).then(({ data: moved }) => {
+        if (cancelled) return;
+        if (moved) {
+          navigate(`/articles/${rewritten}`, { replace: true });
+          return;
+        }
+        fail();
       });
-  }, [slug]);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, navigate]);
 
   if (loading) {
     return (

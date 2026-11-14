@@ -1,3 +1,9 @@
 # Specification shelf: pin markdown to LF so published digests are
 # reproducible on every platform regardless of a client's core.autocrlf.
 specs/*.md text eol=lf
+
+# The IETF drafts are published with a recorded sha256 and the promise that a
+# stranger can recompute it. Pin them to LF so a Windows checkout does not
+# rewrite the line endings and produce a different digest from the served copy.
+public/ietf/*.txt text eol=lf
+public/ietf/submission/*.txt text eol=lf

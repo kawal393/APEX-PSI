@@ -66,12 +66,26 @@ for (const d of DIRS) {
 }
 
 const hits = [];
+
+// The corrections page is where a wrong claim is quoted in order to be corrected. A banned
+// phrase inside quotation marks on that one page is an example, not a claim, so it is
+// allowed there and nowhere else. The rule is narrow on purpose: one file, and only inside
+// quotes.
+const QUOTING_FILE = /[\\/]pages[\\/]Corrections\.tsx$/;
+const isQuotedExample = (file, line, phrase) => {
+  if (!QUOTING_FILE.test(file)) return false;
+  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`[“"][^“”"]*${escaped}[^“”"]*[”"]`).test(line);
+};
+
 for (const file of files) {
   const text = readFileSync(file, "utf8");
   const lines = text.split(/\r?\n/);
   lines.forEach((line, i) => {
     for (const [phrase, why] of BANNED) {
-      if (line.includes(phrase)) hits.push({ file, line: i + 1, phrase, why });
+      if (!line.includes(phrase)) continue;
+      if (isQuotedExample(file, line, phrase)) continue;
+      hits.push({ file, line: i + 1, phrase, why });
     }
   });
 }

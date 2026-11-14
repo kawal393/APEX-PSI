@@ -1,32 +1,33 @@
 # Uploading `draft-singh-psi-agent-02`
 
-**Status 15 Nov 2026, 07:00 AEST.** The IETF submission tool is closed to all
+**Status 15 Nov 2026, 07:30 AEST.** The IETF submission tool is closed to all
 authors until **2026-11-14 23:59 PST = 2026-11-15 18:59 Melbourne**. It reopens
 tonight. The draft is finished, the file is clean, and the only thing left is
 the upload.
 
 ## The file to upload
 
-`submission/draft-singh-psi-agent-02.txt` — 27,280 bytes, LF endings, no tabs,
+`submission/draft-singh-psi-agent-02.txt` — 27,277 bytes, LF endings, no tabs,
 no non-ASCII, no trailing whitespace, no line over 72 characters.
 
 ```
-sha256  e57afbb88947ca1ad74c6fc134eba3298abf0878ecea9a17585c3b9797777b63
+sha256  cb2dabecdbd49115bef9343ab4ddcfee2a95e6845f7d7f80711b01d8adfb13d7
 ```
 
 It is byte-identical to the published `public/ietf/draft-singh-psi-agent-02.txt`
 except for three lines: the header date, the header expiry, and the expiry
 sentence in *Status of This Memo*.
 
-## Before you upload — one thing to eyeball
+## The Author's Address
 
-The **Author's Address** in this draft is `business@apex-infrastructure.com`.
-The confirmation email for an upload goes to the Author's Address in the
-document, and the filed `-01` carries `kawaljeet.singh3008@gmail.com`.
+The **Author's Address** in this draft is `kawaljeet.singh3008@gmail.com`,
+the same address the filed `-01` carries. The confirmation email for an upload
+goes to the Author's Address in the document, so it arrives in the inbox that
+holds the IETF account.
 
-If you want the confirmation in the same inbox that has the IETF account, change
-line 637 to that address before uploading. If `business@apex-infrastructure.com`
-is monitored, leave it alone.
+Both copies of the draft carry it, and so does the HTTP draft. If you edit the
+file, keep the line endings LF — a Windows editor that rewrites them to CRLF
+changes the digest below, and the copy you upload must be the copy you measured.
 
 ## The upload, step by step
 

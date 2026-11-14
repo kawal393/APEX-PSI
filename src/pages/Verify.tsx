@@ -351,9 +351,9 @@ const Verify = () => {
               >
                 <span className="font-mono text-sm font-bold text-foreground">packages/psi-verifier (source)</span>
                 <span className="mt-1 text-xs text-muted-foreground">
-                  MIT, free forever - TypeScript and Python. Published as well: npm i apex-psi-verifier@1.5.0, or pip install
-                  psi-verifier==1.5.0. Pin 1.5.0 - 1.2.0 checks no signature at all, and 1.3.0 accepts a seal that only claims a
-                  post-quantum signature.
+                  MIT, free forever - TypeScript and Python. Published as well: npm i apex-psi-verifier@1.6.0, or pip install
+                  psi-verifier==1.6.0. Pin 1.6.0 - 1.2.0 checks no signature at all, 1.3.0 accepts a seal that only claims a
+                  post-quantum signature, and 1.5.0 cannot verify an RFC 9162 consistency proof.
                 </span>
               </a>
               <a

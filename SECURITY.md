@@ -22,9 +22,11 @@ demo and is **not** the PSI-SEAL/1 verifier.
 
 `apex-psi-verifier@1.2.0` and earlier report whether a seal is *well formed*;
 they do not verify the Ed25519 signature in rule R11. A forged seal passes
-them. Use **1.3.0 or later**, which checks the signature against public keys you
-supply and never treats an unverifiable signature as a pass. If you built
-tooling against 1.2.0, that is our fault, not yours.
+them. `1.3.0` checks the signature but reports a declared post-quantum signature
+as verified without checking it, and `1.5.0` cannot verify an RFC 9162
+consistency proof. Use **1.6.0 or later**, which checks the signature against
+public keys you supply and never treats an unverifiable signature as a pass. If
+you built tooling against 1.2.0, 1.3.0 or 1.5.0, that is our fault, not yours.
 
 ## Reporting a vulnerability
 
