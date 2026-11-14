@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { lmsSignInstitutional, LMS_ALGORITHM } from "../_shared/pq_lms.ts";
-import { rfc6962Root, signEd25519Strict, reserveLmsSlots, MERKLE_PROFILE, signMlDsa65Strict } from "../_shared/psi_core.ts";
+import { rfc6962Root, signEd25519Strict, reserveLmsSlots, MERKLE_PROFILE, signMlDsa65Strict, institutionalSigningSeed } from "../_shared/psi_core.ts";
 import {
   readX402Config,
   decodePaymentHeader,
@@ -330,7 +330,7 @@ Deno.serve(async (req) => {
       merkleRoot = await rfc6962Root([merkleLeaf]);
     }
 
-    const signature = await signEd25519(merkleLeaf, supabaseKey);
+    const signature = await signEd25519(merkleLeaf, institutionalSigningSeed());
     // Stateless post-quantum signature (FIPS 204). Fails loudly: no receipt without it.
     const mldsa = await signMlDsa65Strict(merkleLeaf);
 

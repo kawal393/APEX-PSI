@@ -16,6 +16,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { resolveCaller, sha256Hex as hashKey } from "../_shared/caller.ts";
 import { resolveNotaryKey } from "../_shared/receipt-links.ts";
+import { institutionalSigningSeed } from "../_shared/psi_core.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -180,7 +181,7 @@ Deno.serve(async (req) => {
     });
     const proofHash = await sha256Hex(proofPayload);
     // Fail closed: never sign with a fixed or guessable fallback seed.
-    const signingSeed = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const signingSeed = institutionalSigningSeed();
     if (!signingSeed) return json({ error: "signing_unavailable" }, 503);
     const signature = await signEd25519(proofHash, signingSeed);
 

@@ -7,7 +7,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { newControlToken } from "../_shared/commit-control.ts";
 import { sha256Hex as controlHash } from "../_shared/caller.ts";
-import { signEd25519Strict, rfc6962Root } from "../_shared/psi_core.ts";
+import { signEd25519Strict, rfc6962Root, institutionalSigningSeed } from "../_shared/psi_core.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -144,7 +144,7 @@ Deno.serve(async (req) => {
     // signature cannot be produced, nothing is written — never a pseudo-signature.
     let ed25519Signature: string;
     try {
-      ed25519Signature = await signEd25519Strict(merkleLeafHash, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "");
+      ed25519Signature = await signEd25519Strict(merkleLeafHash, institutionalSigningSeed());
     } catch (sigErr) {
       console.error("[Engine] Ed25519 signing failed:", sigErr);
       return new Response(

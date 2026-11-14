@@ -259,6 +259,24 @@ jobs:
           node-version: 20
       - run: npm run check:article-claims
 
+  # The trust anchor is the product's one trust claim: a signature that verifies
+  # against the published key proves the named key signed the record. Measured on
+  # 15 Nov 2026, the published anchor verified live ledger signatures whose seed was
+  # the SUPABASE_SERVICE_ROLE_KEY — a database login, not a signing identity. Whoever
+  # held that credential could mint a receipt that verifies against our own anchor.
+  # The signing seed now has a secret of its own (APEX_PSI_ED25519_SEED), and this job
+  # refuses any signing path that goes back to the database credential, or any anchor
+  # that a credential on the machine can derive. It reads no secret and no network,
+  # so it can hold the deploy rail.
+  trust-anchor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run check:trust-anchor
+
   supabase-deploy:
     # NOT on every push to main. `supabase db push` + `functions deploy` mutate
     # production, and the deploy job used to run silently behind a test suite
@@ -266,7 +284,7 @@ jobs:
     # a human decision: run this workflow from the Actions tab (or protect the
     # `production` environment with required reviewers in repo settings).
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy]
+    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor]
     runs-on: ubuntu-latest
     environment: production
     steps:

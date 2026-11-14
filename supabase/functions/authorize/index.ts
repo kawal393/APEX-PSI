@@ -12,7 +12,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { lmsSignInstitutional, LMS_ALGORITHM } from "../_shared/pq_lms.ts";
-import { signEd25519Strict, reserveLmsSlots } from "../_shared/psi_core.ts";
+import { signEd25519Strict, reserveLmsSlots, institutionalSigningSeed } from "../_shared/psi_core.ts";
 import {
   sha256Hex,
   randomReceiptId,
@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
       merkleRoot = merkleLeaf;
     }
 
-    const signature = await signEd25519(merkleLeaf, supabaseKey);
+    const signature = await signEd25519(merkleLeaf, institutionalSigningSeed());
 
     // Post-quantum LMS-W4 over the same leaf. Counter = number of PQ-sealed
     // action receipts, so each one-time leaf is used once and the key rotates.

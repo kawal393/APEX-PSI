@@ -13,7 +13,7 @@
 //   - X-Apex-Api-Key: <key>             (either format)
 // ═══════════════════════════════════════════════════════════════════════
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { rfc6962Root, reserveLmsSlots, signEd25519Strict, signMlDsa65Strict, MERKLE_PROFILE } from "../_shared/psi_core.ts";
+import { rfc6962Root, reserveLmsSlots, signEd25519Strict, signMlDsa65Strict, MERKLE_PROFILE, institutionalSigningSeed } from "../_shared/psi_core.ts";
 import { lmsSignInstitutional, lmsInstitutionalPublicKey, LMS_ALGORITHM, LMS_STANDARD, LMS_LEAVES } from "../_shared/pq_lms.ts";
 
 const corsHeaders = {
@@ -46,26 +46,6 @@ async function computeMerkleRoot(leaves: string[]): Promise<string> {
     lvl = nxt;
   }
   return lvl[0];
-}
-
-async function signEd25519(data: string, seedSrc: string): Promise<string> {
-  try {
-    const seedHex = await sha256Hex(`APEX-PSI-SIGN|${seedSrc}`);
-    const seed = new Uint8Array(32);
-    for (let i = 0; i < 32; i++) seed[i] = parseInt(seedHex.substring(i * 2, i * 2 + 2), 16);
-    const pkcs8Header = new Uint8Array([
-      0x30, 0x2e, 0x02, 0x01, 0x00, 0x30, 0x05, 0x06,
-      0x03, 0x2b, 0x65, 0x70, 0x04, 0x22, 0x04, 0x20,
-    ]);
-    const pkcs8 = new Uint8Array(48);
-    pkcs8.set(pkcs8Header); pkcs8.set(seed, 16);
-    const key = await crypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, false, ["sign"]);
-    const sig = await crypto.subtle.sign("Ed25519", key, new TextEncoder().encode(data));
-    return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
-  } catch (e) {
-    // Never issue a pseudo-signature: fail loudly.
-    throw new Error(`Ed25519 signing failed: ${e instanceof Error ? e.message : String(e)}`);
-  }
 }
 
 interface AuthResult {
@@ -172,7 +152,7 @@ async function handleNotarize(req: Request, supabase: any, auth: AuthResult) {
   }
 
   // Same institutional key as /notarize, so the published trust anchor verifies it.
-  const signature = await signEd25519Strict(merkleLeaf, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const signature = await signEd25519Strict(merkleLeaf, institutionalSigningSeed());
   const mldsa = await signMlDsa65Strict(merkleLeaf);
 
   // Post-quantum LMS-W4-SHA256 over the same signed payload

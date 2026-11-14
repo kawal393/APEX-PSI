@@ -1,4 +1,4 @@
-import { rfc6962Root, signEd25519Strict, signMlDsa65Strict, MERKLE_PROFILE } from "../_shared/psi_core.ts";
+import { rfc6962Root, signEd25519Strict, signMlDsa65Strict, MERKLE_PROFILE, institutionalSigningSeed } from "../_shared/psi_core.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { buildReceiptLinks, resolveNotaryKey, isNotaryKeyBearer } from "../_shared/receipt-links.ts";
 
@@ -131,7 +131,7 @@ Deno.serve(async (req) => {
       const merkleLeaf = await hashSHA256(`${receiptId}|${commitHash}`);
       allLeaves.push(merkleLeaf);
 
-      const signature = await signEd25519(merkleLeaf, supabaseKey);
+      const signature = await signEd25519(merkleLeaf, institutionalSigningSeed());
       const mldsa = await signMlDsa65Strict(merkleLeaf);
 
       receipts.push({

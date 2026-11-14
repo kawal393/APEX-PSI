@@ -41,12 +41,26 @@ export async function rfc6962Root(leavesHex: string[]): Promise<string> {
 }
 
 /**
+ * The seed every institutional Ed25519 signature is derived from.
+ *
+ * It must never be the database credential. A service_role key is a LOGIN, not a
+ * signing identity: whoever holds it can then mint a receipt that verifies against
+ * our published trust anchor, which turns a database leak into a forge of the
+ * product's one trust claim. APEX_PSI_ED25519_SEED is the signing identity; the
+ * service key stays only as the fallback that keeps every signature already issued
+ * verifiable under the anchor published today.
+ */
+export function institutionalSigningSeed(): string {
+  return Deno.env.get("APEX_PSI_ED25519_SEED") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+}
+
+/**
  * Strict Ed25519 signing. Throws on any failure — a signing engine never
  * issues a pseudo-signature.
  */
-export async function signEd25519Strict(data: string, serviceKey: string): Promise<string> {
-  if (!serviceKey) throw new Error("signing key unavailable");
-  const km = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`APEX-SIGNING-KEY-${serviceKey}`)));
+export async function signEd25519Strict(data: string, seed: string): Promise<string> {
+  if (!seed) throw new Error("signing key unavailable");
+  const km = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`APEX-SIGNING-KEY-${seed}`)));
   const pkcs8 = new Uint8Array(48);
   pkcs8.set([0x30, 0x2e, 0x02, 0x01, 0x00, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x70, 0x04, 0x22, 0x04, 0x20]);
   pkcs8.set(km, 16);
