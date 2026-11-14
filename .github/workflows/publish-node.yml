@@ -166,7 +166,22 @@ jobs:
               `${indent}  }`,
               `${indent}}`,
             ].join('\n');
-            fs.writeFileSync(target, source.replace(match[0], `\n${snippet}`));
+            const patched = source.replace(match[0], `\n${snippet}`);
+            // Also write the exact body npm built, so a refusal can be read
+            // back and re-sent in other shapes without guessing what npm sent.
+            const dumpAnchor = '  return {\n    metadata: root,';
+            if (!patched.includes(dumpAnchor)) {
+              console.error(`::error title=npm's publish body changed shape::the return statement is not where it was`);
+              process.exit(1);
+            }
+            const dump = [
+              dumpAnchor.split('\n')[0],
+              `${indent}if (process.env.APEX_DUMP_BODY) {`,
+              `${indent}  require('fs').writeFileSync(process.env.APEX_DUMP_BODY, JSON.stringify(root))`,
+              `${indent}}`,
+              ...dumpAnchor.split('\n').slice(1),
+            ].join('\n');
+            fs.writeFileSync(target, patched.replace(dumpAnchor, dump));
             say(`patched ${target}`);
           }
           EOF
@@ -176,7 +191,102 @@ jobs:
         if: env.ALREADY_PUBLISHED != '1'
         env:
           APEX_OLD_VERSIONS: ${{ runner.temp }}/old-versions.json
-        run: npm publish
+          APEX_DUMP_BODY: ${{ runner.temp }}/publish-body.json
+        run: |
+          set +e
+          set -o pipefail
+          npm publish 2>&1 | tee "$RUNNER_TEMP/publish.log"
+          status=${PIPESTATUS[0]}
+          set -e
+          if [ "$status" != "0" ]; then
+            # Step logs need admin rights to read, so the reason the registry
+            # refused has to be published where anyone can read it.
+            echo "::error title=npm publish was refused::$(tail -c 1500 "$RUNNER_TEMP/publish.log" | tr '\n\r' '  ' | sed 's/%/%25/g')"
+          fi
+          exit "$status"
+
+      # A refusal is only useful if it can be read and answered. The body npm
+      # built is on disk, so each shape is re-sent with a session of its own
+      # and the registry's own words are published as annotations.
+      - name: Diagnose a refused publish body
+        if: failure() && env.ALREADY_PUBLISHED != '1'
+        run: |
+          cat > diagnose.mjs <<'EOF'
+          import fs from 'node:fs';
+          const NAME = 'apex-psi-verifier';
+          const REGISTRY = 'https://registry.npmjs.org';
+          const AUDIENCE = 'npm:registry.npmjs.org';
+          const say = (msg) => {
+            console.log(msg);
+            console.log(`::notice title=publish diagnosis::${String(msg).replace(/\s+/g, ' ').slice(0, 1400)}`);
+          };
+
+          const dump = process.env.APEX_DUMP_BODY;
+          if (!dump || !fs.existsSync(dump)) {
+            say('npm never built a body; the refusal happened before the registry was reached');
+            process.exit(0);
+          }
+          const body = JSON.parse(fs.readFileSync(dump, 'utf8'));
+          const newVersion = Object.keys(body.versions).find((v) => !body.versions[v].deprecated) || Object.keys(body.versions)[0];
+          const carried = Object.fromEntries(Object.entries(body.versions).filter(([v]) => v !== newVersion));
+          say(`npm built a body for ${newVersion} carrying ${Object.keys(carried).join(', ') || 'nothing'}`);
+
+          let minted = 0;
+          const mint = async () => {
+            const oidcRes = await fetch(`${process.env.ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${AUDIENCE}`, {
+              headers: { authorization: `bearer ${process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN}` },
+            });
+            const oidc = await oidcRes.json();
+            if (!oidc.value) throw new Error(`no OIDC token: HTTP ${oidcRes.status}`);
+            const exchange = await fetch(`${REGISTRY}/-/npm/v1/oidc/token/exchange/package/${NAME}`, {
+              method: 'POST',
+              headers: { accept: 'application/json', authorization: `Bearer ${oidc.value}` },
+            });
+            const res = await exchange.json();
+            if (!res.token) throw new Error(`exchange refused: HTTP ${exchange.status} ${JSON.stringify(res).slice(0, 200)}`);
+            minted += 1;
+            return res.token;
+          };
+
+          const labelledNow = async () => {
+            const after = await (await fetch(`${REGISTRY}/${NAME}?cb=${Math.random()}`, { headers: { accept: 'application/json' } })).json();
+            return Object.entries(after.versions || {}).filter(([, m]) => m.deprecated).map(([v]) => v);
+          };
+
+          const real = ['1.2.0', '1.3.0', '1.5.0'];
+          const variants = [
+            { id: 'V1 every carried release', pick: Object.keys(carried) },
+            { id: 'V2 the three real releases only', pick: real.filter((v) => carried[v]) },
+            { id: 'V3 one release only', pick: real.filter((v) => carried[v]).slice(0, 1) },
+            { id: 'V0 the release alone, no labels', pick: [] },
+          ];
+
+          for (const variant of variants) {
+            const versions = { [newVersion]: body.versions[newVersion] };
+            for (const v of variant.pick) versions[v] = carried[v];
+            const attempt = { ...body, versions };
+            try {
+              const session = await mint();
+              const res = await fetch(`${REGISTRY}/${NAME}`, {
+                method: 'PUT',
+                headers: { authorization: `Bearer ${session}`, accept: 'application/json', 'content-type': 'application/json' },
+                body: JSON.stringify(attempt),
+              });
+              const text = (await res.text()).slice(0, 400).replace(/\s+/g, ' ');
+              say(`${variant.id} -> HTTP ${res.status} ${text}`);
+              const now = await labelledNow();
+              say(`after ${variant.id}: labelled = ${now.join(', ') || 'none'}`);
+              if (now.length) {
+                say(`SUCCESS: ${variant.id} carried the labels`);
+                break;
+              }
+            } catch (err) {
+              say(`${variant.id} failed: ${err.message.slice(0, 300)}`);
+            }
+          }
+          say(`sessions minted in this run: ${minted}`);
+          EOF
+          node diagnose.mjs
 
       - name: Skip the publish
         if: env.ALREADY_PUBLISHED == '1'
