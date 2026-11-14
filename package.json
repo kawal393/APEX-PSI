@@ -19,7 +19,9 @@
     "check:x402": "node --experimental-strip-types scripts/x402-selftest.mjs",
     "check:ots-anchor": "node --experimental-strip-types scripts/ots-anchor-selftest.ts",
     "check:registry-truth": "node scripts/mcprush-claim-check.mjs",
-    "check:registry-truth:live": "node scripts/mcprush-claim-check.mjs --live"
+    "check:registry-truth:live": "node scripts/mcprush-claim-check.mjs --live",
+    "check:registry-labels": "node scripts/registry-labels-check.mjs",
+    "label:old-releases": "node scripts/npm-label-old-releases.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

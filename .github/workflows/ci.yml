@@ -183,6 +183,22 @@ jobs:
           node-version: 20
       - run: npm run check:registry-truth
 
+  # A deprecation is a machine-readable label on a release. Without it, 1.2.0 and
+  # 1.3.0 stay installable and the only warning a stranger gets is in the words
+  # of whoever happens to remember the defect. The labels are written once, by
+  # scripts/npm-label-old-releases.mjs, because npm's token-free session cannot
+  # write a label onto an existing release; anyone who can write to the package
+  # can also remove them. So the registry is read back and compared with
+  # packages/psi-verifier/deprecation-notices.json on every push.
+  registry-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run check:registry-labels
+
   supabase-deploy:
     # NOT on every push to main. `supabase db push` + `functions deploy` mutate
     # production, and the deploy job used to run silently behind a test suite
