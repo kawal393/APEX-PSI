@@ -192,18 +192,17 @@ jobs:
           EOF
           node carry-labels.mjs
 
-          # A patch that quietly breaks npm's own file is not a patch. The
-          # previous run failed with "Unexpected token '.'" inside npm's
-          # publish.js - our injection, not the registry's answer - and the
-          # only reason it was found is that the refusal was published. So
-          # the patched file is parsed and loaded HERE, before npm is ever
-          # asked to publish anything.
-          - name: The patched publish body must be valid JavaScript
-            run: |
-              TARGET="$(npm root -g)/npm/node_modules/libnpmpublish/lib/publish.js"
-              node --check "$TARGET" || { echo "::error title=the patched publish body is not valid JavaScript::node --check refused $TARGET"; exit 1; }
-              node -e 'require(process.argv[1])' "$TARGET" || { echo "::error title=the patched publish body cannot be loaded::node refused to require $TARGET"; exit 1; }
-              echo "::notice title=the patched publish body parses::npm's own publish.js loads"
+      # A patch that quietly breaks npm's own file is not a patch. The previous
+      # run failed with "Unexpected token '.'" inside npm's publish.js - our
+      # injection, not the registry's answer - and the only reason it was found
+      # is that the refusal was published. So the patched file is parsed and
+      # loaded HERE, before npm is ever asked to publish anything.
+      - name: The patched publish body must be valid JavaScript
+        run: |
+          TARGET="$(npm root -g)/npm/node_modules/libnpmpublish/lib/publish.js"
+          node --check "$TARGET" || { echo "::error title=the patched publish body is not valid JavaScript::node --check refused $TARGET"; exit 1; }
+          node -e 'require(process.argv[1])' "$TARGET" || { echo "::error title=the patched publish body cannot be loaded::node refused to require $TARGET"; exit 1; }
+          echo "::notice title=the patched publish body parses::npm's own publish.js loads"
 
       - name: Publish to npm
         if: env.ALREADY_PUBLISHED != '1'
