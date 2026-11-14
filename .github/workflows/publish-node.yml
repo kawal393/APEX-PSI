@@ -156,36 +156,54 @@ jobs:
               console.error(`::error title=npm's publish body changed shape::the anchor appears ${hits.length} times in ${target}`);
               process.exit(1);
             }
-            const indent = match[1];
+            // The indentation alone, without the newline the capture brought
+            // with it: a capture that keeps its newline doubles every break.
+            const pad = match[1].slice(match[1].lastIndexOf('\n') + 1);
             const snippet = [
-              `${indent}root.versions[manifest.version] = manifest`,
-              `${indent}if (process.env.APEX_OLD_VERSIONS) {`,
-              `${indent}  const carried = JSON.parse(require('fs').readFileSync(process.env.APEX_OLD_VERSIONS, 'utf8'))`,
-              `${indent}  for (const carriedVersion of Object.keys(carried)) {`,
-              `${indent}    if (!root.versions[carriedVersion]) root.versions[carriedVersion] = carried[carriedVersion]`,
-              `${indent}  }`,
-              `${indent}}`,
+              `${pad}root.versions[manifest.version] = manifest`,
+              `${pad}if (process.env.APEX_OLD_VERSIONS) {`,
+              `${pad}  const carried = JSON.parse(require('fs').readFileSync(process.env.APEX_OLD_VERSIONS, 'utf8'))`,
+              `${pad}  for (const carriedVersion of Object.keys(carried)) {`,
+              `${pad}    if (!root.versions[carriedVersion]) root.versions[carriedVersion] = carried[carriedVersion]`,
+              `${pad}  }`,
+              `${pad}}`,
             ].join('\n');
             const patched = source.replace(match[0], `\n${snippet}`);
             // Also write the exact body npm built, so a refusal can be read
             // back and re-sent in other shapes without guessing what npm sent.
+            // The write goes BEFORE npm's `return {`: inside that object
+            // literal a statement is a syntax error, and a syntax error in
+            // npm's own file is what run 43631371818 died of.
             const dumpAnchor = '  return {\n    metadata: root,';
             if (!patched.includes(dumpAnchor)) {
               console.error(`::error title=npm's publish body changed shape::the return statement is not where it was`);
               process.exit(1);
             }
             const dump = [
-              dumpAnchor.split('\n')[0],
-              `${indent}if (process.env.APEX_DUMP_BODY) {`,
-              `${indent}  require('fs').writeFileSync(process.env.APEX_DUMP_BODY, JSON.stringify(root))`,
-              `${indent}}`,
-              ...dumpAnchor.split('\n').slice(1),
+              `${pad}if (process.env.APEX_DUMP_BODY) {`,
+              `${pad}  require('fs').writeFileSync(process.env.APEX_DUMP_BODY, JSON.stringify(root))`,
+              `${pad}}`,
+              '',
+              dumpAnchor,
             ].join('\n');
             fs.writeFileSync(target, patched.replace(dumpAnchor, dump));
             say(`patched ${target}`);
           }
           EOF
           node carry-labels.mjs
+
+          # A patch that quietly breaks npm's own file is not a patch. The
+          # previous run failed with "Unexpected token '.'" inside npm's
+          # publish.js - our injection, not the registry's answer - and the
+          # only reason it was found is that the refusal was published. So
+          # the patched file is parsed and loaded HERE, before npm is ever
+          # asked to publish anything.
+          - name: The patched publish body must be valid JavaScript
+            run: |
+              TARGET="$(npm root -g)/npm/node_modules/libnpmpublish/lib/publish.js"
+              node --check "$TARGET" || { echo "::error title=the patched publish body is not valid JavaScript::node --check refused $TARGET"; exit 1; }
+              node -e 'require(process.argv[1])' "$TARGET" || { echo "::error title=the patched publish body cannot be loaded::node refused to require $TARGET"; exit 1; }
+              echo "::notice title=the patched publish body parses::npm's own publish.js loads"
 
       - name: Publish to npm
         if: env.ALREADY_PUBLISHED != '1'
