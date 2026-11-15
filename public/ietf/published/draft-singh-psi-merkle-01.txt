@@ -1,0 +1,224 @@
+
+
+
+
+Network Working Group                                           K. Singh
+Internet-Draft                                       APEX Infrastructure
+Intended status: Informational                           13 October 2026
+Expires: 16 April 2027
+
+
+             PSI Merkle Commitment Profile (RFC6962-SHA256)
+                       draft-singh-psi-merkle-01
+
+Abstract
+
+   This document specifies the Merkle commitment profile used by Proof
+   of Stateful Integrity (PSI) receipts.  It adopts the Merkle Tree Hash
+   and inclusion proof of RFC 9162 without modification, fixes leaf
+   order, and defines how a receipt declares the profile and how a
+   verifier obtains and checks an inclusion proof.  A valid proof shows
+   only that a leaf was committed under a root; it says nothing about
+   the truth or lawfulness of the sealed content.
+
+   This revision replaces the lexicographic ordering and odd-leaf
+   duplication of revision 00, which were incompatible with RFC 9162,
+   and withdraws all anchoring claims other than OpenTimestamps.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 16 April 2027.
+
+Copyright Notice
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+
+
+
+Singh                     Expires 16 April 2027                 [Page 1]
+
+Internet-Draft                 PSI Merkle                   October 2026
+
+
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Profile Identifier  . . . . . . . . . . . . . . . . . . . . .   2
+   3.  Tree Construction . . . . . . . . . . . . . . . . . . . . . .   2
+   4.  Inclusion Proof . . . . . . . . . . . . . . . . . . . . . . .   3
+   5.  Test Vector . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   3
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   3
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   3
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   3
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .   4
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   4
+
+1.  Introduction
+
+   PSI receipts commit each sealed digest as a leaf of a Merkle tree so
+   that a third party can check membership without the full ledger.  The
+   key words "MUST", "MUST NOT", "SHOULD", and "MAY" in this document
+   are to be interpreted as described in BCP 14 [RFC2119] [RFC8174]
+   when, and only when, they appear in all capitals, as shown here.
+
+2.  Profile Identifier
+
+   A receipt using this profile MUST carry the member merkle_profile
+   with the value RFC6962-SHA256.  Receipts without this member MUST NOT
+   be verified under this profile; they were produced under an earlier
+   profile and are out of scope.
+
+3.  Tree Construction
+
+   Leaves are the 32-byte PSI leaf digests, ordered by ledger sequence,
+   oldest first.  The tree hash is the Merkle Tree Hash of Section 2.1.1
+   of [RFC9162] with SHA-256: a leaf hash is SHA-256(0x00 || leaf) and
+   an interior node is SHA-256(0x01 || left || right).  The tree for n
+   leaves splits at the largest power of two less than n; equivalently,
+   an unpaired node is promoted unchanged and is never duplicated.
+
+   A receipt's root is computed over a window of at most 256 leaves
+   ending with the receipt's own leaf.  The window is identified by the
+   receipt's leaf index and tree size, both returned with the proof.
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 2]
+
+Internet-Draft                 PSI Merkle                   October 2026
+
+
+4.  Inclusion Proof
+
+   An issuer SHOULD offer a keyless resolver returning, for a receipt
+   identifier, a JSON object with members leaf, leaf_index, tree_size,
+   audit_path (array of lowercase hex digests, bottom-up), root, and
+   root_matches_receipt.  The reference resolver is
+   https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/merkle-
+   proof?receipt_id=.
+
+   A verifier MUST check the proof with the algorithm of Section 2.1.3.2
+   of [RFC9162] and MUST compare the result with the root printed in the
+   receipt, not with the resolver's root member.  The verifier needs no
+   further contact with the issuer.
+
+5.  Test Vector
+
+   Leaves are SHA-256 of the ASCII strings "a", "b", "c".  For leaf
+   index 2 and tree size 3:
+
+   leaf  = 2e7d2c03a9507ae265ecf5b5356885a5
+           3393a2029d241394997265a1a25aefc6
+   path  = [ad5ca6cddc0b27c6a83e332bf2801176
+            9236e6c6a1f786ebf7b5267b37a5bd22]
+   root  = cac3d448d4e20a2ad5eae1f500e63c2a
+           7f9217cd14572ba7fd22e26dc1ec2648
+
+6.  Security Considerations
+
+   Inclusion shows commitment, not creation time; time is bounded only
+   by an external anchor.  A window shorter than the full ledger means
+   two receipts may commit to different roots; each root is checked
+   against its own receipt.  An issuer that controls the ledger can
+   refuse to issue proofs; receipts already held remain verifiable from
+   their own fields.
+
+7.  IANA Considerations
+
+   This document has no IANA actions.
+
+8.  References
+
+8.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 3]
+
+Internet-Draft                 PSI Merkle                   October 2026
+
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, May 2017,
+              <https://www.rfc-editor.org/info/rfc8174>.
+
+   [RFC9162]  Laurie, B., Messeri, E., and R. Stradling, "Certificate
+              Transparency Version 2.0", RFC 9162, December 2021,
+              <https://www.rfc-editor.org/info/rfc9162>.
+
+8.2.  Informative References
+
+   [PSI]      Singh, K., "Proof of Stateful Integrity (PSI): Signed,
+              Merkle-Committed Receipts for Digital Records", Work in
+              Progress, Internet-Draft, draft-singh-psi-02, October
+              2026, <https://datatracker.ietf.org/doc/draft-singh-psi/>.
+
+Author's Address
+
+   Kawaljeet Singh
+   APEX Infrastructure
+   Melbourne Victoria
+   Australia
+   Email: kawaljeet.singh3008@gmail.com
+   URI:   https://ai-governance-standard.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 4]

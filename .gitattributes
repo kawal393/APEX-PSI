@@ -7,3 +7,11 @@ specs/*.md text eol=lf
 # rewrite the line endings and produce a different digest from the served copy.
 public/ietf/*.txt text eol=lf
 public/ietf/submission/*.txt text eol=lf
+
+# The registry's own copies of the earlier drafts. The audit compares their
+# digest with the published one, so a Windows checkout must not rewrite them.
+public/ietf/published/*.txt text eol=lf
+
+# The prose sources the drafts are laid out from. The layout is a pure
+# function of these files, so their line endings are pinned too.
+drafts/ietf/*.txt text eol=lf

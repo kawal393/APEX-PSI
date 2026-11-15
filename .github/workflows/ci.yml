@@ -181,6 +181,14 @@ jobs:
         with:
           node-version: 20
       - run: npm run check:ietf-draft
+      # The layout check asks whether the bytes are well formed. This one asks
+      # whether the words are right: every reference matches the RFC Editor's
+      # record, every "Section N" resolves, every reason code is used, every
+      # claim about the published -01 and Merkle drafts is true of them, and
+      # the author address carries the label the author chose. The filed -02
+      # shipped four citation defects and a URI label that no layout check
+      # could see.
+      - run: npm run check:ietf-audit
 
   # Own job, nothing depends on it: it measures a third party's cached record, so it can be red
   # because the registry has not refreshed while our own repository is already correct — and it

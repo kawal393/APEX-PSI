@@ -1,0 +1,224 @@
+
+
+
+
+Network Working Group                                           K. Singh
+Internet-Draft                                       APEX Infrastructure
+Intended status: Informational                           13 October 2026
+Expires: 16 April 2027
+
+
+                   PSI Receipts for AI Agent Actions
+                        draft-singh-psi-agent-01
+
+Abstract
+
+   This document defines a profile of Proof of Stateful Integrity (PSI)
+   for recording actions taken by software agents, including calls to
+   language models and tools.  The agent runtime computes a digest of
+   each action locally and seals only the digest, so later alteration or
+   omission of a recorded action is detectable.  A receipt shows that a
+   specific action record existed unchanged at a time; it does not show
+   that the action was correct, safe, authorised, or lawful, and it
+   allocates no liability.
+
+   This revision withdraws the liability-allocation language of revision
+   00 and aligns the Merkle commitment with draft-singh-psi-merkle-01.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 16 April 2027.
+
+Copyright Notice
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+
+
+
+Singh                     Expires 16 April 2027                 [Page 1]
+
+Internet-Draft                  PSI Agent                   October 2026
+
+
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Action Record . . . . . . . . . . . . . . . . . . . . . . . .   2
+   3.  Sealing . . . . . . . . . . . . . . . . . . . . . . . . . . .   2
+   4.  Verification  . . . . . . . . . . . . . . . . . . . . . . . .   3
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   3
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   3
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   3
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   3
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   3
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   4
+
+1.  Introduction
+
+   Agents act without a human reviewing each step.  When a result is
+   disputed, parties need to know which actions were recorded and
+   whether the record was edited.  The key words "MUST", "MUST NOT",
+   "SHOULD", and "MAY" in this document are to be interpreted as
+   described in BCP 14 [RFC2119] [RFC8174] when, and only when, they
+   appear in all capitals, as shown here.
+
+2.  Action Record
+
+   An action record is a JSON object that MUST contain event (for
+   example llm_end, tool_end, decision), name (the function or tool),
+   and result or outputs; it MAY contain args and prev, the digest of
+   the previous action in the same run.  The digest is SHA-256 over the
+   canonical form of [RFC8785].  Records SHOULD NOT contain personal
+   data; if they must, a salt of at least 128 bits MUST be included.
+
+3.  Sealing
+
+   The runtime submits sha256:<digest> to the issuer and receives a
+   receipt per [PSI].  Sealing SHOULD be asynchronous so the agent does
+   not wait on the network, and a sealing failure MUST NOT alter the
+   agent's action.  A run is chained by including prev; sealing the
+   final digest of the chain commits the whole run.
+
+
+
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 2]
+
+Internet-Draft                  PSI Agent                   October 2026
+
+
+4.  Verification
+
+   A verifier recomputes the digest from the held record, checks the
+   receipt signature (Ed25519 [RFC8032], and ML-DSA-65 [FIPS204] when
+   present), and checks inclusion per [I-D.merkle].
+
+5.  Security Considerations
+
+   A runtime that is compromised can seal false records; sealing does
+   not attest to the runtime.  Unsealed actions are not detected unless
+   runs are chained.  Digests of low-entropy records can be guessed; use
+   a salt.
+
+6.  IANA Considerations
+
+   This document has no IANA actions.
+
+7.  References
+
+7.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, May 2017,
+              <https://www.rfc-editor.org/info/rfc8174>.
+
+   [RFC8785]  Rundgren, A., Jordan, B., and S. Erdtman, "JSON
+              Canonicalization Scheme (JCS)", RFC 8785, June 2020,
+              <https://www.rfc-editor.org/info/rfc8785>.
+
+   [PSI]      Singh, K., "Proof of Stateful Integrity (PSI): Signed,
+              Merkle-Committed Receipts for Digital Records", Work in
+              Progress, Internet-Draft, draft-singh-psi-02, October
+              2026, <https://datatracker.ietf.org/doc/draft-singh-psi/>.
+
+7.2.  Informative References
+
+   [I-D.merkle]
+              Singh, K., "PSI Merkle Commitment Profile
+              (RFC6962-SHA256)", Work in Progress, Internet-Draft,
+              draft-singh-psi-merkle-01, October 2026,
+              <https://datatracker.ietf.org/doc/draft-singh-psi-
+              merkle/>.
+
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 3]
+
+Internet-Draft                  PSI Agent                   October 2026
+
+
+   [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
+              Signature Algorithm (EdDSA)", RFC 8032, January 2017,
+              <https://www.rfc-editor.org/info/rfc8032>.
+
+   [FIPS204]  NIST, "Module-Lattice-Based Digital Signature Standard",
+              FIPS 204, August 2024,
+              <https://doi.org/10.6028/NIST.FIPS.204>.
+
+Author's Address
+
+   Kawaljeet Singh
+   APEX Infrastructure
+   Melbourne Victoria
+   Australia
+   Email: kawaljeet.singh3008@gmail.com
+   URI:   https://ai-governance-standard.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Singh                     Expires 16 April 2027                 [Page 4]

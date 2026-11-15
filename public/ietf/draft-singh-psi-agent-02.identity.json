@@ -1,7 +1,7 @@
 {
   "document": "draft-singh-psi-agent-02",
   "title": "Binding Decisions and Settlements to Agent Action Records",
-  "status": "Submitted to the IETF datatracker on 15 November 2026 (UTC) as submission 172438. Both submission checks passed: idnits reported no errors and idnits3 reported no errors. The registry is holding the bytes recorded below and has asked the author of the previous revision to approve this revision; that approval is one click in the Author's Address inbox. Not yet announced, not yet an RFC, not yet a standard.",
+  "status": "Posted. The IETF datatracker received these bytes on 15 November 2026 as submission 172438, both submission checks passed (idnits 0 errors, idnits3 0 errors), the author of the previous revision approved it, and the registry recorded 'Confirmed and posted submission' on 15 November 2026. The registry now serves the filed copy at https://www.ietf.org/archive/id/draft-singh-psi-agent-02.txt and the bytes it serves are the bytes recorded below. Not an RFC, not a standard, not adopted by any working group.",
   "sha256": "853c7d1db88ad9d2036258e934eaa8517155faf6df5151b8a904a6ff74d01ec5",
   "bytes": 29180,
   "lines": 728,
@@ -16,26 +16,28 @@
   "filing": {
     "submission_id": 172438,
     "submission_url": "https://datatracker.ietf.org/submit/status/172438/b6e076f40c728d562283a979822fb49f/",
-    "registry_state": "Awaiting Approval from Previous Version Authors",
+    "registry_state": "Posted. History: 'Confirmed and posted submission' (2026-11-15). The state before that was 'Awaiting Approval from Previous Version Authors'.",
     "checks": "idnits 2.17.1: 0 errors. idnits3: 0 errors.",
-    "registry_copy": "https://www.ietf.org/staging/draft-singh-psi-agent-02.txt",
-    "registry_copy_measured": "29,180 bytes, sha256 853c7d1db88ad9d2036258e934eaa8517155faf6df5151b8a904a6ff74d01ec5, 13 pages, read back from the registry on 16 November 2026 Melbourne time. The bytes the registry holds are the bytes in this repository.",
-    "announcement_url_when_posted": "https://www.ietf.org/archive/id/draft-singh-psi-agent-02.txt"
+    "registry_copy": "https://www.ietf.org/archive/id/draft-singh-psi-agent-02.txt",
+    "registry_copy_measured": "29,180 bytes, sha256 853c7d1db88ad9d2036258e934eaa8517155faf6df5151b8a904a6ff74d01ec5, 13 pages, read back from the registry's own archive on 16 November 2026 Melbourne time, after the approval. The bytes the registry serves are the bytes in this repository.",
+    "registry_record_page": "https://datatracker.ietf.org/doc/draft-singh-psi-agent/",
+    "author_address_label": "The filed text reads 'URI:' in the Author's Address block, the same label the filed -01 uses. The address https://ai-governance-standard.com is a URL, and every URL is also a URI, so the label stands as written and no revision is needed."
   },
   "served_urls": [
+    "https://www.ietf.org/archive/id/draft-singh-psi-agent-02.txt",
     "https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-02.txt",
     "https://raw.githubusercontent.com/kawal393/APEX-PSI/main/public/ietf/draft-singh-psi-agent-02.txt"
   ],
-  "served_urls_note": "The site still serves the previous bytes until the Lovable publish lands. Recompute the digest from the site and it will not match until then; the raw.githubusercontent copy matches as soon as this commit reaches main.",
+  "served_urls_note": "The registry copy and the raw.githubusercontent copy match the digest above now. The site still serves the previous bytes until the Lovable publish lands; recompute the digest from the site and it will not match until then.",
   "check_it_yourself": {
     "from_a_file": "sha256sum public/ietf/submission/draft-singh-psi-agent-02.txt",
-    "from_the_registry": "curl -s https://www.ietf.org/staging/draft-singh-psi-agent-02.txt | sha256sum",
+    "from_the_registry": "curl -s https://www.ietf.org/archive/id/draft-singh-psi-agent-02.txt | sha256sum",
     "from_the_repository": "curl -s https://raw.githubusercontent.com/kawal393/APEX-PSI/main/public/ietf/submission/draft-singh-psi-agent-02.txt | sha256sum",
     "expected_digest": "853c7d1db88ad9d2036258e934eaa8517155faf6df5151b8a904a6ff74d01ec5",
     "line_endings": "LF. The file is pinned to LF in .gitattributes, so a Windows checkout computes the same digest as the registry's copy.",
     "no_account_needed": true,
     "no_apex_tool_needed": true
   },
-  "what_this_records": "that this exact text existed on the recorded date, in this repository, at this commit, and that the IETF datatracker received these exact bytes on 15 November 2026.",
+  "what_this_records": "that this exact text existed on the recorded date, in this repository, at this commit, that the IETF datatracker received these exact bytes on 15 November 2026, and that the registry posted them on that date.",
   "what_this_does_not_record": "that the text is correct, adopted, approved, lawful, or that anything it describes is true. It is a working document, and a filing is not an endorsement."
 }
