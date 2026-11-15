@@ -223,6 +223,29 @@ jobs:
           node-version: 20
       - run: npm run check:registry-labels
 
+  # The verifier is what a stranger installs. So the guard installs what the
+  # indexes serve and drives the attacks through those bytes: the hash forgery,
+  # the genuine seal wearing a fabricated post-quantum claim, and — since 1.6.0
+  # — the split view, where an operator holding the log shows one client a tree
+  # and another client a different tree at the same moment. The 1.2.0 and 1.3.0
+  # artifacts are installed alongside as the demonstrated failure cases, so the
+  # guard cannot go blind by passing everything.
+  #
+  # Own job, nothing depends on it: it reads two third-party indexes, so it can
+  # be red while this repository is already correct. It must never hold the
+  # deploy rail hostage to somebody else's cache.
+  verifier-truth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: npm run check:verifier-truth
+
   # The 15-second drop-in is a promise to a stranger: install one package and
   # check a receipt. This job proves the promise against the PUBLIC registries
   # — the published npm package, the published PyPI package and the published
