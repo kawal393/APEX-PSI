@@ -166,6 +166,22 @@ jobs:
         # is an interface, so it is guarded like one.
         run: node scripts/tool-name-check.mjs
 
+  # A draft the registry's own checker refuses never gets filed. On 15 Nov 2026
+  # the datatracker rejected draft-singh-psi-agent-02 for two reasons the
+  # checker named: the License Notice was two paragraphs where the IETF Trust
+  # provisions want one, and the file carried no page furniture, so the expiry
+  # date was missing from the last page. This job rebuilds the upload artifact
+  # from the source draft and refuses a stale one, so the bytes we upload are
+  # the bytes we measured.
+  ietf-draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run check:ietf-draft
+
   # Own job, nothing depends on it: it measures a third party's cached record, so it can be red
   # because the registry has not refreshed while our own repository is already correct — and it
   # must never hold the deploy rail hostage to someone else's cache.
@@ -284,7 +300,7 @@ jobs:
     # a human decision: run this workflow from the Actions tab (or protect the
     # `production` environment with required reviewers in repo settings).
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor]
+    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor, ietf-draft]
     runs-on: ubuntu-latest
     environment: production
     steps:

@@ -26,6 +26,7 @@
     "check:version-truth": "node scripts/version-truth-check.mjs",
     "check:article-claims": "node scripts/article-claims-check.mjs",
     "check:trust-anchor": "node scripts/trust-anchor-check.mjs .",
+    "check:ietf-draft": "node scripts/ietf-plaintext-layout.mjs --check",
     "derive:anchor-key": "node scripts/derive-anchor-key.mjs",
     "label:old-releases": "node scripts/npm-label-old-releases.mjs"
   },
