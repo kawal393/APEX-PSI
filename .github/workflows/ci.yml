@@ -157,6 +157,14 @@ jobs:
         with:
           node-version: 20
       - run: node scripts/badge-copy-check.mjs
+      - name: Refuse a page wrapper that kills its own sticky bar
+        # `overflow-x: hidden` on the wrapper makes it a scroll container, so the
+        # navigation bar — which is `sticky` — resolves against the wrapper and
+        # scrolls away with the page. Measured 16 Nov 2026 against the live
+        # site in headless Chrome: after 1200px the nav bar's top sat at -1114
+        # and nothing was on screen. The fix was written on a laptop branch on
+        # 3 Oct 2026 and never reached the published tree, so nothing caught it.
+        run: node scripts/sticky-nav-check.mjs
       - name: Refuse to advertise a tool the server does not answer
         # APEX PSI runs two MCP servers over one ledger — the npm package (stdio, 5 tools, no
         # account) and the hosted connector (streamable-http, 6 tools, OAuth). Until 23 Oct our

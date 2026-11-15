@@ -57,7 +57,7 @@ const SealedMemory = () => {
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
-      <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <div className="min-h-screen bg-background text-foreground overflow-x-clip">
         <Navbar />
 
         <section className="px-4 pt-14 pb-10 border-b border-border/50">

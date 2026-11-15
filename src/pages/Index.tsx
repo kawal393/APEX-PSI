@@ -109,7 +109,7 @@ const Index = () => {
           description: "Open-source cryptographic evidence protocol for AI governance. SHA-256, Ed25519, ML-DSA-65 hybrid signatures.",
         })}</script>
       </Helmet>
-      <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <div className="min-h-screen bg-background text-foreground overflow-x-clip">
         <TrafficNoticeBanner />
         <EUCodeBanner />
         <Navbar />
