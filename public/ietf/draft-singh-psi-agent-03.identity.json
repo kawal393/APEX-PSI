@@ -1,0 +1,51 @@
+{
+  "document": "draft-singh-psi-agent-03",
+  "title": "Binding Decisions and Settlements to Agent Action Records",
+  "status": "Submitted. The IETF datatracker received these bytes on 15 November 2026 as submission 172443. Both submission checks passed (idnits 2.17.1: no issues found; idnits3 3.1.0: 0 errors, 0 warnings, 0 comments). The submission is 'Awaiting Approval from Previous Version Authors': an approval email has been sent to the Author's Address. Not posted yet, not an RFC, not a standard, not adopted by any working group.",
+  "sha256": "ce14437dd82a91deb7921287d9b862caf6c1fa5b9dd5f6a55b033ab93bc753fd",
+  "bytes": 34484,
+  "lines": 840,
+  "pages": 15,
+  "document_date": "2026-11-15",
+  "expiry": "2027-05-19",
+  "expiry_rule": "The registry sets the expiry itself: the filed -01 is dated 13 October 2026 and expires 16 April 2027, which is 185 days later. scripts/ietf-plaintext-layout.mjs refuses a draft whose stated expiry is not its document date plus 185 days.",
+  "written": "2026-11-15",
+  "repository": "kawal393/APEX-PSI",
+  "commit": "89b4536",
+  "why_this_revision_exists": "The filed -02 carried defects that no layout check could see. The Author's Address block read 'URI:' where the accepted -01 reads 'URL:'. Four citations were wrong. The plain-text layout engine was driven from the published file rather than from a prose source, so a page break could silently cut a paragraph in two, and on 15 November it did: the Trust's License Notice straddled pages 1 and 2, and the registry's checker reads a form feed as the end of a paragraph. It rejected the first -03 (submission 172442) with 'there's a paragraph with a matching beginning'. This revision is built from drafts/ietf/draft-singh-psi-agent-03.prose.txt, and the published bytes are now a pure function of that prose.",
+  "filing": {
+    "submission_id": 172443,
+    "submission_url": "https://datatracker.ietf.org/submit/status/172443/b9a285f9b79e49d3bd3f71105b28ba77/",
+    "registry_state": "Awaiting Approval from Previous Version Authors. An email has been sent to: kawaljeet singh <kawaljeet.singh3008@gmail.com>.",
+    "checks": "idnits 2.17.1: boilerplate 'No issues found here', nits 'No issues found here'. idnits3 3.1.0: 0 errors, 0 warnings, 0 comments.",
+    "registry_copy": "not yet posted; the registry holds these bytes at the submission URL above",
+    "registry_copy_measured": "34,484 bytes, sha256 ce14437dd82a91deb7921287d9b862caf6c1fa5b9dd5f6a55b033ab93bc753fd, 15 pages, measured from this repository. The registry's own page-count metadata says 15 pages and 33.7 KB.",
+    "registry_record_page": "https://datatracker.ietf.org/doc/draft-singh-psi-agent/",
+    "author_address_label": "The text reads 'URL:' in the Author's Address block, the same label the filed -01 and the filed -02 use. The address https://ai-governance-standard.com is a URL, and the label now says so.",
+    "supersedes": "draft-singh-psi-agent-02, submission 172438, which the registry posted on 15 November 2026. The -02 stays in this repository, byte for byte, as the record of what was posted."
+  },
+  "served_urls": [
+    "https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt",
+    "https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-03.txt",
+    "https://raw.githubusercontent.com/kawal393/APEX-PSI/main/public/ietf/submission/draft-singh-psi-agent-03.txt"
+  ],
+  "served_urls_note": "The archive URL starts working only after the approval click and the registry's posting. The site copy updates when the next Lovable publish lands. Until both have happened, recomputing the digest from those URLs will not match the digest above.",
+  "check_it_yourself": {
+    "from_a_file": "sha256sum public/ietf/submission/draft-singh-psi-agent-03.txt",
+    "from_the_registry": "curl -s https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt | sha256sum",
+    "from_the_repository": "curl -s https://raw.githubusercontent.com/kawal393/APEX-PSI/main/public/ietf/submission/draft-singh-psi-agent-03.txt | sha256sum",
+    "expected_digest": "ce14437dd82a91deb7921287d9b862caf6c1fa5b9dd5f6a55b033ab93bc753fd",
+    "line_endings": "LF. The file is pinned to LF in .gitattributes, so a Windows checkout computes the same digest as the registry's copy.",
+    "no_account_needed": true,
+    "no_apex_tool_needed": true
+  },
+  "how_the_bytes_are_guarded": {
+    "prose_is_the_source": "drafts/ietf/draft-singh-psi-agent-03.prose.txt is the text. public/ietf/draft-singh-psi-agent-03.txt is the layout of it. The layout script refuses to write a file whose bytes fail a check.",
+    "round_trip": "node scripts/ietf-plaintext-layout.mjs --check strips the page furniture off the published file and compares it, line by line, with the prose. Any edit to the published file that the prose does not explain fails the build.",
+    "page_integrity": "The layout cuts pages only between paragraphs, and the checker verifies word by word that the Trust's License Notice, the Copyright line and the Document's Status paragraph each sit wholly on one page. The registry's checker ends a paragraph at a form feed, so a paragraph across a page break is two paragraphs to it.",
+    "word_by_word_audit": "node scripts/ietf-draft-audit.mjs checks every reference is defined and every reference is used, every reason code is declared and used, every 'Section N' resolves, every claim about the published -01 and the Merkle drafts is true of those drafts, the table of contents matches the headings and the page numbers, the document date, expiry and novelty statement agree with each other, and the author address carries the URL label and not the URI label.",
+    "in_ci": "npm run check:ietf-draft and npm run check:ietf-audit both run on every push in .github/workflows/ci.yml."
+  },
+  "what_this_records": "that this exact text was submitted to the IETF datatracker on 15 November 2026, that the registry's submission checks passed on it, and that the bytes in this repository are those bytes.",
+  "what_this_does_not_record": "that the text is correct, adopted, approved, lawful, or that anything it describes is true. It is a working document, and a filing is not an endorsement."
+}

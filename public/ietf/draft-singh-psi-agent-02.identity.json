@@ -21,7 +21,8 @@
     "registry_copy": "https://www.ietf.org/archive/id/draft-singh-psi-agent-02.txt",
     "registry_copy_measured": "29,180 bytes, sha256 853c7d1db88ad9d2036258e934eaa8517155faf6df5151b8a904a6ff74d01ec5, 13 pages, read back from the registry's own archive on 16 November 2026 Melbourne time, after the approval. The bytes the registry serves are the bytes in this repository.",
     "registry_record_page": "https://datatracker.ietf.org/doc/draft-singh-psi-agent/",
-    "author_address_label": "The filed text reads 'URI:' in the Author's Address block, the same label the filed -01 uses. The address https://ai-governance-standard.com is a URL, and every URL is also a URI, so the label stands as written and no revision is needed."
+    "author_address_label": "The filed -02 text reads 'URI:' in the Author's Address block, the same label the filed -01 uses. The address https://ai-governance-standard.com is a URL, and every URL is also a URI, so the label stood as written. It was corrected to 'URL:' in the -03, which is the revision that replaces this one.",
+    "superseded_by": "draft-singh-psi-agent-03 (submission 172443), filed 15 November 2026, corrects the URI label to URL and four citations. The -02 stays posted and stays in this repository, byte for byte, as the record of what was posted; the -03 is the revision that replaces it."
   },
   "served_urls": [
     "https://www.ietf.org/archive/id/draft-singh-psi-agent-02.txt",
