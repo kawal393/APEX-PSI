@@ -1,49 +1,53 @@
-# Uploading `draft-singh-psi-agent-03`
+# `draft-singh-psi-agent-03` — filed and posted
 
-**Status 16 November 2026. The draft is with the IETF.**
+**Status 16 November 2026. The registry has posted it.**
 Submission **172443** passed both submission checks — idnits 2.17.1 "No issues
 found here" for boilerplate and for nits, idnits3 3.1.0 with **0 errors, 0
-warnings, 0 comments**. The registry is holding our bytes and has asked the
-author of the previous revision — you — to approve the new revision.
-**That approval email is the only thing left.**
+warnings, 0 comments** — and the author of the previous revision approved it on
+15 November 2026. The registry's own submission page reads **"Submission status:
+Posted"**, its document record names revision **03**, 15 pages, expiring
+19 May 2027, and it serves our bytes at
+<https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt>.
 
 ## What the registry is holding
 
 `submission/draft-singh-psi-agent-03.txt` and
 `public/ietf/draft-singh-psi-agent-03.txt` are the same bytes, and they are
-the bytes the registry is holding.
+the bytes the registry posted.
 
 ```
 sha256  ce14437dd82a91deb7921287d9b862caf6c1fa5b9dd5f6a55b033ab93bc753fd
 bytes   34484      lines 840       pages 15      LF endings
 ```
 
-Once the registry posts it, read the served copy back:
+Read the served copy back:
 
 ```
 curl -s https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt | sha256sum
 ```
 
 It must print the digest above. The served copy is the file, byte for byte.
+Measured on 16 November 2026: HTTP 200, 34,484 bytes, that digest, 15 pages.
 
 Submission page:
 <https://datatracker.ietf.org/submit/status/172443/b9a285f9b79e49d3bd3f71105b28ba77/>
 
-## The one click
+The datatracker's landing page for the series is
+<https://datatracker.ietf.org/doc/draft-singh-psi-agent/>. Its revision list is
+a cached render and may still name the `-02` for a while; the API record and
+the archive URL above are the surfaces that carry the current revision.
 
-The email went to `kawaljeet.singh3008@gmail.com` — the Author's Address in
-the document, the same inbox that approved the `-01` and the `-02`. The
-subject line names the draft. Clicking the approval link moves the
-submission from *Awaiting Approval from Previous Version Authors* to posted;
-the registry then serves
-<https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt> and announces
-it to the `draft-singh-psi-agent` mailing list.
+## The approval that landed
 
-The same approval can be done in the browser: sign in to the datatracker and
-open <https://datatracker.ietf.org/submit/approvals/>.
+The approval email went to `kawaljeet.singh3008@gmail.com` — the Author's
+Address in the document, the same inbox that approved the `-01` and the `-02`.
+The click moved the submission from *Awaiting Approval from Previous Version
+Authors* to posted, and the registry then announced it to the
+`draft-singh-psi-agent` mailing list.
 
-Do not edit the file after this. The registry holds these bytes; a different
-file is a different submission.
+Do not edit the file now. The registry holds these bytes; a different file is a
+different submission, and a new revision would need a new submission and a new
+approval.
 
 ## Why there is a `-03` at all
 
@@ -80,7 +84,12 @@ node scripts/ietf-draft-audit.mjs                  the word-by-word audit
 
 Both run on every push in CI (`npm run check:ietf-draft` and
 `npm run check:ietf-audit`). The first asks whether the bytes are well
-formed. The second asks whether the words are right.
+formed. The second asks whether the words are right — and now also reads the
+copy that surrounds them: the seven public surfaces that carry this draft
+must name this revision, must carry this digest, must not carry the digest of
+a superseded one, and must not call a filed draft one that is not filed. That
+is the check that would have caught the site serving the 6 November text on
+the morning the `-03` was posted.
 
 ## The dates
 

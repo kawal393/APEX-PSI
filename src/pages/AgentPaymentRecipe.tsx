@@ -14,7 +14,7 @@ const STEPS = [
   { n: "05", t: "Envelope", who: "The issuer", s: "Binds the four statements and the action chain into one object, then seals its identifier as an APEX PSI receipt." },
 ];
 
-const CODE_SEAL = `// RFC 8785 canonical form + Ed25519, per draft-singh-psi-agent-02 §4.1
+const CODE_SEAL = `// RFC 8785 canonical form + Ed25519, per draft-singh-psi-agent-03 §4.1
 import canonicalize from "canonicalize";          // RFC 8785 (JCS)
 import { ed25519 } from "@noble/curves/ed25519";
 
@@ -65,7 +65,7 @@ const CODE_NOTARIZE = `// Seal the envelope identifier with the hosted notary (f
 const res = await fetch("${API}/notarize", {
   method: "POST",
   headers: { "Content-Type": "application/json" /* , "x-apex-api-key": process.env.APEX_API_KEY */ },
-  body: JSON.stringify({ decision: envelope.eid, context: "psi-agent-02 envelope", model_id: "procurement-agent/2" }),
+  body: JSON.stringify({ decision: envelope.eid, context: "psi-agent-03 envelope", model_id: "procurement-agent/2" }),
 });
 const receipt = await res.json();
 console.log(receipt.receipt_page_url);   // a page anyone can open to re-check it
@@ -99,7 +99,7 @@ const AgentPaymentRecipe = () => (
           <section className="mb-12 border border-border p-5">
             <h2 className="text-sm font-bold tracking-widest uppercase text-muted-foreground mb-2">Status — checked 12 Nov 2026</h2>
             <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
-              <li><span className="text-foreground">Envelope format:</span> draft-singh-psi-agent-02 is a prepared working draft, not yet filed with the IETF and not a standard. <Link to="/drafts" className="underline text-primary">Read it</Link>.</li>
+              <li><span className="text-foreground">Envelope format:</span> draft-singh-psi-agent-03 is filed with the IETF — submitted 15 November 2026 as submission 172443 and posted the same day — and it is not a standard. <Link to="/drafts" className="underline text-primary">Read it</Link>.</li>
               <li><span className="text-foreground">Sealing the envelope:</span> live today on the hosted notary and through the MCP server.</li>
               <li><span className="text-foreground">Paying APEX by machine (x402):</span> implemented but dormant on this deployment. A payment sent now is refused with <code className="font-mono">apex_x402_door_not_configured</code> and nothing is charged.</li>
               <li><span className="text-foreground">Your own rail:</span> the settlement statement works with any rail — x402, card, bank — because it records the rail's own reference.</li>
@@ -158,7 +158,7 @@ const AgentPaymentRecipe = () => (
             <Link to="/mcp" className="underline hover:text-primary">Use it from an AI assistant (MCP)</Link>
             <Link to="/mandate" className="underline hover:text-primary">Authorise an agent</Link>
             <Link to="/pilot" className="underline hover:text-primary">Run a 14-day pilot</Link>
-            <a href="/ietf/draft-singh-psi-agent-02.txt" className="underline hover:text-primary" target="_blank" rel="noopener noreferrer">Draft text</a>
+            <a href="/ietf/draft-singh-psi-agent-03.txt" className="underline hover:text-primary" target="_blank" rel="noopener noreferrer">Draft text</a>
           </section>
         </div>
       </main>

@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
-const DRAFT_ID = "draft-singh-psi-agent-02";
+const DRAFT_ID = "draft-singh-psi-agent-03";
 const DRAFT_PATH = `/ietf/${DRAFT_ID}.txt`;
-// The digest published on 6 November 2026. The page recomputes the served
-// file's digest in the visitor's browser and shows that, not this constant.
-const PUBLISHED_HASH = "2592edc5dd4634d2ba6ee1c459d45d7372e0c6be358c2d3afe8e6353c43b68a1";
-/** The stem the .ots file is served under; the text file must carry the same name. */
-const PROOF_STEM = PUBLISHED_HASH.slice(0, 16);
-const FN_BASE = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
+// The digest the IETF registry holds for the -03, posted 15 November 2026.
+// The page recomputes the served file's digest in the visitor's browser and
+// shows that, not this constant.
+const PUBLISHED_HASH = "ce14437dd82a91deb7921287d9b862caf6c1fa5b9dd5f6a55b033ab93bc753fd";
+/** The registry's own copy of the filed bytes. */
+const REGISTRY_COPY = "https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt";
+/** The datatracker record for the series. */
+const DATATRACKER_RECORD = "https://datatracker.ietf.org/doc/draft-singh-psi-agent/";
 
 interface AnchorRow {
   status: string;
@@ -42,10 +44,11 @@ async function computeFingerprint(): Promise<Fingerprint> {
 }
 
 /**
- * PRIORITY ANCHOR — the public timestamp record for draft-singh-psi-agent-02.
- * Rendered only from the live ots_proofs row. If the Bitcoin block has not
- * confirmed yet, the plaque says so. Absence and pending states are stated,
- * never hidden.
+ * PRIORITY ANCHOR — the public timestamp record for draft-singh-psi-agent-03.
+ * The date of record is the IETF registry: the -03 was submitted on
+ * 15 November 2026 and posted the same day. Rendered only from the live
+ * ots_proofs row. If the Bitcoin block has not confirmed yet, the plaque
+ * says so. Absence and pending states are stated, never hidden.
  */
 const AgentSpecAnchor = () => {
   const [anchor, setAnchor] = useState<AnchorRow | null>(null);
@@ -85,7 +88,7 @@ const AgentSpecAnchor = () => {
 
   return (
     <section
-      id="agent-02-priority"
+      id="agent-03-priority"
       aria-label="Priority anchor for the agent settlement specification"
       className="border-b border-gold/20 px-4 py-16 md:py-20"
     >
@@ -100,18 +103,19 @@ const AgentSpecAnchor = () => {
           </span>
         </h2>
         <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-relaxed text-muted-foreground md:text-base">
-          <span className="text-foreground">draft-singh-psi-agent-02</span> seals a mandate, a
+          <span className="text-foreground">draft-singh-psi-agent-03</span> seals a mandate, a
           proposal, a policy decision and a settlement under one run identifier, then tests the
           settled amount against the limit the mandate declared and the acting key against the
-          deciding key. The text was published on 6 November 2026 in this repository and at this
-          URL, and the fingerprint below is recomputed in your browser from the file this page
-          serves — so the date does not rest on our say-so.
+          deciding key. The IETF datatracker received these bytes on 15 November 2026 as submission
+          172443 and posted them the same day, so the registry holds the file and the fingerprint
+          below is recomputed in your browser from the file this page serves — the date does not
+          rest on our say-so.
         </p>
         <p className="mx-auto mt-4 max-w-3xl text-center font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          A working draft. Not filed with the IETF, and adopted by no one.
+          Filed with the IETF and posted. Not an RFC, not a standard, adopted by no working group.
         </p>
         <p className="mx-auto mt-4 max-w-3xl text-center text-xs leading-relaxed text-muted-foreground/80">
-          First, and dated. As at 7 November 2026 we know of no other published specification —
+          First, and dated. As at 15 November 2026 we know of no other published specification —
           among Google AP2 signed mandates (donated to the FIDO Alliance, April 2026), Mastercard
           Verifiable Intent (March 2026), Visa Trusted Agent Protocol (October 2025), C2PA 2.5,
           RFC 6962 certificate transparency, Sigsum and draft-ietf-wimse-aims — that tests a
@@ -135,16 +139,16 @@ const AgentSpecAnchor = () => {
                 <>
                   <span className="text-gold">{fingerprint.digest}</span>
                   <span className="mt-1 block text-xs text-gold/90">
-                    This does not match the digest published on 6 November 2026. Treat the served
-                    file as drifted.
+                    This does not match the digest the IETF registry holds for the -03. Treat the
+                    served file as drifted.
                   </span>
                 </>
               )}
               {fingerprint.state === "unavailable" && (
                 <>
                   <span className="text-muted-foreground">
-                    Not recomputable in this browser ({fingerprint.reason}). The digest published on
-                    6 November 2026 is {PUBLISHED_HASH}.
+                    Not recomputable in this browser ({fingerprint.reason}). The digest the
+                    registry holds for the -03 is {PUBLISHED_HASH}.
                   </span>
                 </>
               )}
@@ -154,7 +158,7 @@ const AgentSpecAnchor = () => {
             <dt className="text-muted-foreground">Bitcoin anchor</dt>
             <dd className="text-foreground">
               {loading && "Reading the ledger…"}
-              {!loading && !anchor && "No anchor recorded. Absence is also a record."}
+              {!loading && !anchor && "No anchor recorded. Absence is also a record. The date of record for this revision is the IETF registry, which posted it on 15 November 2026."}
               {!loading && anchor && confirmed && (
                 <>
                   Confirmed in block #{anchor.bitcoin_block_height!.toLocaleString("en-US")}
@@ -199,10 +203,20 @@ const AgentSpecAnchor = () => {
             Read the specification
           </a>
           <a
-            href={`${FN_BASE}/ots-proof?hash=${PUBLISHED_HASH}`}
+            href={REGISTRY_COPY}
+            target="_blank"
+            rel="noopener noreferrer"
             className="border border-gold/50 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-gold transition-colors hover:bg-gold/10"
           >
-            Download the .ots proof
+            The registry&apos;s copy
+          </a>
+          <a
+            href={DATATRACKER_RECORD}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border border-gold/50 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-gold transition-colors hover:bg-gold/10"
+          >
+            Datatracker record
           </a>
           <Link
             to="/drafts"
@@ -213,12 +227,12 @@ const AgentSpecAnchor = () => {
         </div>
 
         <p className="mx-auto mt-6 max-w-3xl text-center font-mono text-[10px] leading-relaxed text-muted-foreground">
-          Verify without trusting this website: save the specification as{" "}
-          <span className="text-foreground">apex-{PROOF_STEM}.txt</span> and the downloaded proof as{" "}
-          <span className="text-foreground">apex-{PROOF_STEM}.ots</span> in the same folder, then
-          run <span className="text-foreground">ots verify apex-{PROOF_STEM}.ots</span> from the
-          OpenTimestamps reference client. The fingerprint above is recomputed in your browser from
-          the served file and compared with the digest published on 6 November 2026.
+          Verify without trusting this website: fetch the registry&apos;s copy and compare it with the
+          digest above —{" "}
+          <span className="text-foreground">curl -s {REGISTRY_COPY} | sha256sum</span> — and open the
+          datatracker record to see the submission the registry logged on 15 November 2026. The
+          fingerprint above is recomputed in your browser from the served file and compared with the
+          digest the registry holds.
         </p>
       </div>
     </section>

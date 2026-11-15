@@ -73,19 +73,26 @@ HTTP 200 from the IETF archive:
 - draft-singh-apex-psi-05-02 — expires 10 February 2027
 
 Rule we hold ourselves to: a draft is called filed only when its datatracker **series**
-URL returns 200. The revision-suffixed URLs answer 404, so check the series:
-https://datatracker.ietf.org/doc/draft-singh-psi/
+URL returns 200. The datatracker's revision-suffixed document URLs answer 404, so check
+the series: https://datatracker.ietf.org/doc/draft-singh-psi/
 
-Prepared, not filed: draft-singh-psi-agent-02, "Binding Decisions and Settlements
-to Agent Action Records", written 6 November 2026. It has no IETF record yet and is
-not a standard. Working text:
-https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-02.txt
-Fingerprint (machine-readable, no account and no APEX tool needed to check it):
-https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-02.identity.json
-sha256 2592edc5dd4634d2ba6ee1c459d45d7372e0c6be358c2d3afe8e6353c43b68a1 · 27,279 bytes
-· first published 6 November 2026 10:47 AEDT at commit 481b871 in kawal393/APEX-PSI.
-The digest records that this text existed then and has not changed. It records nothing
-about the text being correct, adopted, approved or lawful.
+One more, in its own series: draft-singh-psi-agent-03, "Binding Decisions and Settlements
+to Agent Action Records", intended status Experimental. Submitted 15 November 2026 as
+submission 172443 and posted the same day. Measured 16 November 2026, the registry's own
+copy returns HTTP 200, 34,484 bytes, sha256
+ce14437dd82a91deb7921287d9b862caf6c1fa5b9dd5f6a55b033ab93bc753fd, 15 pages:
+https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt
+Datatracker record: https://datatracker.ietf.org/doc/draft-singh-psi-agent/
+Document date 15 November 2026, expires 19 May 2027. Our copy and its machine-readable
+fingerprint (no account and no APEX tool needed to check either):
+https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-03.txt
+https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-03.identity.json
+The -03 supersedes the -02 (submission 172438, also posted); it corrected the Author's
+Address label and four citations. The -02 stays in the repository byte for byte, as the
+record of what was posted before that. An Internet-Draft is not an RFC, not a standard,
+and adopted by no working group. The digest records that these bytes are the bytes the
+registry holds; it records nothing about the text being correct, adopted, approved or
+lawful.
 
 ## Trust anchor
 

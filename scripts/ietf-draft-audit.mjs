@@ -455,6 +455,76 @@ check(!lines.some((l) => /^\s*URI:/.test(l)), "the author address still carries 
 check(lines.some((l) => l === "   Email: kawaljeet.singh3008@gmail.com"),
   "the author address does not carry the email");
 
+/* ------------------------------------------------------- copy freshness */
+
+/**
+ * The copy must name the revision that is filed, and the digest of its bytes.
+ *
+ * The -02 was posted on 15 November 2026 and the -03 replaced it the same
+ * day. Nothing checked the words around the bytes, so the site went on
+ * serving the 6 November text and the copy went on calling a filed draft
+ * "prepared, not filed". A layout check cannot see that. This can: the
+ * surfaces below are read against the file that is published now.
+ */
+
+const publishedBytes = readFileSync(path.join(ROOT, `public/ietf/${DOC}.txt`));
+const publishedDigest = createHash("sha256").update(publishedBytes).digest("hex");
+
+/** The digests of the revisions this one replaces. */
+const SUPERSEDED_DIGESTS = {
+  "2592edc5dd4634d2ba6ee1c459d45d7372e0c6be358c2d3afe8e6353c43b68a1":
+    "the 6 November 2026 text",
+  "853c7d1db88ad9d2036258e934eaa8517155faf6df5151b8a904a6ff74d01ec5":
+    "draft-singh-psi-agent-02",
+};
+
+const identity = JSON.parse(read(`public/ietf/${DOC}.identity.json`));
+check(identity.sha256 === publishedDigest,
+  `the fingerprint file records sha256 ${identity.sha256}, and the published bytes hash to ${publishedDigest}`);
+check(identity.bytes === publishedBytes.length,
+  `the fingerprint file records ${identity.bytes} bytes, and the published file is ${publishedBytes.length}`);
+check(identity.lines === publishedBytes.toString("utf8").split("\n").length - 1,
+  `the fingerprint file records ${identity.lines} lines, and the published file has ${publishedBytes.toString("utf8").split("\n").length - 1}`);
+check(identity.pages === pages.length,
+  `the fingerprint file records ${identity.pages} pages, and the published file has ${pages.length}`);
+check(identity.document_date === toIso(headerDate),
+  `the fingerprint file records the document date ${identity.document_date}, and the draft says ${toIso(headerDate)}`);
+check(identity.expiry === toIso(expiry),
+  `the fingerprint file records the expiry ${identity.expiry}, and the draft says ${toIso(expiry)}`);
+check(!/not posted yet/i.test(identity.status),
+  "the fingerprint file still says the draft was not posted");
+check(identity.filing?.registry_copy?.includes("draft-singh-psi-agent-03.txt"),
+  "the fingerprint file does not point at the registry's copy of this revision");
+
+/** The copy surfaces, and whether each one carries the digest. */
+const COPY_SURFACES = [
+  { file: "public/llms.txt", digest: true },
+  { file: "public/llms-full.txt", digest: true },
+  { file: "public/.well-known/apex-protocol.json", digest: true },
+  { file: "src/pages/Drafts.tsx", digest: true },
+  { file: "src/components/AgentSpecAnchor.tsx", digest: true },
+  { file: "src/components/GrandHero.tsx", digest: false },
+  { file: "src/pages/AgentPaymentRecipe.tsx", digest: false },
+  { file: "public/ietf/submission/UPLOAD.md", digest: true },
+];
+
+for (const { file, digest } of COPY_SURFACES) {
+  const text = read(file);
+  check(text.includes(DOC), `${file} does not name ${DOC}`);
+  for (const [stale, what] of Object.entries(SUPERSEDED_DIGESTS)) {
+    check(!text.includes(stale), `${file} carries the digest of ${what}`);
+  }
+  if (digest) {
+    check(text.includes(publishedDigest), `${file} does not carry the digest of ${DOC}`);
+  }
+  check(!/draft-singh-psi-agent-02\.txt/.test(text),
+    `${file} links the superseded revision's text`);
+  check(!/not yet filed|prepared, not filed/i.test(text),
+    `${file} calls a filed draft one that is not filed`);
+  check(!/not filed with the IETF/i.test(text),
+    `${file} says the draft is not filed with the IETF`);
+}
+
 /* ------------------------------------------------------------- verdict */
 
 if (failures.length) {
@@ -469,3 +539,4 @@ console.log(`  every "Section N" resolves, every claim about the published -01 a
 console.log(`  the table of contents matches the headings and the page numbers`);
 console.log(`  document date ${headerDate}, expiry ${expiry}, novelty statement as at ${novelty[1]}`);
 console.log(`  the author address carries the URL label and not the URI label`);
+console.log(`  the fingerprint file matches the published bytes, and ${COPY_SURFACES.length} copy surfaces name this revision`);

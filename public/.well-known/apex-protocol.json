@@ -83,17 +83,25 @@
       "expires": "2027-02-10"
     },
     {
-      "name": "draft-singh-psi-agent-02",
-      "status": "prepared, not filed",
-      "note": "Working text written 6 November 2026. It has no IETF record and is not a standard.",
+      "name": "draft-singh-psi-agent",
+      "revision": "03",
+      "category": "Experimental",
+      "submission": "individual",
+      "status": "filed",
+      "note": "Submitted 15 November 2026 as submission 172443 and posted the same day. It supersedes draft-singh-psi-agent-02 (submission 172438, also posted), which the -03 corrected: the Author's Address label and four citations. Not an RFC, not a standard, not adopted by any working group.",
       "title": "Binding Decisions and Settlements to Agent Action Records",
-      "url": "https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-02.txt",
-      "sha256": "2592edc5dd4634d2ba6ee1c459d45d7372e0c6be358c2d3afe8e6353c43b68a1",
-      "bytes": 27279,
-      "commit": "481b871"
+      "url": "https://datatracker.ietf.org/doc/draft-singh-psi-agent/",
+      "text_url": "https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt",
+      "copy_url": "https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-03.txt",
+      "fingerprint_url": "https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-03.identity.json",
+      "sha256": "ce14437dd82a91deb7921287d9b862caf6c1fa5b9dd5f6a55b033ab93bc753fd",
+      "bytes": 34484,
+      "pages": 15,
+      "document_date": "2026-11-15",
+      "expires": "2027-05-19"
     }
   ],
-  "ietf_drafts_note": "Every document marked filed returned a datatracker record on 2026-11-12. All of them are Active Internet-Drafts submitted individually, category Informational. None is an approved standard, none has been adopted by a working group, and none carries the force of law.",
+  "ietf_drafts_note": "Every document marked filed returned a datatracker record on 2026-11-12, and draft-singh-psi-agent-03 returned one on 2026-11-15. All of them are Active Internet-Drafts submitted individually; the PSI-0x series is category Informational and the agent series is category Experimental. None is an approved standard, none has been adopted by a working group, and none carries the force of law.",
   "standards": [
     { "id": "psi-00", "title": "Proof of Stateful Integrity Core", "status": "filed", "draft": "draft-singh-psi rev 02 (Informational, not an approved standard)", "jurisdiction": "Global / IETF", "description": "Core protocol: canonicalisation, hash chain, signature suites and receipt formats." },
     { "id": "psi-01", "title": "Compliance-Receipt HTTP Header Field", "status": "filed", "draft": "draft-singh-psi-http rev 00 (Informational, not an approved standard)", "jurisdiction": "Global / IETF", "description": "In-band transport of a PSI receipt over HTTP responses." },
