@@ -30,6 +30,7 @@
     "check:claims:selftest": "node scripts/claim-surface-check.mjs --self-test",
     "check:sticky-nav": "node scripts/sticky-nav-check.mjs",
     "check:trust-anchor": "node scripts/trust-anchor-check.mjs .",
+    "check:anchor-cors": "node scripts/anchor-cors-check.mjs .",
     "check:ietf-draft": "node scripts/ietf-plaintext-layout.mjs --check",
     "check:ietf-audit": "node scripts/ietf-draft-audit.mjs",
     "derive:anchor-key": "node scripts/derive-anchor-key.mjs",

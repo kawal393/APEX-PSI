@@ -349,6 +349,14 @@ jobs:
         with:
           node-version: 20
       - run: npm run check:trust-anchor
+      - name: The trust anchor must be readable from another origin
+        # Measured 17 Nov 2026: the published anchor came back with no
+        # Access-Control-Allow-Origin, so a verifier running in someone else's
+        # browser could not fetch it and failed closed for a reason that had
+        # nothing to do with the signature. This job refuses an anchor that is
+        # unreachable cross-origin, and refuses a second copy of the anchor
+        # bytes: one document, one source of truth.
+        run: npm run check:anchor-cors
 
   supabase-deploy:
     # NOT on every push to main. `supabase db push` + `functions deploy` mutate
