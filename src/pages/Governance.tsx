@@ -83,7 +83,7 @@ const Governance = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Open Evidence Protocol — Decentralized Compliance Verification — Apex PSI — Universal Verification Protocol</title>
+        <title>Open Evidence Protocol — Verification Anyone Can Run — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="The APEX Open Evidence Protocol replaces human bottlenecks with mathematical consensus. Anyone can verify. The math is the authority." />
       </Helmet>
       <Navbar />
@@ -219,7 +219,7 @@ const Governance = () => {
               <h3 className="text-xs font-bold text-muted-foreground mb-4 text-center tracking-[0.15em] uppercase">Verification Flow</h3>
               <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
                 {[
-                  { label: "3-Node Quorum", color: "text-primary", bg: "bg-primary/10 border-primary/30" },
+                  { label: "3-Node Redundancy", color: "text-primary", bg: "bg-primary/10 border-primary/30" },
                   { label: "→", color: "text-muted-foreground", bg: "" },
                   { label: "Public Attestation", color: "text-gold", bg: "bg-gold/10 border-gold/30" },
                   { label: "→", color: "text-muted-foreground", bg: "" },

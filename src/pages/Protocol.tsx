@@ -153,7 +153,7 @@ const proposedChanges = [
   },
   {
     id: "PSI-RFC-004",
-    title: "Decentralized Engine Node Federation",
+    title: "Independent Engine Node Federation",
     status: "DRAFT",
     description: "Self-hosting specification enabling any organization to run an independent Engine node that federates with the sovereign ledger, preventing single-entity nationalization.",
   },

@@ -9,7 +9,7 @@
   },
   "version": "1.4",
   "canonical_domain": "https://ai-governance-standard.com",
-  "ietf_drafts_measured": "2026-11-12",
+  "ietf_drafts_measured": "2026-11-16",
   "ietf_drafts": [
     {
       "name": "draft-singh-psi",
@@ -29,16 +29,6 @@
       "status": "filed",
       "title": "The Compliance-Receipt HTTP Response Header Field",
       "url": "https://datatracker.ietf.org/doc/draft-singh-psi-http/",
-      "expires": "2027-04-16"
-    },
-    {
-      "name": "draft-singh-psi-agent",
-      "revision": "01",
-      "category": "Informational",
-      "submission": "individual",
-      "status": "filed",
-      "title": "PSI Receipts for AI Agent Actions",
-      "url": "https://datatracker.ietf.org/doc/draft-singh-psi-agent/",
       "expires": "2027-04-16"
     },
     {

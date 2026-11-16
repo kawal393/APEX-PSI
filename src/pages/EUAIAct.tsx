@@ -78,7 +78,7 @@ const ARTICLES = [
 
 const COST_COMPARISON = [
   { method: "Apex PSI", cost: "Free", per: "receipt or service", time: "Varies", features: "Signed receipt, optional timestamp proof, machine-readable evidence", recommended: true },
-  { method: "Blockchain (Ethereum)", cost: "$1–$20", per: "transaction", time: "12 sec – 10 min", features: "Immutable record, but slow, expensive, requires wallet" },
+  { method: "Blockchain (Ethereum)", cost: "$1–$20", per: "transaction", time: "12 sec – 10 min", features: "Append-only record, but slow, expensive, requires wallet" },
   { method: "Zero-Knowledge Proofs", cost: "Workload-dependent", per: "proof generation", time: "Workload-dependent", features: "Privacy-preserving; implementation cost and performance vary widely" },
   { method: "Manual Compliance", cost: "$50–$200", per: "hour (consultant)", time: "Weeks–Months", features: "Human review, error-prone, not scalable" },
 ];
@@ -94,7 +94,7 @@ const CODE_OF_PRACTICE_BENEFITS = [
 const FAQ_ITEMS = [
   {
     q: "What is the EU AI Act?",
-    a: "The EU AI Act (Regulation 2024/1689) is the world's first comprehensive AI regulation. It classifies AI systems by risk level and imposes mandatory obligations on providers and deployers operating in the EU market.",
+    a: "The EU AI Act (Regulation 2024/1689) is the first comprehensive AI regulation. It classifies AI systems by risk level and imposes mandatory obligations on providers and deployers operating in the EU market.",
   },
   {
     q: "When does Article 50 take effect?",

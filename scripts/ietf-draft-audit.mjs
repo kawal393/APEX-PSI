@@ -525,6 +525,25 @@ for (const { file, digest } of COPY_SURFACES) {
     `${file} says the draft is not filed with the IETF`);
 }
 
+/**
+ * The machine-readable card must carry exactly one entry for this series, and
+ * it must be this revision. On 16 November the card held two entries for the
+ * agent series — a stale revision 01 and the filed revision 03 — because a
+ * new entry had been appended and the old one was never removed. Every other
+ * guard read the card for a digest and passed; a reader of the card saw two
+ * drafts where there is one.
+ */
+const card = JSON.parse(read("public/.well-known/apex-protocol.json"));
+const cardEntries = (card.ietf_drafts || []).filter((d) => d.name === "draft-singh-psi-agent");
+check(cardEntries.length === 1,
+  `the machine-readable card holds ${cardEntries.length} entries for draft-singh-psi-agent, and must hold exactly one`);
+if (cardEntries.length === 1) {
+  check(cardEntries[0].revision === "03",
+    `the machine-readable card names revision ${cardEntries[0].revision} of draft-singh-psi-agent, and the filed one is 03`);
+  check(cardEntries[0].sha256 === publishedDigest,
+    "the machine-readable card's digest does not match the published bytes");
+}
+
 /* ------------------------------------------------------------- verdict */
 
 if (failures.length) {

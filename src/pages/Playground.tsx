@@ -101,12 +101,12 @@ export default function Playground() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-bold uppercase">2 · Agent flight recorder</h2>
+          <h2 className="text-xl font-bold uppercase">2 · Agent execution recorder</h2>
           <p className="text-sm text-muted-foreground max-w-2xl">One line in your agent records every step as a fingerprint chain. Nothing leaves your machine.</p>
           <pre className="bg-muted/40 border border-border rounded-md p-4 text-xs overflow-x-auto">{`# The Python recorder is not published yet — download the sample bundle below to try it.
 
-from apex_psi import FlightRecorder
-rec = FlightRecorder()
+from apex_psi import ExecutionRecorder
+rec = ExecutionRecorder()
 
 # LangChain / LangGraph
 agent.invoke(inputs, config={"callbacks": [rec]})
@@ -114,6 +114,13 @@ agent.invoke(inputs, config={"callbacks": [rec]})
 Agent(..., step_callback=rec)
 
 rec.save("incident-bundle.json")`}</pre>
+          <p className="text-sm text-muted-foreground max-w-2xl">
+            A recorder records what happened. It cannot stop an action it was never told about — an
+            agent that does not call it leaves no gap in the record, only a record with nothing in
+            it. When the action must not happen unless it is receipted, the gate seals first and
+            acts second: <code className="text-primary">apex_psi.ExecutionGate</code> in the Python
+            runtime, <code className="text-primary">apex-psi-mcp/gate</code> in the npm package.
+          </p>
           <Button variant="outline" onClick={doRecorder}>Download a sample incident bundle</Button>
         </section>
 

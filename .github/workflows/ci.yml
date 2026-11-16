@@ -304,6 +304,24 @@ jobs:
   # continue-on-error: the corpus is still wrong and the correction needs a service_role
   # key for the live project, which this repository does not hold. The job stays visible
   # so the debt is on the board; it is removed the day the corpus is corrected.
+  # The words on our own pages are a claim. On 16 Nov 2026 a critique read "black box
+  # recorder", "the world's first" and "3-node MPC" against their literal meaning and the
+  # claim did not survive: a black box is hardware an operator cannot bypass, and our three
+  # verifier nodes are operated by one company. The copy was corrected and this guard was
+  # written in the same turn, so the correction cannot rot back into a metaphor.
+  #
+  # It reads only this repository and never the network, so it belongs on the blocking rail.
+  claims:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run check:claims
+      # A guard that cannot fail is not a guard: prove it bites on each shape it closes.
+      - run: npm run check:claims:selftest
+
   article-claims:
     continue-on-error: true
     runs-on: ubuntu-latest

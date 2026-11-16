@@ -357,7 +357,7 @@ the protocol until it ships and is verified.
       predicate patterns correctly implement regulatory text
       using Coq/Lean theorem provers.
 
-  (c) Decentralized Engine Node Federation — enabling any
+  (c) Independent Engine Node Federation — enabling any
       organization to run an independent Engine node that
       federates with the protocol ledger.
 

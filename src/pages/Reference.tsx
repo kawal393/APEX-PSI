@@ -15,7 +15,7 @@ const Reference = () => {
         <title>APEX PSI — The Reference</title>
         <meta
           name="description"
-          content="The world's first public reference for machine-governance records. Free, open, recomputable by anyone."
+          content="The public reference for machine-governance records. Free, open, recomputable by anyone."
         />
         <link rel="canonical" href="https://www.ai-governance-standard.com/reference" />
       </Helmet>
@@ -27,7 +27,7 @@ const Reference = () => {
               APEX PSI — THE REFERENCE
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-3xl">
-              The world's first public reference for machine-governance records. Free, open,
+              The public reference for machine-governance records. Free, open,
               recomputable by anyone.
             </p>
           </header>
