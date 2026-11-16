@@ -25,30 +25,24 @@
  * Exit 0 = clean. Exit 1 = a claim this repository has withdrawn is live on a public surface.
  *         Exit 1 = also when --self-test cannot make the guard bite.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, isAbsolute } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
 
-// The public surfaces. These are the files a stranger or a directory scraper reads.
-const DEFAULT_FILES = [
-  "src/pages/Playground.tsx",
-  "src/pages/MCP.tsx",
-  "src/pages/Protocol.tsx",
-  "src/pages/SDK.tsx",
-  "src/pages/Reference.tsx",
-  "src/pages/Governance.tsx",
-  "src/pages/Paper.tsx",
-  "src/pages/EUAIAct.tsx",
-  "src/pages/Corrections.tsx",
-  "src/pages/Drafts.tsx",
-  "src/pages/AgentPaymentRecipe.tsx",
-  "src/components/ResearchReferences.tsx",
-  "src/components/AdversarialReview.tsx",
-  "src/components/GrandHero.tsx",
-  "src/components/AgentSpecAnchor.tsx",
+// The public surfaces, found rather than listed.
+//
+// This used to be a hand-written list of 21 files while the site carries 312 source files under
+// src/pages and src/components. The gap was not theoretical: the Hardening page still called
+// our three Apex-operated nodes a "decentralized" quarantine while three other pages had
+// already been corrected, and nothing caught it. A page Lovable's editor writes tomorrow would
+// have sailed past the same hole. So the surfaces are collected by pattern now, and a new file
+// is covered the moment it lands.
+const SURFACE_DIRS = ["src/pages", "src/components"];
+const SURFACE_EXT = /\.tsx?$/;
+const SURFACE_FILES = [
   "public/llms.txt",
   "public/llms-full.txt",
   "public/.well-known/apex-protocol.json",
@@ -56,6 +50,24 @@ const DEFAULT_FILES = [
   "packages/apex-psi-python/apex_psi/gate.py",
   "packages/apex-psi-python/apex_psi/__init__.py",
 ];
+
+function collectSurfaces() {
+  const found = [...SURFACE_FILES];
+  for (const dir of SURFACE_DIRS) {
+    let entries = [];
+    try {
+      entries = readdirSync(join(root, dir));
+    } catch {
+      continue;
+    }
+    for (const name of entries) {
+      if (SURFACE_EXT.test(name)) found.push(`${dir}/${name}`);
+    }
+  }
+  return found.sort();
+}
+
+const DEFAULT_FILES = collectSurfaces();
 
 // Each entry: the pattern, and the reason the phrase cannot be used as a claim.
 const BANNED = [
@@ -104,13 +116,22 @@ const files = args.filter((a) => !a.startsWith("--"));
 // therefore reads the register's structure instead of blanket-exempting the page.
 const WITHDRAWN_ONLY_FIELDS = {
   "src/pages/Corrections.tsx": /said:\s*"[^"]*"/gs,
+  // The IETF draft page quotes the text that was actually filed, word for word, so a reader
+  // can see what changed. Those quotes may carry the withdrawn phrases; the page's own claims
+  // around them are scanned in full.
+  "src/pages/IETFDraft.tsx": /filed:\s*'[^']*'/gs,
 };
 
 // ResearchReferences.tsx is a bibliography of other people's work. "Decentralised" there
 // describes somebody else's subject, and the page says so in its own note. Only those two
 // words are exempt on that page: a superlative about APEX PSI is still banned there.
 const FILE_EXEMPT = {
-  "src/components/ResearchReferences.tsx": [/decentrali[sz]ed/i, /multi-?party computation/i],
+  "src/components/ResearchReferences.tsx": [
+    /decentrali[sz]ed/i,
+    /multi-?party computation/i,
+    // Somebody else's article title, quoted as a link. Our own claims are still scanned here.
+    /tamper-?proof/i,
+  ],
 };
 
 function scan(text, exempt = []) {

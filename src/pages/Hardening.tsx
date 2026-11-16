@@ -59,7 +59,7 @@ const Hardening = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
         <title>Apex PSI v3 — Hardening Layer (Predicate Proofs, Quarantine, Challenges) — Apex PSI — Universal Verification Protocol</title>
-        <meta name="description" content="Live public ledger of verifiable logic proofs, decentralized model quarantines under t-of-n lattice consensus, and open challenges against notarized AI decisions." />
+        <meta name="description" content="Live public ledger of verifiable logic proofs, redundant model quarantines under t-of-n lattice consensus, and open challenges against notarized AI decisions." />
       </Helmet>
       <Navbar />
       <div className="pt-24 pb-24 max-w-7xl mx-auto px-6">
@@ -83,8 +83,8 @@ const Hardening = () => {
           <a href="#quarantine" className="border border-border p-6 hover:border-primary transition-colors">
             <Shield className="w-6 h-6 text-primary mb-4" />
             <div className="text-xs tracking-widest text-muted-foreground mb-2">PRIMITIVE 02</div>
-            <div className="text-xl font-semibold mb-2">Decentralized Quarantine</div>
-            <div className="text-sm text-muted-foreground">t-of-n Ed25519 consensus across the α/β/γ lattice. No kill switch. No single point of failure.</div>
+            <div className="text-xl font-semibold mb-2">Redundant Quarantine</div>
+            <div className="text-sm text-muted-foreground">t-of-n Ed25519 consensus across the α/β/γ lattice, all three nodes operated by Apex — redundancy for fault detection, not a quorum of independent operators.</div>
           </a>
           <a href="#challenges" className="border border-border p-6 hover:border-primary transition-colors">
             <Gavel className="w-6 h-6 text-primary mb-4" />
@@ -127,7 +127,7 @@ const Hardening = () => {
         <section id="quarantine" className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <Shield className="w-5 h-5" />
-            <h2 className="text-2xl font-bold">Decentralized Quarantine (t-of-n)</h2>
+            <h2 className="text-2xl font-bold">Redundant Quarantine (t-of-n)</h2>
             <span className="text-xs text-muted-foreground ml-auto">GET/POST /functions/v1/quarantine-action</span>
           </div>
           <div className="border border-border">
