@@ -35,6 +35,40 @@ const CONFIG = `{
   }
 }`;
 
+
+// Per-client copy-paste configs. Same package, same five stdio tools, each client's own config shape.
+const CLIENT_SNIPPETS: { client: string; where: string; code: string }[] = [
+  { client: "VS Code (Copilot agent mode)", where: ".vscode/mcp.json", code: `{
+  "servers": {
+    "apex-psi": { "type": "stdio", "command": "npx", "args": ["-y", "apex-psi-mcp"] }
+  }
+}` },
+  { client: "Windsurf", where: "~/.codeium/windsurf/mcp_config.json", code: CONFIG },
+  { client: "Zed", where: "settings.json", code: `{
+  "context_servers": {
+    "apex-psi": { "command": "npx", "args": ["-y", "apex-psi-mcp"] }
+  }
+}` },
+  { client: "LangChain / LangGraph (Python)", where: "pip install langchain-mcp-adapters", code: `from langchain_mcp_adapters.client import MultiServerMCPClient
+
+client = MultiServerMCPClient({
+    "apex-psi": {"command": "npx", "args": ["-y", "apex-psi-mcp"], "transport": "stdio"}
+})
+tools = await client.get_tools()  # seal, verify, anchor, cite, verify_chain` },
+  { client: "Hugging Face smolagents", where: "pip install 'smolagents[mcp]'", code: `from mcp import StdioServerParameters
+from smolagents import ToolCollection, CodeAgent, InferenceClientModel
+
+params = StdioServerParameters(command="npx", args=["-y", "apex-psi-mcp"])
+with ToolCollection.from_mcp(params, trust_remote_code=True) as tc:
+    agent = CodeAgent(tools=[*tc.tools], model=InferenceClientModel())
+    agent.run("Seal this decision and return the receipt")` },
+  { client: "OpenAI Agents SDK", where: "pip install openai-agents", code: `from agents import Agent
+from agents.mcp import MCPServerStdio
+
+async with MCPServerStdio(params={"command": "npx", "args": ["-y", "apex-psi-mcp"]}) as apex:
+    agent = Agent(name="ops", mcp_servers=[apex])` },
+];
+
 const Code = ({ children }: { children: React.ReactNode }) => (
   <pre className="bg-muted/80 border border-border rounded p-4 overflow-x-auto text-xs font-mono text-foreground leading-relaxed">
     <code>{children}</code>
@@ -201,6 +235,16 @@ const MCP = () => {
           Claude Desktop, Cursor, Windsurf or any MCP client config:
         </p>
         <Code>{CONFIG}</Code>
+        <div className="mt-6 space-y-5">
+          {CLIENT_SNIPPETS.map((c) => (
+            <div key={c.client}>
+              <p className="text-sm text-foreground font-bold mb-1">
+                {c.client} <span className="font-mono text-xs text-muted-foreground">· {c.where}</span>
+              </p>
+              <Code>{c.code}</Code>
+            </div>
+          ))}
+        </div>
         <p className="text-muted-foreground text-sm mt-4 mb-3">
           Door 2 is the hosted connector, for clients that speak streamable-http and will do an
           OAuth sign-in. Its address is this project&apos;s Supabase host plus{" "}
