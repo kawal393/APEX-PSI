@@ -1,12 +1,12 @@
 import copy, json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
-from apex_psi.recorder import FlightRecorder, verify_incident_bundle
+from apex_psi.recorder import ExecutionRecorder, verify_incident_bundle
 
 FIXTURE = os.path.join(os.path.dirname(__file__), "..", "..", "psi-verifier", "test", "fixtures", "incident-bundle.json")
 
 
 def make():
-    r = FlightRecorder()
+    r = ExecutionRecorder()
     r.record("tool_start", {"name": "transfer", "input": "AUD 500 to acct 42"})
     r("approved by policy P-7")
     r.on_tool_end("ok", name="transfer")

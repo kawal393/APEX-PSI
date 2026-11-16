@@ -41,6 +41,27 @@ const Code = ({ children }: { children: React.ReactNode }) => (
   </pre>
 );
 
+// The gate. The five tools are available to an agent, but nothing in MCP makes an agent
+// call them, so an agent that never calls `seal` leaves no gap in the ledger — the ledger
+// stays complete and says nothing about that action. The gate is the only version of this
+// that is mechanical rather than advisory: it seals first and acts second, inside the
+// process that performs the side effect, so the action cannot happen without a receipt.
+const GATE_JS = `import { createGate, createNotarySealer } from "apex-psi-mcp/gate";
+
+const gate = createGate({ sealer: createNotarySealer(), label: "payments-bot" });
+
+const { value, receipt } = await gate.run(
+  () => payments.transfer({ amount: 500, to: "acct-42" }),
+  { tool: "transfer", amount: 500, to: "acct-42" },
+);`;
+
+const GATE_PY = `from apex_psi import ExecutionGate, NotarySealer
+
+gate = ExecutionGate(sealer=NotarySealer(label="payments-bot"))
+
+result = gate.run(payments.transfer, amount=500, to="acct-42")
+print(result.value, result.receipt["decision_hash"])`;
+
 // Tool names and descriptions live in one module, src/lib/mcp-surfaces.ts, because APEX PSI
 // ships TWO MCP servers and this page used to print them as if they were one: it advertised
 // verify_hash / anchor_status / list_attestations / ledger_stats / protocol_info beside the
@@ -211,7 +232,47 @@ const MCP = () => {
       </section>
 
       <section className="mb-14">
-        <h2 className="text-2xl font-bold mb-3">2 · The tools — two doors, one ledger</h2>
+        <h2 className="text-2xl font-bold mb-3">2 · Make the seal unavoidable — the execution gate</h2>
+        <p className="text-muted-foreground text-sm mb-4 max-w-3xl">
+          The tools below are available to your agent, but nothing in MCP makes an agent call
+          them. An agent that never calls <code className="text-primary">seal</code> leaves no gap
+          in the ledger — the ledger stays complete and says nothing about that action. If your
+          agent can move money, send a request or write to a system, that gap is the whole
+          problem.
+        </p>
+        <p className="text-muted-foreground text-sm mb-4 max-w-3xl">
+          So the npm package also ships a gate. It seals first and acts second, inside the process
+          that performs the side effect. If the seal fails, the action is never called.
+        </p>
+        <Code>{GATE_JS}</Code>
+        <p className="text-muted-foreground text-sm mt-4 mb-3">
+          The same gate in the Python runtime, for LangChain and CrewAI:
+        </p>
+        <Code>{GATE_PY}</Code>
+        <ul className="mt-5 space-y-2 text-sm text-muted-foreground max-w-3xl list-disc pl-5">
+          <li>
+            It enforces the <span className="text-foreground">order</span>: the receipt exists
+            before the action runs. A gate with no sealer configured refuses every action.
+          </li>
+          <li>
+            It cannot reach a process that never routes its side effect through it, and it cannot
+            attest what a model did inside a GPU. The receipt covers the action as you declared it
+            and the order in which the two happened.
+          </li>
+          <li>
+            <code className="text-primary">createLocalSealer()</code> seals into an in-process
+            hash chain with no network and no account — a local permit, not a ledger receipt.{" "}
+            <code className="text-primary">createNotarySealer()</code> returns a ledger receipt.
+          </li>
+          <li>
+            For a payout, <code className="text-primary">requireReceipt()</code> refuses anything
+            that is not a receipt carrying a hash — no receipt, no payout.
+          </li>
+        </ul>
+      </section>
+
+      <section className="mb-14">
+        <h2 className="text-2xl font-bold mb-3">3 · The tools — two doors, one ledger</h2>
         <p className="text-sm text-muted-foreground mb-6 max-w-3xl">
           {SURFACE_SENTENCE} Both write to the same append-only ledger, so a record sealed through
           either door is verifiable through both.{" "}
@@ -290,7 +351,7 @@ const MCP = () => {
       </section>
 
       <section className="mb-14">
-        <h2 className="text-2xl font-bold mb-4">3 · Go deeper</h2>
+        <h2 className="text-2xl font-bold mb-4">4 · Go deeper</h2>
         <ul className="grid sm:grid-cols-2 gap-3">
           {DEEPER.map((item) => (
             <li key={item.to}>

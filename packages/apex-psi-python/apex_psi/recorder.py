@@ -1,4 +1,4 @@
-"""Offline flight recorder for AI agents (stdlib only, nothing leaves the process).
+"""Offline execution recorder for AI agents (stdlib only, nothing leaves the process).
 
 Every step is reduced to a SHA-256 fingerprint and linked into a hash chain.
 Export the chain as an APEX-INCIDENT/1 bundle and check it with
@@ -28,8 +28,13 @@ def entry_hash(e: dict) -> str:
     return _sha(_canon({k: e[k] for k in ("seq", "ts", "kind", "payload_sha256", "prev")}))
 
 
-class FlightRecorder:
-    """Callable (CrewAI `step_callback`) and duck-typed LangChain/LangGraph callback."""
+class ExecutionRecorder:
+    """Callable (CrewAI `step_callback`) and duck-typed LangChain/LangGraph callback.
+
+    This records what happened after the fact. It cannot stop an action that was
+    never routed through it. Use `apex_psi.gate.ExecutionGate` when the action
+    must not happen unless a receipt exists for it.
+    """
 
     def __init__(self):
         self.entries = []
