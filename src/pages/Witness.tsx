@@ -22,14 +22,14 @@ export default function Witness() {
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
         <title>Public Witness — APEX PSI</title>
-        <meta name="description" content="Hourly SHA-256 fingerprints of open public records: software releases and clinical trial registrations." />
+        <meta name="description" content="Six-hourly SHA-256 fingerprints of open public records: software releases and clinical trial registrations." />
       </Helmet>
       <Navbar />
       <main className="max-w-7xl mx-auto px-4 py-16">
         <p className="font-mono text-xs tracking-widest text-gold">PUBLIC WITNESS · LIVE</p>
         <h1 className="mt-2 text-4xl md:text-6xl font-bold uppercase tracking-tight">Public Witness</h1>
         <p className="mt-4 max-w-3xl text-muted-foreground">
-          Every hour, an automated observer reads a small set of open public sources — npm and PyPI release metadata,
+          Every six hours, an automated observer reads a small set of open public sources — npm and PyPI release metadata,
           and recently updated ClinicalTrials.gov registrations — and records the SHA-256 fingerprint of each record's
           canonical form. If a source later changes, a new fingerprint appears beside the old one. Both are kept.
         </p>
