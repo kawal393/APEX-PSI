@@ -154,3 +154,6 @@ verify_jwt = false
 
 [functions.merkle-proof]
 verify_jwt = false
+
+[functions.trust-anchor]
+verify_jwt = false

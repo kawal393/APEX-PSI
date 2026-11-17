@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      only_functions:
+        description: "Deploy only these functions, space-separated (e.g. trust-anchor). Empty deploys every function in the repo."
+        required: false
+        default: ""
 
 # One deploy at a time, and never two production pushes racing each other.
 concurrency:
@@ -432,6 +437,22 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-      - run: supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF"
+      - name: Deploy functions
+        # A whole-directory deploy overwrites every live function with this repo's
+        # copy. When one function is being shipped, name it: the scope of the blast
+        # radius should be the size of the change.
+        run: |
+          case "$DEPLOY_ONLY" in
+            *[!A-Za-z0-9._ -]*)
+              echo "::error::only_functions may hold function names only (letters, digits, dot, dash, underscore, space); got: $DEPLOY_ONLY"
+              exit 1 ;;
+          esac
+          if [ -n "$DEPLOY_ONLY" ]; then
+            # shellcheck disable=SC2086
+            supabase functions deploy $DEPLOY_ONLY --project-ref "$SUPABASE_PROJECT_REF"
+          else
+            supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF"
+          fi
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          DEPLOY_ONLY: ${{ github.event.inputs.only_functions }}
