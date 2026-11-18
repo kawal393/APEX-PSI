@@ -229,7 +229,7 @@ const Upgrade = () => {
                           <span className="ml-1 rounded bg-muted px-1.5 py-0.5 text-[10px] uppercase">{k.tier}</span>
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {k.daily_used} / {k.daily_limit === -1 ? "∞" : k.daily_limit} today
+                          {k.daily_limit === -1 ? "no daily cap set" : `${k.daily_used} / ${k.daily_limit} today`}
                         </div>
                       </div>
                       <Button size="sm" variant="ghost" onClick={() => revoke(k.id)}>Revoke</Button>

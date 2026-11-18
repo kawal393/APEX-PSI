@@ -233,7 +233,7 @@ const NotaryApiKeys = () => {
                         </div>
                       )}
                       {isUnlimited && (
-                        <span className="text-[10px] text-primary font-mono">∞ Unlimited</span>
+                        <span className="text-[10px] text-primary font-mono">No daily cap set</span>
                       )}
                     </div>
                     <Button

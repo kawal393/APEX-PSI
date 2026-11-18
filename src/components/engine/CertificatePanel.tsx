@@ -126,10 +126,10 @@ const CertificatePanel = ({ certificate }: CertificatePanelProps) => {
             ))}
           </div>
 
-          {/* 2-of-3 quorum check */}
+          {/* 2-of-3 node agreement: redundancy across three nodes run by one operator */}
           {certificate.mpcConsensus && (
             <div className="p-2 rounded bg-engine-bg border border-engine-border">
-              <span className="text-[10px] font-mono text-engine-muted block mb-1">2-OF-3 QUORUM CHECK (APEX-OPERATED NODES)</span>
+              <span className="text-[10px] font-mono text-engine-muted block mb-1">2-OF-3 NODE AGREEMENT — THREE NODES, ONE OPERATOR (REDUNDANCY, NOT MPC)</span>
               <div className="flex items-center gap-3 text-[11px] font-mono">
                 <span className="text-engine-approved">{certificate.mpcConsensus.nodesResponded}/3 nodes</span>
                 <span className="text-engine-muted">•</span>

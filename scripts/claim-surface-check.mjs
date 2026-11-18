@@ -86,7 +86,26 @@ const BANNED = [
   [/\bMPC consensus\b/i, "same reason"],
   [/\bdecentrali[sz]ed\b/i, "the ledger is operated by one company; anyone may verify, which is a different claim"],
   [/\bunbreakable\b/i, "an absolute the code does not enforce"],
+  // Measured 19 Nov 2026: three key panels drew the daily limit as `∞`, one of them labelled
+  // "∞ Unlimited". A key whose limit is 0 or -1 has no cap configured; that is not unlimited
+  // capacity on infrastructure we operate and meter. The glyph is banned outright because no
+  // sentence in this repository needs it, so this rule can never be argued away.
+  [/∞/, "an infinity glyph on a meter claims capacity the code does not grant; a key with no configured cap is 'no daily cap set'"],
+  [/>\s*Unlimited\s*</i, "the same absolute in the badge shape; the truthful label names what is actually true of the row"],
+  [/["'`](?:∞\s*)?Unlimited["'`]/, "the same absolute in a string literal, so it cannot arrive through a translated label"],
 ];
+
+// Item 4 of the header note: a quorum of our own nodes is redundancy on one operator. The
+// phrases above cannot catch a bare UI heading, so the disclosure is checked as an invariant:
+// any t-of-n quorum that speaks of nodes must say, in the same breath, who runs them.
+//
+// Both separators are matched ("2-of-3", "2/3", "3 of 5"), and each side is restricted to one
+// digit, so a measurement date like 2026-11-04 cannot read as a threshold.
+const TOFN = "\\b[1-9][\\s-]*(?:of|[-/])[\\s-]*[1-9]\\b";
+const QUORUM_CLAIM = new RegExp(`${TOFN}[\\s\\S]{0,80}?\\bquorum|\\bquorum\\b[\\s\\S]{0,80}?${TOFN}`, "gi");
+const NODE_WORD = /\bnodes?\b/i;
+const OPERATOR_DISCLOSURE =
+  /operated by|one operator|single operator|APEX-operated|redundan|not MPC|not multi-party|independent operator/i;
 
 // A banned phrase is permitted when the sentence around it withdraws it. Each entry is a
 // fragment that must appear within the 90 characters before the match.
@@ -148,6 +167,22 @@ function scan(text, exempt = []) {
       if (m.index === regex.lastIndex) regex.lastIndex++;
     }
   }
+  const quorum = new RegExp(QUORUM_CLAIM.source, "gi");
+  let q;
+  while ((q = quorum.exec(text)) !== null) {
+    const window = text.slice(Math.max(0, q.index - 160), q.index + q[0].length + 160);
+    // Only the machine quorum needs the disclosure: a 3-of-5 of credentialed humans is a
+    // quorum of independent people, and the words that would disclose a node operator are
+    // not in that sentence and should not be.
+    if (!NODE_WORD.test(window)) continue;
+    if (OPERATOR_DISCLOSURE.test(window)) continue;
+    const line = text.slice(0, q.index).split("\n").length;
+    problems.push(
+      `line ${line}: "${q[0].replace(/\s+/g, " ")}" — a t-of-n quorum of nodes is redundancy on one operator, ` +
+        `so the sentence must say who operates them (see the same undertaking on the Hardening and Protocol pages)`,
+    );
+    if (q.index === quorum.lastIndex) quorum.lastIndex++;
+  }
   return problems;
 }
 
@@ -165,6 +200,10 @@ if (selfTest) {
     ["our flight recorder for agents", "a flight recorder is wired to the sensors; ours is a function the caller chooses to call"],
     ["the record is tamper-proof", "a record is tamper-evident: whoever holds the signing key can rebuild a log"],
     ["verified by multi-party computation", "our three nodes are operated by one company — that is redundancy, not MPC"],
+    ["the key reads ∞ Unlimited", "an infinity glyph on a meter claims capacity the code does not grant"],
+    ['<span className="badge">Unlimited</span>', "the absolute in the badge shape"],
+    ['const tierLabel = "Unlimited";', "the absolute in a string literal"],
+    ["2-of-3 quorum across the verification nodes", "a t-of-n quorum of nodes must name its operator"],
   ];
   let failures = 0;
   for (const [text, why] of samples) {
@@ -181,6 +220,9 @@ if (selfTest) {
     "both are tamper-evident rather than tamper-proof",
     "PSI uses no ZK and no MPC",
     "this is not a black box; it is a receipt",
+    '<span className="text-[10px]">No daily cap set</span>',
+    "a 3-of-5 quorum of credentialed professionals signs the determination with Ed25519",
+    "2-of-3 quorum across the 3 nodes, all operated by APEX — redundancy, not consensus",
   ];
   for (const text of allowed) {
     const found = scan(text);

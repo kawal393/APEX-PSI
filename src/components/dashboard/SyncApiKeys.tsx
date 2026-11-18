@@ -170,7 +170,7 @@ const SyncApiKeys = () => {
                 </div>
                 <div className="text-xs text-muted-foreground flex flex-wrap gap-2 mt-1">
                   <code>{k.prefix}…</code>
-                  <span>{k.daily_used}/{k.daily_limit === -1 ? "∞" : k.daily_limit} today</span>
+                  <span>{k.daily_limit === -1 ? "no daily cap set" : `${k.daily_used}/${k.daily_limit} today`}</span>
                   <span>{k.scopes.join(", ")}</span>
                 </div>
               </div>
