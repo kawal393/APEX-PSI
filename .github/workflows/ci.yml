@@ -340,6 +340,12 @@ jobs:
       - run: npm run check:claims
       # A guard that cannot fail is not a guard: prove it bites on each shape it closes.
       - run: npm run check:claims:selftest
+      # The version-truth guard was passed by an adversary on 19 Nov 2026 with
+      # `npm i -g apex-psi-verifier@1.3.0`, because the install pattern expected the
+      # package name to follow the command directly. Its self-test drives every shape
+      # it must bite on — the global-install flag, the "v" prefix, the markdown
+      # emphasis — and reads no index, so it belongs on the blocking rail.
+      - run: npm run check:version-truth:selftest
 
   article-claims:
     continue-on-error: true

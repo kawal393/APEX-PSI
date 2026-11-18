@@ -26,6 +26,7 @@
     "check:drop-in": "node scripts/drop-in-check.mjs",
     "check:emit-conformance": "node --experimental-strip-types scripts/emit-conformance.mjs",
     "check:version-truth": "node scripts/version-truth-check.mjs",
+    "check:version-truth:selftest": "node scripts/version-truth-check.mjs --self-test",
     "check:article-claims": "node scripts/article-claims-check.mjs",
     "check:claims": "node scripts/claim-surface-check.mjs",
     "check:claims:selftest": "node scripts/claim-surface-check.mjs --self-test",
