@@ -11,7 +11,7 @@
 import { jcsCanonicalize } from "./psi-canonicalize";
 
 export const HELLO_PSI_SCHEMA_ID = "PSI-SEAL/1.0.0";
-export const HELLO_PSI_VERIFIER_VERSION = "1.2.0";
+export const HELLO_PSI_VERIFIER_VERSION = "1.7.0";
 
 /** Fixed vector timestamp — pinned so cross-language output is comparable. */
 export const HELLO_PSI_VECTOR_SEALED_AT = "2026-01-01T00:00:00.000Z";

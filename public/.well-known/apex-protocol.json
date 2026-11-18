@@ -112,10 +112,10 @@
   "verifier": {
     "npm": "apex-psi-verifier",
     "pypi": "psi-verifier",
-    "published_version": "1.6.0",
-    "source_version": "1.6.0",
-    "published_measured": "2026-11-15",
-    "note": "Verification is free and never asks for an account. 1.5.0 added R11.6 and R11.7; 1.6.0 adds R13.1 and R13.2, below. Pin away from 1.2.0 (no signature code at all), 1.3.0 (accepts a seal that only claims a post-quantum signature) and 1.5.0 (no consistency-proof check)."
+    "published_version": "1.7.0",
+    "source_version": "1.7.0",
+    "published_measured": "2026-11-19",
+    "note": "Verification is free and never asks for an account. 1.5.0 added R11.6 and R11.7; 1.6.0 adds R13.1 and R13.2; 1.7.0 carries both institutional ledger public keys, so a receipt issued before the signing seed became a secret of its own and one issued after it both verify against the same published trust anchor. All of that is below. Pin away from 1.2.0 (no signature code at all), 1.3.0 (accepts a seal that only claims a post-quantum signature) and 1.5.0 (no consistency-proof check)."
   },
   "post_quantum_claim": {
     "rule": "R11.7",

@@ -5,8 +5,8 @@ without asking the issuer. This is that check: one install, one function call,
 no account, no key, no network at verification time.
 
 **Measured 15 Nov 2026** against the public registries, not against a source
-tree: `npm i apex-psi-verifier` resolves 1.6.0, `pip install psi-verifier`
-resolves 1.6.0, and both verify a live hosted receipt issued minutes earlier.
+tree: `npm i apex-psi-verifier` resolves 1.7.0, `pip install psi-verifier`
+resolves 1.7.0, and both verify a live hosted receipt issued minutes earlier.
 
 **What it is not.** A seal is an audit trail. It says *this key signed this
 record at this time*. It does not say the content is true, and no verifier
@@ -216,6 +216,6 @@ a published test key, so anyone can re-derive the bytes.
 
 | Package | Version | Where |
 |---|---|---|
-| `apex-psi-verifier` | 1.6.0 | npm |
-| `psi-verifier` | 1.6.0 | PyPI |
+| `apex-psi-verifier` | 1.7.0 | npm |
+| `psi-verifier` | 1.7.0 | PyPI |
 | `apex-psi-mcp` | 1.1.2 | npm |

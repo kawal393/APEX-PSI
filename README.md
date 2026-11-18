@@ -41,18 +41,18 @@ curl -X POST https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize \
 Verify offline, forever, for free:
 
 ```bash
-pip install psi-verifier==1.6.0      # Python verifier (MIT, free forever)
-npm i apex-psi-verifier@1.6.0        # Node verifier (MIT, free forever)
+pip install psi-verifier==1.7.0      # Python verifier (MIT, free forever)
+npm i apex-psi-verifier@1.7.0        # Node verifier (MIT, free forever)
 ```
 
 **Read this before you install anything.** Both verifiers are published. `psi-verifier`
-**1.6.0** is on PyPI and `apex-psi-verifier` **1.6.0** is on npm, each built from this
+**1.7.0** is on PyPI and `apex-psi-verifier` **1.7.0** is on npm, each built from this
 repository by CI with no stored credential of any kind, and the npm release carries a
 provenance attestation that points back at that build. Both check signatures: a seal whose
 Ed25519 signature was not made by the key it names is **rejected**, not annotated.
 **1.2.0, 1.3.0 and 1.5.0 are still installable and each carries a defect** — a forged seal
 passes 1.2.0, 1.3.0 reports an unchecked post-quantum claim as verified, and 1.5.0 cannot
-verify an RFC 9162 consistency proof — so pin `@1.6.0` rather than trusting `latest`, and
+verify an RFC 9162 consistency proof — so pin `@1.7.0` rather than trusting `latest`, and
 treat any tool reporting `1.2.0`, `1.3.0` or `1.5.0` as unsafe. Pin the version you rely
 on; that is the whole discipline this standard is about.
 
@@ -145,8 +145,8 @@ Full registry: [/registry](https://ai-governance-standard.com/registry)
 ## Quick Start
 
 **What is actually on a registry, re-checked against the registries on 19 Nov 2026:**
-`psi-verifier` **1.6.0** is on PyPI (published 13 Nov 2026) and `apex-psi-verifier`
-**1.6.0** is on npm (published 13 Nov 2026) and is `latest` on both — both MIT, both
+`psi-verifier` **1.7.0** is on PyPI (published 19 Nov 2026) and `apex-psi-verifier`
+**1.7.0** is on npm (published 19 Nov 2026) and is `latest` on both — both MIT, both
 signature-checking, both built by CI from this repository with no stored credential of any
 kind, the npm release carrying a provenance attestation that points back at that build.
 Earlier releases are still installable and each one carries a defect; the version note

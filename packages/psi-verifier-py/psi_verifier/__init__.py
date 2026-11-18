@@ -21,6 +21,12 @@ v1.6.0 — CONSISTENCY RELEASE: R13.2 verifies an RFC 9162 consistency proof
 between two tree heads. Inclusion proves a receipt is in a tree; consistency
 proves the tree never forgot it, which is what a single operator could not
 fake.
+
+v1.7.0 — KEY-ROTATION RELEASE: the institutional ledger key now has a secret
+of its own, so a receipt signed under the new key must still verify against the
+same published trust anchor. This release exports both ledger public keys, so a
+stranger who reads the anchor can verify a receipt from before the rotation
+and one from after it with the same package.
 """
 
 from __future__ import annotations
@@ -32,7 +38,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
-__version__ = "1.6.0"
+__version__ = "1.7.0"
 PSI_VERIFIER_VERSION = __version__
 
 PSI_SCHEMA_ID = "PSI-SEAL/1.0.0"

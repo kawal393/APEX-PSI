@@ -9,9 +9,9 @@
  * published packages from the public indexes and runs a real document through
  * them:
  *
- *   lane npm   — npm:apex-psi-verifier@1.6.0   verifies the canonical fixture
+ *   lane npm   — npm:apex-psi-verifier@1.7.0   verifies the canonical fixture
  *                AND refuses a tampered copy of it.
- *   lane pypi  — pypi:psi-verifier[signature]==1.6.0 does the same in Python.
+ *   lane pypi  — pypi:psi-verifier[signature]==1.7.0 does the same in Python.
  *   lane mcp   — npm:apex-psi-mcp@1.2.0 seals and verifies over MCP stdio.
  *
  * The fixture is packages/psi-verifier/test/fixtures/psi-seal-envelope.json.
@@ -29,8 +29,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repo = resolve(here, "..");
 const FIXTURE = join(repo, "packages", "psi-verifier", "test", "fixtures", "psi-seal-envelope.json");
 
-const NPM_VERIFIER = process.env.APEX_NPM_VERIFIER_VERSION || "1.6.0";
-const PYPI_VERIFIER = process.env.APEX_PYPI_VERIFIER_VERSION || "1.6.0";
+const NPM_VERIFIER = process.env.APEX_NPM_VERIFIER_VERSION || "1.7.0";
+const PYPI_VERIFIER = process.env.APEX_PYPI_VERIFIER_VERSION || "1.7.0";
 const MCP_SERVER = process.env.APEX_MCP_VERSION || "apex-psi-mcp@1.2.0";
 
 const argv = process.argv.slice(2);

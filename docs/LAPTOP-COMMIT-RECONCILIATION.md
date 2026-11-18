@@ -11,7 +11,7 @@ published tree and given a disposition. Nothing was dropped silently.
 | `33d9170` | Moved the last two pages' tier labels from Builder/Scale to Pro/Ultra | **Superseded.** `origin/main` names Pro and Ultra, and the site's Corrections page records the rename and why. |
 | `ef9d62b` | Rebuilt the homepage as a four-chamber gateway portal; rewrote AdversarialReview to drop ZK-capability, first-mover and ASF/verdict claims | **Superseded.** The portal design is gone: the published homepage is the `what / why / explore / live` view switcher. The claim cuts were redone more strictly — `origin/main`'s AdversarialReview carries the ZK critique as a *withdrawal* ("PSI uses no ZK and no MPC"), not a claim. |
 | `5a9db8c` | One word: `overflow-x-hidden` → `overflow-x-clip` on the page wrapper, so the sticky nav bar stops scrolling away | **Carried forward, and it was needed.** See below. |
-| `c6bc0e7` | Verifier 1.3.0: R11 authenticity actually checked | **Superseded.** The verifier is 1.6.0 on both indexes; the 1.3.0 release that blessed a declared post-quantum signature is deprecated and labelled. |
+| `c6bc0e7` | Verifier 1.3.0: R11 authenticity actually checked | **Superseded.** The verifier is 1.7.0 on both indexes; the 1.3.0 release that blessed a declared post-quantum signature is deprecated and labelled. |
 | `411f57e` | Three surfaces re-measured against the shipped verifier; one repo contradicted another | **Superseded.** Re-measured on 12–16 Nov by the guards that now run in CI: `check:version-truth`, `check:verifier-truth`, `check:article-claims`, `check:sticky-nav`. |
 
 ## The one that was not superseded

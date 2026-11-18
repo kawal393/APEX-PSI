@@ -53,13 +53,13 @@
       "record": {
         "commit_hash": "1fb9170f50037e173ee97d1066b88d1ff9560953a29ab5913493283111b2f25a",
         "commit_id": "APEX-TEST-BINDING-0001",
-        "ed25519_signature": "fbd8e70466060bf7342c905428db73c9433671e3321668792316c6af24cd6b0521d45e79663bef7863bdf37e3b8725be7a5861c2d154247810e1230ab5926c05",
+        "ed25519_signature": "3bb670a4b3ec8543a6e5666ba325fb9585bb779f673a0c4fc38f7a05297a9b24881612339026b643e6964d27d25c0640bf38a9673427aa03401cdbd3e014cc0c",
         "merkle_leaf_hash": "5da4af78887f9bad8cebc2e62ae1213b14f7e38f45f075430787e61a65ece9ea"
       },
       "trust_roots": [
         {
           "key_id": "cross-language-key",
-          "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+          "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
         }
       ]
     },
@@ -105,7 +105,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -115,7 +115,7 @@
       "trust_roots": [
         {
           "key_id": "cross-language-key",
-          "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+          "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
         }
       ]
     },
@@ -133,7 +133,7 @@
           "alg": "Ed25519",
           "binds": "merkle_leaf",
           "seal_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -143,7 +143,7 @@
       "trust_roots": [
         {
           "key_id": "cross-language-key",
-          "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+          "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
         }
       ]
     },
@@ -161,7 +161,7 @@
           "alg": "Ed25519",
           "binds": "banana",
           "seal_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -171,7 +171,7 @@
       "trust_roots": [
         {
           "key_id": "cross-language-key",
-          "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+          "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
         }
       ]
     },
@@ -180,13 +180,13 @@
       "record": {
         "commit_hash": "1fb9170f50037e173ee97d1066b88d1ff9560953a29ab5913493283111b2f25a",
         "commit_id": "APEX-TEST-BINDING-0001",
-        "ed25519_signature": "fbd8e70466060bf7342c905428db73c9433671e3321668792316c6af24cd6b0521d45e79663bef7863bdf37e3b8725be7a5861c2d154247810e1230ab5926c05",
+        "ed25519_signature": "3bb670a4b3ec8543a6e5666ba325fb9585bb779f673a0c4fc38f7a05297a9b24881612339026b643e6964d27d25c0640bf38a9673427aa03401cdbd3e014cc0c",
         "merkle_leaf_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
       },
       "trust_roots": [
         {
           "key_id": "cross-language-key",
-          "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+          "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
         }
       ]
     },
@@ -210,7 +210,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+            "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
           }
         ]
       },
@@ -225,7 +225,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -239,7 +239,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+            "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
           }
         ]
       },
@@ -254,7 +254,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "39143f08c3ffae208c1de2a541c9e9947af8f526b0ec2ab343ffca37aef96ca6",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -268,7 +268,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+            "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
           }
         ]
       },
@@ -297,7 +297,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+            "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
           }
         ]
       },
@@ -326,7 +326,7 @@
         "trustRoots": [
           {
             "key_id": "cross-language-key",
-            "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6"
+            "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32"
           }
         ]
       },
@@ -341,7 +341,7 @@
         "signature": {
           "alg": "ES256",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -363,7 +363,7 @@
         "signature": {
           "alg": "Ed25519",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -566,7 +566,7 @@
           "pq_alg": "ML-DSA-65",
           "pq_value": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -590,7 +590,7 @@
           "pq_alg": "ML-DSA-65",
           "pq_value": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -614,7 +614,7 @@
           "pq_alg": "ML-DSA-65",
           "pq_value": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab",
           "seal_hash": "91ef099d6d68c5ab5ff932a950f534ca4b16c36ced9d56f011e7ec86dbc74c87",
-          "value": "68ae834bb181f7410cc1809c0eac8987fa159e06159e94a7fa9f800233535e1695c2113f1827071ffd32cc6d63260dd1ef121395ba360330e639e67e156b6202"
+          "value": "24a403f9cc5b533c283799158fc1b777b6a74fdb2410d0344c82763f98ca52846bdb890309450c9795830e99f4c6f8332e1da6d0aff4d2be21a1459b3806670e"
         },
         "subject": {
           "name": "revenue-ledger.csv",
@@ -647,6 +647,6 @@
       }
     }
   ],
-  "public_key": "078aacfb77e1422cbf126904b01920d29ba5669572c58e0e0f935039dba782f6",
+  "public_key": "43b6a754782b262707acedc2b5996361510836b3a5655a21fb661f6120f3af32",
   "published_schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9"
 }
