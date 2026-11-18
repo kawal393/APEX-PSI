@@ -22,7 +22,21 @@ deploy rights live here, in the Lovable/Supabase workspace, so the last step is 
 
 ## What to do
 
-1. Pull the latest `main` from GitHub so the three files above exist in this workspace.
+1. Get the four files into this workspace. Try the GitHub sync first; if the platform blocks
+   `git pull` — it does, with `git pull is not allowed`, because Lovable owns the workspace state —
+   fetch them straight off the `main` branch instead. These are the exact bytes, and each one is
+   public:
+
+   | write to | fetch from |
+   |---|---|
+   | `supabase/functions/apex-psi-mcp/index.ts` | `https://raw.githubusercontent.com/kawal393/APEX-PSI/main/supabase/functions/apex-psi-mcp/index.ts` |
+   | `supabase/functions/apex-psi-mcp/handler.ts` | `https://raw.githubusercontent.com/kawal393/APEX-PSI/main/supabase/functions/apex-psi-mcp/handler.ts` |
+   | `supabase/functions/apex-psi-mcp/tools.ts` | `https://raw.githubusercontent.com/kawal393/APEX-PSI/main/supabase/functions/apex-psi-mcp/tools.ts` |
+   | `supabase/config.toml` (the `[functions.apex-psi-mcp]` section) | `https://raw.githubusercontent.com/kawal393/APEX-PSI/main/supabase/config.toml` |
+
+   Sizes as served on 19 Nov: 2,023 / 8,291 / 17,287 bytes. If a fetch comes back a different
+   length, stop and say so rather than writing a partial file.
+
 2. Deploy the folder as an edge function, with JWT verification off — `supabase/config.toml`
    already carries `[functions.apex-psi-mcp] verify_jwt = false`, so a normal deploy honours it.
    If deploying through the dashboard instead, set "Verify JWT" off for this one function.
@@ -32,6 +46,16 @@ deploy rights live here, in the Lovable/Supabase workspace, so the last step is 
 3. Do not edit the three files. The tool table is checked against the npm package by
    `scripts/hosted-mcp-check.mjs` (36 assertions, run in CI); a "helpful" rewrite of a description
    or an argument name turns the build red and makes the two surfaces disagree in public.
+
+## Which workspace this belongs to
+
+This brief lives in `kawal393/APEX-PSI`, whose edge functions run on project
+`qhtntebpcribjiwrdtdd` — the APEX PSI / ai-governance-standard.com site. The sibling repository
+`kawal393/apex-signal-sovereign` (the commerce site, project `bckoxhxwnuvyfgjmyrqa`) has its own
+Lovable workspace and its own ledger; running this brief there either does nothing or, if it
+succeeds, puts a door in front of the wrong ledger. Check the connected repository before you
+start: it must read `kawal393/APEX-PSI`.
+
 
 ## What must not change
 
