@@ -28,7 +28,7 @@
  * Needs node >= 22 and python 3 on PATH. No credentials, no network writes — both
  * installs are read-only pulls.
  */
-import { mkdir, writeFile, readFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -47,19 +47,27 @@ const sha256hex = async (s) =>
   hex(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s))));
 
 async function installTargets() {
-  if (!offline) {
-    // --prefix / --target keep everything inside a directory nothing imports from.
-    for (const [dir, spec] of [["node-latest", `${NODE_PKG}@latest`], ["node-unsafe", `${NODE_PKG}@${UNSAFE_NODE_VERSION}`], ["node-defect", `${NODE_PKG}@${DEFECT_NODE_VERSION}`]]) {
-      await mkdir(path.join(root, dir), { recursive: true });
-      await run("npm", ["install", "--no-save", "--no-package-lock", "--ignore-scripts", spec, "--prefix", path.join(root, dir)],
-        { shell: true, maxBuffer: 1 << 24 });
-      console.log(`installed ${spec} -> ${dir}`);
-    }
-    await mkdir(path.join(root, "py-latest"), { recursive: true });
-    await run("python", ["-m", "pip", "install", "--quiet", "--target", path.join(root, "py-latest"), PY_PKG],
+  if (offline) return;
+  // --prefix / --target keep everything inside a directory nothing imports from.
+  //
+  // Every target is emptied first, because a stranger's directory is empty. Measuring
+  // into a directory that still holds yesterday's release is a lie with a version
+  // number on it: `pip install --target` will not replace a distribution that already
+  // sits in the target, so on 19 Nov 2026 this guard printed "PyPI latest = 1.6.0" for
+  // hours while the index was serving 1.7.0 and a clean install pulled 1.7.0 in one
+  // line. A guard that reports the cache of the machine it runs on guards nothing.
+  for (const [dir, spec] of [["node-latest", `${NODE_PKG}@latest`], ["node-unsafe", `${NODE_PKG}@${UNSAFE_NODE_VERSION}`], ["node-defect", `${NODE_PKG}@${DEFECT_NODE_VERSION}`]]) {
+    await rm(path.join(root, dir), { recursive: true, force: true });
+    await mkdir(path.join(root, dir), { recursive: true });
+    await run("npm", ["install", "--no-save", "--no-package-lock", "--ignore-scripts", spec, "--prefix", path.join(root, dir)],
       { shell: true, maxBuffer: 1 << 24 });
-    console.log(`installed ${PY_PKG} -> py-latest`);
+    console.log(`installed ${spec} -> ${dir}`);
   }
+  await rm(path.join(root, "py-latest"), { recursive: true, force: true });
+  await mkdir(path.join(root, "py-latest"), { recursive: true });
+  await run("python", ["-m", "pip", "install", "--quiet", "--target", path.join(root, "py-latest"), PY_PKG],
+    { shell: true, maxBuffer: 1 << 24 });
+  console.log(`installed ${PY_PKG} -> py-latest`);
 }
 
 const load = async (dir) =>
