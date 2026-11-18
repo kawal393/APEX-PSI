@@ -683,7 +683,9 @@ GET /verify-status?action=stats
     "mode": "SHIELD",
     "last_verified": "2026-03-15T..."
   },
-  "articles": [...],
+  // "articles" (per-article history) is returned only to the
+  // organisation's own signed-in account; others get "articles_notice".
+  "articles_visibility": "restricted",
   "cryptographic_assurance": {
     "hash_algorithm": "SHA-256",
     "signature_scheme": "Ed25519",

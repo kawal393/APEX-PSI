@@ -6,7 +6,7 @@
 // GET /verify-status?action=stats   — Registry statistics
 // ═══════════════════════════════════════════════════════════════════════
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { adminClient, resolveCaller } from "../_shared/caller.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,9 +26,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = adminClient();
 
     const url = new URL(req.url);
     const action = url.searchParams.get("action");
@@ -46,10 +44,28 @@ Deno.serve(async (req) => {
         return json({ verified: false, found: false, message: "Entity not found in APEX PSI Registry", entity_id: entityId }, 404);
       }
 
-      const { data: proofs } = await supabase
-        .from("verification_history")
-        .select("article_number, article_title, status, merkle_proof_hash, verified_at")
-        .eq("compliance_result_id", entityId);
+      // The public summary above is the published registry entry. The
+      // per-article history is private to the organisation that filed it:
+      // only its own signed-in account (or an admin) receives it.
+      const caller = await resolveCaller(req, supabase);
+      let canSeeArticles = caller.service || caller.isAdmin;
+      if (!canSeeArticles && caller.userId) {
+        const { data: owner } = await supabase
+          .from("compliance_results")
+          .select("user_id")
+          .eq("id", entityId)
+          .maybeSingle();
+        canSeeArticles = !!owner && owner.user_id === caller.userId;
+      }
+
+      let proofs: Record<string, unknown>[] | null = null;
+      if (canSeeArticles) {
+        const { data } = await supabase
+          .from("verification_history")
+          .select("article_number, article_title, status, merkle_proof_hash, verified_at")
+          .eq("compliance_result_id", entityId);
+        proofs = data;
+      }
 
       return json({
         verified: false,
@@ -66,7 +82,10 @@ Deno.serve(async (req) => {
           mode: comp.trio_mode,
           last_updated: comp.updated_at,
         },
-        articles: (proofs || []).map((p) => ({ ...p, basis: "self_reported" })),
+        articles_visibility: canSeeArticles ? "owner" : "restricted",
+        ...(canSeeArticles
+          ? { articles: (proofs || []).map((p) => ({ ...p, basis: "self_reported" })) }
+          : { articles_notice: "Per-article history is shared only with the organisation's own signed-in account." }),
         cryptographic_assurance: {
           hash_algorithm: "SHA-256",
           signature_scheme: "Ed25519",
