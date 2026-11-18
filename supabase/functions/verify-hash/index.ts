@@ -2,7 +2,7 @@
 // APEX ENGINE — Public Hash Verification API
 // POST /verify-hash { hash: "..." }
 // GET /verify-hash?hash=...
-// Returns verification status against the immutable ledger
+// Returns verification status against the append-only ledger
 // ═══════════════════════════════════════════════════════════════════════
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -154,7 +154,7 @@ Deno.serve(async (req) => {
         JSON.stringify({
           verified: false,
           found: false,
-          message: "Hash not found in the APEX PSI immutable ledger",
+          message: "Hash not found in the APEX PSI append-only ledger",
           queried_hash: hash,
           queried_at: new Date().toISOString(),
           engine: "APEX PSI v2.0",

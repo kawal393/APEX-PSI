@@ -18,7 +18,7 @@ const TOPICS = [
   // Head terms — the phrases we intend to own
   "What is AI governance? A technical definition for 2026",
   "AI governance standards compared: EU AI Act, NIST AI RMF, ISO 42001",
-  "Cryptographic truth: proving what an AI system actually did",
+  "Cryptographic evidence: what an AI record can and cannot prove",
   "Verifiable AI governance: from policy documents to cryptographic evidence",
   "AI governance framework checklist for regulated enterprises",
   "AI transparency requirements: what regulators actually ask for",

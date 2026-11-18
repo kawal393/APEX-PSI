@@ -136,7 +136,7 @@ Deno.serve(async (req) => {
     const timestamp = new Date().toISOString();
     const commitId = await generateCommitId();
 
-    // SERVER-SIDE HASH COMPUTATION (tamper-proof)
+    // SERVER-SIDE HASH COMPUTATION (computed here, so the caller cannot shape it)
     const commitHash = await hashSHA256(`${action}|${predicate_id}|${timestamp}`);
     const merkleLeafHash = await hashSHA256(`${commitId}|${commitHash}`);
 

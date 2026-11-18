@@ -40,8 +40,19 @@ const root = join(here, "..");
 // already been corrected, and nothing caught it. A page Lovable's editor writes tomorrow would
 // have sailed past the same hole. So the surfaces are collected by pattern now, and a new file
 // is covered the moment it lands.
-const SURFACE_DIRS = ["src/pages", "src/components"];
+//
+// Measured 19 Nov 2026: the collection above was still only half the estate, because
+// readdirSync does not descend. It read 196 of the 312 files under src/pages and
+// src/components — every subfolder (engine, dashboard, notary, eu, protocol…) was skipped as a
+// directory name that does not end in .tsx — and it never looked at the server at all, while
+// supabase/functions is the half that answers a stranger's API call. Sweeping the functions for
+// the first time found 5 withdrawn absolutes still live in shipped code, one of them in the
+// body of a verify-hash answer. So the walk is recursive and the server is a surface.
+const SURFACE_DIRS = ["src/pages", "src/components", "supabase/functions"];
 const SURFACE_EXT = /\.tsx?$/;
+// A test file quotes the words it refuses; it is not a claim we publish.
+const TEST_FILE = /\.test\.tsx?$/;
+const SKIP_DIR = new Set(["node_modules", ".git", "dist"]);
 const SURFACE_FILES = [
   "public/llms.txt",
   "public/llms-full.txt",
@@ -53,17 +64,23 @@ const SURFACE_FILES = [
 
 function collectSurfaces() {
   const found = [...SURFACE_FILES];
-  for (const dir of SURFACE_DIRS) {
-    let entries = [];
+  const walk = (dir) => {
+    let entries;
     try {
-      entries = readdirSync(join(root, dir));
+      entries = readdirSync(join(root, dir), { withFileTypes: true });
     } catch {
-      continue;
+      return;
     }
-    for (const name of entries) {
-      if (SURFACE_EXT.test(name)) found.push(`${dir}/${name}`);
+    for (const entry of entries) {
+      const rel = `${dir}/${entry.name}`;
+      if (entry.isDirectory()) {
+        if (!SKIP_DIR.has(entry.name)) walk(rel);
+      } else if (SURFACE_EXT.test(entry.name) && !TEST_FILE.test(entry.name)) {
+        found.push(rel);
+      }
     }
-  }
+  };
+  for (const dir of SURFACE_DIRS) walk(dir);
   return found.sort();
 }
 
@@ -109,6 +126,13 @@ const OPERATOR_DISCLOSURE =
 
 // A banned phrase is permitted when the sentence around it withdraws it. Each entry is a
 // fragment that must appear within the 90 characters before the match.
+//
+// The window is deliberately blunt, and it has a known cost measured the same day the server
+// sweep went in: the response text "Hash not found in the APEX PSI immutable ledger" was let
+// through because "not found" sat inside the window. A withdrawal is still a withdrawal in
+// prose that argues with itself, so the rule stays; the answer is to write the claim without
+// the absolute, not to lean on the exemption. Fixing that string was done by hand in the same
+// commit that made the sweep recursive.
 const EXEMPT = [
   "rather than",
   "not ",

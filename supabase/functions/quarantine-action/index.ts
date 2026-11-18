@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════
-// APEX PSI — Decentralized Quarantine (t-of-n across the lattice)
+// APEX PSI — Redundant Quarantine (t-of-n across the three Apex-operated lattice nodes)
 //
 // POST /quarantine-action
 //   { model_id, action: "QUARANTINE"|"CLEAR", reason, node_signatures: [{node, sig}] }
