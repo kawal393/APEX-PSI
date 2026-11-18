@@ -384,7 +384,7 @@ jobs:
     # a human decision: run this workflow from the Actions tab (or protect the
     # `production` environment with required reviewers in repo settings).
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor, ietf-draft]
+    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor, ietf-draft, hosted-mcp]
     runs-on: ubuntu-latest
     environment: production
     steps:
