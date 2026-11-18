@@ -1,6 +1,6 @@
 {
   "schema": "PSI-SEAL/1.0.0",
-  "verifier": "1.6.0",
+  "verifier": "1.7.0",
   "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
   "sealed_at": "2026-01-01T00:00:00.000Z",
   "field_order": [

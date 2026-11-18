@@ -17,14 +17,14 @@
       "license": "MIT",
       "package": "apex-psi-verifier",
       "terms": "Free forever, for everyone, no permission required.",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "packages": [
         "apex-psi-verifier (npm)",
         "psi-verifier (PyPI)"
       ],
       "enforcement": "Enforced by default: a non-conformant seal is rejected, not merely reported, and since v1.3.0 a seal whose signature is not verified against a key the caller trusts is rejected too — a formatting check is not a verification. Legacy overrides: enforce=false (report only), requireValidSignature=false (schema-only verdict, the pre-1.3.0 behaviour).",
       "digest_parity": "TypeScript and Python distributions compute an identical schema digest.",
-      "text_parity": "Both distributions emit byte-identical verdict text with readable rule citations, stamped with the release that produced it (e.g. PSI-SEAL v1.6.0 REJECT: schema_digest mismatch — rule 4.2)."
+      "text_parity": "Both distributions emit byte-identical verdict text with readable rule citations, stamped with the release that produced it (e.g. PSI-SEAL v1.7.0 REJECT: schema_digest mismatch — rule 4.2)."
     },
     "generator": {
       "license": "APEX PSI Sealing Engine Licence v1",
