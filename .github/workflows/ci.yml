@@ -419,14 +419,42 @@ jobs:
           done
         env:
           DEPLOY_ONLY: ${{ github.event.inputs.only_functions }}
-      - name: Ask Supabase whether the stored key is still alive
+      - name: Ask Supabase whether the stored key can see this project
         run: |
+          ref=$(node -e 'const t=require("fs").readFileSync("supabase/config.toml","utf8");
+            const m=t.match(/^project_id[^\S\n]*=[^\S\n]*"([^"]+)"/m); if(m) console.log(m[1]);')
+          echo "project ref: ${ref:-none}"
           code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" https://api.supabase.com/v1/projects)
-          echo "api.supabase.com answered HTTP $code for the stored token"
+          echo "GET /v1/projects -> HTTP $code"
           if [ "$code" != "200" ]; then
-            echo "::error::SUPABASE_ACCESS_TOKEN is refused (HTTP $code), so the deploy would die at 'supabase link' after approval. Supabase personal access tokens expire (the dashboard mints 7-day ones by default): mint one at https://supabase.com/dashboard/account/tokens and replace the Actions secret named exactly SUPABASE_ACCESS_TOKEN — a secret under any other name is not read by this job."
+            echo "::error::SUPABASE_ACCESS_TOKEN is refused (HTTP $code), so the deploy would die at 'supabase link' after approval. Supabase personal access tokens expire (the dashboard mints 7-day ones by default). Mint one at https://supabase.com/dashboard/account/tokens and replace the Actions secret named exactly SUPABASE_ACCESS_TOKEN — a secret under any other name is not read by this job."
             exit 1
           fi
+          echo "--- the projects this account can see (ids and names only, no secrets):"
+          curl -s -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" https://api.supabase.com/v1/projects \
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{const a=JSON.parse(s);const list=Array.isArray(a)?a:[a];console.log("  count:",list.length);for(const p of list)console.log("   ",p.id,"|",p.name,"| org:",p.organization_id,"| region:",p.region);}catch(e){console.log("  unparsed reply:",String(s).slice(0,200));}})'
+          pcode=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" "https://api.supabase.com/v1/projects/$ref")
+          echo "GET /v1/projects/$ref -> HTTP $pcode"
+          fcode=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" "https://api.supabase.com/v1/projects/$ref/functions")
+          echo "GET /v1/projects/$ref/functions -> HTTP $fcode"
+          if [ "$pcode" != "200" ]; then
+            echo "::error::this key authenticates but cannot read project $ref (HTTP $pcode): the account that owns the key is not a member of the organization that holds the project, or holds a role without read access. Mint the token from the account that owns the project (the dashboard shows the owner under the project's Organization -> Members), or invite this account to that organization, then replace the secret named exactly SUPABASE_ACCESS_TOKEN."
+            exit 1
+          fi
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      - name: Ask the Supabase CLI what it thinks it can do
+        # `supabase link` is where the 18 Nov run died, after Master had already clicked.
+        # The link is a convenience: the deploy command below carries --project-ref itself.
+        # So this runs the same two commands in the open and prints what they say.
+        run: |
+          ref=$(node -e 'const t=require("fs").readFileSync("supabase/config.toml","utf8");
+            const m=t.match(/^project_id[^\S\n]*=[^\S\n]*"([^"]+)"/m); if(m) console.log(m[1]);')
+          supabase --version
+          echo "--- supabase link --project-ref $ref"
+          supabase link --project-ref "$ref" 2>&1 | tail -20 || true
+          echo "--- supabase functions deploy --help (flags this CLI knows)"
+          supabase functions deploy --help 2>&1 | tail -25 || true
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
@@ -482,7 +510,15 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_ID: ${{ vars.SUPABASE_PROJECT_ID }}
-      - run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
+      - name: Link to the project (advisory, not a veto)
+        # The deploy command below carries --project-ref itself, so a link that cannot
+        # read the organisation's project status does not have to stop the ship. On
+        # 18 Nov this step died with "your account does not have the necessary
+        # privileges" and the deploy never got the chance to speak for itself.
+        continue-on-error: true
+        run: |
+          supabase link --project-ref "$SUPABASE_PROJECT_REF" 2>&1 | tail -20
+          exit 0
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       - name: Apply migrations (needs the database password, which we deliberately do not hold)
