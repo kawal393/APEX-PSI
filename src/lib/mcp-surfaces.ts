@@ -5,6 +5,9 @@
 //
 //   local  — npm package `apex-psi-mcp`. stdio, runs on the user's machine, no account,
 //            no key. Five tools: seal, verify, anchor, cite, verify_chain.
+//            `seal` and `anchor` can write — the package declares readOnlyHint false on
+//            both, and anchor writes only when action 'anchor' is named. The rest are
+//            read-only.
 //   hosted — the connector the Lovable/Supabase edge runs from src/lib/mcp, at
 //            https://<project>.supabase.co/functions/v1/mcp. streamable-http, OAuth-protected:
 //            an anonymous caller gets HTTP 401 with
@@ -40,6 +43,7 @@ export const LOCAL_TOOLS: McpTool[] = [
   {
     name: "anchor",
     desc: "Read the Bitcoin (OpenTimestamps) anchoring history for the ledger's Merkle roots — transaction id, block height, confirmations, how many entries each anchor covers. Defaults to read-only; a batch write only happens if you name it.",
+    write: true,
   },
   {
     name: "cite",
