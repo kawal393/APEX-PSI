@@ -94,6 +94,20 @@ jobs:
           node-version: 22
       - run: npm run check:x402
 
+  # The hosted door is the surface that asks for no account, so its answers are
+  # the contract an agent reads. This job drives the shipped function's own
+  # modules under plain Node and fails if the stateless transport, the five tool
+  # names, the notary's refusal codes, or a chain verdict drift from what the
+  # npm server does. It reaches no network and mints nothing.
+  hosted-mcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run check:hosted-mcp
+
   # Two AI builders shipped a "1.3.0 signature fix" to this repository on
   # 17 Oct 2026 within hours of each other, with different rule numbers and
   # different verdict shapes. This job is what stops that happening again: the

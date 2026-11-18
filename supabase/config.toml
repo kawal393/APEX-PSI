@@ -157,3 +157,9 @@ verify_jwt = false
 
 [functions.trust-anchor]
 verify_jwt = false
+
+# The hosted door is the surface that asks for nothing. With the gateway's JWT
+# check on, Supabase answers 401 before this function's code runs, and the door
+# we advertise to agents would be locked by the platform rather than by us.
+[functions.apex-psi-mcp]
+verify_jwt = false
