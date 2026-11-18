@@ -144,13 +144,15 @@ Full registry: [/registry](https://ai-governance-standard.com/registry)
 
 ## Quick Start
 
-**What is actually on a registry, re-checked against the registry on 19 Oct 2026:**
-`psi-verifier` **1.3.0** is published on PyPI, and `apex-psi-verifier` **1.3.0** is
-published on npm and is now `latest` there — both signature-checking, both built by CI
-from this repository with no API token involved, the npm one carrying a provenance
-attestation. `apex-psi-verifier` **1.2.0** remains installable if you pin it, and 1.2.0 is
-the version that passes forged seals, so pin **1.3.0**. Every `@apex/*` name still returns
-404 on npm; those are source-only in `packages/` and are installed from a local path:
+**What is actually on a registry, re-checked against the registries on 19 Nov 2026:**
+`psi-verifier` **1.6.0** is on PyPI (published 13 Nov 2026) and `apex-psi-verifier`
+**1.6.0** is on npm (published 13 Nov 2026) and is `latest` on both — both MIT, both
+signature-checking, both built by CI from this repository with no stored credential of any
+kind, the npm release carrying a provenance attestation that points back at that build.
+Earlier releases are still installable and each one carries a defect; the version note
+above names which. The SDK itself is not published to npm — `@apex/psi-sdk` returns 404 —
+so it is installed from a local path in this repository, and the Python SDK (`apex-psi`)
+is likewise not on PyPI:
 
 ```bash
 git clone https://github.com/kawal393/APEX-PSI.git

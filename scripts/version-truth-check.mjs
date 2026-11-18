@@ -161,10 +161,29 @@ const INSTALL_PATTERNS = [
   ['pip install command', new RegExp(`pip3?\\s+install[^\\n]*?${PY_PKG}==(\\d+\\.\\d+\\.\\d+)`, 'g')],
 ];
 
+// A version wrapped in markdown emphasis is still a version a stranger reads. Before
+// 19 Nov 2026 the README told a reader to "pin **1.3.0**" and this guard passed it:
+// the pin pattern could not see a version sitting between two asterisks. Emphasis is
+// unwrapped before scanning so `**1.3.0**`, `*1.3.0*`, `_1.3.0_` and `` `1.3.0` `` are
+// judged as the bare version they are.
+function unwrapEmphasis(text) {
+  return text
+    .replace(/\*\*(\d+\.\d+\.\d+)\*\*/g, '$1')
+    .replace(/\*(\d+\.\d+\.\d+)\*/g, '$1')
+    .replace(/_(\d+\.\d+\.\d+)_/g, '$1')
+    .replace(/`(\d+\.\d+\.\d+)`/g, '$1');
+}
+
 // Rule 2 — pin instructions. The sentence that tells you which release to take.
 const PIN_PATTERNS = [
   ['pin sentence', /[Pp]in\s+[`'"]?@?(\d+\.\d+\.\d+)/g],
   ['published at', /published at \*?\*?(\d+\.\d+\.\d+)/gi],
+  // A sentence that says a release IS the published one is an install instruction in
+  // prose. "`psi-verifier` 1.3.0 is published on PyPI" names 1.3.0 as the release to
+  // take, whether or not a stranger copies a code block.
+  ['published on', /(\d+\.\d+\.\d+)\s+is published on (?:PyPI|npm)/gi],
+  ['is on a registry', /(\d+\.\d+\.\d+)\s+is on (?:PyPI|npm)\b/gi],
+  ['is latest', /(\d+\.\d+\.\d+)[^.\n]{0,120}?is (?:now\s+)?[`'"]?latest/gi],
   ['published_version', /"published_version"\s*:\s*"(\d+\.\d+\.\d+)"/g],
   ['verifier title', /Verifier v(\d+\.\d+\.\d+)/g],
   ['version statement', /\bversion \*?\*?(\d+\.\d+\.\d+) on both/gi],
@@ -177,6 +196,11 @@ const PIN_PATTERNS = [
 const BARE_PATTERNS = [
   ['npm package reference', new RegExp(`${NPM_PKG}@(\\d+\\.\\d+\\.\\d+)`, 'g')],
   ['pypi package reference', new RegExp(`${PY_PKG}==(\\d+\\.\\d+\\.\\d+)`, 'g')],
+  // A package name followed by a version in prose — "`psi-verifier` 1.3.0" — is a bare
+  // reference to a release. It is the form the README used to name a deprecated release
+  // as the current one.
+  ['npm package and version', new RegExp(`${NPM_PKG}[\`'\\"\\s*_@=]{0,4}(\\d+\\.\\d+\\.\\d+)`, 'g')],
+  ['pypi package and version', new RegExp(`${PY_PKG}[\`'\\"\\s*_@=]{0,4}(\\d+\\.\\d+\\.\\d+)`, 'g')],
 ];
 
 // Rule 4 — the warning forms. The window is cut at the first sentence break, so a
@@ -230,7 +254,7 @@ for (const file of files) {
   const raw = readIfPresent(file);
   if (raw === null) continue;
   scanned++;
-  const text = maskForeign(raw);
+  const text = unwrapEmphasis(maskForeign(raw));
 
   // Install commands are located first so a bare reference inside one is not counted
   // twice — the command is judged by rule 1, which is stricter.
