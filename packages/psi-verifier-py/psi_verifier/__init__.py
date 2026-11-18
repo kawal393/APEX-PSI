@@ -1082,6 +1082,15 @@ def format_acceptance(signature_status: str = "verified", key_id: Optional[str] 
 # grades its own maker's homework.
 PSI_PUBLIC_KEY_HEX = "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724"
 
+# Every institutional ledger key a receipt may be signed under, oldest first.
+# The first signed every receipt issued before the signing seed became a secret
+# of its own; the second signs from that day. Neither is trusted by default —
+# hand these to the verifier yourself.
+PSI_PUBLIC_KEY_HEXES = (
+    PSI_PUBLIC_KEY_HEX,
+    "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46",
+)
+
 # ── Ed25519 verification, RFC 8032 (pure Python, zero dependencies) ──
 _P = 2**255 - 19
 _L = 2**252 + 27742317777372353535851937790883648493
@@ -1360,6 +1369,7 @@ __all__ = [
     "psi_verify_signature",
     "verify_ed25519",
     "PSI_PUBLIC_KEY_HEX",
+    "PSI_PUBLIC_KEY_HEXES",
     "verify",
     "verify_seal",
     "__version__",

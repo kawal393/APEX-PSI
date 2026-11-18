@@ -24,7 +24,13 @@ import { psiVerifyBinding, PSI_VERIFIER_VERSION } from "apex-psi-verifier";
 
 // The published APEX PSI trust anchor. Fetch it once and pin it:
 // https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json
-const ANCHOR_KEY = "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724";
+// Both institutional keys are listed: the one that signed every receipt issued
+// before the signing seed became a secret of its own, and the one that signs
+// from that day.
+const ANCHOR_KEYS = [
+  { public_key: "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724", key_id: "apex-psi-2026" },
+  { public_key: "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46", key_id: "apex-psi-2026-11" },
+];
 
 const sha = (s) => createHash("sha256").update(s).digest("hex");
 
@@ -53,7 +59,7 @@ const record = {
   },
 };
 
-const verdict = await psiVerifyBinding(record, [{ public_key: ANCHOR_KEY, key_id: "apex-psi-2026" }]);
+const verdict = await psiVerifyBinding(record, ANCHOR_KEYS);
 
 if (verdict.status === "verified") {
   console.log(`VERIFIED  receipt ${receipt.receipt_id}  (verifier ${PSI_VERIFIER_VERSION})`);

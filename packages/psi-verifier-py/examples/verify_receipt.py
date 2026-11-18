@@ -25,7 +25,13 @@ from psi_verifier import psi_verify_binding, __version__
 
 # The published APEX PSI trust anchor. Fetch it once and pin it:
 # https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json
-ANCHOR_KEY = "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724"
+# Both institutional keys are listed: the one that signed every receipt issued
+# before the signing seed became a secret of its own, and the one that signs
+# from that day.
+ANCHOR_KEYS = [
+    {"public_key": "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724", "key_id": "apex-psi-2026"},
+    {"public_key": "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46", "key_id": "apex-psi-2026-11"},
+]
 
 
 def sha256_hex(text: str) -> str:
@@ -56,7 +62,7 @@ def main() -> int:
         },
     }
 
-    verdict = psi_verify_binding(record, [{"public_key": ANCHOR_KEY, "key_id": "apex-psi-2026"}])
+    verdict = psi_verify_binding(record, ANCHOR_KEYS)
 
     if verdict["status"] == "verified":
         print(f"VERIFIED  receipt {receipt['receipt_id']}  (verifier {__version__})")

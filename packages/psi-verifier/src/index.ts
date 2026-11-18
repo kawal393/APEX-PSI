@@ -123,6 +123,17 @@ export interface ConformanceResult {
  */
 export const PSI_PUBLIC_KEY_HEX = "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724";
 
+/**
+ * Every institutional ledger key a receipt may be signed under, oldest first.
+ * The first signed every receipt issued before the signing seed became a
+ * secret of its own; the second signs from that day. Neither is trusted by
+ * default — hand these to the verifier yourself.
+ */
+export const PSI_PUBLIC_KEY_HEXES: readonly string[] = [
+  PSI_PUBLIC_KEY_HEX,
+  "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46",
+];
+
 const hexBytes = (h: string): Uint8Array | null => {
   if (!/^([0-9a-f]{2})*$/i.test(h)) return null;
   const o = new Uint8Array(new ArrayBuffer(h.length / 2));

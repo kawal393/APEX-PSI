@@ -12,6 +12,37 @@ import * as ed from "@noble/ed25519";
 export const PSI_PUBLIC_KEY = "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724";
 
 /**
+ * Every ledger key a receipt may be signed under.
+ *
+ * The first is the pre-rotation key: the signing seed it derives from used to
+ * fall back to the database credential, so it stays listed so every receipt
+ * already issued still verifies. The second derives from the dedicated
+ * APEX_PSI_ED25519_SEED secret and becomes the signing key the moment that
+ * secret is set in the signing project.
+ */
+export const PSI_PUBLIC_KEYS: readonly string[] = [
+  PSI_PUBLIC_KEY,
+  "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46",
+];
+
+/**
+ * The pinned key whose signature covers `message`, or null when none does.
+ * A bundle declares the key that actually signed it instead of the key the
+ * site happens to consider current, so a receipt signed under either key
+ * exports a bundle that verifies.
+ */
+export async function findSigningKey(
+  message: string,
+  signatureHex: string,
+  candidates: readonly string[] = PSI_PUBLIC_KEYS,
+): Promise<string | null> {
+  for (const key of candidates) {
+    if (await verifyEd25519Signature(message, signatureHex, key)) return key;
+  }
+  return null;
+}
+
+/**
  * Verify an Ed25519 signature against a message and the PSI public key.
  * Used by the /verify page for local, in-browser proof verification.
  */

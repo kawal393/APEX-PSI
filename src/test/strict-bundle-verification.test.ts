@@ -106,8 +106,11 @@ describe("proof bundle verification is fail-closed", () => {
     expect((await verifyProofBundle("{not json")).valid).toBe(false);
   });
 
-  it("pins only the APEX ledger key by default", () => {
-    expect(PINNED_LEDGER_KEYS).toEqual(["59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724"]);
+  it("pins only APEX ledger keys by default", () => {
+    expect(PINNED_LEDGER_KEYS).toEqual([
+      "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724",
+      "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46",
+    ]);
   });
 });
 

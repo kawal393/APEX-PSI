@@ -16,7 +16,7 @@
   "spec_url": "https://ai-governance-standard.com/inband",
   "verify_url": "https://ai-governance-standard.com/verify",
   "trust_anchor_url": "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json",
-  "note": "Public half of the APEX PSI signing identity. A valid signature proves that the named key signed the receipt; it does not establish the truth or legal compliance of the underlying content.",
+  "note": "Public half of the APEX PSI signing identity. A valid signature proves that the named key signed the receipt; it does not establish the truth or legal compliance of the underlying content. Rotation dated 19 Nov 2026: the signing seed no longer falls back to the database credential. Key apex-psi-2026-11 derives from a secret of its own and becomes the signing key when that secret is set in the signing project; apex-psi-2026 stays active and listed until then, so every receipt already issued still verifies.",
   "active_key_id": "apex-psi-2026",
   "keys": [
     {
@@ -26,6 +26,14 @@
       "valid_from": "2026-01-01T00:00:00Z",
       "status": "active",
       "use": "Ledger and /notarize receipts (matches /.well-known/compliance-receipt)"
+    },
+    {
+      "key_id": "apex-psi-2026-11",
+      "algorithm": "Ed25519",
+      "public_key": "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46",
+      "valid_from": "2026-11-19T00:00:00Z",
+      "status": "pending",
+      "use": "Ledger and /notarize receipts signed from the day APEX_PSI_ED25519_SEED is set in the signing project. Published before it signs, so the rotation has no window in which a receipt cannot be verified."
     },
     {
       "key_id": "apex-psi-hybrid-ed25519",

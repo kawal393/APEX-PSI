@@ -295,21 +295,48 @@ notes.push(
     : "no credential of the signing project on this machine to test against the anchor",
 );
 
-// The positive control: the dedicated seed must derive the anchor's active key.
+// The positive control: the key the dedicated signing secret derives must be
+// PUBLISHED. Until that secret is live in the signing project the key sits in
+// the anchor marked "pending"; from the day it goes live it is the active
+// key. Either way the anchor and the signing identity name one key, and the
+// transitional state is declared rather than implied.
 const seedEntry = vaultText.match(
   new RegExp(`^\\s*(?:export\\s+)?(?:${SEED_KEY}|APEX_PSI_SIGNING_SEED)\\s*=\\s*"?([^"\\r\\n]+)"?\\s*$`, "m"),
 );
 const localSeed = process.env[SEED_KEY] || (seedEntry ? seedEntry[1].trim() : null);
 if (localSeed) {
   const derived = await publicKeyFromSeed(PREFIXES.ledger, localSeed);
-  if (derived !== published) {
+  const pendingKeys = (anchor.keys || []).filter(
+    (k) => String(k.status || "").toLowerCase() === "pending",
+  );
+  const pendingPub = pendingKeys.map((k) => String(k.public_key || "").toLowerCase());
+  if (!listed.includes(derived)) {
     violations.push({
       file: "public/.well-known/apex-psi-trust-anchor.json",
       line: 12,
-      what: "the anchor's active key is not the key the dedicated signing secret derives — the anchor and the signing identity are not one key",
+      what: "the key the dedicated signing secret derives is not published in the anchor — the anchor and the signing identity are not one key",
+    });
+  } else if (derived !== published && !pendingPub.includes(derived)) {
+    violations.push({
+      file: "public/.well-known/apex-psi-trust-anchor.json",
+      line: 12,
+      what: "the dedicated signing key is published but not marked pending, while the anchor's active key is a different one — the rotation state is not declared",
     });
   } else {
-    notes.push("the anchor's active key is the key the dedicated signing secret derives");
+    notes.push(
+      derived === published
+        ? "the anchor's active key is the key the dedicated signing secret derives"
+        : "the dedicated signing key is published and marked pending; the active key changes when the secret is set",
+    );
+  }
+  for (const k of pendingKeys) {
+    if (String(k.public_key || "").toLowerCase() !== derived) {
+      violations.push({
+        file: "public/.well-known/apex-psi-trust-anchor.json",
+        line: 12,
+        what: `a key marked pending (${k.key_id}) is not the key the dedicated signing secret derives`,
+      });
+    }
   }
 } else {
   notes.push(`no dedicated signing seed on this machine to confirm the anchor against ${SEED_KEY}`);

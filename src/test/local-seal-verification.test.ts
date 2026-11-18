@@ -19,6 +19,7 @@ import {
 import { verifySealConformance, buildSealEnvelope, psiSealHash, psiSchemaDigest } from "@/lib/psi-schema";
 
 const LEDGER_KEY = "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724";
+const DEDICATED_LEDGER_KEY = "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46";
 const HYBRID_KEY = "9a6bdab92234f3bd6a3b1e9081e5ce3d646c129f1f6abdf7b52338e4cca1c9ca";
 
 describe("trust roots come from the published anchor", () => {
@@ -44,8 +45,8 @@ describe("trust roots come from the published anchor", () => {
     resetTrustRootCache();
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
     const result = await loadSealTrustRoots();
-    expect(result.keys.map((key) => key.public_key)).toEqual([LEDGER_KEY, HYBRID_KEY]);
-    expect(result.roots).toHaveLength(2);
+    expect(result.keys.map((key) => key.public_key)).toEqual([LEDGER_KEY, DEDICATED_LEDGER_KEY, HYBRID_KEY]);
+    expect(result.roots).toHaveLength(3);
   });
   it("reads every Ed25519 entry and keeps what each key signs", () => {
     const keys = parseTrustAnchor({

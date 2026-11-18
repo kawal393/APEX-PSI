@@ -13,10 +13,10 @@
 // ═══════════════════════════════════════════════════════════════════════
 
 import { hashSHA256, verifyMerkleProof } from "./engine-core";
-import { verifyEd25519Signature, PSI_PUBLIC_KEY } from "./psi-signatures";
+import { verifyEd25519Signature, PSI_PUBLIC_KEYS } from "./psi-signatures";
 
 /** Keys that sign ledger receipts. The in-band hybrid key is deliberately excluded. */
-export const PINNED_LEDGER_KEYS: readonly string[] = [PSI_PUBLIC_KEY];
+export const PINNED_LEDGER_KEYS: readonly string[] = PSI_PUBLIC_KEYS;
 
 const HEX64 = /^[0-9a-f]{64}$/;
 const HEX128 = /^[0-9a-f]{128}$/;

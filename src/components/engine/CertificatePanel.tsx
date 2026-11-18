@@ -3,7 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Award, Download, Printer, CheckCircle, XCircle, QrCode, ExternalLink, FileJson } from "lucide-react";
 import { type ComplianceCertificate, downloadCertificateJSON, printCertificate } from "@/lib/engine-certificate";
-import { type PSIProofBundle, PSI_PUBLIC_KEY } from "@/lib/psi-signatures";
+import { type PSIProofBundle, findSigningKey } from "@/lib/psi-signatures";
+import { hashSHA256 } from "@/lib/engine-core";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -14,10 +15,21 @@ interface CertificatePanelProps {
 const CertificatePanel = ({ certificate }: CertificatePanelProps) => {
   const isApproved = certificate.status === 'APPROVED';
 
-  const exportProofBundle = () => {
+  const exportProofBundle = async () => {
     if (!certificate.ed25519Signature) {
       toast.error("No ledger signature yet", {
         description: "This record has not been signed by the ledger, so an unsigned bundle would be rejected by the checker.",
+      });
+      return;
+    }
+    // The bundle must declare the key that actually signed it: the ledger has
+    // used more than one, and a bundle that names the wrong one is rejected as
+    // an untrusted signing key.
+    const leaf = await hashSHA256(`${certificate.commitId}|${certificate.commitHash}`);
+    const signingKey = await findSigningKey(leaf, certificate.ed25519Signature);
+    if (!signingKey) {
+      toast.error("No pinned key signs this record", {
+        description: "The signature does not verify under any published ledger key, so the bundle would be rejected.",
       });
       return;
     }
@@ -33,7 +45,7 @@ const CertificatePanel = ({ certificate }: CertificatePanelProps) => {
       merkleProof: certificate.merkleProof as any,
       merkleRoot: certificate.merkleRoot,
       ed25519Signature: certificate.ed25519Signature,
-      ed25519PublicKey: PSI_PUBLIC_KEY,
+      ed25519PublicKey: signingKey,
       canonicalizationScheme: "RFC-8785-JCS",
       hashAlgorithm: "SHA-256",
       signatureAlgorithm: "Ed25519",

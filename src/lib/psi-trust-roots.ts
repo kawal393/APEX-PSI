@@ -48,6 +48,12 @@ const BUILT_IN_KEYS: SealTrustKey[] = [
     signs: "ledger receipts — the bare lowercase hex Merkle leaf, NOT the seal_hash",
   },
   {
+    kid: "apex-psi-ledger-ed25519-2026-11",
+    public_key: "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46",
+    algorithm: "Ed25519",
+    signs: "ledger receipts signed from 19 Nov 2026, under the dedicated signing seed",
+  },
+  {
     kid: "apex-psi-hybrid-ed25519",
     public_key: "9a6bdab92234f3bd6a3b1e9081e5ce3d646c129f1f6abdf7b52338e4cca1c9ca",
     algorithm: "Ed25519",
