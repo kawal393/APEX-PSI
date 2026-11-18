@@ -1,9 +1,8 @@
 {
   "schema": "PSI-SEAL/1.0.0",
-  "verifier": "1.2.0",
-  "schema_digest": "454743698e1b23d5eddb7fc4a97ae1c8c33047921ef360d8e6c86d61f2fe9e77",
+  "verifier": "1.6.0",
+  "schema_digest": "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9",
   "sealed_at": "2026-01-01T00:00:00.000Z",
-  "subject_name": "hello-psi-input",
   "field_order": [
     "schema",
     "schema_digest",
@@ -20,7 +19,7 @@
       "size_bytes": 0,
       "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "merkle_leaf": "316f357f59644423979697f64550e5ecb9a25baf1af6bb04f7a5956fc6e71bbf",
-      "seal_hash": "f521abeec43c7fae1b09b3c1f1d0bd0b8381d11467fe102b38e1f15908c40813"
+      "seal_hash": "980511fcb888195327a464e6792334f0fe018b33df0b3a2957f806f5abf3a021"
     },
     {
       "id": "VECTOR 1",
@@ -28,7 +27,7 @@
       "size_bytes": 11,
       "hash": "9b9ca310d75dd7663f788163ba148f4c819f89b5ca12df76a421be5daaf2acf7",
       "merkle_leaf": "afdb58d3a5dabc3fb37d10ceeb040b5a4279296ac750e69e1814c4adf3377ae3",
-      "seal_hash": "4b82a96947a29bbe09a6b8d5ceb85e79c5bce40245fea57483d3ef246e7b2e73"
+      "seal_hash": "3bb58a3615ed27be61f62300c494118b02f28b98bf9b01beb547664c55836358"
     },
     {
       "id": "VECTOR 2",
@@ -36,7 +35,7 @@
       "size_bytes": 52,
       "hash": "2468d16e6ad888291923ae502c622218806a511b21d81e92bdcb3cc1c53fbdf5",
       "merkle_leaf": "3fed12715625fcd9f744d2990f2dd5567d6bb82a74c7a83aa0312265a88815c8",
-      "seal_hash": "7340a74fcd742ee7a199c0707e78b8b3a1ba85cd6cf5b4a2895a79480ab325eb"
+      "seal_hash": "eaa45053d27196f58b0caa2bbddefe737385a83f6fb918e6e6aa8c33c380f440"
     }
   ]
 }

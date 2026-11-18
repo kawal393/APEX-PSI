@@ -11,6 +11,7 @@
 import { jcsCanonicalize } from "./psi-canonicalize";
 
 export const HELLO_PSI_SCHEMA_ID = "PSI-SEAL/1.0.0";
+/** The release a reader installs to check these vectors. 1.2.0, 1.3.0 and 1.5.0 are deprecated. */
 export const HELLO_PSI_VERIFIER_VERSION = "1.7.0";
 
 /** Fixed vector timestamp — pinned so cross-language output is comparable. */
@@ -60,9 +61,22 @@ export function rfc3339Millis(date: Date = new Date()): string {
   return date.toISOString().replace(/\.\d+Z$/, `.${String(date.getUTCMilliseconds()).padStart(3, "0")}Z`);
 }
 
-/** schema_digest = SHA-256 over the JCS form of the parsed live schema JSON. */
+/**
+ * schema_digest = SHA-256 over the JCS form of {"id": <schema id>, "rules": [<rule array>]}.
+ *
+ * The rule array is the preimage, not the whole document (specs/psi-seal-1.md,
+ * R12). Measured 19 Nov 2026: this function hashed the entire parsed schema
+ * document, which produced 45474369…, while the published verifier recomputes
+ * 6d8d65e5… from the rule array. Every receipt the site minted therefore
+ * failed the free verifier on its own rule 4.2, and the vectors shipped at
+ * /hello-psi/vectors.json carried a digest the verifier rejects.
+ */
 export async function schemaDigestFrom(schemaJson: unknown): Promise<string> {
-  return sha256Hex(jcsCanonicalize(schemaJson));
+  const doc = schemaJson as { schema?: unknown; rules?: unknown };
+  if (typeof doc?.schema !== "string" || !Array.isArray(doc?.rules)) {
+    throw new Error("PSI schema document must carry a string `schema` and an array of `rules`");
+  }
+  return sha256Hex(jcsCanonicalize({ id: doc.schema, rules: doc.rules }));
 }
 
 /** Build a Hello PSI seal for an arbitrary text input. Rules R1–R10. */

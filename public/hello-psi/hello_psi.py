@@ -26,8 +26,13 @@ import unicodedata
 SCHEMA_ID = "PSI-SEAL/1.0.0"
 VECTOR_SEALED_AT = "2026-01-01T00:00:00.000Z"
 SUBJECT_NAME = "hello-psi-input"
-# SHA-256 over the JCS form of the live /.well-known/psi-schema.json.
-SCHEMA_DIGEST = "454743698e1b23d5eddb7fc4a97ae1c8c33047921ef360d8e6c86d61f2fe9e77"
+# SHA-256 over the JCS form of {"id": <schema id>, "rules": [<rule array>]}.
+# This is the frozen schema digest every PSI-SEAL envelope carries, and the
+# exact value the free verifier recomputes before it will accept a seal.
+# Measured 19 Nov 2026: the published verifier rejected the previous value
+# (a digest of the whole schema document) with "schema_digest mismatch —
+# rule 4.2". The rule array is the preimage; the document around it is not.
+SCHEMA_DIGEST = "6d8d65e5fec9f58d762058eb8d47308e33a9e67c396a96ee8bdd84b14f4e04b9"
 
 _ESCAPES = {
     '"': '\\"',
