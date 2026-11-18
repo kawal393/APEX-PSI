@@ -389,6 +389,47 @@ jobs:
         # bytes: one document, one source of truth.
         run: npm run check:anchor-cors
 
+  # 18 Nov 2026: the gate asks Master to approve before the deploy job runs a single
+  # step, so two failures were only discoverable after he clicked. An expired Supabase
+  # token let a fully green run die 12 minutes later at `supabase link`, and GitHub does
+  # not echo `workflow_dispatch` inputs back on the runs API, so nobody auditing a parked
+  # run could tell whether one function or all sixty-odd were about to ship. Both answers
+  # now land in an ungated job whose log is readable while the deploy still waits at the
+  # approval box.
+  deploy-preflight:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor, ietf-draft, hosted-mcp]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Name exactly what this run would ship
+        run: |
+          echo "deploy scope (only_functions) = [${DEPLOY_ONLY}]"
+          if [ -z "$DEPLOY_ONLY" ]; then
+            echo "  this branch holds $(find supabase/functions -mindepth 1 -maxdepth 1 -type d | wc -l) function directories and an empty scope ships all of them"
+            echo "::warning::only_functions is empty: the deploy step would overwrite every live function with this branch's copy. Name the functions in the dispatch form to keep the blast radius the size of the change."
+            exit 0
+          fi
+          for name in $DEPLOY_ONLY; do
+            if [ ! -d "supabase/functions/$name" ]; then
+              echo "::error::only_functions names '$name' but supabase/functions/$name is not on this commit — the deploy would fail after approval"
+              exit 1
+            fi
+            echo "  will ship: $name ($(find "supabase/functions/$name" -type f | wc -l) files)"
+          done
+        env:
+          DEPLOY_ONLY: ${{ github.event.inputs.only_functions }}
+      - name: Ask Supabase whether the stored key is still alive
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" https://api.supabase.com/v1/projects)
+          echo "api.supabase.com answered HTTP $code for the stored token"
+          if [ "$code" != "200" ]; then
+            echo "::error::SUPABASE_ACCESS_TOKEN is refused (HTTP $code), so the deploy would die at 'supabase link' after approval. Supabase personal access tokens expire (the dashboard mints 7-day ones by default): mint one at https://supabase.com/dashboard/account/tokens and replace the Actions secret named exactly SUPABASE_ACCESS_TOKEN — a secret under any other name is not read by this job."
+            exit 1
+          fi
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
   supabase-deploy:
     # NOT on every push to main. `supabase db push` + `functions deploy` mutate
     # production, and the deploy job used to run silently behind a test suite
@@ -396,7 +437,7 @@ jobs:
     # a human decision: run this workflow from the Actions tab (or protect the
     # `production` environment with required reviewers in repo settings).
     if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor, ietf-draft, hosted-mcp]
+    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor, ietf-draft, hosted-mcp, deploy-preflight]
     runs-on: ubuntu-latest
     environment: production
     steps:
