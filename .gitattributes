@@ -15,3 +15,10 @@ public/ietf/published/*.txt text eol=lf
 # The prose sources the drafts are laid out from. The layout is a pure
 # function of these files, so their line endings are pinned too.
 drafts/ietf/*.txt text eol=lf
+
+# The published vectors are compared byte-for-byte by the generator that writes
+# them, and a reader who downloads them from the site gets what the repository
+# holds. With core.autocrlf=true a Windows checkout rewrote the committed file to
+# CRLF and `npm run check:vectors` then failed on a clean tree — the same commit
+# passed on the Linux runner and failed on this machine. Measured 19 Nov 2026.
+public/hello-psi/vectors.json text eol=lf
