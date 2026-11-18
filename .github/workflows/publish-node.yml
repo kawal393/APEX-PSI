@@ -137,3 +137,37 @@ jobs:
             exit 1
           fi
           node -e "fetch('https://registry.npmjs.org/apex-psi-verifier/'+process.env.PKG).then(r=>r.json()).then(d=>{console.log('probed tarball:',d.dist.tarball,'| provenance:',!!d.dist.attestations);if(!d.version||d.version!==process.env.PKG)process.exit(1)})"
+
+      # A moved dist-tag is not a published release. Measured on 19 Nov 2026: npm's
+      # dist-tag for 1.7.0 moved at 20:03:45Z and the release was declared done, but
+      # the tarball itself answered 404 until 20:08:42Z — five minutes later. A
+      # stranger who installed inside that window got E404, and CI went red on the
+      # drop-in and registry-truth jobs for a release that was "published". npm
+      # prints "your package is being processed and may take a few minutes" and
+      # then says nothing, so the gate has to wait for the bytes a stranger
+      # downloads, not for the tag that points at them.
+      - name: The tarball a stranger downloads must answer 200
+        run: |
+          tarball_ok=0
+          for i in $(seq 1 40); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://registry.npmjs.org/apex-psi-verifier/-/apex-psi-verifier-$PKG.tgz" || echo 000)
+            if [ "$code" = "200" ]; then echo "attempt $i: tarball answers 200"; tarball_ok=1; break; fi
+            echo "attempt $i: tarball answers $code, waiting"
+            sleep 15
+          done
+          if [ "$tarball_ok" != "1" ]; then
+            echo "STOP: $PKG is published but its tarball is not downloadable, so nobody can install it"
+            exit 1
+          fi
+
+      # The last word: a stranger installs the published package and runs it. The
+      # tarball answering 200 proves the bytes exist; this proves they work.
+      - name: A stranger installs the published package and runs it
+        run: |
+          rm -rf "$RUNNER_TEMP/stranger"
+          mkdir -p "$RUNNER_TEMP/stranger"
+          npm install --no-audit --no-fund --prefix "$RUNNER_TEMP/stranger" "apex-psi-verifier@$PKG"
+          node "$RUNNER_TEMP/stranger/node_modules/apex-psi-verifier/dist/cli.cjs" inspect test/fixtures/incident-bundle.json | grep -q "^PASS" || {
+            echo "STOP: the published package installs but does not run"; exit 1;
+          }
+          echo "the published package installs and runs"
