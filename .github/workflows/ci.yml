@@ -368,6 +368,12 @@ jobs:
         with:
           node-version: 20
       - run: npm run check:trust-anchor
+      - name: The guard must catch a guard that stopped guarding
+        # A check that cannot fail is decoration. This step plants the old
+        # fallback (signing seed taken from the database credential) into a temp
+        # copy of the tree and requires the guard to go red on it, so a future
+        # edit that weakens the check is caught by the check itself.
+        run: npm run check:trust-anchor:selftest
       - name: The trust anchor must be readable from another origin
         # Measured 17 Nov 2026: the published anchor came back with no
         # Access-Control-Allow-Origin, so a verifier running in someone else's

@@ -43,15 +43,27 @@ export async function rfc6962Root(leavesHex: string[]): Promise<string> {
 /**
  * The seed every institutional Ed25519 signature is derived from.
  *
- * It must never be the database credential. A service_role key is a LOGIN, not a
- * signing identity: whoever holds it can then mint a receipt that verifies against
- * our published trust anchor, which turns a database leak into a forge of the
- * product's one trust claim. APEX_PSI_ED25519_SEED is the signing identity; the
- * service key stays only as the fallback that keeps every signature already issued
- * verifiable under the anchor published today.
+ * It is never the database credential. A service_role key is a LOGIN, not a signing
+ * identity: whoever holds it could then mint a receipt that verifies against our
+ * published trust anchor, which turns a database leak into a forge of the product's
+ * one trust claim. So this reads exactly one secret, APEX_PSI_ED25519_SEED, and
+ * refuses to hand out a seed when it is absent.
+ *
+ * Refusing is the point. The old fallback to SUPABASE_SERVICE_ROLE_KEY kept signing
+ * alive, but it also meant a missing secret silently downgraded the anchor's private
+ * half to a hash of a database login — the failure nobody would notice until a
+ * stranger forged a receipt. Rotating the anchor is a dated, ordered operation; see
+ * scripts/derive-anchor-key.mjs for the order that keeps every receipt already
+ * issued verifiable.
  */
 export function institutionalSigningSeed(): string {
-  return Deno.env.get("APEX_PSI_ED25519_SEED") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  const seed = Deno.env.get("APEX_PSI_ED25519_SEED");
+  if (!seed || !seed.trim()) {
+    throw new Error(
+      "signing identity missing: APEX_PSI_ED25519_SEED is not set. The institutional key is never derived from the database credential, so this refuses to sign.",
+    );
+  }
+  return seed.trim();
 }
 
 /**
