@@ -316,6 +316,12 @@ jobs:
   # it can be red because a registry is slow while this repository is already
   # correct. It must never hold the deploy rail hostage to somebody else's
   # cache.
+  #
+  # Measured 19 Nov 2026: this job was green while the flagship install could
+  # not issue a receipt, because any text the door printed counted as a receipt
+  # and the words "valid" or "true" inside a refusal counted as acceptance. The
+  # seal leg now needs a decision hash, and the job has been red since — which
+  # is the first accurate thing it has said about the live notary.
   drop-in:
     runs-on: ubuntu-latest
     steps:
