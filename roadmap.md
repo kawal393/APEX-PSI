@@ -95,6 +95,8 @@
 - [x] Optional signed role / policy fingerprint / delegation on permission slips, checked by the receiver (11 tests).
 - [x] SDKs send expectations the checker actually reads (nested `claims` and `expires_in` were silently ignored before).
 - [x] Append-only revocation list in the published key file; public checker refuses revoked keys and records when it checked (7 tests).
-- [ ] Set APEX_PSI_ED25519_SEED in Cloud — needs the seed from the laptop vault; until then permission-slip issuing refuses to sign, and any redeploy of a signing service will do the same.
+- [x] Signers refuse to sign under any key the public key file does not list (guard live on permission slips, tested).
+- [ ] Replace APEX_PSI_ED25519_SEED with the vault seed that derives 111284cd… — the value saved 19 Nov derives 39a405177480…, so permission-slip issuing refuses to sign; laptop can confirm with `node scripts/derive-anchor-key.mjs --check 111284cd…`.
+- [ ] Do not redeploy notarize / notarize-batch / psi-api / commit-action until the seed is right: they will refuse to sign too.
 - [ ] After the seed is set, switch the key file's active key to apex-psi-2026-11 (laptop AI's rotation step).
 - [ ] Publish so the key file and Ask Before You Act page update live.

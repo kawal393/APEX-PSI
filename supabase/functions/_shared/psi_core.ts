@@ -76,9 +76,34 @@ export async function signEd25519Strict(data: string, seed: string): Promise<str
   const pkcs8 = new Uint8Array(48);
   pkcs8.set([0x30, 0x2e, 0x02, 0x01, 0x00, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x70, 0x04, 0x22, 0x04, 0x20]);
   pkcs8.set(km, 16);
-  const key = await crypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, false, ["sign"]);
+  const key = await crypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, true, ["sign"]);
+  await assertPublishedLedgerKey(key);
   const sig = await crypto.subtle.sign("Ed25519", key, new TextEncoder().encode(data));
   return toHex(new Uint8Array(sig));
+}
+
+/**
+ * Ledger Ed25519 public keys listed in the published trust anchor
+ * (public/.well-known/apex-psi-trust-anchor.json). A signature under any other
+ * key would verify against nothing a stranger trusts, so signing refuses
+ * instead of issuing a receipt that silently fails every independent check.
+ * Adding a key here goes together with publishing it in the anchor.
+ */
+export const PUBLISHED_LEDGER_ED25519_KEYS: readonly string[] = [
+  "59304685328b3cfa6ec712d66250d0f964bb9f92161e65e2e5835a873f104724", // apex-psi-2026
+  "111284cd6462a1eeeae71f58d68745e75a7c3de7a69b7328d5953af1fe840e46", // apex-psi-2026-11
+];
+
+async function assertPublishedLedgerKey(privateKey: CryptoKey): Promise<void> {
+  const jwk = await crypto.subtle.exportKey("jwk", privateKey);
+  const x = (jwk.x ?? "").replace(/-/g, "+").replace(/_/g, "/");
+  const raw = Uint8Array.from(atob(x + "=".repeat((4 - (x.length % 4)) % 4)), (c) => c.charCodeAt(0));
+  const pub = toHex(raw);
+  if (!PUBLISHED_LEDGER_ED25519_KEYS.includes(pub)) {
+    throw new Error(
+      `signing identity not published: APEX_PSI_ED25519_SEED derives ${pub.slice(0, 12)}…, which the trust anchor does not list. Refusing to sign.`,
+    );
+  }
 }
 
 /**
