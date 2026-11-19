@@ -1,6 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════════
 // APEX PSI — AUTHORIZE  (PSI-ACT/1, "the Gate")
-// POST /authorize  { agent_id, action_type, intent, policy_ref?, predicate_id?, expires_in_seconds? }
+// POST /authorize  { agent_id, action_type, intent, policy_ref?, predicate_id?,
+//                    expires_in_seconds? (alias expires_in),
+//                    authority?: { role, policy_hash, delegated_by?, delegation_ref? } }
 //
 // Seals a PROPOSED action BEFORE it is performed, producing an Authorization
 // Receipt: a tamper-evident, Ed25519 + LMS-W4-SHA256 signed, Merkle-rooted,
@@ -23,7 +25,13 @@ import {
   ACTION_TYPES,
   PSI_ACT_SCHEMA_ID,
   ACT_TERMS,
+  parseAuthority,
 } from "../_shared/action.ts";
+
+const AUTHORITY_NOTE =
+  "authority is bound inside the signed payload exactly as the caller declared it. " +
+  "APEX did not check the role or delegation against any identity system; compare " +
+  "them, and the policy_hash, with your own records before honouring the action.";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -85,7 +93,13 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { agent_id, action_type, intent, policy_ref, predicate_id, expires_in_seconds } = body;
+    const { agent_id, action_type, intent, policy_ref, predicate_id } = body;
+    const expires_in_seconds = body.expires_in_seconds ?? body.expires_in;
+    const authorityParse = parseAuthority(body.authority);
+    if (!authorityParse.ok) {
+      return new Response(JSON.stringify({ error: authorityParse.error }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const authority = authorityParse.value;
 
     if (!agent_id || typeof agent_id !== "string" || agent_id.trim().length === 0) {
       return new Response(JSON.stringify({ error: "Missing 'agent_id'" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -110,6 +124,7 @@ Deno.serve(async (req) => {
       predicate_id: predicate_id || "EU_ART_50",
       issued_at: issuedAt,
       expires_at: expiresAt,
+      authority,
     });
     if (canonical.length > 20000) {
       return new Response(JSON.stringify({ error: "Action payload exceeds 20000 chars" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -179,6 +194,8 @@ Deno.serve(async (req) => {
       predicate_applied: predicate_id || "EU_ART_50",
       issued_at: issuedAt,
       expires_at: expiresAt,
+      authority,
+      ...(authority ? { authority_note: AUTHORITY_NOTE } : {}),
       commit_hash: `sha256:${commitHash}`,
       merkle_leaf: `sha256:${merkleLeaf}`,
       merkle_root: `sha256:${merkleRoot}`,

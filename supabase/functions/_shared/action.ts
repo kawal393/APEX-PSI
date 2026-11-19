@@ -90,8 +90,9 @@ export function canonicalActionPayload(r: {
   predicate_id: string;
   issued_at: string;
   expires_at: string | null;
+  authority?: ActionAuthority | null;
 }): string {
-  return JSON.stringify({
+  const payload: Record<string, unknown> = {
     agent_id: r.agent_id,
     action_type: r.action_type,
     intent: stableStringify(r.intent),
@@ -99,7 +100,112 @@ export function canonicalActionPayload(r: {
     predicate_id: r.predicate_id,
     issued_at: r.issued_at,
     expires_at: r.expires_at,
-  });
+  };
+  // Appended only when present, so every receipt issued before authority
+  // binding existed serializes to exactly the bytes it was signed over.
+  if (r.authority) payload.authority = stableStringify(r.authority);
+  return JSON.stringify(payload);
+}
+
+// ── AUTHORITY BINDING ───────────────────────────────────────────────────
+// Who claimed the right to act, under which exact policy text, delegated by
+// whom. These fields sit INSIDE the canonical payload, so they are covered by
+// the commit, the Merkle leaf and both signatures: nobody (APEX included) can
+// change the stated role or policy after issue without the recompute failing.
+//
+// Boundary, stated plainly: APEX records the authority the CALLER declared.
+// It does not check that declaration against anyone's identity system. The
+// counterparty compares the bound role / policy hash with its own records.
+
+export interface ActionAuthority {
+  /** The role the agent claimed, e.g. "claims_adjuster_l2". */
+  role: string;
+  /** "sha256:<64 hex>" of the exact policy document in force at issue time. */
+  policy_hash: string;
+  /** Who delegated the authority (principal id, not a person's details). */
+  delegated_by?: string;
+  /** Identifier of the delegation itself (grant id, ticket, token id). */
+  delegation_ref?: string;
+}
+
+const ROLE_RE = /^[A-Za-z0-9._:/@-]{1,128}$/;
+const POLICY_HASH_RE = /^(?:sha256:)?([0-9a-fA-F]{64})$/;
+const REF_RE = /^[\x21-\x7E]{1,256}$/; // printable ASCII, no spaces
+const AUTHORITY_KEYS = new Set(["role", "policy_hash", "delegated_by", "delegation_ref"]);
+
+export type AuthorityParse =
+  | { ok: true; value: ActionAuthority | null }
+  | { ok: false; error: string };
+
+/** Validate caller-supplied authority. Absent → null; anything malformed → error. */
+export function parseAuthority(input: unknown): AuthorityParse {
+  if (input === undefined || input === null) return { ok: true, value: null };
+  if (typeof input !== "object" || Array.isArray(input)) {
+    return { ok: false, error: "'authority' must be an object" };
+  }
+  const obj = input as Record<string, unknown>;
+  for (const k of Object.keys(obj)) {
+    if (!AUTHORITY_KEYS.has(k)) return { ok: false, error: `Unknown authority field '${k}'` };
+  }
+  if (typeof obj.role !== "string" || !ROLE_RE.test(obj.role)) {
+    return { ok: false, error: "'authority.role' must be 1-128 chars of letters, digits or . _ : / @ -" };
+  }
+  const ph = typeof obj.policy_hash === "string" ? obj.policy_hash.match(POLICY_HASH_RE) : null;
+  if (!ph) {
+    return { ok: false, error: "'authority.policy_hash' must be sha256:<64 hex> of the policy document" };
+  }
+  const value: ActionAuthority = { role: obj.role, policy_hash: `sha256:${ph[1].toLowerCase()}` };
+  for (const k of ["delegated_by", "delegation_ref"] as const) {
+    if (obj[k] === undefined || obj[k] === null) continue;
+    if (typeof obj[k] !== "string" || !REF_RE.test(obj[k] as string)) {
+      return { ok: false, error: `'authority.${k}' must be 1-256 printable characters without spaces` };
+    }
+    value[k] = obj[k] as string;
+  }
+  return { ok: true, value };
+}
+
+/** Read the bound authority back out of a stored canonical payload. */
+export function authorityFromCanonical(canonical: string): ActionAuthority | null {
+  try {
+    const parsed = JSON.parse(canonical) as Record<string, unknown>;
+    const r = parseAuthority(parsed.authority);
+    return r.ok ? r.value : null;
+  } catch {
+    return null;
+  }
+}
+
+export interface AuthorityClaims {
+  role?: string;
+  policy_hash?: string;
+  delegated_by?: string;
+  delegation_ref?: string;
+}
+
+/**
+ * Compare what the counterparty expects with what the receipt binds. A claim
+ * the receipt does not bind is a mismatch: silence is never agreement.
+ */
+export function checkAuthorityClaims(
+  bound: ActionAuthority | null,
+  claims: AuthorityClaims,
+): { ok: boolean; mismatches: string[] } {
+  const mismatches: string[] = [];
+  const asked = (Object.keys(claims) as (keyof AuthorityClaims)[]).filter(
+    (k) => typeof claims[k] === "string" && (claims[k] as string).length > 0,
+  );
+  if (asked.length === 0) return { ok: true, mismatches };
+  if (!bound) return { ok: false, mismatches: ["authority_not_bound"] };
+  for (const k of asked) {
+    let expected = claims[k] as string;
+    if (k === "policy_hash") {
+      const m = expected.match(POLICY_HASH_RE);
+      expected = m ? `sha256:${m[1].toLowerCase()}` : expected;
+    }
+    if (bound[k] !== expected) mismatches.push(k);
+  }
+  return { ok: mismatches.length === 0, mismatches };
 }
 
 /** Recursive key-sorted JSON so object key order never changes the digest. */
@@ -174,11 +280,14 @@ export function gateDecision(v: {
   revoked: boolean;
   expired: boolean;
   policy_ok: boolean;
+  /** Omitted = the counterparty asked nothing about authority. */
+  authority_ok?: boolean;
 }): { allowed: boolean; reason: string } {
   if (!v.integrity_verified) return { allowed: false, reason: "integrity_recompute_failed" };
   if (v.revoked) return { allowed: false, reason: "receipt_revoked" };
   if (v.expired) return { allowed: false, reason: "receipt_expired" };
   if (!v.policy_ok) return { allowed: false, reason: "action_not_within_policy" };
+  if (v.authority_ok === false) return { allowed: false, reason: "authority_mismatch" };
   if (v.post_quantum_verified === false) return { allowed: false, reason: "post_quantum_failed" };
   return { allowed: true, reason: "ok" };
 }

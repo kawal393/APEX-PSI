@@ -51,5 +51,21 @@
       "status": "experimental",
       "use": "Post-quantum half of the hybrid suite (NIST FIPS 204)"
     }
-  ]
+  ],
+  "revocations": [],
+  "revocation_policy": {
+    "spec": "PSI-KEY-REVOCATION-v1",
+    "append_only": true,
+    "entry_fields": [
+      "key_id",
+      "public_key",
+      "revoked_at",
+      "compromised_since",
+      "reason"
+    ],
+    "rule": "A key listed in revocations, or whose keys[] status is \"revoked\", MUST NOT authenticate any receipt. Entries are only ever added, never removed or edited.",
+    "historical_receipts": "A receipt signed by a revoked key can be shown to predate the compromise only by an independent timestamp (a Bitcoin anchor) earlier than compromised_since. The public checker does not make that exception; it refuses the key.",
+    "pinned_verifiers": "Verifiers that pin keys offline learn of a revocation from this document or from an updated pin set. A verifier checking historical material records which key status it assumed and when.",
+    "current_state": "No key has been revoked."
+  }
 }

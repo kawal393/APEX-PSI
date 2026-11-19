@@ -29,7 +29,35 @@ interface LooseAnchor {
     public_key?: string;
     signs?: string;
     use?: string;
+    status?: string;
   }[];
+  revocations?: { key_id?: string; public_key?: string; revoked_at?: string; reason?: string }[];
+}
+
+/**
+ * Every public key the document withdraws: listed under `revocations`, or
+ * marked `status: "revoked"` in `keys[]`. Revocation only ever REMOVES trust —
+ * an entry here can never add a key — so honouring it from a fetched document
+ * is safe in the fail-closed direction.
+ */
+export function revokedPublicKeys(doc: unknown): Set<string> {
+  const out = new Set<string>();
+  if (!doc || typeof doc !== "object") return out;
+  const anchor = doc as LooseAnchor;
+  const add = (k: unknown) => {
+    if (typeof k === "string" && k.trim()) out.add(k.trim().toLowerCase());
+  };
+  for (const r of Array.isArray(anchor.revocations) ? anchor.revocations : []) add(r?.public_key);
+  for (const k of Array.isArray(anchor.keys) ? anchor.keys : []) {
+    if (String(k?.status ?? "").toLowerCase() === "revoked") add(k?.public_key);
+  }
+  return out;
+}
+
+function isApexAnchor(doc: unknown): boolean {
+  if (!doc || typeof doc !== "object") return false;
+  const anchor = doc as LooseAnchor;
+  return anchor.spec === "PSI-TRUST-ANCHOR-v1" && anchor.issuer === "urn:apex-psi:issuer:root-1";
 }
 
 const HEX64 = /^[0-9a-fA-F]{64}$/;
@@ -129,6 +157,13 @@ export interface TrustRootsResult {
   pqKeys: SealTrustKey[];
   /** Where the document actually came from, for honest labelling in the UI. */
   source: string;
+  /** Pinned public keys the fetched document withdrew. */
+  revokedKeys: string[];
+  /**
+   * When key status was read from a published document. null means the
+   * built-in copy was used and revocation status was NOT checked.
+   */
+  keyStatusCheckedAt: string | null;
 }
 
 /**
@@ -160,20 +195,18 @@ export function parsePostQuantumAnchorKeys(doc: unknown): SealTrustKey[] {
 
 /** The fetched document may describe pinned keys; it cannot silently introduce a new signing identity. */
 export function pinnedPostQuantumKeys(doc: unknown): SealTrustKey[] {
-  if (!doc || typeof doc !== "object") return [];
-  const anchor = doc as LooseAnchor;
-  if (anchor.spec !== "PSI-TRUST-ANCHOR-v1" || anchor.issuer !== "urn:apex-psi:issuer:root-1") return [];
+  if (!isApexAnchor(doc)) return [];
   const pins = new Set(BUILT_IN_PQ_KEYS.map((key) => key.public_key));
-  return parsePostQuantumAnchorKeys(doc).filter((key) => pins.has(key.public_key));
+  const revoked = revokedPublicKeys(doc);
+  return parsePostQuantumAnchorKeys(doc).filter((key) => pins.has(key.public_key) && !revoked.has(key.public_key));
 }
 
 /** The fetched document may describe pinned keys; it cannot silently introduce a new signing identity. */
 export function pinnedAnchorKeys(doc: unknown): SealTrustKey[] {
-  if (!doc || typeof doc !== "object") return [];
-  const anchor = doc as LooseAnchor;
-  if (anchor.spec !== "PSI-TRUST-ANCHOR-v1" || anchor.issuer !== "urn:apex-psi:issuer:root-1") return [];
+  if (!isApexAnchor(doc)) return [];
   const pins = new Set(BUILT_IN_KEYS.map((key) => key.public_key));
-  return parseTrustAnchor(doc).filter((key) => pins.has(key.public_key));
+  const revoked = revokedPublicKeys(doc);
+  return parseTrustAnchor(doc).filter((key) => pins.has(key.public_key) && !revoked.has(key.public_key));
 }
 
 export function sealSignerDescription(keyId?: string): string {
@@ -197,14 +230,29 @@ export async function loadSealTrustRoots(refresh = false): Promise<TrustRootsRes
       const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) continue;
       const doc = await res.json();
+      if (!isApexAnchor(doc)) continue;
+      const revoked = revokedPublicKeys(doc);
       const keys = pinnedAnchorKeys(doc);
-      if (keys.length === 0) continue;
       const pqKeys = pinnedPostQuantumKeys(doc);
+      const pinnedRevoked = [...BUILT_IN_KEYS, ...BUILT_IN_PQ_KEYS]
+        .map((k) => k.public_key)
+        .filter((k) => revoked.has(k));
+      // A genuine anchor that withdrew every pinned key means: trust nothing.
+      // Falling back to the built-in copy here would quietly re-trust a
+      // revoked key, so the empty set is returned as-is.
+      const pqFallback = pqKeys.length > 0
+        ? pqKeys
+        : BUILT_IN_PQ_KEYS.filter((k) => !revoked.has(k.public_key));
+      const checkedAt = new Date().toISOString();
       cache = {
         keys,
-        pqKeys: pqKeys.length > 0 ? pqKeys : BUILT_IN_PQ_KEYS,
+        pqKeys: pqFallback,
         roots: keys.map((k) => ({ public_key: k.public_key, key_id: k.kid })),
-        source: `${url} · checked against built-in public-key pins`,
+        source: `${url} · checked against built-in public-key pins · key status read ${checkedAt}${
+          pinnedRevoked.length ? ` · ${pinnedRevoked.length} revoked key(s) refused` : " · no key revoked"
+        }`,
+        revokedKeys: pinnedRevoked,
+        keyStatusCheckedAt: checkedAt,
       };
       return cache;
     } catch {
@@ -216,7 +264,9 @@ export async function loadSealTrustRoots(refresh = false): Promise<TrustRootsRes
     keys,
     pqKeys: BUILT_IN_PQ_KEYS,
     roots: keys.map((k) => ({ public_key: k.public_key, key_id: k.kid })),
-    source: "built-in copy of the published anchor",
+    source: "built-in copy of the published anchor · revocation status not checked",
+    revokedKeys: [],
+    keyStatusCheckedAt: null,
   };
   return cache;
 }

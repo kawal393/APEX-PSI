@@ -34,7 +34,14 @@ export function authorize(
   agentId: string,
   actionType: string,
   intent: Record<string, unknown>,
-  opts: { policy_ref?: string; predicate_id?: string; expires_in?: number; api_key?: string } = {},
+  opts: {
+    policy_ref?: string;
+    predicate_id?: string;
+    expires_in?: number;
+    api_key?: string;
+    /** Signed into the receipt as declared; APEX does not check it against your IAM. */
+    authority?: { role: string; policy_hash: string; delegated_by?: string; delegation_ref?: string };
+  } = {},
 ): Promise<AuthorizeResult> {
   const body: Record<string, unknown> = {
     agent_id: agentId,
@@ -43,14 +50,24 @@ export function authorize(
   };
   if (opts.policy_ref) body.policy_ref = opts.policy_ref;
   if (opts.predicate_id) body.predicate_id = opts.predicate_id;
-  if (opts.expires_in) body.expires_in = opts.expires_in;
+  if (opts.expires_in) body.expires_in_seconds = opts.expires_in;
+  if (opts.authority) body.authority = opts.authority;
   return post(`${baseUrl.replace(/\/$/, "")}/functions/v1/authorize`, body, opts.api_key);
 }
 
 /** Counterparty call: recompute + integrity/revocation/expiry/policy check. */
 export function verifyAction(
   baseUrl: string,
-  q: { receipt_id?: string; commit_hash?: string; action_type?: string; policy_ref?: string },
+  q: {
+    receipt_id?: string;
+    commit_hash?: string;
+    action_type?: string;
+    policy_ref?: string;
+    role?: string;
+    policy_hash?: string;
+    delegated_by?: string;
+    delegation_ref?: string;
+  },
 ): Promise<any> {
   const body: Record<string, unknown> = {};
   if (q.receipt_id) body.receipt_id = q.receipt_id;
@@ -58,6 +75,9 @@ export function verifyAction(
   const claims: Record<string, unknown> = {};
   if (q.action_type) claims.action_type = q.action_type;
   if (q.policy_ref) claims.policy_ref = q.policy_ref;
+  for (const k of ["role", "policy_hash", "delegated_by", "delegation_ref"] as const) {
+    if (q[k]) claims[k] = q[k];
+  }
   if (Object.keys(claims).length) body.claims = claims;
   return post(`${baseUrl.replace(/\/$/, "")}/functions/v1/verify-action`, body);
 }

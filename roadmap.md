@@ -90,3 +90,11 @@
 - [ ] Re-create the hourly lead-email, hourly post-quantum signing and daily social-proof schedules with the platform scheduler — the scheduling tool was not available in this session; the old schedules are now refused (two had nothing pending).
 - [ ] Decide whether the public company status lookup stays public — needs owner decision.
 - [ ] Publish the website so visitors get the sign-in redirect, certificate and score-card fixes.
+
+# Authority binding and key revocation (19 Nov 2026)
+- [x] Optional signed role / policy fingerprint / delegation on permission slips, checked by the receiver (11 tests).
+- [x] SDKs send expectations the checker actually reads (nested `claims` and `expires_in` were silently ignored before).
+- [x] Append-only revocation list in the published key file; public checker refuses revoked keys and records when it checked (7 tests).
+- [ ] Set APEX_PSI_ED25519_SEED in Cloud — needs the seed from the laptop vault; until then permission-slip issuing refuses to sign, and any redeploy of a signing service will do the same.
+- [ ] After the seed is set, switch the key file's active key to apex-psi-2026-11 (laptop AI's rotation step).
+- [ ] Publish so the key file and Ask Before You Act page update live.

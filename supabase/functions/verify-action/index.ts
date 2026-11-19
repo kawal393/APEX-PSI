@@ -1,6 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════════
 // APEX PSI — VERIFY-ACTION  (PSI-ACT/1, the counterparty's Gate)
-// POST /verify-action { receipt_id | commit_hash, action_type?, policy_ref? }
+// POST /verify-action { receipt_id | commit_hash, action_type?, policy_ref?,
+//                       role?, policy_hash?, delegated_by?, delegation_ref? }
+//   (expectations may also be sent nested as { claims: { ... } }, as the SDKs do)
 // GET  /verify-action?receipt_id=...
 //
 // A counterparty calls this BEFORE honouring an agent action. It RECOMPUTES
@@ -15,7 +17,12 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { lmsVerify, LMS_ALGORITHM, LMS_STANDARD } from "../_shared/pq_lms.ts";
-import { recomputeLeaf, isKnownAction, ACT_TERMS, PSI_ACT_SCHEMA_ID, gateDecision } from "../_shared/action.ts";
+import {
+  recomputeLeaf, isKnownAction, ACT_TERMS, PSI_ACT_SCHEMA_ID, gateDecision,
+  authorityFromCanonical, checkAuthorityClaims, type AuthorityClaims,
+} from "../_shared/action.ts";
+
+const str = (v: unknown): string | undefined => (typeof v === "string" && v.length > 0 ? v : undefined);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -39,20 +46,31 @@ Deno.serve(async (req) => {
     let commitHash: string | null = null;
     let claimedAction: string | undefined;
     let claimedPolicy: string | undefined;
+    let authorityClaims: AuthorityClaims = {};
 
     if (req.method === "GET") {
       const url = new URL(req.url);
+      const p = (k: string) => url.searchParams.get(k) || undefined;
       receiptId = url.searchParams.get("receipt_id");
       commitHash = url.searchParams.get("commit_hash")?.replace(/^sha256:/i, "") || null;
-      claimedAction = url.searchParams.get("action_type") || undefined;
-      claimedPolicy = url.searchParams.get("policy_ref") || undefined;
+      claimedAction = p("action_type");
+      claimedPolicy = p("policy_ref");
+      authorityClaims = { role: p("role"), policy_hash: p("policy_hash"), delegated_by: p("delegated_by"), delegation_ref: p("delegation_ref") };
     } else if (req.method === "POST") {
       try {
         const body = await req.json();
         receiptId = body.receipt_id || null;
         commitHash = (body.commit_hash || "").replace(/^sha256:/i, "") || null;
-        claimedAction = body.action_type;
-        claimedPolicy = body.policy_ref;
+        // The SDKs nest expectations under `claims`; top-level is accepted too.
+        const c = body.claims && typeof body.claims === "object" ? body.claims : body;
+        claimedAction = str(c.action_type) ?? str(body.action_type);
+        claimedPolicy = str(c.policy_ref) ?? str(body.policy_ref);
+        authorityClaims = {
+          role: str(c.role) ?? str(body.role),
+          policy_hash: str(c.policy_hash) ?? str(body.policy_hash),
+          delegated_by: str(c.delegated_by) ?? str(body.delegated_by),
+          delegation_ref: str(c.delegation_ref) ?? str(body.delegation_ref),
+        };
       } catch {
         return bad("Invalid JSON body");
       }
@@ -114,7 +132,16 @@ Deno.serve(async (req) => {
       && (!claimedAction || claimedAction === data.action_type)
       && (!claimedPolicy || claimedPolicy === data.policy_ref);
 
-    const { allowed, reason } = gateDecision({ integrity_verified, post_quantum_verified: pqVerified, revoked, expired, policy_ok });
+    // Authority is read from the recomputed canonical payload only: if the
+    // recompute failed, nothing in that payload is trusted.
+    const authority = integrity_verified ? authorityFromCanonical(data.canonical_payload) : null;
+    const authorityAsked = Object.values(authorityClaims).some((v) => typeof v === "string" && v.length > 0);
+    const authorityCheck = checkAuthorityClaims(authority, authorityClaims);
+
+    const { allowed, reason } = gateDecision({
+      integrity_verified, post_quantum_verified: pqVerified, revoked, expired, policy_ok,
+      ...(authorityAsked ? { authority_ok: authorityCheck.ok } : {}),
+    });
 
     // ── ANCHOR (Bitcoin / OpenTimestamps), if sealed onward ──
     const { data: proof } = await supabase.from("ots_proofs")
@@ -139,6 +166,12 @@ Deno.serve(async (req) => {
       revoked,
       expired,
       policy_ok,
+      authority,
+      authority_ok: authorityAsked ? authorityCheck.ok : null,
+      authority_mismatches: authorityCheck.mismatches,
+      authority_note: authority
+        ? "Bound and signed at issue time as the caller declared it. APEX did not check it against any identity system."
+        : "This receipt binds no role or policy hash.",
       integrity_verified,
       post_quantum: !!data.pq_signature,
       pq_verified: pqVerified,
