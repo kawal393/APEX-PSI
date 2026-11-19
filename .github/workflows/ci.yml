@@ -108,6 +108,24 @@ jobs:
           node-version: 22
       - run: npm run check:hosted-mcp
 
+  # The job above cannot see the deployment, and on 18 Nov that let a green rail
+  # sit on top of a door whose every seal answered HTTP 500. This one asks the
+  # live URL for the same facts — the version it announces, its five tools, its
+  # refusal codes, the notary's read answers through the door, and that the
+  # sign-in door is still locked — and mints nothing, so it is read-only. It is
+  # non-blocking because a Supabase deploy waiting on Master's approval, or a
+  # network blip in the runner, is not a defect in the branch; its red is the
+  # signal that the public surface drifted from what we ship.
+  hosted-mcp-live:
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run check:hosted-mcp:live
+
   # Two AI builders shipped a "1.3.0 signature fix" to this repository on
   # 17 Oct 2026 within hours of each other, with different rule numbers and
   # different verdict shapes. This job is what stops that happening again: the

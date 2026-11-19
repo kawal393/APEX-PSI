@@ -6,21 +6,24 @@
 // answers the way this file says it answers. Only Web APIs are used, which is why
 // no Deno and no compiler is needed.
 //
-// Nothing here touches the network. The ledger is a stub that records every call
-// it receives, so the run also proves what the door does NOT send: no
-// Authorization header, ever, from a caller who presented none.
+// Nothing here touches the network unless Master asks for it with --live, which
+// drives the deployed door over HTTPS. The ledger is a stub that records every
+// call it receives, so the offline run also proves what the door does NOT send:
+// no Authorization header, ever, from a caller who presented none.
+//
+//   node --experimental-strip-types scripts/hosted-mcp-check.mjs           # offline, stubs
+//   node --experimental-strip-types scripts/hosted-mcp-check.mjs --live    # the wire, reads only
+//   APEX_LIVE_SEAL=1 node --experimental-strip-types … --live --seal       # appends one receipt
 //
 // What a green run does NOT prove, printed at the end on its own lines:
-//   - that the function is deployed. The flagship's production environment
-//     requires a named reviewer, so only Master can turn this green into live.
-//   - that a real MCP client (VS Code, Cursor, Codex, Claude) completes the
-//     handshake against the live URL. That needs the deployment.
-//   - the notary's own answers for allowance and payment. They are stubbed here.
-//   - that the wording of each tool description still matches the npm package:
-//     this run compares the tool NAMES against the sibling repository when it is
-//     present on disk, and says so either way.
+//   - offline: that the function is deployed, or that a real MCP client (VS Code,
+//     Cursor, Codex) completes the handshake against the live URL. --live measures
+//     both halves of that from the wire; the offline run cannot see either.
+//   - offline: the notary's own answers for allowance and payment. They are stubbed here.
+//   - offline: the wording of each tool description against the npm package. This run
+//     compares the tool NAMES and argument shapes against the sibling repository when
+//     it is present on disk, and says so either way.
 //
-// Usage: node --experimental-strip-types scripts/hosted-mcp-check.mjs
 // Exit 0 = every check PASS. Exit 1 = any FAIL. Exit 2 = could not load the door.
 
 import { readFile } from "node:fs/promises";
@@ -35,16 +38,29 @@ try {
 }
 
 const results = [];
+const skipped = [];
 function record(name, pass, measured = []) {
   results.push({ name, pass });
   console.log(`${pass ? "PASS" : "FAIL"}  ${name}`);
   for (const line of measured) console.log(`        ${line}`);
 }
+function skip(name, why) {
+  skipped.push({ name, why });
+  console.log(`SKIP  ${name}`);
+  console.log(`        ${why}`);
+}
+
+// One version, read from the function that announces it. Hardcoding it here would
+// let the stub and the deploy disagree while both looked green.
+const DOOR_SOURCE = "../supabase/functions/apex-psi-mcp/index.ts";
+const REPO_VERSION = (
+  await readFile(new URL(DOOR_SOURCE, import.meta.url), "utf8").catch(() => "")
+).match(/const VERSION = "([^"]+)"/)?.[1] ?? null;
 
 const CONFIG_BASE = {
   apiBase: "https://stub.invalid/functions/v1",
   siteBase: "https://stub.invalid",
-  version: "1.2.2",
+  version: REPO_VERSION ?? "0.0.0",
 };
 
 // A ledger that answers like the notary and keeps every request it saw.
@@ -123,6 +139,9 @@ async function callTool(config, name, args, id = 7) {
 }
 
 // ---------------------------------------------------------------- transport
+
+record("the function's announced version was read from its own source", REPO_VERSION !== null,
+  [`supabase/functions/apex-psi-mcp/index.ts VERSION=${String(REPO_VERSION)}`]);
 
 {
   const cfg = { ...CONFIG_BASE, fetch: stubLedger().fetch };
@@ -449,15 +468,221 @@ function topLevelKeys(block) {
   }
 }
 
+// ---------------------------------------------------------------- live door
+//
+// The whole run above drives the shipped modules against a stub, which is why it
+// went green on 18 Nov while the deployed door answered HTTP 500 to every seal:
+// a stub cannot be down, cannot be an older build than the branch, and cannot be
+// missing its seed. --live replaces the stub with the wire for everything a read
+// can measure. It mints nothing: seal is the one tool that appends, and it runs
+// only when Master sets APEX_LIVE_SEAL=1.
+
+const LIVE = process.argv.includes("--live");
+
+if (LIVE) {
+  const config = (await readFile(new URL("../supabase/config.toml", import.meta.url), "utf8").catch(() => ""))
+    .match(/project_id\s*=\s*"([^"]+)"/)?.[1] ?? null;
+
+  // The address is derived from the project this repository is linked to, so a
+  // migration changes the check and the deploy together rather than leaving a
+  // second hardcoded host that happily tests the old box.
+  const ref = process.env.APEX_LIVE_PROJECT_REF || config;
+  const base = ref ? `https://${ref}.supabase.co/functions/v1` : null;
+  const EXPECTED_DOOR = base ? `${base}/apex-psi-mcp` : null;
+  const DOOR = process.env.APEX_MCP_DOOR_URL || EXPECTED_DOOR;
+  const OAUTH_DOOR = base ? `${base}/mcp` : null;
+
+  record("the live door is the apex-psi-mcp function of the project this repository is linked to",
+    DOOR === EXPECTED_DOOR,
+    [`config.toml project_id=${String(ref)} tested=${String(DOOR)}`
+      + (DOOR === EXPECTED_DOOR ? "" : "  <-- APEX_MCP_DOOR_URL moved the test off our own door")]);
+  if (!DOOR) {
+    console.log("\nno project_id in supabase/config.toml and no APEX_MCP_DOOR_URL; the live checks cannot run.");
+    process.exit(2);
+  }
+
+  async function wire(url, init = {}, label = "door") {
+    // One retry on a network fault: Supabase wakes a cold isolate by being slow,
+    // and a guard that goes red once in four green runs is a guard nobody reads.
+    // A refusal is an answer and is never retried; only a fault is.
+    let lastError = null;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const res = await fetch(url, { ...init, signal: AbortSignal.timeout(30_000) });
+        const body = await res.text();
+        let json = null;
+        try { json = JSON.parse(body); } catch { /* 202 and 204 carry no body */ }
+        if (attempt > 1) console.log(`        note: ${label.trim()} needed a second attempt`);
+        return { res, body, json };
+      } catch (error) {
+        lastError = error;
+        if (attempt === 1) await new Promise((done) => setTimeout(done, 1500));
+      }
+    }
+    record(`${label.replace(/[:\s]+$/, "")} answers over the wire`, false, [`${url} -> ${String(lastError?.message || lastError)} (twice)`]);
+    return null;
+  }
+
+  const rpc = (method, params, id, label) =>
+    wire(DOOR, {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json, text/event-stream" },
+      body: JSON.stringify({ jsonrpc: "2.0", id, method, ...(params ? { params } : {}) }),
+    }, label);
+
+  const toolText = async (name, args, label) => {
+    const called = await rpc("tools/call", { name, arguments: args }, 40, label);
+    if (!called) return null;
+    const text = called.json?.result?.content?.[0]?.text ?? "";
+    let payload = null;
+    try { payload = JSON.parse(text); } catch { /* asserted below */ }
+    return { ...called, text, payload, isError: called.json?.result?.isError === true };
+  };
+
+  const init = await rpc("initialize", { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "hosted-mcp-check", version: "0" } }, 900, "live initialize: ");
+  if (init) {
+    const info = init.json?.result?.serverInfo || {};
+    record("the deployed door answers initialize over the wire",
+      init.res.status === 200 && info.name === "apex-psi-mcp" && init.json.result.capabilities?.tools !== undefined,
+      [`status=${init.res.status} name=${info.name} version=${info.version}`]);
+    record("the deployed door is stateless on the wire: no Mcp-Session-Id handed out",
+      init.res.headers.get("mcp-session-id") === null,
+      [`Mcp-Session-Id=${String(init.res.headers.get("mcp-session-id"))}`]);
+    // The one check that cannot be faked by pushing a commit: the build that is
+    // actually serving traffic must announce the version this branch ships.
+    record("the live announced version equals the version in this branch",
+      REPO_VERSION !== null && info.version === REPO_VERSION,
+      [`live=${String(info.version)} repo=${String(REPO_VERSION)}`]);
+
+    const instructions = String(init.json.result.instructions || "");
+    // The npm registry is the only authority on what the stdio package is; if the
+    // door and npm disagree, an agent reading either gets a different product.
+    const registry = await wire("https://registry.npmjs.org/apex-psi-mcp", {}, "npm registry: ");
+    record("the live door and npm announce the same release",
+      registry?.json?.["dist-tags"]?.latest === info.version,
+      [`npm dist-tags.latest=${String(registry?.json?.["dist-tags"]?.latest)} door=${String(info.version)}`]);
+
+    // Anything a person or an agent reads off the live server is public copy, and
+    // the claims guard only reads the repository — a stale deployment can serve the
+    // absolutes we cut weeks ago. So the wire itself is scanned.
+    const ABSOLUTE = /immutab|tamper[-\s]?proof|black[\s-]?box|\bguarante|\bworld's first|\b100% free\b/i;
+    const listed = await rpc("tools/list", undefined, 901, "live tools/list: ");
+    const descriptions = (listed?.json?.result?.tools || []).map((t) => `${t.name} ${t.description}`);
+    const liveProse = [instructions, ...descriptions];
+    const absolutes = liveProse.filter((s) => ABSOLUTE.test(s));
+    record("the live server's own prose names no absolute", absolutes.length === 0,
+      absolutes.map((s) => `found: ${s.slice(0, 120)}`));
+
+    const names = (listed?.json?.result?.tools || []).map((t) => t.name);
+    record("the live tools/list is the five tools this branch ships",
+      JSON.stringify(names) === JSON.stringify(TOOLS.map((t) => t.name)),
+      [`live: ${names.join(", ")} | branch: ${TOOLS.map((t) => t.name).join(", ")}`]);
+    record("every live tool carries a schema, a description and annotations",
+      names.length > 0 && (listed.json.result.tools || []).every(
+        (t) => t.inputSchema?.type === "object" && typeof t.description === "string" && t.description.length > 40 && t.annotations,
+      ),
+      [`annotations: ${(listed?.json?.result?.tools || []).map((t) => `${t.name}:${t.annotations?.readOnlyHint ? "R" : "W"}`).join(" ")}`]);
+  }
+
+  const bareGet = await wire(DOOR, { method: "GET" }, "live GET: ");
+  if (bareGet) {
+    record("a plain visit to the live door is refused the way a stateless server refuses",
+      bareGet.res.status === 405 && bareGet.res.headers.get("allow") === "POST, OPTIONS" && bareGet.json?.error?.code === -32601,
+      [`status=${bareGet.res.status} Allow=${bareGet.res.headers.get("allow")} code=${bareGet.json?.error?.code}`]);
+  }
+
+  const preflight = await wire(DOOR, { method: "OPTIONS" }, "live OPTIONS: ");
+  if (preflight) {
+    record("a browser tab may call the live door from anywhere",
+      preflight.res.status === 204 && preflight.res.headers.get("access-control-allow-origin") === "*",
+      [`status=${preflight.res.status} ACAO=${preflight.res.headers.get("access-control-allow-origin")}`]);
+  }
+
+  const notification = await rpc("notifications/initialized", undefined, undefined, "live notification: ");
+  if (notification) {
+    record("a notification is accepted live with 202 and no body",
+      notification.res.status === 202 && notification.body.length === 0,
+      [`status=${notification.res.status} bytes=${notification.body.length}`]);
+  }
+
+  if (OAUTH_DOOR) {
+    const signedIn = await wire(OAUTH_DOOR, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: {} }),
+    }, "live /mcp: ");
+    if (signedIn) {
+      record("the sign-in door is still locked to an account", signedIn.res.status === 401,
+        [`/mcp status=${signedIn.res.status}`]);
+    }
+  }
+
+  // Two reads that leave the transport and cross into the notary, so a door that
+  // answers JSON-RPC perfectly while its outbound leg is dead cannot pass.
+  const ghost = await toolText("verify", { hash: "0".repeat(64) }, "live verify: ");
+  if (ghost) {
+    record("the live door reads the ledger: verify answers a verdict for a hash that is not there",
+      ghost.res.status === 200 && ghost.isError === false && ghost.payload?.success === true
+        && ghost.payload?.verification?.found === false
+        && ghost.json.result.content[0].type === "text"
+        && /^sha256:0{64}$|^0{64}$/.test(String(ghost.payload?.hash)),
+      [`answer=${ghost.payload?.verification?.message}`]);
+  }
+
+  const anchors = await toolText("anchor", {}, "live anchor: ");
+  if (anchors) {
+    const rows = anchors.payload?.anchorResult?.anchors || [];
+    record("the live door reads the anchor service, and asks for history rather than a write",
+      anchors.isError === false && anchors.payload?.action === "history" && Array.isArray(rows),
+      [`anchors served=${rows.length} block_heights=${rows.slice(0, 3).map((a) => a.block_height).join(",")}`]);
+  }
+
+  if (process.argv.includes("--seal")) {
+    if (process.env.APEX_LIVE_SEAL !== "1") {
+      skip("a real seal through the live door",
+        "--seal was asked for but APEX_LIVE_SEAL is not 1; a seal appends a row to the public ledger forever, so it needs Master's explicit env, not a flag.");
+    } else {
+      const content = `hosted-mcp-check --live --seal ${new Date().toISOString()}`;
+      const sealed = await toolText("seal", { content }, "live seal: ");
+      if (sealed) {
+        const hash = sealed.payload?.receipt?.decision_hash ?? sealed.payload?.decision_hash;
+        record("a seal through the live door appends a receipt",
+          sealed.isError === false && sealed.payload?.success === true && Boolean(hash),
+          // The JSON-RPC envelope answers 200 even when the ledger refused, so the
+          // reason has to be printed here or a red run says nothing about why.
+          [`status=${sealed.res.status} receipt_id=${String(sealed.payload?.receipt?.receipt_id ?? sealed.payload?.receipt_id)} hash=${String(hash)}`,
+            `the door said: ${sealed.text.replace(/\s+/g, " ").slice(0, 300)}`]);
+        if (hash) {
+          const back = await toolText("verify", { hash }, "live re-verify: ");
+          record("the ledger then accepts that same hash",
+            back?.payload?.verification?.verified === true,
+            [`answer=${String(back?.payload?.verification?.message)}`]);
+        }
+      }
+    }
+  } else {
+    skip("a real seal through the live door", "read-only run; --seal with APEX_LIVE_SEAL=1 to append one receipt");
+  }
+}
+
 // ---------------------------------------------------------------- verdict
 
 const failed = results.filter((r) => !r.pass);
-console.log(`\n${results.length - failed.length}/${results.length} checks pass.`);
-console.log("A green run does NOT prove: the function is deployed (the production");
-console.log("environment needs a named reviewer); a real MCP client completes the");
-console.log("handshake against the live URL; the notary's own allowance and payment");
-console.log("answers, which are stubbed here; or that every description still matches");
-console.log("the npm package word for word.");
+console.log(`\n${results.length - failed.length}/${results.length} checks pass${skipped.length ? `, ${skipped.length} skipped` : ""}.`);
+if (LIVE) {
+  console.log("A green LIVE run proves the deployed door, not this branch's modules: the");
+  console.log("version it announces, its tool table, its refusal codes and the notary's");
+  console.log("answers for reads that cross the transport. It still does NOT prove the");
+  console.log("write leg works. On 18 Nov every read here passed while every seal answered");
+  console.log("HTTP 500, because a read never touches the signing key. Only --seal, with");
+  console.log("APEX_LIVE_SEAL=1, proves a receipt can be minted; and it proves nothing about");
+  console.log("an MCP client's own handshake implementation, only our half of it.");
+} else {
+  console.log("A green run does NOT prove: the function is deployed (the production");
+  console.log("environment needs a named reviewer); a real MCP client completes the");
+  console.log("handshake against the live URL; the notary's own allowance and payment");
+  console.log("answers, which are stubbed here; or that every description still matches");
+  console.log("the npm package word for word. Run it with --live to measure the wire.");
+}
 if (failed.length) {
   console.log("FAILED: " + failed.map((f) => f.name).join(" | "));
   process.exit(1);
