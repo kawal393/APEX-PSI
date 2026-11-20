@@ -26,3 +26,4 @@ public/hello-psi/vectors.json text eol=lf
 # Shard digests are quoted in manifest.json, so their bytes must not be rewritten.
 ledger-shards/*.ndjson text eol=lf
 ledger-shards/manifest.json text eol=lf
+ledger-shards/README.md text eol=lf
