@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-11-20T20:10:46.561Z",
+  "source": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/audit-mirror?limit=700",
+  "rows": 700,
+  "sequences": {
+    "min": 5320,
+    "max": 6020
+  },
+  "expected_in_range": 701,
+  "gaps": [
+    5463
+  ],
+  "duplicate_sequences": 0,
+  "signatures": {
+    "verified_under_published_key": 700,
+    "unverifiable": 0
+  },
+  "shards": [
+    {
+      "file": "ledger-0005320-0005820.ndjson",
+      "rows": 500,
+      "first_sequence": 5320,
+      "last_sequence": 5820,
+      "sha256": "beb8e7dab16a0986b27403b52ad5e2cf816e37ca82d67f636a242a7a2523c2cd",
+      "window_root": "2fcc3cc2590ac94059450a9507b8f9657934cb9f756007d9903fd62737d136ed"
+    },
+    {
+      "file": "ledger-0005821-0006020.ndjson",
+      "rows": 200,
+      "first_sequence": 5821,
+      "last_sequence": 6020,
+      "sha256": "01376132f060ed376c2c1335e22eefc88fc3b854fc749bb996911a8edbdc608b",
+      "window_root": "0fee813a291446af0d85eb6d440847b3f47303208c9deaf31ba2e77b6275ab54"
+    }
+  ]
+}

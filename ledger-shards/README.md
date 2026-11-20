@@ -1,0 +1,29 @@
+# Ledger shards — the public record outside APEX's rented box
+
+These files are a copy of APEX-PSI's append-only ledger taken from the public
+read door, `GET /functions/v1/audit-mirror?limit=700`, so anyone can refetch and
+compare. They exist so the record does not depend on one vendor's server staying
+up.
+
+- `ledger-<first>-<last>.ndjson` — one JSON object per ledger row, ordered by `sequence_number`.
+- `manifest.json` — row count, sequence range, `gaps`, `duplicate_sequences`, each shard's sha256, and the RFC 6962 root over each shard's leaves.
+
+Rebuild from the live door and re-check every signature:
+
+```
+node scripts/ledger-git-shards.mjs "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/audit-mirror?limit=700" ledger-shards
+node scripts/offline-verify-from-git.mjs
+```
+
+What the second command proves, measured on 21 Nov 2026: 700 of 700 row
+signatures verify with `apex-psi-verifier` fetched from npm, using only the keys
+listed in `public/.well-known/apex-psi-trust-anchor.json`, with no call to an
+APEX service.
+
+What it does not prove: completeness. These shards carry sequences 5320–6020
+only — the public door stops at about 700 rows — while the ledger reports 6,019
+receipts. Sequence 5463 is absent from the live ledger and is a real gap, not a
+paging artefact. A shard is a window, not the whole record.
+
+These rows are seals over hashes. They authenticate an audit trail; they are not
+proof that any sealed statement is true.
