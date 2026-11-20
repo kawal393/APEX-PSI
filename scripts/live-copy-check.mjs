@@ -116,6 +116,46 @@ for (const [what, s] of MUST_NOT) {
   else { console.log(`  FAIL live claim: ${what} x${n}`); failed++; }
 }
 
+// The card's own instructions, followed from the public internet. Found 21 Nov:
+// apex-protocol.json told a machine to read founded_at from
+// https://ai-governance-standard.com/functions/v1/ledger-stats, and that address
+// answers HTTP 200 with the website's HTML — a redirect to www plus a SPA shell,
+// with no error anywhere. A caller that trusts the status code gets a page, not a
+// number, and never learns it failed. So every function URL a published card
+// names must actually answer JSON.
+const cardRes = await fetch(`${SITE}/.well-known/apex-protocol.json?t=${Date.now()}`, {
+  headers: { 'User-Agent': 'Mozilla/5.0', 'Cache-Control': 'no-cache' },
+});
+if (!cardRes.ok) {
+  console.log(`  FAIL served card: apex-protocol.json HTTP ${cardRes.status}`);
+  failed++;
+} else {
+  const card = await cardRes.text();
+  const fnUrls = [...new Set([...card.matchAll(/https:\/\/[a-z0-9.-]+\/functions\/v1\/[a-zA-Z0-9_-]+/gi)].map((m) => m[0]))];
+  for (const u of fnUrls) {
+    let probe;
+    try {
+      probe = await fetch(u, { method: 'GET', redirect: 'follow', headers: { Accept: 'application/json' } });
+    } catch (e) {
+      console.log(`  FAIL card endpoint unreachable: ${u} (${e.message})`);
+      failed++;
+      continue;
+    }
+    const body = await probe.text();
+    const isJson = (() => { try { JSON.parse(body); return true; } catch { return false; } })();
+    // A 4xx with JSON is the endpoint speaking the documented protocol to a
+    // request that needs a parameter or a POST. HTML at any status is a website
+    // standing in for an API, which is the defect this guard exists to catch.
+    if (!isJson) {
+      console.log(`  FAIL card endpoint answers ${probe.status} with ${/<!doctype html/i.test(body) ? 'the website HTML, not the API' : `a non-JSON body (${body.length} B)`}: ${u}`);
+      failed++;
+      continue;
+    }
+    console.log(`  ok   card endpoint answers JSON (HTTP ${probe.status}${probe.status >= 400 ? '; needs the documented method or parameter' : ''}): ${u}`);
+  }
+  if (!fnUrls.length) console.log('  note no function URLs in the served card to probe');
+}
+
 if (failed) {
   console.log(`\n${failed} problem(s). The live site does not match the repository.`);
   process.exit(1);

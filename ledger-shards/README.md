@@ -22,8 +22,14 @@ APEX service.
 
 What it does not prove: completeness. These shards carry sequences 5320–6020
 only — the public door stops at about 700 rows — while the ledger reports 6,019
-receipts. Sequence 5463 is absent from the live ledger and is a real gap, not a
-paging artefact. A shard is a window, not the whole record.
+receipts up to sequence 6,020. Sequence 5463 does not exist, and that is a
+counter gap rather than a lost seal: the row number comes from a PostgreSQL
+sequence, which advances even when the insert using it is rolled back, so an
+aborted insert between the 1 Sept row (5462) and the 3 Sept row (5464) consumed
+5463 and wrote nothing. Both neighbours are present in these shards, and the
+window holds exactly that one gap and no duplicates. A shard is still a window,
+not the whole record — no copy here may claim the sequence numbers are
+contiguous.
 
 These rows are seals over hashes. They authenticate an audit trail; they are not
 proof that any sealed statement is true.
