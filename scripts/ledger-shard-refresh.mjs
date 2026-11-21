@@ -137,7 +137,7 @@ checks.push([
 // Keyed on the state, not the timestamp: a daily run over an idle ledger must add one
 // line when the copy actually moved and none when it did not, or the log becomes a diary.
 const state = `rows=${after.rows}\tseq=${after.sequences.min}-${after.sequences.max}\tgaps=${gapsNow.length}${gapsNow.length ? `(${gapsNow.join(',')})` : ''}\tcopy_root=${after.copy_root}`;
-const lineageLine = `${after.generated_at.slice(0, 10)}\t${state}`;
+const lineageLine = `${new Date().toISOString().slice(0, 10)}\t${state}`;
 const previous = fs.existsSync(ROOTS) ? fs.readFileSync(ROOTS, 'utf8').trim().split('\n').filter(Boolean) : [];
 const lastState = previous.at(-1)?.split('\t').slice(1).join('\t');
 const rootMoved = lastState !== state;

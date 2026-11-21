@@ -112,7 +112,9 @@ const gaps = [];
 for (let s = rows[0].sequence_number; s <= rows.at(-1).sequence_number; s++) if (!present.has(s)) gaps.push(s);
 
 const manifest = {
-  generated_at: new Date().toISOString(),
+  // No timestamp here on purpose: the manifest describes bytes, and ROOTS.tsv is the
+  // dated history. A refresh over an idle ledger then produces no diff at all, which is
+  // the signal the publisher uses to say "nothing new" instead of churning a blob daily.
   source: srcArg,
   source_rows: fetched.length,
   cumulative: MERGE,
