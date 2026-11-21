@@ -167,8 +167,10 @@ const Upgrade = () => {
         <div className="mb-12">
           <HostedTiers currentTier={tier} />
           <p className="mt-4 text-xs text-muted-foreground">
-            Buying here is what raises hosted capacity: a key appears on this page once Stripe
-            confirms the payment. The same plans are published as a listing on the RapidAPI
+            Buying here is what raises hosted capacity. Pay by card without signing in, then
+            open this page signed in with the email on that card: it reads the plan from Stripe
+            and issues the key at that capacity. Subscribing while signed in does both in one
+            pass. The same plans are published as a listing on the RapidAPI
             marketplace —{" "}
             <a
               href={RAPIDAPI_LISTING_URL}

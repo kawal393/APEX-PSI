@@ -17,6 +17,11 @@
 //   3. a till whose account is named for a different business than the product it sells
 //      (demonstrated red on 22 November: the card page for "APEX PSI — Pro $11.00 per month"
 //       reads "Sovereign AI Film Verse", because that is this account's public business name)
+//   4. a price a served button charges that no hosted tier grants
+//      (the charge works, the money is taken, and nothing raises the buyer's capacity —
+//       measured 22 November by reading TIER_PRICE_ID from the provisioning code itself)
+//   5. a money endpoint the site depends on that is not answering
+//      (create-checkout, sync-subscription, create-api-key, stripe-webhook)
 // Everything else it prints is measurement, not verdict: which APEX PSI prices have a
 // button, which have none, and which are quoted as a number in the served file.
 //
@@ -24,9 +29,100 @@
 // Exit 0 = site and store agree. Exit 1 = contradiction, listed per line. Exit 2 = could not measure.
 
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const VAULT = 'C:/Users/apex1/.apex-vault/stripe_payment_links_once.env';
 const SITE = 'https://www.ai-governance-standard.com';
+const FUNCTIONS_BASE = 'https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1';
+const TIERS_FILE = fileURLToPath(new URL('../supabase/functions/_shared/tiers.ts', import.meta.url));
+
+// What each money endpoint must answer for the door to be considered alive. Each of
+// these replies BEFORE any charge or write, so probing them changes nothing.
+const DOOR_EXPECTATIONS = [
+  // deployed and asking for a session = correct; a signed-in browser supplies it.
+  { path: '/create-checkout', want: [401], means: 'present, asks the buyer to sign in before charging' },
+  { path: '/sync-subscription', want: [401], means: 'present, reads the plan only for a signed-in user' },
+  { path: '/create-api-key', want: [401], means: 'present, mints a key only for a signed-in user' },
+  // stripe-webhook builds the Stripe client from STRIPE_SECRET_KEY before it looks at a
+  // signature, so "400 missing signature" is also proof the card secret is configured.
+  { path: '/stripe-webhook', want: [400], means: 'present, and STRIPE_SECRET_KEY is configured in the runtime' },
+];
+
+/** Read the tier map out of the code that provisions, so this guard never hardcodes a price id. */
+export function readTierMap(source) {
+  const free = Number((source.match(/FREE_DAILY_LIMIT\s*=\s*(\d+)/) || [])[1]);
+  const block = (name) => {
+    const start = source.indexOf(`export const ${name}`);
+    if (start < 0) return {};
+    const body = source.slice(start, source.indexOf('};', start) + 1);
+    const out = {};
+    for (const m of body.matchAll(/(\w+)\s*:\s*"([^"]+)"/g)) out[m[1]] = m[2];
+    for (const m of body.matchAll(/(\w+)\s*:\s*(-?\d+)/g)) out[m[1]] = Number(m[2]);
+    return out;
+  };
+  return { free, limits: block('TIER_DAILY_LIMIT'), prices: block('TIER_PRICE_ID') };
+}
+
+// ---- rule 4: does paying actually deliver capacity? ------------------------
+export function ruleDelivery(charges, slugs, tierMap) {
+  const priceToTier = {};
+  for (const [tier, id] of Object.entries(tierMap.prices)) priceToTier[id] = tier;
+  const faults = [];
+  const delivered = [];
+  for (const slug of slugs) {
+    const c = charges[slug];
+    if (!c || !c.active) continue;
+    for (const priceId of c.priceIds) {
+      const tier = priceToTier[priceId];
+      const limit = tier ? tierMap.limits[tier] : undefined;
+      if (!tier) {
+        faults.push(
+          `buy.stripe.com/${slug} charges ${priceId}, which no hosted tier grants — a buyer who pays it gets no raised capacity and no key path`,
+        );
+      } else if (!(limit > tierMap.free)) {
+        faults.push(
+          `buy.stripe.com/${slug} charges ${priceId}, mapped to tier "${tier}" whose daily limit (${limit}) is not above the free ${tierMap.free} — paying changes nothing`,
+        );
+      } else {
+        delivered.push(`${priceId} -> ${tier} (${limit}/day)`);
+      }
+    }
+  }
+  return faults.length ? { ok: false, what: faults.join('\n  ') } : { ok: true, note: `every charged price grants capacity: ${delivered.join(', ')}` };
+}
+
+// ---- rule 5: are the money endpoints alive? -------------------------------
+export function ruleDoors(results) {
+  const faults = [];
+  for (const { path, want, means } of DOOR_EXPECTATIONS) {
+    const got = results[path];
+    if (got === undefined) faults.push(`${path} was not measured`);
+    else if (want.includes(got)) continue;
+    else if (got === 404) faults.push(`${path} is not deployed — the page depends on it`);
+    else if (got >= 500 || got === 0) faults.push(`${path} answers ${got} — the endpoint is down${path === '/stripe-webhook' ? ' (a 500 here means STRIPE_SECRET_KEY is missing from the runtime)' : ''}`);
+    else faults.push(`${path} answers ${got}, expected ${want.join('/')} (${means})`);
+  }
+  return faults.length ? { ok: false, what: faults.join('\n  ') } : { ok: true, note: DOOR_EXPECTATIONS.map((d) => `${d.path} answers ${d.want[0]}`).join(', ') };
+}
+
+async function probeDoors() {
+  const out = {};
+  for (const { path } of DOOR_EXPECTATIONS) {
+    try {
+      const r = await fetch(FUNCTIONS_BASE + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
+      });
+      out[path] = r.status;
+      await r.text();
+    } catch (e) {
+      out[path] = 0;
+    }
+  }
+  return out;
+}
+
 
 const key = (() => {
   const t = readFileSync(VAULT, 'utf8');
@@ -201,6 +297,26 @@ async function stripe(path) {
     console.log('till brand        : ok — the account the buyer pays is named for the product they are buying');
   }
 
+  // 6. Does paying deliver? A button that charges but grants no capacity takes money
+  //    for nothing, so it is as fatal as a button that cannot charge.
+  let tierMap;
+  try {
+    tierMap = readTierMap(readFileSync(TIERS_FILE, 'utf8'));
+  } catch (e) { console.error('could not read the provisioning tier map at', TIERS_FILE, e.message); process.exit(2); }
+  if (!Object.keys(tierMap.prices).length || !tierMap.free) {
+    console.error('the provisioning tier map parsed empty — refusing to guess:', TIERS_FILE);
+    process.exit(2);
+  }
+  console.log(`\ntier map        : free ${tierMap.free}/day | ` +
+    Object.entries(tierMap.prices).map(([t, id]) => `${t}=${id}`).join(', '));
+  const delivery = ruleDelivery(charges, bundleSlugs, tierMap);
+  if (!delivery.ok) { bad++; fault(delivery.what); } else console.log('pay delivers     : ok — ' + delivery.note);
+
+  // 7. The endpoints the buy flow runs on. Probing them POSTs an empty body, which each
+  //    one rejects before it can read a session, charge a card or write a row.
+  const doors = ruleDoors(await probeDoors());
+  if (!doors.ok) { bad++; fault('money endpoint: ' + doors.what); } else console.log('doors alive    : ok — ' + doors.note);
+
   if (SELF_TEST) {
     const caught = faults.some(f => f.includes(FAKE_SLUG));
     console.log('  SELF-TEST  injected a link no account owns -> ' +
@@ -210,7 +326,31 @@ async function stripe(path) {
     console.log('  SELF-TEST  injected the measured merchant name against ours -> ' +
       (caughtBrand ? 'CAUGHT: the brand rule tells the two apart, so its PASS means something'
                   : 'MISSED: the brand rule cannot fail and is decoration'));
-    if (!caught || !caughtBrand) bad++;
+
+    // Rule 4 driven both ways on fabricated store state: a price no tier grants, and a
+    // tier whose limit is not above free. Both must be refused; the real map must pass.
+    const FAKE_PRICE = 'price_selftestnoplan0000';
+    const fakeCharges = { selftestlink0: { active: true, priceIds: [FAKE_PRICE], amounts: [11] } };
+    const caughtOrphan = !ruleDelivery(fakeCharges, ['selftestlink0'], tierMap).ok;
+    console.log('  SELF-TEST  injected a charged price no tier grants -> ' +
+      (caughtOrphan ? 'CAUGHT: money that buys no capacity is refused' : 'MISSED: the delivery rule cannot fail'));
+    const equalLimitMap = { free: 100, limits: { pro: 100 }, prices: { pro: FAKE_PRICE } };
+    const caughtFlat = !ruleDelivery(fakeCharges, ['selftestlink0'], equalLimitMap).ok;
+    console.log('  SELF-TEST  injected a tier priced at the free limit -> ' +
+      (caughtFlat ? 'CAUGHT: paying that changes nothing is refused' : 'MISSED: the flat-tier case is not seen'));
+    const realPasses = ruleDelivery(charges, bundleSlugs, tierMap).ok;
+    console.log('  SELF-TEST  the real served links against the real tier map -> ' +
+      (realPasses ? 'PASS as expected' : 'the injected cases are not the live state'));
+
+    // Rule 5 driven both ways: an undeployed door and a door answering 500 must be refused.
+    const goodDoors = { '/create-checkout': 401, '/sync-subscription': 401, '/create-api-key': 401, '/stripe-webhook': 400 };
+    const caughtMissing = !ruleDoors({ ...goodDoors, '/create-checkout': 404 }).ok;
+    const caughtDown = !ruleDoors({ ...goodDoors, '/stripe-webhook': 500 }).ok;
+    const doorsPassClean = ruleDoors(goodDoors).ok;
+    console.log('  SELF-TEST  injected a 404 door and a 500 door -> ' +
+      (caughtMissing && caughtDown && doorsPassClean ? 'CAUGHT: both states refused, clean set accepted' : 'MISSED: the door rule cannot fail'));
+
+    if (!caught || !caughtBrand || !caughtOrphan || !caughtFlat || !caughtMissing || !caughtDown || !doorsPassClean) bad++;
   }
 
   console.log(bad ? `\nFAIL — ${bad} site-vs-store contradiction(s).` : '\nPASS — site money claims match what the account sells.');

@@ -537,8 +537,24 @@ Deno.serve(async (req) => {
     });
   } catch (err) {
     console.error("[Notary] Error:", err);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
+    // The reason goes back to the caller, not only to the server logs. From 19 to 22
+    // November 2026 every seal failed with this blank body and nothing could say why.
+    // Only the exception's own text is returned — never an environment value, key, or
+    // credential; signing errors name the variable, not its contents.
+    const reason = String((err as Error)?.message || err).slice(0, 300);
+    const quota = /quota|limit|allowance/i.test(reason);
+    const selfBase = `https://${Deno.env.get("SUPABASE_URL")?.match(/\/\/([^.]+)/)?.[1] || ""}.supabase.co/functions/v1`;
+    return new Response(
+      JSON.stringify({
+        error: quota ? "daily_allowance_exceeded" : "seal_refused",
+        reason,
+        engine: "APEX NOTARY v1.0 — Signed",
+        help: `${selfBase}/signing-identity`,
+      }),
+      {
+        status: quota ? 429 : 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
   }
 });
