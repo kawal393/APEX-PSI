@@ -27,3 +27,4 @@ public/hello-psi/vectors.json text eol=lf
 ledger-shards/*.ndjson text eol=lf
 ledger-shards/manifest.json text eol=lf
 ledger-shards/README.md text eol=lf
+ledger-shards/ROOTS.tsv text eol=lf

@@ -1,12 +1,22 @@
 #!/usr/bin/env node
 // Publish the public ledger into git-resident shards and prove a receipt verifies
-// from those shards alone. Usage: node scripts/ledger-git-shards.mjs <ndjson|https://...> [outdir]
+// from those shards alone.
+//
+// Usage: node scripts/ledger-git-shards.mjs <ndjson|https://...> [outdir] [--merge]
+//
+// --merge keeps every row already in [outdir] and adds the newly fetched ones to it.
+// Without it the git copy is only whatever the door handed over this run, which is a
+// window, not an archive: the door returns the newest rows it can, so a plain re-run
+// as the ledger grows would drop the oldest receipts from the only copy that survives
+// Lovable. The door's ~750-row runtime ceiling is exactly why the copy must accumulate.
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
-const [srcArg, outArg] = process.argv.slice(2);
-if (!srcArg) { console.error('usage: ledger-git-shards.mjs <rows.ndjson|url> [outdir]'); process.exit(2); }
+const argv = process.argv.slice(2);
+const MERGE = argv.includes('--merge');
+const [srcArg, outArg] = argv.filter((a) => !a.startsWith('--'));
+if (!srcArg) { console.error('usage: ledger-git-shards.mjs <rows.ndjson|url> [outdir] [--merge]'); process.exit(2); }
 const OUT = outArg || 'ledger-shards';
 const SHARD_ROWS = 500;
 const KEYS = {
@@ -52,8 +62,23 @@ function verifyEd25519(messageHex, signatureHex, pubkeyHex) {
   return crypto.verify(null, Buffer.from(messageHex, 'ascii'), key, Buffer.from(signatureHex, 'hex'));
 }
 
-const rows = (await loadRows(srcArg)).slice().sort((a, b) => a.sequence_number - b.sequence_number);
+const fetched = await loadRows(srcArg);
+const bySequence = new Map();
+if (MERGE && fs.existsSync(OUT)) {
+  for (const f of fs.readdirSync(OUT).filter((n) => n.endsWith('.ndjson')).sort()) {
+    for (const line of fs.readFileSync(path.join(OUT, f), 'utf8').trim().split('\n')) {
+      const r = JSON.parse(line);
+      bySequence.set(r.sequence_number, r);
+    }
+  }
+}
+const carried = bySequence.size;
+// The door is authoritative for a sequence it reports; the git copy supplies the rest.
+for (const r of fetched) bySequence.set(r.sequence_number, r);
+const rows = [...bySequence.values()].sort((a, b) => a.sequence_number - b.sequence_number);
 fs.mkdirSync(OUT, { recursive: true });
+// Re-sharding moves the boundaries, so any shard file left behind would double-count rows.
+for (const f of fs.readdirSync(OUT).filter((n) => n.endsWith('.ndjson'))) fs.rmSync(path.join(OUT, f));
 
 const shards = [];
 for (let i = 0; i < rows.length; i += SHARD_ROWS) {
@@ -65,7 +90,7 @@ for (let i = 0; i < rows.length; i += SHARD_ROWS) {
 }
 
 // Attribution + integrity, measured not assumed
-let signedOld = 0, signedNew = 0, unverifiable = 0, rootMismatch = 0;
+let signedOld = 0, signedNew = 0, unverifiable = 0;
 const attested = [];
 for (const r of rows) {
   let ok = false;
@@ -82,21 +107,29 @@ for (const r of rows) {
   if (!ok) unverifiable++;
 }
 
+const present = new Set(rows.map((r) => r.sequence_number));
+const gaps = [];
+for (let s = rows[0].sequence_number; s <= rows.at(-1).sequence_number; s++) if (!present.has(s)) gaps.push(s);
+
 const manifest = {
   generated_at: new Date().toISOString(),
   source: srcArg,
+  source_rows: fetched.length,
+  cumulative: MERGE,
   rows: rows.length,
   sequences: { min: rows[0].sequence_number, max: rows.at(-1).sequence_number },
   expected_in_range: rows.at(-1).sequence_number - rows[0].sequence_number + 1,
-  gaps: Array.from({ length: rows.at(-1).sequence_number - rows[0].sequence_number + 1 }, (_, i) => i + rows[0].sequence_number)
-    .filter((s) => !rows.some((r) => r.sequence_number === s)),
-  duplicate_sequences: rows.length - new Set(rows.map((r) => r.sequence_number)).size,
+  gaps,
+  duplicate_sequences: rows.length - present.size,
   signatures: { verified_under_published_key: signedOld + signedNew, unverifiable },
+  // Root of THIS git copy. Not the ledger's root: rows below `min` are not here, so
+  // this number is only comparable with another run over the same range.
+  copy_root: merkleRoot(rows.map((r) => r.merkle_leaf_hash)),
   shards,
 };
 fs.writeFileSync(path.join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 
-console.log(`rows ingested           : ${rows.length}`);
+console.log(`rows ingested           : ${rows.length}  (${fetched.length} from source, ${carried} already in git)`);
 console.log(`sequence range          : ${manifest.sequences.min} -> ${manifest.sequences.max}`);
 console.log(`expected in that range  : ${manifest.expected_in_range}  (a gap means a missing row)`);
 console.log(`GAPS                    : ${manifest.gaps.length ? manifest.gaps.join(', ') : 'none'}`);

@@ -1,6 +1,8 @@
 {
-  "generated_at": "2026-11-20T20:10:46.561Z",
+  "generated_at": "2026-11-21T10:37:11.496Z",
   "source": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/audit-mirror?limit=700",
+  "source_rows": 700,
+  "cumulative": true,
   "rows": 700,
   "sequences": {
     "min": 5320,
@@ -15,6 +17,7 @@
     "verified_under_published_key": 700,
     "unverifiable": 0
   },
+  "copy_root": "c4d1151ab2eb53f7982917995bdf1c8051c48ee3d0a4a446332e2f42e929448f",
   "shards": [
     {
       "file": "ledger-0005320-0005820.ndjson",
