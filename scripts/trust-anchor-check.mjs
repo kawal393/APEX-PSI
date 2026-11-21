@@ -295,6 +295,52 @@ notes.push(
     : "no credential of the signing project on this machine to test against the anchor",
 );
 
+// The rotation is a declared state, never an implied one. Exactly three are
+// honest, and they are distinguished by the status the anchor itself carries:
+//   pending   — the dedicated key is published but the secret is not live yet,
+//               so active_key_id still names the key that is signing.
+//   active    — the secret is live; active_key_id must name the dedicated key.
+//   identical — the dedicated key IS the top-level published key (no rotation).
+// Anything else means the anchor and the signing identity disagree, and a
+// stranger verifying a receipt cannot tell which key should authenticate it.
+export function rotationState(anchorDoc, derivedPub) {
+  const keys = (anchorDoc.keys || []).map((k) => ({
+    key_id: String(k.key_id || ""),
+    pub: String(k.public_key || "").toLowerCase(),
+    status: String(k.status || "").toLowerCase(),
+  }));
+  const top = String(anchorDoc.ed25519_public_key || "").toLowerCase();
+  const activeId = String(anchorDoc.active_key_id || "");
+  const active = keys.find((k) => k.key_id === activeId);
+  const mine = keys.find((k) => k.pub === derivedPub);
+
+  if (!active) {
+    return { violation: `active_key_id "${activeId || "(unset)"}" names no key the anchor lists — a verifier cannot resolve the signing key` };
+  }
+  if (active.status !== "active") {
+    return { violation: `active_key_id "${activeId}" is listed with status "${active.status}", not "active" — the anchor declares a signing key it has disowned` };
+  }
+  if (!mine) {
+    return { violation: "the key the dedicated signing secret derives is not published in the anchor — the anchor and the signing identity are not one key" };
+  }
+  if (mine.status === "pending") {
+    if (mine.key_id === activeId) {
+      return { violation: `the dedicated key is marked "pending" while also being named active_key_id — the rotation state contradicts itself` };
+    }
+    return { note: `the dedicated signing key ${mine.key_id} is published and marked pending; ${activeId} signs until the secret is set` };
+  }
+  if (mine.status === "active") {
+    if (mine.key_id !== activeId) {
+      return { violation: `the dedicated signing key ${mine.key_id} is marked active but active_key_id names ${activeId} — the anchor does not know which key signs` };
+    }
+    return { note: `the dedicated signing key ${mine.key_id} is active and named by active_key_id — the rotation is complete and declared` };
+  }
+  if (derivedPub === top && active.pub === top) {
+    return { note: "the anchor's active key is the key the dedicated signing secret derives" };
+  }
+  return { violation: `the dedicated signing key ${mine.key_id} is listed with status "${mine.status}", which is neither a pending nor a completed rotation — the state is undeclared` };
+}
+
 // The positive control: the key the dedicated signing secret derives must be
 // PUBLISHED. Until that secret is live in the signing project the key sits in
 // the anchor marked "pending"; from the day it goes live it is the active
@@ -306,29 +352,19 @@ const seedEntry = vaultText.match(
 const localSeed = process.env[SEED_KEY] || (seedEntry ? seedEntry[1].trim() : null);
 if (localSeed) {
   const derived = await publicKeyFromSeed(PREFIXES.ledger, localSeed);
+  const state = rotationState(anchor, derived);
+  if (state.violation) {
+    violations.push({
+      file: "public/.well-known/apex-psi-trust-anchor.json",
+      line: 12,
+      what: state.violation,
+    });
+  } else {
+    notes.push(state.note);
+  }
   const pendingKeys = (anchor.keys || []).filter(
     (k) => String(k.status || "").toLowerCase() === "pending",
   );
-  const pendingPub = pendingKeys.map((k) => String(k.public_key || "").toLowerCase());
-  if (!listed.includes(derived)) {
-    violations.push({
-      file: "public/.well-known/apex-psi-trust-anchor.json",
-      line: 12,
-      what: "the key the dedicated signing secret derives is not published in the anchor — the anchor and the signing identity are not one key",
-    });
-  } else if (derived !== published && !pendingPub.includes(derived)) {
-    violations.push({
-      file: "public/.well-known/apex-psi-trust-anchor.json",
-      line: 12,
-      what: "the dedicated signing key is published but not marked pending, while the anchor's active key is a different one — the rotation state is not declared",
-    });
-  } else {
-    notes.push(
-      derived === published
-        ? "the anchor's active key is the key the dedicated signing secret derives"
-        : "the dedicated signing key is published and marked pending; the active key changes when the secret is set",
-    );
-  }
   for (const k of pendingKeys) {
     if (String(k.public_key || "").toLowerCase() !== derived) {
       violations.push({
@@ -440,6 +476,47 @@ async function selftest() {
       failures++;
     } else {
       console.log("  ok   the shipped seed function refuses the database credential");
+    }
+
+    // The rotation-state rule must be able to fail, or it is decoration.
+    const DERIVED = "aa".repeat(32);
+    const OTHER = "bb".repeat(32);
+    const anchorWith = (activeId, keys) => ({
+      ed25519_public_key: OTHER,
+      active_key_id: activeId,
+      keys,
+    });
+    const oldKey = (status) => ({ key_id: "apex-psi-2026", public_key: OTHER, status });
+    const newKey = (status) => ({ key_id: "apex-psi-2026-11", public_key: DERIVED, status });
+    const stateCases = [
+      ["pending rotation, active key still the old one", anchorWith("apex-psi-2026", [oldKey("active"), newKey("pending")]), false],
+      ["completed rotation, new key active and named", anchorWith("apex-psi-2026-11", [oldKey("rotated"), newKey("active")]), false],
+      ["new key active but active_key_id names the old one", anchorWith("apex-psi-2026", [oldKey("active"), newKey("active")]), true],
+      ["active_key_id names a key the anchor does not list", anchorWith("apex-psi-2099", [oldKey("active"), newKey("pending")]), true],
+      ["active_key_id names a key that is marked rotated", anchorWith("apex-psi-2026", [oldKey("rotated"), newKey("pending")]), true],
+      ["the derived key is not published at all", anchorWith("apex-psi-2026", [oldKey("active")]), true],
+      ["the derived key is listed as revoked", anchorWith("apex-psi-2026-11", [oldKey("rotated"), newKey("revoked")]), true],
+      ["a key is pending and also named active_key_id", anchorWith("apex-psi-2026-11", [oldKey("rotated"), newKey("pending")]), true],
+    ];
+    for (const [label, doc, expectViolation] of stateCases) {
+      const got = !!rotationState(doc, DERIVED).violation;
+      if (got === expectViolation) {
+        console.log(`  ok   ${label} -> ${expectViolation ? "refused" : "accepted"}`);
+      } else {
+        console.log(`  FAIL ${label} -> expected ${expectViolation ? "refused" : "accepted"}, got the opposite`);
+        failures++;
+      }
+    }
+    const shippedAnchor = JSON.parse(readFileSync(anchorPath, "utf8"));
+    const shippedActive = (shippedAnchor.keys || []).find(
+      (k) => String(k.key_id) === String(shippedAnchor.active_key_id),
+    );
+    const shipped = rotationState(shippedAnchor, String(shippedActive?.public_key || "").toLowerCase());
+    if (shipped.violation) {
+      console.log(`  FAIL the shipped anchor itself is refused: ${shipped.violation}`);
+      failures++;
+    } else {
+      console.log(`  ok   the shipped anchor declares one coherent rotation state (${shippedActive.key_id})`);
     }
   } finally {
     rmSync(dir, { recursive: true, force: true });
