@@ -39,13 +39,33 @@ export const PREFIXES = {
   proof: "APEX-PSI-PROOF|", // predicate-prove: predicate_proofs
 };
 
-export async function publicKeyFromSeed(prefix, seed) {
+/**
+ * The Ed25519 private key the live signing code uses for a seed.
+ *
+ * ONE place knows the PKCS#8 shape. `psi_core.signEd25519Strict` builds the same
+ * 32-byte key material with `SHA-256(prefix || seed)`, so a seal made here is
+ * signed by the key the published anchor already lists — no second identity.
+ * The returned key is extractable ONLY so the public half can be read out as a
+ * JWK; callers that just sign never export it.
+ */
+export async function privateKeyFromSeed(prefix, seed) {
   const digest = await webcrypto.subtle.digest("SHA-256", new TextEncoder().encode(`${prefix}${seed}`));
   const km = new Uint8Array(digest);
   const pkcs8 = new Uint8Array(48);
   pkcs8.set([0x30, 0x2e, 0x02, 0x01, 0x00, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x70, 0x04, 0x22, 0x04, 0x20]);
   pkcs8.set(km, 16);
-  const key = await webcrypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, true, ["sign"]);
+  return webcrypto.subtle.importKey("pkcs8", pkcs8, { name: "Ed25519" }, true, ["sign"]);
+}
+
+/** Sign `message` (ASCII string) under the ledger prefix and return 128 hex. */
+export async function signWithSeed(prefix, seed, message) {
+  const key = await privateKeyFromSeed(prefix, seed);
+  const sig = await webcrypto.subtle.sign("Ed25519", key, new TextEncoder().encode(message));
+  return Buffer.from(sig).toString("hex");
+}
+
+export async function publicKeyFromSeed(prefix, seed) {
+  const key = await privateKeyFromSeed(prefix, seed);
   const jwk = await webcrypto.subtle.exportKey("jwk", key);
   return Buffer.from(jwk.x, "base64url").toString("hex");
 }
