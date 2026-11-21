@@ -9,11 +9,14 @@
 // Read-only against Stripe. Never prints a key. Key comes from the vault file
 // outside every repo: C:/Users/apex1/.apex-vault/stripe_payment_links_once.env
 //
-// Two fatal rules, each proven by its own failure case:
+// Three fatal rules, each proven by its own failure case:
 //   1. a sentence the site serves that the merchant account contradicts
 //      (demonstrated red on 19 October: "there is no fee" beside an active $199.00 monthly listing)
 //   2. a checkout button the served page carries that cannot charge
 //      (a link that is not on this account, is switched off, or sells only archived prices)
+//   3. a till whose account is named for a different business than the product it sells
+//      (demonstrated red on 22 November: the card page for "APEX PSI — Pro $11.00 per month"
+//       reads "Sovereign AI Film Verse", because that is this account's public business name)
 // Everything else it prints is measurement, not verdict: which APEX PSI prices have a
 // button, which have none, and which are quoted as a number in the served file.
 //
@@ -165,12 +168,49 @@ async function stripe(path) {
     console.log('  Each one needs an owner decision: put a price and a button on its page, or archive it.');
   }
 
+  // 5. The name the buyer actually reads at the till.
+  //
+  // A Stripe payment link renders under the merchant account's public business
+  // name, so whoever owns this account is who the customer thinks they are
+  // paying. Measured 22 Nov 2026: business_profile.name is "Sovereign AI Film
+  // Verse" while both live buttons on the APEX PSI page charge "APEX PSI — Pro
+  // $11.00" and "APEX PSI — Ultra $55.00". The identity we publish is the
+  // operator at ecosystem.business in public/.well-known/apex-protocol.json, so
+  // that file decides what "ours" means — no string hardcoded here.
+  const PROTO = new URL('../public/.well-known/apex-protocol.json', import.meta.url);
+  let businessUrl = '';
+  try {
+    const proto = JSON.parse(readFileSync(PROTO, 'utf8'));
+    businessUrl = String((proto.ecosystem || {}).business || (proto.links || {}).business || '');
+  } catch (e) { console.error('could not read the published operator identity:', e.message); process.exit(2); }
+  const brandHost = (businessUrl.match(/^https?:\/\/([^/]+)/i) || [])[1] || '';
+  const brandLabels = brandHost.split(/[.-]/).filter((s) => s.length >= 4);
+  if (!brandLabels.length) { console.error('published operator URL names no label to match:', businessUrl); process.exit(2); }
+  const acct = await stripe('/v1/account');
+  const merchantName = (acct.business_profile && acct.business_profile.name)
+    || ((acct.settings || {}).dashboard || {}).display_name || '';
+  const brandMatches = (name) => !!name && brandLabels.some((l) => String(name).toLowerCase().includes(l.toLowerCase()));
+  const apexButtonsLive = psi.some((s) => reachable.has(s.id));
+  console.log(`\ntill brand        : merchant name "${merchantName || '(unset)'}" | our published operator: ${brandHost} (${brandLabels.join(', ')})`);
+  if (apexButtonsLive && !brandMatches(merchantName)) {
+    bad++;
+    fault(`the page charges APEX PSI prices from an account named "${merchantName}" — the buyer's card page `
+      + `and bank statement name a different business than the product they are buying. Either set the `
+      + `account's public business name to ours, or move these prices onto that account.`);
+  } else if (apexButtonsLive) {
+    console.log('till brand        : ok — the account the buyer pays is named for the product they are buying');
+  }
+
   if (SELF_TEST) {
     const caught = faults.some(f => f.includes(FAKE_SLUG));
     console.log('  SELF-TEST  injected a link no account owns -> ' +
       (caught ? 'CAUGHT: this rule can fail, so its passing means something'
               : 'MISSED: this rule is broken and was removed from the estate today'));
-    if (!caught) bad++;
+    const caughtBrand = !brandMatches('Sovereign AI Film Verse') && brandMatches('Apex Infrastructure');
+    console.log('  SELF-TEST  injected the measured merchant name against ours -> ' +
+      (caughtBrand ? 'CAUGHT: the brand rule tells the two apart, so its PASS means something'
+                  : 'MISSED: the brand rule cannot fail and is decoration'));
+    if (!caught || !caughtBrand) bad++;
   }
 
   console.log(bad ? `\nFAIL — ${bad} site-vs-store contradiction(s).` : '\nPASS — site money claims match what the account sells.');

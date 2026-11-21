@@ -40,6 +40,8 @@
     "check:marketplace": "node scripts/marketplace-till-check.mjs",
     "check:marketplace:selftest": "node scripts/marketplace-till-check.mjs --self-test",
     "check:marketplace:live": "node scripts/marketplace-till-check.mjs --live",
+    "check:commerce": "node scripts/commerce-truth-check.mjs",
+    "check:commerce:selftest": "node scripts/commerce-truth-check.mjs --self-test",
     "check:sticky-nav": "node scripts/sticky-nav-check.mjs",
     "check:trust-anchor": "node scripts/trust-anchor-check.mjs .",
     "check:trust-anchor:selftest": "node scripts/trust-anchor-check.mjs --selftest",
