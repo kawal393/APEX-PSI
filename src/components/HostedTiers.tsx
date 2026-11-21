@@ -3,14 +3,15 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { HOSTED_TIERS, RAPIDAPI_URL, DIRECT_CHECKOUT, salesMailto } from "@/lib/commerce";
+import { HOSTED_TIERS, RAPIDAPI_LISTING_URL, DIRECT_CHECKOUT, salesMailto } from "@/lib/commerce";
 
 /**
- * The hosted product ladder, identical on every channel.
+ * The hosted product ladder.
  * Free and Institutional route to use / contact; Pro and Ultra open direct
- * card checkout, with the same product on the marketplace as an alternative.
- * A paid tier can also be bought with no account at all, straight to the
- * Stripe-hosted page for the identical price.
+ * card checkout. A paid tier can also be bought with no account at all,
+ * straight to the Stripe-hosted page for the identical price.
+ * The marketplace carries a listing of these plans, not a checkout we honour:
+ * hosted capacity is issued here, so that address is offered as a reference.
  */
 const HostedTiers = ({ currentTier }: { currentTier?: string }) => {
   const { toast } = useToast();
@@ -101,12 +102,12 @@ const HostedTiers = ({ currentTier }: { currentTier?: string }) => {
                     {busy === tier.id ? "Opening…" : `Or subscribe signed-in — ${tier.price}/mo`}
                   </button>
                   <a
-                    href={RAPIDAPI_URL}
+                    href={RAPIDAPI_LISTING_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-center text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
                   >
-                    Or buy {tier.name} on RapidAPI
+                    The {tier.name} plan is also listed on RapidAPI — capacity is issued here
                   </a>
                 </>
               )}

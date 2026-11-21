@@ -225,6 +225,19 @@ jobs:
         # called verify_hash got "unknown tool" from a page graded Grade A. A page an agent reads
         # is an interface, so it is guarded like one.
         run: node scripts/tool-name-check.mjs
+      - name: Refuse to call an external marketplace a till we cannot provision
+        # Master clicked "Or buy Pro on RapidAPI" on 22 Nov 2026. The page behind
+        # the link was not dead — it lists BASIC $0.00, PRO $11.00 and ULTRA
+        # $55.00 and its configured backend is our own hosted doors. What was
+        # false is the word "buy": no function under supabase/functions reads a
+        # marketplace credential, so a buyer is charged there and still meets the
+        # public allowance here, against a page advertising 500,000 requests a
+        # month. HTTP 200 cannot detect any of this — an invented RapidAPI URL
+        # answers 200 and echoes its own slug back into the body — so the gate
+        # identifies a listing by the backend it is wired to, and fails purchase
+        # wording until the sale is actually provisioned.
+        run: npm run check:marketplace
+      - run: npm run check:marketplace:selftest
 
   # A draft the registry's own checker refuses never gets filed. On 15 Nov 2026
   # the datatracker rejected draft-singh-psi-agent-02 for two reasons the

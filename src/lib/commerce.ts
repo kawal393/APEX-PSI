@@ -18,8 +18,17 @@ export const FREE_ACCESS_STATEMENT =
 export const HOSTED_FREE_LIMIT = 100;
 export const HOSTED_RATE_LIMIT = 20;
 
-/** Public listing of the same product on the RapidAPI marketplace. */
-export const RAPIDAPI_URL = "https://rapidapi.com/apex-psi-apex-psi-default/api/apex-psi/pricing";
+/**
+ * The APEX PSI listing on the RapidAPI marketplace, where the plan names and
+ * prices are published.
+ *
+ * A listing, not a till we control. No function under supabase/functions
+ * recognises a marketplace key, so a subscription bought there cannot raise the
+ * capacity our hosted doors enforce — a buyer there would pay and still hit the
+ * public allowance. scripts/commerce-truth-check.mjs fails any copy that offers
+ * this address as a purchase until that provisioning exists.
+ */
+export const RAPIDAPI_LISTING_URL = "https://rapidapi.com/apex-psi-apex-psi-default/api/apex-psi/pricing";
 
 /** Direct contact used for Institutional agreements. */
 export const SALES_EMAIL = "business@apex-infrastructure.com";

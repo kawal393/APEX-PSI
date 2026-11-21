@@ -5,8 +5,10 @@
 // Pro and Ultra are self-serve. Institutional is provisioned by direct
 // agreement (unlimited, daily_limit = -1) and has no public price.
 //
-// The same ladder is mirrored on external marketplaces (RapidAPI, AWS), so a
-// buyer can purchase the identical product through whichever channel they use.
+// The plans are also published as a listing on the RapidAPI marketplace, but no
+// function here accepts a marketplace key, so a subscription taken there leaves
+// these limits exactly as they are. Only provisioning on this account — a Stripe
+// price mapped through sync-subscription, or an institutional row — raises them.
 
 export const FREE_DAILY_LIMIT = 100;
 

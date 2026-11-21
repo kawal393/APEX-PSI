@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { SITE_URL } from "@/lib/site";
-import { RAPIDAPI_URL, salesMailto } from "@/lib/commerce";
+import { RAPIDAPI_LISTING_URL, salesMailto } from "@/lib/commerce";
 import { reportFreeApiKeyConversion } from "@/lib/ads-consent";
 import { toast } from "sonner";
 
@@ -167,11 +167,19 @@ const Upgrade = () => {
         <div className="mb-12">
           <HostedTiers currentTier={tier} />
           <p className="mt-4 text-xs text-muted-foreground">
-            The same four products are sold here and on external marketplaces —{" "}
-            <a href={RAPIDAPI_URL} target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">
-              view the RapidAPI listing
+            Buying here is what raises hosted capacity: a key appears on this page once Stripe
+            confirms the payment. The same plans are published as a listing on the RapidAPI
+            marketplace —{" "}
+            <a
+              href={RAPIDAPI_LISTING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold hover:underline"
+            >
+              view the listing
             </a>
-            . Institutional volume is arranged by{" "}
+            ; a subscription taken there is billed by them, not provisioned by us. Institutional
+            volume is arranged by{" "}
             <a href={salesMailto("Institutional")} className="text-gold hover:underline">
               direct agreement
             </a>
