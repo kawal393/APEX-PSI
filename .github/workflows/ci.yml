@@ -17,6 +17,15 @@ concurrency:
   group: deploy-production
   cancel-in-progress: false
 
+env:
+  # Measured 22 Nov 2026 from the Supabase CLI releases API: the newest release is v3.2.0,
+  # published 16 Nov 2026. The deploy job used to ask for `latest`, which makes the runner
+  # call GitHub's release API unauthenticated; run #335 died inside that action with
+  # "Failed to resolve latest Supabase CLI release: rate limit exceeded" and never reached a
+  # deploy step. A pinned version is fetched by URL, so the rail needs no API budget — and
+  # the CLI that preflight describes is the same CLI that deploys.
+  SUPABASE_CLI_VERSION: v3.2.0
+
 jobs:
   # This repository shipped a tracked .env from 28 Feb 2026 to 18 Oct 2026. Measured on
   # 18 Oct, that file held three values -- project id, publishable key and URL -- and the
@@ -471,12 +480,50 @@ jobs:
   # run could tell whether one function or all sixty-odd were about to ship. Both answers
   # now land in an ungated job whose log is readable while the deploy still waits at the
   # approval box.
-  deploy-preflight:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor, ietf-draft, hosted-mcp]
+  # The deploy rail has never deployed, and two of its three deaths were only findable by
+  # clicking Dispatch — which is itself a production action. 7 Nov: a blank project ref.
+  # 18 Nov: a token the link step refused. 22 Nov: the CLI resolver rate-limited. This job
+  # moves that class of failure onto the push rail, where finding it costs nothing. It
+  # installs the pinned CLI exactly the way the deploy job does, and refuses to pass if the
+  # binary handed back is not the version this file claims, or does not know the command the
+  # deploy step runs.
+  cli-pin:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: ${{ env.SUPABASE_CLI_VERSION }}
+      - name: The CLI that resolves here is the CLI that deploys
+        run: |
+          if [ "${SUPABASE_CLI_VERSION}" = "latest" ] || [ -z "${SUPABASE_CLI_VERSION}" ]; then
+            echo "::error::the rail is asking for an unpinned CLI again — resolving 'latest' calls GitHub's release API and the run dies before any deploy step"
+            exit 1
+          fi
+          got=$(supabase --version 2>&1 | tr -dc '0-9.')
+          want="${SUPABASE_CLI_VERSION#v}"
+          echo "pinned: $want | installed: $got"
+          if [ "$got" != "$want" ]; then
+            echo "::error::setup-cli handed back $got while the rail pins $want — the deploy would run a CLI this file does not describe"
+            exit 1
+          fi
+          if ! supabase functions deploy --help >/dev/null 2>&1; then
+            echo "::error::this CLI does not answer 'functions deploy --help', so the flags the deploy step passes are not valid for it"
+            exit 1
+          fi
+          echo "ok — $SUPABASE_CLI_VERSION fetched by URL with no release-API call, and it knows the deploy command"
+
+  deploy-preflight:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    needs: [secret-scan, lint, typecheck, test, verifier-parity, wasm-provenance, public-copy, trust-anchor, ietf-draft, hosted-mcp, cli-pin]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Without this the step below would print the help of whatever CLI the runner image
+      # happens to carry, not the one the deploy job runs. Same pin, same binary, same answer.
+      - uses: supabase/setup-cli@v1
+        with:
+          version: ${{ env.SUPABASE_CLI_VERSION }}
       - name: Name exactly what this run would ship
         run: |
           echo "deploy scope (only_functions) = [${DEPLOY_ONLY}]"
@@ -559,7 +606,7 @@ jobs:
           fi
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: ${{ env.SUPABASE_CLI_VERSION }}
       # 7 Nov 2026: this job has never deployed. Both dispatch runs (#269 5 Nov, #278 7 Nov)
       # died on the link step and the step name rendered as `--project-ref ` — blank. The
       # project ref lived only in an Actions *variable* nobody ever set, so GitHub served an
