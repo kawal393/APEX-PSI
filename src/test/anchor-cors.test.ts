@@ -12,7 +12,7 @@ import { join } from "node:path";
 // never becomes a second anchor: the function serves the published bytes and
 // restates no key material of its own.
 const ROOT = join(__dirname, "..", "..");
-const CANONICAL = "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json";
+const CANONICAL = "https://www.ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json";
 
 const read = (p: string) => readFileSync(join(ROOT, p), "utf8");
 
@@ -41,5 +41,17 @@ describe("trust anchor cross-origin reachability", () => {
     expect(typeof anchor.mldsa65_public_key).toBe("string");
     expect(anchor.mldsa65_public_key.length).toBeGreaterThanOrEqual(32);
     expect(anchor.trust_anchor_url).toBe(CANONICAL);
+  });
+
+  // The bare domain answers 302 and hands a verifier that does not follow
+  // redirects an empty body, so every address the anchor names must be the
+  // canonical www host. Measured 22 Nov 2026: the anchor self-address was
+  // written bare, so `signing-identity` reported its own address disagreeing
+  // with the file it was named in.
+  it("names every address on the canonical www host, never the bare domain", () => {
+    const raw = read("public/.well-known/apex-psi-trust-anchor.json");
+    const hosts = [...raw.matchAll(/https:\/\/([^/"\s]*)ai-governance-standard\.com/g)].map((m) => m[1] + "ai-governance-standard.com");
+    expect(hosts.length).toBeGreaterThan(0);
+    for (const host of hosts) expect(host).toBe("www.ai-governance-standard.com");
   });
 });

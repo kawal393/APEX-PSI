@@ -25,7 +25,7 @@ type AuditEntry = {
 };
 
 const WITNESS_COUNT_KEY = "praman.witness.count";
-const VERIFY_BASE = "https://ai-governance-standard.com/verify";
+const VERIFY_BASE = "https://www.ai-governance-standard.com/verify";
 
 const STORAGE_KEY = "praman.audit.v1";
 

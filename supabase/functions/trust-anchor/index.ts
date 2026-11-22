@@ -21,7 +21,7 @@
 // HEAD /trust-anchor          -> the same headers, no body
 // OPTIONS /trust-anchor       -> 204, CORS preflight
 
-const CANONICAL_ANCHOR_URL = "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json";
+const CANONICAL_ANCHOR_URL = "https://www.ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json";
 const UPSTREAM_TIMEOUT_MS = 8000;
 
 const corsHeaders = {

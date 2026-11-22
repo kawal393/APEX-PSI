@@ -343,7 +343,7 @@ export interface EmbedResult {
 }
 
 
-const VERIFY_BASE = "https://ai-governance-standard.com/verify";
+const VERIFY_BASE = "https://www.ai-governance-standard.com/verify";
 
 /**
  * Attach in-band, hybrid-signed, tamper-evident PSI-INBAND-v1 metadata

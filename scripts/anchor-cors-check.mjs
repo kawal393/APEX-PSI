@@ -29,7 +29,7 @@ import { join } from "node:path";
 const ROOT = process.argv[2] && !process.argv[2].startsWith("--") ? process.argv[2] : ".";
 const LIVE = process.argv.includes("--live");
 
-const CANONICAL_ANCHOR_URL = "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json";
+const CANONICAL_ANCHOR_URL = "https://www.ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json";
 const MIRROR_ANCHOR_URL = "https://apex-infrastructure.com/.well-known/apex-psi-trust-anchor.json";
 const FUNCTION_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/trust-anchor";
 
@@ -128,7 +128,7 @@ if (LIVE) {
     notes.push(
       "canonical anchor is still unreadable cross-origin.\n" +
         "    Cloudflare -> Rules -> Transform Rules -> Modify Response Header, on\n" +
-        `      (http.host eq "ai-governance-standard.com" and http.request.uri.path eq "/.well-known/apex-psi-trust-anchor.json")\n` +
+        `      (http.host eq "www.ai-governance-standard.com" and http.request.uri.path eq "/.well-known/apex-psi-trust-anchor.json")\n` +
         "    set: Access-Control-Allow-Origin: *\n" +
         "    set: Access-Control-Allow-Methods: GET, HEAD, OPTIONS\n" +
         "    set: Access-Control-Max-Age: 86400",

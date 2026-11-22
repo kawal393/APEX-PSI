@@ -217,7 +217,7 @@ export function sealSignerDescription(keyId?: string): string {
 
 const SOURCES = [
   "/.well-known/apex-psi-trust-anchor.json",
-  "https://ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json",
+  "https://www.ai-governance-standard.com/.well-known/apex-psi-trust-anchor.json",
 ];
 
 let cache: TrustRootsResult | null = null;

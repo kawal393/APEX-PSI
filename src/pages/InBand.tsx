@@ -32,7 +32,7 @@ const MANIFEST_EXAMPLE = `APEXPSI-C2PA-V1 | uint32be(length) | UTF-8 JSON
           "payload": "sync32+sha256-128" } }
     ],
     "hard_binding": { "alg": "sha256", "pre_embed_sha256": "…", "size_bytes": 0 },
-    "verify_url": "https://ai-governance-standard.com/verify?h=…"
+    "verify_url": "https://www.ai-governance-standard.com/verify?h=…"
   },
   "signature": {
     "suite": "Ed25519+ML-DSA-65",
