@@ -17,11 +17,16 @@
 //
 // Options: --report  print the per-phrase counts and every offending slug, do not fail
 //                   (for measuring before a fix).
+//          --after-fix  scan what the corpus WOULD say once the fix table is applied in
+//                   memory, and write nothing. This is how the fix is proven to clear the
+//                   guard before anyone spends a write key on it.
 
 import { readFileSync } from 'node:fs';
+import { RULES, applyCopyRules, articleDisagreements } from './article-copy-rules.mjs';
 
 const SITE = process.argv[3] || 'https://www.ai-governance-standard.com';
 const REPORT_ONLY = process.argv.includes('--report');
+const AFTER_FIX = process.argv.includes('--after-fix');
 
 // Claims the estate has measured false. Each entry states what the phrase asserts and
 // what the product actually offers, because a guard without a reason is a superstition.
@@ -45,7 +50,7 @@ const NEVER = [
   ['flawless', /flawless/gi,
     'nothing is flawless, and a page that says so has not been measured',
     /\bnot compliance\b|\bnot certify\b|\bproves integrity\b/i],
-  ['world’s first', /world'?s first/gi,
+  ["world’s first", /world['’]?s first/gi,
     'an unprovable priority claim'],
   ['certified compliant', /certified compliant/gi,
     'nobody is certified compliant by a receipt',
@@ -79,6 +84,176 @@ const SLUG_REWRITE_RULES = (() => {
     return new Map();
   }
 })();
+
+// ---------------------------------------------------------------- scan, as one function
+
+const textOf = (r) =>
+  FIELDS.map((f) => (typeof r[f] === 'string' ? r[f] : Array.isArray(r[f]) ? r[f].join(', ') : ''))
+    .filter(Boolean)
+    .join('\n');
+
+const sentenceAround = (text, index) => {
+  const start = Math.max(0, text.lastIndexOf('.', index - 1) + 1);
+  const stop = text.indexOf('.', index);
+  return text.slice(start, stop === -1 ? text.length : stop + 1);
+};
+
+/** Every banned claim one row carries. Pure: no network, no table, so the self-test can drive it. */
+function findClaims(row) {
+  const out = [];
+  const slug = row.slug || '(no slug)';
+  const body = textOf(row);
+  for (const [label, re, why, exempt] of NEVER) {
+    re.lastIndex = 0;
+    let m;
+    while ((m = re.exec(body)) !== null) {
+      if (exempt) {
+        const sentence = sentenceAround(body, m.index);
+        if (exempt.test(sentence)) continue;
+      }
+      out.push({ label, why, slug, sample: m[0] });
+    }
+  }
+  if (BANNED_SLUG.test(row.slug || '')) {
+    out.push({
+      label: 'banned word in the URL',
+      why: 'a slug is a URL a stranger reads and a crawler indexes',
+      slug,
+      sample: row.slug,
+    });
+    const token = BANNED_SLUG_TOKENS.find((t) => (row.slug || '').toLowerCase().includes(t));
+    if (token && !SLUG_REWRITE_RULES.has(token)) {
+      out.push({
+        label: 'banned word in the URL with no redirect rule',
+        why: 'an old address would 404 once the correction renames the article; add the token to src/lib/article-slug.ts',
+        slug,
+        sample: token,
+      });
+    }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------- self-test
+
+// A guard that has never been shown to catch anything is a number that happens to be
+// small. This drives every banned phrase through the scanner in isolation, proves the
+// exemption sentences are exemptions and not mute buttons, and — the part that matters
+// today — proves the substitution table handed to apexmuse actually clears this guard.
+// It reads no table and no network, so it runs in CI with no credential.
+if (process.argv.includes('--self-test')) {
+  const SAMPLES = {
+    'cryptographic truth': 'This page offers cryptographic truth for every AI decision.',
+    'tamper-proof': 'Our logs are tamper-proof by design.',
+    irrefutable: 'The receipt is irrefutable evidence of the run.',
+    indisputable: 'An indisputable record of what the model did.',
+    unbreakable: 'An unbreakable signature over the payload.',
+    flawless: 'A flawless audit of the pipeline.',
+    "world’s first": 'The EU wrote the world’s first comprehensive AI law.',
+    'certified compliant': 'The vendor claims certified compliant status.',
+    'compliant by design': 'A system that is compliant by design and nothing else.',
+    'trustworthy and compliant': 'Trustworthy and compliant AI for the enterprise.',
+    'absolute certainty': 'We state the outcome with absolute certainty.',
+  };
+  const EXEMPT_SENTENCES = {
+    flawless: 'Do not call a receipt flawless — it proves integrity, not correctness.',
+    'certified compliant': 'A receipt is issued rather than a seal that makes you certified compliant.',
+    'absolute certainty': 'Historical contexts cannot be reconstructed with absolute certainty.',
+  };
+  let bad = 0;
+  const fail = (msg) => {
+    console.log(`  SELFTEST FAIL ${msg}`);
+    bad++;
+  };
+
+  for (const [label] of NEVER) {
+    const s = SAMPLES[label];
+    if (!s) {
+      fail(`no sample sentence for "${label}" — this rule is unproven`);
+      continue;
+    }
+    const hits = findClaims({ slug: 'self-test', title: s, content_md: s }).filter((f) => f.label === label);
+    if (!hits.length) fail(`"${label}" did not fire on its own sample — the regex is blind`);
+  }
+
+  for (const [label, , , exempt] of NEVER) {
+    if (!exempt) continue;
+    const s = EXEMPT_SENTENCES[label];
+    if (!s) {
+      fail(`rule "${label}" has an exemption nobody wrote a sentence for`);
+      continue;
+    }
+    if (findClaims({ slug: 'self-test', title: s, content_md: s }).some((f) => f.label === label))
+      fail(`exemption for "${label}" does not exempt — the rule would ban its own correction`);
+  }
+
+  const honest = 'The receipt is tamper-evident and independently verifiable against the published key.';
+  for (const f of findClaims({ slug: 'honest-copy', title: honest, content_md: honest }))
+    fail(`honest copy was flagged: ${f.label} on "${f.sample}"`);
+
+  const redirected = findClaims({ slug: 'cryptographic-truth-proving-ai-actions' });
+  if (!redirected.some((f) => f.label === 'banned word in the URL')) fail('a banned slug token went unseen');
+  if (redirected.some((f) => f.label.includes('no redirect rule')))
+    fail('cryptographic-truth is in the rewrite table yet reported as having none');
+  const orphan = findClaims({ slug: 'tamper-proof-ai-logs' });
+  if (!orphan.some((f) => f.label === 'banned word in the URL with no redirect rule'))
+    fail('a slug token with no redirect rule passed silently — an old URL would 404 after the rename');
+
+  // The substitutions the fix writes are imported from the same module the fix uses, so
+  // this proves the table that ships, not a copy of it that could drift.
+  const rules = RULES;
+  const applyFix = (t) => applyCopyRules(t);
+  for (const [label] of NEVER) {
+    const s = SAMPLES[label];
+    if (!s) continue;
+    const after = applyFix(s);
+    const left = findClaims({ slug: 'self-test', title: after, content_md: after }).filter((f) => f.label === label);
+    if (left.length) fail(`the handed table does not clear "${label}": "${after}" still flags "${left[0].sample}"`);
+  }
+  // The priority claim reaches us in two typographic forms, and until 22 Nov 2026 the
+  // regex carried only the straight apostrophe while the generated copy carried the curly
+  // one — a banned phrase the guard could read but never see. Both forms are driven here.
+  for (const form of ["the world's first AI ministry", 'the world’s first AI ministry']) {
+    if (!findClaims({ slug: 'self-test', title: form, content_md: form }).some((f) => f.label === 'world’s first'))
+      fail(`the priority claim went unseen in this form: ${form}`);
+    const after = applyFix(form);
+    if (findClaims({ slug: 'self-test', title: after, content_md: after }).some((f) => f.label === 'world’s first'))
+      fail(`the handed table leaves the priority claim standing: ${after}`);
+  }
+
+  for (const [, to] of rules) {
+    const introduced = findClaims({ slug: 'self-test', title: to, content_md: to });
+    if (introduced.length)
+      fail(`a replacement text is itself banned: "${to}" flags ${introduced.map((f) => f.label).join(', ')}`);
+  }
+
+  // The article before a rewritten phrase has to agree with the phrase that replaced it.
+  // "an unbreakable chain" is grammatical and "an tamper-evident chain" is not, and the
+  // published corpus contains that shape — so every substitution pair is driven through
+  // both articles and the output must read correctly either way.
+  const wantArticle = (word) => (/^[aeiou]/i.test(word) ? 'an' : 'a');
+  for (const [from, to] of RULES) {
+    for (const given of ['a', 'an', 'A', 'An']) {
+      const after = applyCopyRules(`${given} ${from} chain of trust`);
+      const got = (after.match(/^(a|an)\b/i) || [])[1];
+      if (!got) {
+        fail(`rewriting "${given} ${from}" lost the article: "${after}"`);
+        continue;
+      }
+      if (got.toLowerCase() !== wantArticle(to)) {
+        fail(`article agreement broken: "${given} ${from} chain" -> "${after}" — "${to}" wants "${wantArticle(to)}"`);
+      }
+    }
+  }
+
+  console.log(
+    bad
+      ? `\nSELFTEST FAIL — ${bad} problem(s). The guard or the handed table cannot bite, so a green run would mean nothing.`
+      : `\nSELFTEST PASS — ${NEVER.length} phrase rules fire, ${Object.keys(EXEMPT_SENTENCES).length} exemptions hold, honest copy passes, both slug cases fire, ${RULES.length} substitutions clear this guard and keep "a"/"an" agreeing with what they write.`,
+  );
+  process.exit(bad ? 1 : 0);
+}
+
 
 // ---------------------------------------------------------------- credentials
 
@@ -150,52 +325,43 @@ if (!rows.length) {
   process.exit(1);
 }
 
-const textOf = (r) =>
-  FIELDS.map((f) => (typeof r[f] === 'string' ? r[f] : Array.isArray(r[f]) ? r[f].join(', ') : ''))
-    .filter(Boolean)
-    .join('\n');
-
-const sentenceAround = (text, index) => {
-  const start = Math.max(0, text.lastIndexOf('.', index - 1) + 1);
-  const stop = text.indexOf('.', index);
-  return text.slice(start, stop === -1 ? text.length : stop + 1);
-};
-
 // ---------------------------------------------------------------- scan
 
-const findings = [];
-for (const row of rows) {
-  const slug = row.slug || '(no slug)';
-  const body = textOf(row);
-  for (const [label, re, why, exempt] of NEVER) {
-    re.lastIndex = 0;
-    let m;
-    while ((m = re.exec(body)) !== null) {
-      if (exempt) {
-        const sentence = sentenceAround(body, m.index);
-        if (exempt.test(sentence)) continue;
-      }
-      findings.push({ label, why, slug, sample: m[0] });
-    }
+/**
+ * One row exactly as the fix would write it — the same imported table, the same slug
+ * rewrites, no network and no write. The point of running this BEFORE a fix is that
+ * "the guard will pass afterwards" stops being a belief about 193 substitutions and
+ * becomes a measured number over the 1,000 rows that are really published.
+ */
+function asFixed(row) {
+  const out = { ...row };
+  for (const f of FIELDS) {
+    if (typeof out[f] === 'string') out[f] = applyCopyRules(out[f]);
+    else if (Array.isArray(out[f])) out[f] = out[f].map((k) => (typeof k === 'string' ? applyCopyRules(k) : k));
   }
-  if (BANNED_SLUG.test(row.slug || '')) {
-    findings.push({
-      label: 'banned word in the URL',
-      why: 'a slug is a URL a stranger reads and a crawler indexes',
-      slug,
-      sample: row.slug,
-    });
-    const token = BANNED_SLUG_TOKENS.find((t) => (row.slug || '').toLowerCase().includes(t));
-    if (token && !SLUG_REWRITE_RULES.has(token)) {
-      findings.push({
-        label: 'banned word in the URL with no redirect rule',
-        why: 'an old address would 404 once the correction renames the article; add the token to src/lib/article-slug.ts',
-        slug,
-        sample: token,
-      });
-    }
+  if (typeof out.slug === 'string') {
+    for (const [from, to] of SLUG_REWRITE_RULES) out.slug = out.slug.split(from).join(to);
+  }
+  return out;
+}
+
+const scanned = AFTER_FIX ? rows.map(asFixed) : rows;
+if (AFTER_FIX) {
+  console.log(`--after-fix: scanning ${rows.length} rows AS THE FIX WOULD WRITE THEM (nothing is published by this run)`);
+  // A correction that replaces a false claim with broken English is a new defect, not a
+  // fix, so the projection counts the article disagreements the table would introduce.
+  // Measured 22 Nov 2026: 0 across the 1,000 live rows.
+  const grammar = [];
+  for (const row of scanned) grammar.push(...articleDisagreements(textOf(row)));
+  console.log(`  "a"/"an" disagreements introduced by the table: ${grammar.length}${grammar.length ? ` — ${grammar.slice(0, 5).join(' | ')}` : ''}`);
+  if (grammar.length) {
+    console.log('FAIL the substitution table breaks article agreement, so the rewrite must not ship as it is');
+    process.exit(1);
   }
 }
+
+const findings = [];
+for (const row of scanned) findings.push(...findClaims(row));
 
 if (REPORT_ONLY) {
   const byLabel = new Map();

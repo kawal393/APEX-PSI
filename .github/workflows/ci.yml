@@ -430,6 +430,11 @@ jobs:
       # it must bite on — the global-install flag, the "v" prefix, the markdown
       # emphasis — and reads no index, so it belongs on the blocking rail.
       - run: npm run check:version-truth:selftest
+      # The article guard's own proof that it bites, and that the substitution table the
+      # fix writes actually clears it. Reads no network and no table, so it belongs here
+      # rather than in the non-blocking job below: a guard whose regex is blind is a green
+      # light, not a check.
+      - run: npm run check:article-claims:selftest
 
   article-claims:
     continue-on-error: true
@@ -440,6 +445,12 @@ jobs:
         with:
           node-version: 20
       - run: npm run check:article-claims
+      - name: What the published corpus would say once the fix table is applied
+        # In-memory only: it reads the live rows, rewrites them with the same table the
+        # fix uses and never writes. Measured 22 Nov 2026: 505 findings now, 0 after the
+        # table. This step is how the day comes when `continue-on-error` above is deleted
+        # with a number rather than a feeling.
+        run: npm run check:article-claims:after-fix
 
   # The trust anchor is the product's one trust claim: a signature that verifies
   # against the published key proves the named key signed the record. Measured on

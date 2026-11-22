@@ -19,6 +19,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { applyCopyRules } from './article-copy-rules.mjs';
 
 // The write credential, identified by its name only. The value lives in the vault,
 // which sits outside every repository and is never printed.
@@ -49,61 +50,10 @@ const SITE = 'https://www.ai-governance-standard.com';
 
 // ---------------------------------------------------------------- rules
 
-// Applied longest-first, so a specific phrase is rewritten before a shorter one that
-// sits inside it. Each `from` is a claim we measured false; each `to` is what the
-// product can actually deliver.
-const RULES = [
-  // The product proves an event happened and was signed. It cannot make a claim true.
-  ['Cryptographic Truth', 'Cryptographic Evidence'],
-  ['CRYPTOGRAPHIC TRUTH', 'CRYPTOGRAPHIC EVIDENCE'],
-  ['cryptographic truth', 'cryptographic evidence'],
-
-  // A record is tamper-evident. Any change breaks the hash and the signature; nothing
-  // here is tamper-proof.
-  ['Tamper-Proof', 'Tamper-Evident'],
-  ['Tamper-proof', 'Tamper-evident'],
-  ['TAMPER-PROOF', 'TAMPER-EVIDENT'],
-  ['tamper-proof', 'tamper-evident'],
-  ['Tamper Proof', 'Tamper Evident'],
-  ['tamper proof', 'tamper evident'],
-
-  // Nothing we issue is irrefutable or indisputable. What we publish is the key and the
-  // root, so a third party can check it — that is a different claim, and a true one.
-  ['Irrefutable', 'Independently verifiable'],
-  ['IRREFUTABLE', 'INDEPENDENTLY VERIFIABLE'],
-  ['irrefutable', 'independently verifiable'],
-  ['Irrefutably', 'Independently'],
-  ['irrefutably', 'independently'],
-  ['Indisputably', 'Independently'],
-  ['indisputably', 'independently'],
-  ['Indisputable', 'Independently verifiable'],
-  ['INDISPUTABLE', 'INDEPENDENTLY VERIFIABLE'],
-  ['indisputable', 'independently verifiable'],
-
-  // A signature is checkable, not unbreakable.
-  ['Unbreakable', 'Tamper-Evident'],
-  ['UNBREAKABLE', 'TAMPER-EVIDENT'],
-  ['unbreakable', 'tamper-evident'],
-
-  // The product does not deliver compliance, so it cannot be advertised as delivering it.
-  ['not only compliant by design but also provably so', 'auditable by design and independently verifiable'],
-  ['compliant by design but also provably so', 'auditable by design and independently verifiable'],
-  ['compliant by design', 'auditable by design'],
-  ['provably trustworthy and compliant', 'independently verifiable'],
-  ['trustworthy, auditable, and compliant', 'trustworthy and auditable'],
-  ['transparent, auditable, and policy-compliant AI systems', 'transparent and auditable AI systems with policy evidence'],
-  ['auditable, transparent, and policy-compliant AI systems', 'auditable and transparent AI systems with policy evidence'],
-  ['policy-compliant AI systems', 'policy-auditable AI systems'],
-  ['trustworthy and compliant', 'trustworthy and auditable'],
-
-  // An unprovable priority claim — about the legislation here, not about us, and still
-  // not something a page should assert.
-  ["the world's first comprehensive legal framework", 'a landmark comprehensive legal framework'],
-  ["the world's first", 'a landmark'],
-
-  // A receipt is evidence, not certainty.
-  ['reconstruct historical contexts with absolute certainty', 'reconstruct historical contexts from the record itself'],
-].sort((a, b) => b[0].length - a[0].length);
+// The table and its matcher live in scripts/article-copy-rules.mjs, which the guard's
+// --self-test also drives, so the copy that gets written and the copy that gets checked
+// come from one place.
+const applyRules = applyCopyRules;
 
 // Slug tokens. A slug is a URL a stranger reads and a crawler indexes, so it carries
 // the same words as the title and is corrected the same way.
@@ -122,18 +72,6 @@ const SLUG_RULES = (() => {
 })();
 
 const FIELDS = ['title', 'description', 'keywords', 'content_md'];
-
-const applyRules = (text) => {
-  let out = text;
-  let changed = false;
-  for (const [from, to] of RULES) {
-    if (out.includes(from)) {
-      out = out.split(from).join(to);
-      changed = true;
-    }
-  }
-  return changed ? out : text;
-};
 
 const applySlugRules = (slug) => {
   let out = slug;
@@ -348,13 +286,26 @@ console.log(`backup: ${backupPath}`);
 
 if (!APPLY) {
   console.log('\nDRY RUN — nothing was written. Re-run with --apply to write these changes.');
-  const sample = report.changes.slice(0, 3);
+  // Printing the first 260 characters of a 6,000-character body would show the same
+  // paragraph twice — the banned phrase is usually far below the headline. So the preview
+  // is cut around the first character that actually differs, which is the only part of the
+  // row a reader needs to judge the substitution.
+  const aroundFirstChange = (before, after, width = 150) => {
+    let i = 0;
+    while (i < before.length && i < after.length && before[i] === after[i]) i++;
+    const s = Math.max(0, i - width);
+    const e = Math.min(Math.max(before.length, after.length), i + width);
+    return [
+      `${s ? '…' : ''}${before.slice(s, s + 2 * width)}…`,
+      `${s ? '…' : ''}${after.slice(s, s + 2 * width)}…`,
+    ];
+  };
+  const sample = report.changes.slice(0, 5);
   for (const c of sample) {
-    console.log(`\n  ${c.slug}`);
+    console.log(`\n  ${c.slug}${c.next_slug !== c.slug ? `  ->  ${c.next_slug}` : ''}`);
     for (const [f, before] of Object.entries(c.before)) {
-      const b = before.length > 260 ? `${before.slice(0, 260)}…` : before;
+      const [b, a] = aroundFirstChange(before, c.after[f]);
       console.log(`    ${f} BEFORE: ${b}`);
-      const a = c.after[f].length > 260 ? `${c.after[f].slice(0, 260)}…` : c.after[f];
       console.log(`    ${f} AFTER : ${a}`);
     }
   }
