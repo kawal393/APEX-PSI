@@ -446,10 +446,12 @@ jobs:
           node-version: 20
       - run: npm run check:article-claims
       - name: What the published corpus would say once the fix table is applied
+        if: always()
         # In-memory only: it reads the live rows, rewrites them with the same table the
         # fix uses and never writes. Measured 22 Nov 2026: 505 findings now, 0 after the
         # table. This step is how the day comes when `continue-on-error` above is deleted
-        # with a number rather than a feeling.
+        # with a number rather than a feeling — `if: always()` because the step above it is
+        # meant to go red while the debt is open, and a skipped projection tells nothing.
         run: npm run check:article-claims:after-fix
 
   # The trust anchor is the product's one trust claim: a signature that verifies
