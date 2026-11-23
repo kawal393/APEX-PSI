@@ -2,21 +2,21 @@
   "source": "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/audit-mirror?limit=700",
   "source_rows": 700,
   "cumulative": true,
-  "rows": 700,
+  "rows": 710,
   "sequences": {
     "min": 5320,
-    "max": 6020
+    "max": 6030
   },
-  "expected_in_range": 701,
+  "expected_in_range": 711,
   "gaps": [
     5463
   ],
   "duplicate_sequences": 0,
   "signatures": {
-    "verified_under_published_key": 700,
+    "verified_under_published_key": 710,
     "unverifiable": 0
   },
-  "copy_root": "c4d1151ab2eb53f7982917995bdf1c8051c48ee3d0a4a446332e2f42e929448f",
+  "copy_root": "fde8a3322ab7bf4fd991d75ff960212476eb5b39f5048304ee4ace9e83685609",
   "shards": [
     {
       "file": "ledger-0005320-0005820.ndjson",
@@ -27,12 +27,12 @@
       "window_root": "2fcc3cc2590ac94059450a9507b8f9657934cb9f756007d9903fd62737d136ed"
     },
     {
-      "file": "ledger-0005821-0006020.ndjson",
-      "rows": 200,
+      "file": "ledger-0005821-0006030.ndjson",
+      "rows": 210,
       "first_sequence": 5821,
-      "last_sequence": 6020,
-      "sha256": "01376132f060ed376c2c1335e22eefc88fc3b854fc749bb996911a8edbdc608b",
-      "window_root": "0fee813a291446af0d85eb6d440847b3f47303208c9deaf31ba2e77b6275ab54"
+      "last_sequence": 6030,
+      "sha256": "5d827807c41f00f51c6017b758bbab258561512360f3deab87e0d613d1175a29",
+      "window_root": "0dd47b92abb300d62e7833b335b15d6070ba563c5d62b71006fc04d69381ee69"
     }
   ]
 }
