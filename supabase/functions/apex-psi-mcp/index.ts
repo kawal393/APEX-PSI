@@ -22,7 +22,7 @@ import { handleApexMcp } from "./handler.ts";
 // Announced version. Kept in step with the npm package whose tool table this
 // copies; scripts/hosted-mcp-check.mjs fails if the two surfaces disagree on the
 // five names, and the MCP repo's own card guard fails if the registry card drifts.
-const VERSION = "1.2.2";
+const VERSION = "1.3.0";
 
 const env = (name: string, fallback: string) => (Deno.env.get(name) || "").trim() || fallback;
 

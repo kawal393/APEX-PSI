@@ -102,7 +102,7 @@ Runnable copies live in this repository:
 
 ## Lane 2 — seal through the MCP door
 
-`apex-psi-mcp@1.2.2` exposes five tools over stdio: `seal`, `verify`,
+`apex-psi-mcp@1.3.0` exposes five tools over stdio: `seal`, `verify`,
 `anchor`, `cite`, `verify_chain`. It is free and needs no account; the hosted
 issuer meters issuance, never verification.
 
@@ -113,7 +113,7 @@ issuer meters issuance, never verification.
   "mcpServers": {
     "apex-psi": {
       "command": "npx",
-      "args": ["-y", "apex-psi-mcp@1.2.2"]
+      "args": ["-y", "apex-psi-mcp@1.3.0"]
     }
   }
 }
@@ -126,7 +126,7 @@ issuer meters issuance, never verification.
   "mcpServers": {
     "apex-psi": {
       "command": "npx",
-      "args": ["-y", "apex-psi-mcp@1.2.2"]
+      "args": ["-y", "apex-psi-mcp@1.3.0"]
     }
   }
 }
@@ -140,7 +140,7 @@ import subprocess, json
 def seal_with_apex(content: str) -> dict:
     """Seal `content` through the APEX PSI MCP door and return the receipt."""
     proc = subprocess.Popen(
-        ["npx", "-y", "apex-psi-mcp@1.2.2"],
+        ["npx", "-y", "apex-psi-mcp@1.3.0"],
         stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True,
     )
     def call(method, params, _id):
@@ -164,7 +164,7 @@ import subprocess, json
 def apex_psi_seal(content: str) -> str:
     """Seal content through the APEX PSI MCP door; returns the receipt JSON."""
     proc = subprocess.Popen(
-        ["npx", "-y", "apex-psi-mcp@1.2.2"],
+        ["npx", "-y", "apex-psi-mcp@1.3.0"],
         stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True,
     )
     def call(method, params, _id):
@@ -212,10 +212,10 @@ a published test key, so anyone can re-derive the bytes.
 - It does not need the issuer. Verification is free and offline; only hosted
   issuance is metered.
 
-## Versions measured on 15 Nov 2026
+## Versions
 
-| Package | Version | Where |
-|---|---|---|
-| `apex-psi-verifier` | 1.7.0 | npm |
-| `psi-verifier` | 1.7.0 | PyPI |
-| `apex-psi-mcp` | 1.2.2 | npm |
+| Package | Version | Where | Measured |
+|---|---|---|---|
+| `apex-psi-verifier` | 1.7.0 | npm | 15 Nov 2026 |
+| `psi-verifier` | 1.7.0 | PyPI | 15 Nov 2026 |
+| `apex-psi-mcp` | 1.3.0 | npm | 25 Nov 2026 |

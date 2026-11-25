@@ -1,7 +1,7 @@
 // The tool table the hosted door advertises and runs.
 //
 // These five tools are the ones in the npm package `apex-psi-mcp` (src/index.ts,
-// 1.2.2). They are copied here deliberately rather than imported: a browser-side
+// 1.3.0). They are copied here deliberately rather than imported: a browser-side
 // MCP client and a `npx` process must be handed the same contract, and the only
 // way to be sure is to state it once per surface and fail the build when the two
 // stop agreeing (scripts/hosted-mcp-check.mjs).
