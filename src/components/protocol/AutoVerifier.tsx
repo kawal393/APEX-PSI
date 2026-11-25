@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const VERIFY_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/verify-hash`;
+const VERIFY_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/verify-hash`;
 
 /**
  * Autonomous verification agent. A visitor — or an AI agent over the same

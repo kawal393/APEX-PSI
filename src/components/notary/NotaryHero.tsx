@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Shield, FileText, Lock, Copy, Check, Terminal } from "lucide-react";
 
-const NOTARY_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/notarize`;
+const NOTARY_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/notarize`;
 
 const curlOneLiner = `curl -X POST ${NOTARY_URL} \\
   -H "Content-Type: application/json" \\

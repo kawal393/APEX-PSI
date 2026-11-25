@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { SITE_URL } from "@/lib/site";
 import { toast } from "sonner";
 
-const CHECK_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/registry-check`;
+const CHECK_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/registry-check`;
 
 interface Signal {
   id: string;

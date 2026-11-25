@@ -72,7 +72,7 @@ export async function loadTrustAnchor(): Promise<TrustAnchor | null> {
   if (anchorCache) return anchorCache;
   const sources = [
     "/.well-known/apex-psi-trust-anchor.json",
-    `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/pqc-sign`,
+    `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/pqc-sign`,
   ];
   for (const url of sources) {
     try {
@@ -107,7 +107,7 @@ export async function isInstitutionalSignature(sig: HybridSignature): Promise<bo
  * server; only the canonical claim is sent.
  */
 export async function hybridSignInstitutional(message: string): Promise<HybridSignature> {
-  const url = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/pqc-sign`;
+  const url = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/pqc-sign`;
   const r = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

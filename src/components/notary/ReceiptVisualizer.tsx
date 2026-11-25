@@ -19,7 +19,7 @@ const ReceiptVisualizer = () => {
   const handleDownloadSample = async () => {
     setDownloading(true);
     try {
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd";
       // First notarize a sample to get a receipt ID
       const notarizeRes = await fetch(
         `https://${projectId}.supabase.co/functions/v1/notarize`,

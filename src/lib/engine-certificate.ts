@@ -146,7 +146,7 @@ export async function generateCertificate(record: CommitRecord): Promise<Complia
   const certificateId = `CERT-${certificateHash.substring(0, 12).toUpperCase()}`;
   
   // Generate verification URL
-  const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || 'qhtntebpcribjiwrdtdd';
+  const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd";
   const verificationUrl = `https://${projectId}.supabase.co/functions/v1/verify-hash?hash=${record.proofHash}`;
   
   // Generate QR code

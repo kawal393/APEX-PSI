@@ -151,7 +151,7 @@ const NotaryApiKeys = () => {
         <CardContent>
           <pre className="bg-muted/50 rounded-lg p-4 text-xs font-mono text-foreground overflow-x-auto">
 {`curl -X POST \\
-  https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/notarize \\
+  https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/notarize \\
   -H "Content-Type: application/json" \\
   -H "x-apex-api-key: YOUR_API_KEY" \\
   -d '{"decision": "Model approved loan #4521", "predicate": "EU_ART_12"}'`}

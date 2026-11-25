@@ -53,7 +53,7 @@ interface VerificationResult extends ProofReceiptData {
 }
 
 
-const VERIFY_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/verify-hash`;
+const VERIFY_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/verify-hash`;
 
 // Verification pipeline steps
 const zkSteps = [
@@ -105,7 +105,7 @@ const Verify = () => {
     setAuditSubmitting(true);
     try {
       const res = await fetch(
-        `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/public-attestation`,
+        `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/public-attestation`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -189,7 +189,7 @@ const Verify = () => {
     setReceiptLoading(true);
     setReceiptResult(null);
     try {
-      const LEDGER_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/rest/v1/gallows_public_ledger?commit_id=eq.${encodeURIComponent(id)}&select=*&limit=1`;
+      const LEDGER_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/rest/v1/gallows_public_ledger?commit_id=eq.${encodeURIComponent(id)}&select=*&limit=1`;
       const res = await fetch(LEDGER_URL, {
         headers: {
           "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,

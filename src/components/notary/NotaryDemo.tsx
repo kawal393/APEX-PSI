@@ -35,7 +35,7 @@ const NotaryDemo = () => {
     setLoading(true);
     try {
       const parsed = JSON.parse(payload);
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd";
       const res = await fetch(`https://${projectId}.supabase.co/functions/v1/notarize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

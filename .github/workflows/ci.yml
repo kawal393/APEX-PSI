@@ -267,6 +267,28 @@ jobs:
         run: npm run check:marketplace
       - run: npm run check:marketplace:selftest
 
+  # A page that points at a host nobody serves is a dead door wearing a live
+  # door's clothes. On 25 Nov 2026 the published bundle carried 19 strings of
+  # "https://undefined.supabase.co/functions/v1/..." because the build had no
+  # VITE_SUPABASE_PROJECT_ID: /verify answered "Verification request failed" and
+  # /breach-pack answered "The test door could not be reached", and ten public
+  # doors (notarize, verify-hash, pqc-sign, machine-checkout, the ledger query)
+  # were unreachable from the page that offers them. The source half is
+  # blocking; the served half is not, because it stays red until Lovable
+  # publishes the fix, and a red that names the drift is the signal.
+  host-truth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run check:host:selftest
+      - run: npm run check:host
+      - name: The served bundle must not name a host that does not exist
+        continue-on-error: true
+        run: npm run check:host:live
+
   # A draft the registry's own checker refuses never gets filed. On 15 Nov 2026
   # the datatracker rejected draft-singh-psi-agent-02 for two reasons the
   # checker named: the License Notice was two paragraphs where the IETF Trust

@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Helmet } from "react-helmet-async";
 
-const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd";
 const FN_BASE = `https://${PROJECT_ID}.supabase.co/functions/v1`;
 const AUDIT_MIRROR_URL = `${FN_BASE}/audit-mirror`;
 const HEARTBEAT_URL = `${FN_BASE}/lattice-heartbeat`;

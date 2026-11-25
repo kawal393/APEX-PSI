@@ -29,7 +29,7 @@ interface LatticeStatus {
   timestamp: string;
 }
 
-const LATTICE_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/sovereign-lattice`;
+const LATTICE_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/sovereign-lattice`;
 
 export default function Lattice() {
   const [status, setStatus] = useState<LatticeStatus | null>(null);

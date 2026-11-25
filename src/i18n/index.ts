@@ -87,7 +87,7 @@ const loadTranslation = async (lang: string): Promise<any> => {
   if (translationCache[lang]) return translationCache[lang];
 
   try {
-    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || 'qhtntebpcribjiwrdtdd';
+    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd";
     const resp = await fetch(`https://${projectId}.supabase.co/functions/v1/translate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

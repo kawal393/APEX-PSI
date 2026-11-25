@@ -9,7 +9,7 @@ import AutoVerifier from "@/components/protocol/AutoVerifier";
 import { SITE_URL } from "@/lib/site";
 import { HOSTED_COUNT, HOSTED_TOOLS, LOCAL_COMMAND } from "@/lib/mcp-surfaces";
 
-const MCP_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/mcp`;
+const MCP_ENDPOINT = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/mcp`;
 const SERVER_JSON = `${SITE_URL}/.well-known/mcp/server.json`;
 
 // One-line argument shapes for the hosted tools. The names themselves come from

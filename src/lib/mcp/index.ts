@@ -6,7 +6,7 @@ import listAttestationsTool from "./tools/list-attestations";
 import ledgerStatsTool from "./tools/ledger-stats";
 import protocolInfoTool from "./tools/protocol-info";
 
-const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unset";
+const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd";
 
 export default defineMcp({
   name: "apex-psi",

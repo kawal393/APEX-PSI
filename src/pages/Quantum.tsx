@@ -10,7 +10,7 @@ import { hybridVerify, hybridSignEphemeral, HYBRID_SUITE, PQC_STANDARD, type Hyb
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const FN = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/pqc-sign`;
+const FN = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/pqc-sign`;
 
 export default function Quantum() {
   const [message, setMessage] = useState("APEX PSI — this receipt is quantum-verified.");

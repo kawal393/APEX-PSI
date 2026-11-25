@@ -18,7 +18,7 @@ const CONFORMANCE_SESSION =
   typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
     ? crypto.randomUUID().replace(/-/g, "").slice(0, 16)
     : Math.random().toString(36).slice(2, 12).padEnd(8, "0");
-const TEST_DOOR = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/machine-checkout?conformance=agent-03&session=${CONFORMANCE_SESSION}`;
+const TEST_DOOR = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1/machine-checkout?conformance=agent-03&session=${CONFORMANCE_SESSION}`;
 
 function save(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);

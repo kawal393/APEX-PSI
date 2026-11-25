@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Terminal, KeyRound, ShieldCheck } from "lucide-react";
 import { SITE_URL } from "@/lib/site";
 
-const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID || "your-project";
+const PROJECT_ID = import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd";
 const BASE = `https://${PROJECT_ID}.supabase.co/functions/v1/psi-api`;
 
 const Code = ({ children }: { children: React.ReactNode }) => (

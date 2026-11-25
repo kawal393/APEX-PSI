@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import "@/i18n/gate";
 
-const API = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1`;
+const API = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd"}.supabase.co/functions/v1`;
 
 const STEPS = [
   { n: "01", t: "Mandate", who: "The human or organisation", s: "Signs what the agent may do: scope, max spend, currencies, time window." },

@@ -20,7 +20,7 @@ import {
 // The site's own domain answers that path with the SPA shell, so printing
 // www.ai-governance-standard.com/functions/v1/mcp here would hand an agent an HTML page and a
 // confusing parse error instead of the JSON-RPC endpoint.
-const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID ?? "project-ref-unset";
+const projectRef = import.meta.env.VITE_SUPABASE_PROJECT_ID || "qhtntebpcribjiwrdtdd";
 const HOSTED_URL = `https://${projectRef}.supabase.co${HOSTED_PATH}`;
 
 const INSTALL = LOCAL_COMMAND;
