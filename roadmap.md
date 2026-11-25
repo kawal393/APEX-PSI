@@ -1,5 +1,11 @@
 # Brand update
 
+# Agent door release (25 Nov 2026)
+- [x] Confirm checkout, conformance example (93,462 bytes), MCP 1.3.0 card and session-aware breach pack match GitHub main.
+- [x] Store supplied public keyring and shadow mode; deploy agent-checkout, machine-checkout and apex-psi-mcp without changing checkout source or replay rules.
+- [ ] Publish the supplied site files and verify their served bytes.
+- [ ] Run section 9 acceptance checks; payment permit/replay checks require STRIPE_PRICE_PRO and STRIPE_PRICE_ULTRA (secure form declined).
+
 # Receiving door (25 Nov 2026)
 - [x] Build /gate around the existing live authorization-receipt checker; no payment execution or signing changes.
 - [x] Add private, downloadable check reports and link the existing mandate and payment recipe pages.
