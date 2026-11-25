@@ -165,6 +165,9 @@ const AgentPaymentRecipe = () => {
             <Link to="/mandate" className="underline hover:text-primary">Authorise an agent</Link>
             <Link to="/pilot" className="underline hover:text-primary">Run a 14-day pilot</Link>
             <a href="/ietf/draft-singh-psi-agent-03.txt" className="underline hover:text-primary" target="_blank" rel="noopener noreferrer">Draft text</a>
+            <a href="/conformance/agent-03.json" className="underline hover:text-primary">Frozen gate contract (agent-03.json) — the exact rules a receiving door applies</a>
+            <a href="/conformance/agent-03-example.json" className="underline hover:text-primary">Signed example (agent-03-example.json) — one signed run and seventeen refusals to test any gate</a>
+            <Link to="/breach-pack" className="underline hover:text-primary">Breach pack — turn a gate answer into a report</Link>
           </section>
         </div>
       </main>

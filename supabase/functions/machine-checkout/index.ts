@@ -15,14 +15,15 @@ import example from "./agent-03-example.json" with { type: "json" };
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 // Durable replay store: a consumed proposal id is one row, so a second worker
-// instance cannot accept the same proposal again.
+// instance cannot accept the same proposal again. The key is the proposal id
+// alone: a scope prefix would let the same signed proposal through again.
 function durableReplay(scope: string) {
   const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
     auth: { persistSession: false },
   });
   return {
     async consume(pid: string) {
-      const { error } = await db.from("gate_replay").insert({ replay_key: `${scope}:${pid}`, scope });
+      const { error } = await db.from("gate_replay").insert({ replay_key: pid, scope });
       if (!error) return true;
       if (error.code === "23505") return false;
       throw new Error("replay_store_unavailable");
@@ -59,7 +60,7 @@ const conformanceKeys = keyringFrom((example as { keyring: Record<string, string
 
 // Without ?session= every request gets a fresh replay memory, so the example
 // stays re-runnable. With ?session=<id> replays are remembered durably within
-// that session, which is how the replay case is demonstrated.
+// by proposal id alone, so a new session id cannot replay a spent proposal.
 function getConformanceGate(session: string | null) {
   return createReceiverGate({
     resolveKey: conformanceKeys,
@@ -79,7 +80,7 @@ Deno.serve(async (req) => {
       source: "draft-singh-psi-agent-03",
       side_effect: NO_SIDE_EFFECT,
       live_mode: Deno.env.get("PSI_GATE_KEYRING") ? "shadow" : "dormant",
-      conformance: "POST ?conformance=agent-03 with any request from /conformance/agent-03-example.json; add &session=<8-64 chars> to make replays remembered",
+      conformance: "POST ?conformance=agent-03 with any request from /conformance/agent-03-example.json; add &session=<8-64 chars> to remember replays (a proposal is spent once, across every session)",
       note: "A permit proves a signed, permitted decision existed for this exact action. It does not prove the action is right or true.",
     });
   }

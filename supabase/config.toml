@@ -166,3 +166,6 @@ verify_jwt = false
 
 [functions.machine-checkout]
 verify_jwt = false
+
+[functions.agent-checkout]
+verify_jwt = false

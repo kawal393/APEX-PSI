@@ -1,0 +1,1 @@
+- `agent-checkout` is the only agent payment door: the vendored receiver gate decides first, a refusal creates no Stripe session, tier/amount come only from the gate-verified signed args, and replay is keyed on the proposal id alone in `gate_replay`. `create-checkout` (human, signed-in) is never gated, because no human click carries a mandate.

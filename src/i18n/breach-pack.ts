@@ -1,0 +1,26 @@
+import i18n from "./index";
+
+i18n.addResourceBundle("en", "breachPack", {
+  title: "Breach pack — APEX PSI",
+  description: "Turn a receiving-door answer into a report: which signed records were present and which rule refused the action.",
+  eyebrow: "APEX PSI / BREACH PACK",
+  heading: "What was refused, and why.",
+  oneLine: "A breach pack is the receiving door's own answer, laid out as a report: the verdict, the rule that refused the action, and every check the door ran.",
+  boundary: "It is an unsigned summary. It does not prove the action was right, lawful or true, and it is not legal advice.",
+  input: "Gate answer (JSON)",
+  placeholder: "Paste the JSON the receiving door returned…",
+  build: "Build breach pack",
+  tryExample: "Try a signed example",
+  trying: "Asking the test door…",
+  invalid_json: "That is not valid JSON.",
+  not_gate_answer: "That JSON is not an answer from the receiving door.",
+  failure: "The test door could not be reached.",
+  idle: "No answer loaded yet.",
+  verdict: "Verdict", reason: "Refusal rule", mode: "Mode", failed: "Failed signature checks", actions: "Actions recorded",
+  checks: "Checks the door ran", none: "none",
+  PERMITTED: "PERMITTED", REFUSED: "REFUSED",
+  fingerprint: "SHA-256 of this pack",
+  json: "Download JSON", pdf: "Download PDF",
+  exampleNote: "The example sends a refusal case from the public signed example to the test door. Nothing is charged.",
+  sources: "Sources",
+}, true, true);

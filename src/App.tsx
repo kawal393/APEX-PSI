@@ -120,6 +120,7 @@ import Case002 from "./pages/Case002";
 import Case003 from "./pages/Case003";
 import Mandate from "./pages/Mandate";
 import ReceivingDoor from "./pages/ReceivingDoor";
+import BreachPack from "./pages/BreachPack";
 import ConnectAIButton from "@/components/ConnectAIButton";
 import CookieConsent from "@/components/CookieConsent";
 
@@ -275,6 +276,7 @@ const App = () => (
               <Route path="/case-003" element={<Case003 />} />
               <Route path="/mandate" element={<Mandate />} />
               <Route path="/gate" element={<ReceivingDoor />} />
+              <Route path="/breach-pack" element={<BreachPack />} />
               <Route path="/checkout-gate" element={<Navigate to="/gate" replace />} />
               <Route path="/pramaan" element={<Pramaan />} />
               <Route path="/seal" element={<UniversalSeal />} />
