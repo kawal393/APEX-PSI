@@ -1,5 +1,12 @@
 # Brand update
 
+# Receiving door (25 Nov 2026)
+- [x] Build /gate around the existing live authorization-receipt checker; no payment execution or signing changes.
+- [x] Add private, downloadable check reports and link the existing mandate and payment recipe pages.
+- [x] Test fail-closed results and verify real expired/missing receipt refusals and JSON/PDF exports on desktop and mobile (208 tests passed, 5 live-test skips). No live unexpired receipt was available; positive signature acceptance covered by signed unit tests, not a production action.
+- [ ] Connect the production sender/receiver gate and signed three-case vectors — waiting for the laptop's frozen contract and published gate address.
+- [ ] Connect paid dispute exports — held by the standing no-public-checkout rule; no payment or certification claims.
+
 # Phone launch recovery (18 Oct 2026)
 - [x] Redirect legacy `/index` and `/index.html` launches while preserving query parameters and the selected home view.
 - [x] Verify both launch paths on a phone-sized browser (no runtime errors); public site confirmed blank with `supabaseUrl is required`.

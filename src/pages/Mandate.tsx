@@ -2,6 +2,10 @@ import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
+import "@/i18n/gate";
 
 const FIELDS = ["allowed", "reason", "integrity_verified", "pq_verified", "authority", "timestamp_anchor"] as const;
 const URL_BASE = import.meta.env.VITE_SUPABASE_URL;
@@ -10,6 +14,7 @@ const show = (v: unknown) =>
   v === undefined || v === null ? "SEAL PENDING" : typeof v === "object" ? JSON.stringify(v) : String(v);
 
 const Mandate = () => {
+  const { t } = useTranslation("gate");
   const [id, setId] = useState("");
   const [busy, setBusy] = useState(false);
   const [res, setRes] = useState<Record<string, unknown> | null>(null);
@@ -42,6 +47,7 @@ const Mandate = () => {
         <main className="mx-auto max-w-3xl px-4 py-16">
           <p className="font-mono text-xs uppercase tracking-[0.4em] text-gold">Authorize</p>
           <h1 className="mt-4 font-serif text-4xl md:text-6xl">Ask before you act.</h1>
+          <Button asChild variant="link" className="mt-4"><Link to="/gate">{t("title")}</Link></Button>
           <ol className="mt-8 space-y-3 text-foreground/85">
             <li>1. An AI asks for a receipt before it does something.</li>
             <li>2. Whoever receives the action checks that receipt before they obey.</li>

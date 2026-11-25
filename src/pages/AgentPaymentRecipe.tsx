@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SITE_URL } from "@/lib/site";
+import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
+import "@/i18n/gate";
 
 const API = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1`;
 
@@ -75,7 +78,9 @@ const Code = ({ children }: { children: string }) => (
   <pre className="bg-card border border-border p-4 text-xs overflow-x-auto font-mono leading-relaxed text-foreground">{children}</pre>
 );
 
-const AgentPaymentRecipe = () => (
+const AgentPaymentRecipe = () => {
+  const { t } = useTranslation("gate");
+  return (
   <>
     <Helmet>
       <title>Agent Payment + Evidence Recipe — Apex PSI</title>
@@ -154,6 +159,7 @@ const AgentPaymentRecipe = () => (
           </section>
 
           <section className="flex flex-wrap gap-4 text-xs uppercase tracking-widest">
+            <Button asChild variant="link"><Link to="/gate">{t("title")}</Link></Button>
             <Link to="/seal" className="underline hover:text-primary">Make a free receipt</Link>
             <Link to="/mcp" className="underline hover:text-primary">Use it from an AI assistant (MCP)</Link>
             <Link to="/mandate" className="underline hover:text-primary">Authorise an agent</Link>
@@ -166,5 +172,6 @@ const AgentPaymentRecipe = () => (
     </div>
   </>
 );
+};
 
 export default AgentPaymentRecipe;
