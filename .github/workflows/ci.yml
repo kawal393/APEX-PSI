@@ -532,11 +532,18 @@ jobs:
             echo "::error::the rail is asking for an unpinned CLI again — resolving 'latest' calls GitHub's release API and the run dies before any deploy step"
             exit 1
           fi
-          got=$(supabase --version 2>&1 | tr -dc '0-9.')
+          # The CLI prints its own version on stdout. It ALSO prints an upgrade
+          # notice on stderr naming the newest release (3.4.0 on 25 Nov 2026) and
+          # the version it is running. Measured 25 Nov 2026: merging the two
+          # streams and stripping the letters joined three numbers into
+          # "3.2.03.4.03.2.0.", so the check failed on the exact version the rail
+          # pins. Read stdout only, and take one version out of it.
+          raw=$(supabase --version 2>/dev/null)
+          got=$(printf '%s\n' "$raw" | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
           want="${SUPABASE_CLI_VERSION#v}"
-          echo "pinned: $want | installed: $got"
+          echo "pinned: $want | installed: ${got:-none} | printed: ${raw:-nothing}"
           if [ "$got" != "$want" ]; then
-            echo "::error::setup-cli handed back $got while the rail pins $want — the deploy would run a CLI this file does not describe"
+            echo "::error::setup-cli handed back ${got:-nothing} while the rail pins $want — the deploy would run a CLI this file does not describe"
             exit 1
           fi
           if ! supabase functions deploy --help >/dev/null 2>&1; then
