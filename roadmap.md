@@ -3,8 +3,10 @@
 # Agent door release (25 Nov 2026)
 - [x] Confirm checkout, conformance example (93,462 bytes), MCP 1.3.0 card and session-aware breach pack match GitHub main.
 - [x] Store supplied public keyring and shadow mode; deploy agent-checkout, machine-checkout and apex-psi-mcp without changing checkout source or replay rules.
-- [ ] Publish the supplied site files and verify their served bytes.
-- [ ] Run section 9 acceptance checks; payment permit/replay checks require STRIPE_PRICE_PRO and STRIPE_PRICE_ULTRA (secure form declined).
+- [x] Publish the supplied site files; served example and MCP 1.3.0 card match main byte-for-byte.
+- [x] Section 9 checks 1 and 5–13 pass: six money refusals with no payment references, signed-in human checkout 200 with Stripe URL, and session-scoped conformance replay; 29 live probes and 39 unit tests pass.
+- [ ] Section 9 checks 2–4 require STRIPE_PRICE_PRO and STRIPE_PRICE_ULTRA (secure form declined); do not spend the payment allow proposal before the prices are configured.
+- [ ] Published /breach-pack example button: request includes the session but its function host contains undefined because VITE_SUPABASE_PROJECT_ID was absent from the publish output. Local signed-in browser succeeds; source unchanged per deployment-only instruction.
 
 # Receiving door (25 Nov 2026)
 - [x] Build /gate around the existing live authorization-receipt checker; no payment execution or signing changes.
