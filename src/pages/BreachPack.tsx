@@ -11,7 +11,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { SITE_URL } from "@/lib/site";
 import { buildBreachPack, packFingerprint, parseGateAnswer, type BreachPack as Pack } from "@/lib/breach-pack";
 
-const TEST_DOOR = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/machine-checkout?conformance=agent-03`;
+// The conformance door scopes its replay memory to a session, so this page
+// carries one. The same signed request posted twice in this session is refused
+// as a replay; another session is another test.
+const CONFORMANCE_SESSION =
+  typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID().replace(/-/g, "").slice(0, 16)
+    : Math.random().toString(36).slice(2, 12).padEnd(8, "0");
+const TEST_DOOR = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/machine-checkout?conformance=agent-03&session=${CONFORMANCE_SESSION}`;
 
 function save(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);

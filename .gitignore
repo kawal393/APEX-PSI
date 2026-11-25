@@ -41,3 +41,6 @@ __pycache__/
 # What the registry serves, pulled by scripts/registry-truth-check.mjs. Strangers' copies,
 # never a build input: it must never be committed or picked up as a vendored artifact.
 .registry-check/
+
+# The gate guard compiles the vendored gate into a scratch directory.
+.gate-truth-check/

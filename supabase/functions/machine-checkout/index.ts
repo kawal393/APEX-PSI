@@ -14,16 +14,21 @@ import { createReceiverGate, type ReceiverGate } from "../_shared/psi-agent/rece
 import example from "./agent-03-example.json" with { type: "json" };
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-// Durable replay store: a consumed proposal id is one row, so a second worker
-// instance cannot accept the same proposal again. The key is the proposal id
-// alone: a scope prefix would let the same signed proposal through again.
-function durableReplay(scope: string) {
+// Durable replay store for the CONFORMANCE door. The key carries the session:
+// `conformance:${session}:${pid}`. The session is required, so the published
+// example stays runnable by anyone forever, and nobody can read "posted with
+// no session, always allowed" as the guarantee. This door moves no money; the
+// money door is agent-checkout, whose key is the proposal id alone.
+function durableReplay(session: string) {
   const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
     auth: { persistSession: false },
   });
   return {
     async consume(pid: string) {
-      const { error } = await db.from("gate_replay").insert({ replay_key: pid, scope });
+      const { error } = await db.from("gate_replay").insert({
+        replay_key: `conformance:${session}:${pid}`,
+        scope: "conformance",
+      });
       if (!error) return true;
       if (error.code === "23505") return false;
       throw new Error("replay_store_unavailable");
@@ -58,14 +63,14 @@ let liveGate: ReceiverGate | null = null;
 
 const conformanceKeys = keyringFrom((example as { keyring: Record<string, string> }).keyring);
 
-// Without ?session= every request gets a fresh replay memory, so the example
-// stays re-runnable. With ?session=<id> replays are remembered durably within
-// by proposal id alone, so a new session id cannot replay a spent proposal.
-function getConformanceGate(session: string | null) {
+// The conformance gate is session-scoped: the session is required, and the
+// replay key carries it. Without a session there would be no replay memory at
+// all, and a request posted twice would be allowed twice.
+function getConformanceGate(session: string) {
   return createReceiverGate({
     resolveKey: conformanceKeys,
     mode: "enforce",
-    ...(session ? { replayStore: durableReplay(`conformance:${session}`) } : {}),
+    replayStore: durableReplay(session),
   });
 }
 
@@ -80,7 +85,7 @@ Deno.serve(async (req) => {
       source: "draft-singh-psi-agent-03",
       side_effect: NO_SIDE_EFFECT,
       live_mode: Deno.env.get("PSI_GATE_KEYRING") ? "shadow" : "dormant",
-      conformance: "POST ?conformance=agent-03 with any request from /conformance/agent-03-example.json; add &session=<8-64 chars> to remember replays (a proposal is spent once, across every session)",
+      conformance: "POST ?conformance=agent-03&session=<8-64 chars> with any request from /conformance/agent-03-example.json; the session is required and scopes the replay memory, so the example stays runnable and a replay is refused inside a session",
       note: "A permit proves a signed, permitted decision existed for this exact action. It does not prove the action is right or true.",
     });
   }
@@ -100,7 +105,18 @@ Deno.serve(async (req) => {
   let mode: "conformance" | "shadow";
   if (conformance) {
     const session = url.searchParams.get("session");
-    if (session !== null && !/^[A-Za-z0-9_-]{8,64}$/.test(session)) {
+    if (session === null) {
+      return json(
+        {
+          ok: false,
+          error: "session_required",
+          detail:
+            "The conformance door needs a session id: add &session=<8-64 chars of A-Z a-z 0-9 _ ->. The session scopes the replay memory, so the published example stays runnable and a replay is refused inside a session.",
+        },
+        400,
+      );
+    }
+    if (!/^[A-Za-z0-9_-]{8,64}$/.test(session)) {
       return json({ ok: false, error: "invalid_session" }, 400);
     }
     gate = getConformanceGate(session);

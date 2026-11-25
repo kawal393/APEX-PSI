@@ -17,6 +17,7 @@
     "check:tools": "node scripts/tool-name-check.mjs",
     "check:badge-copy": "node scripts/badge-copy-check.mjs",
     "check:x402": "node --experimental-strip-types scripts/x402-selftest.mjs",
+    "check:gate": "node scripts/gate-truth-check.mjs",
     "check:hosted-mcp": "node --experimental-strip-types scripts/hosted-mcp-check.mjs",
     "check:hosted-mcp:live": "node --experimental-strip-types scripts/hosted-mcp-check.mjs --live",
     "check:ots-anchor": "node --experimental-strip-types scripts/ots-anchor-selftest.ts",

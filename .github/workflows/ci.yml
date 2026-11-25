@@ -89,6 +89,25 @@ jobs:
       # unless APEX_LIVE=1 is passed deliberately.
       - run: npm run test -- --run
 
+  # The agent doors are the only path an agent may use to start a payment, and
+  # the published example is what a stranger is handed to test them. This job
+  # compiles the site's own vendored gate and runs it over every case in the
+  # example the site publishes: the valid run must be permitted, each refusal
+  # must be refused for its own reason, no two cases may share a proposal id,
+  # and the two copies of the example must be the same bytes.
+  # 25 Nov 2026: three separate defects were invisible to a green build — the
+  # example's cases shared proposal ids, the conformance door spent the example
+  # for good, and the money door never applied the mandate's own limit.
+  gate-truth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run check:gate
+
   # A paywall that has never been refused is a way of losing money, not making it.
   # This job runs the door's own refusals against the module the notary imports:
   # exact scheme only, price taken from our configuration and never from the caller,

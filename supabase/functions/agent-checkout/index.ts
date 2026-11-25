@@ -1,12 +1,15 @@
-// agent-checkout — the agent door. The receiver gate is consulted first, and
-// the Stripe session is created only if the gate permits the exact action.
+// agent-checkout — the agent door. The receiver gate is consulted first, the
+// door's own money rules second, and a Stripe session is created only if both
+// permit the exact action.
 //
 // The human door (create-checkout) is untouched: a person's signed-in session
 // is that permission. This door exists for agents, which must carry a signed
 // mandate, a signed proposal and a signed decision.
-import { createPublicKey, type KeyObject } from "node:crypto";
+import { createPublicKey, createHash, type KeyObject } from "node:crypto";
 import { Buffer } from "node:buffer";
 import { createReceiverGate, type ReceiverGate } from "../_shared/psi-agent/receiver.ts";
+import { evaluatePayment, PAYMENT_TOOL } from "../_shared/psi-agent/payment.ts";
+import type { Mandate } from "../_shared/psi-agent/agent.ts";
 (globalThis as { Buffer?: typeof Buffer }).Buffer ??= Buffer;
 import { createClient } from "npm:@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14?target=deno";
@@ -19,9 +22,9 @@ const CORS = {
 const MAX_BODY = 256 * 1024;
 
 // One price per tier, on the server. The request never chooses a price.
-const TIERS: Record<string, { priceId: string; label: string; maxMinor: number }> = {
-  pro: { priceId: Deno.env.get("STRIPE_PRICE_PRO") ?? "", label: "Pro", maxMinor: 200000 },
-  ultra: { priceId: Deno.env.get("STRIPE_PRICE_ULTRA") ?? "", label: "Ultra", maxMinor: 2000000 },
+const TIERS: Record<string, { priceId: string; label: string; currency: string; maxMinor: number }> = {
+  pro: { priceId: Deno.env.get("STRIPE_PRICE_PRO") ?? "", label: "Pro", currency: "USD", maxMinor: 200000 },
+  ultra: { priceId: Deno.env.get("STRIPE_PRICE_ULTRA") ?? "", label: "Ultra", currency: "USD", maxMinor: 2000000 },
 };
 
 function json(body: unknown, status = 200) {
@@ -39,10 +42,20 @@ function keyringFrom(map: Record<string, string>) {
   return (kid: string) => ring[kid] ?? null;
 }
 
-// Durable replay store. The key is the PROPOSAL ID ALONE — no session, no
-// scope. A proposal is spent once, on every instance, forever. Prefixing the
-// key with anything lets the same signed proposal through again under a new
-// prefix, which is the replay this store exists to refuse.
+// The fingerprint of the keyring this door trusts. An operator compares it with
+// the keyring_fingerprint in the published example file, so a mismatch is
+// visible without printing a key.
+function fingerprintOf(map: Record<string, string>) {
+  const canonical = JSON.stringify(
+    Object.fromEntries(Object.entries(map).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))),
+  );
+  return `sha256:${createHash("sha256").update(canonical).digest("hex")}`;
+}
+
+// Durable replay store for the MONEY door. The key is the PROPOSAL ID ALONE —
+// no session, no scope prefix. A proposal is spent once, on every instance,
+// forever. Prefixing the key lets the same signed proposal through again,
+// which is the replay this store exists to refuse.
 function durableReplay() {
   const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
     auth: { persistSession: false },
@@ -58,16 +71,19 @@ function durableReplay() {
 }
 
 let gate: ReceiverGate | null = null;
+let trustedFingerprint: string | null = null;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
   const url = new URL(req.url);
 
   if (req.method === "GET") {
+    const ringRaw = Deno.env.get("PSI_GATE_KEYRING");
     return json({
       profile: "PSI-ACT/1",
       door: "agent-checkout",
-      live_mode: Deno.env.get("PSI_GATE_KEYRING") ? (Deno.env.get("PSI_GATE_MODE") ?? "shadow") : "dormant",
+      live_mode: ringRaw ? (Deno.env.get("PSI_GATE_MODE") ?? "shadow") : "dormant",
+      keyring_fingerprint: ringRaw ? fingerprintOf(JSON.parse(ringRaw)) : null,
       note: "An agent payment needs a signed mandate, proposal and decision. A refusal creates no Stripe session.",
     });
   }
@@ -88,8 +104,10 @@ Deno.serve(async (req) => {
     return json({ ok: false, dormant: true, reason: "gate_dormant", detail: "No receiver keyring is configured." }, 503);
   }
   try {
+    const ring = JSON.parse(ringRaw) as Record<string, string>;
+    trustedFingerprint = fingerprintOf(ring);
     gate ??= createReceiverGate({
-      resolveKey: keyringFrom(JSON.parse(ringRaw)),
+      resolveKey: keyringFrom(ring),
       mode: (Deno.env.get("PSI_GATE_MODE") ?? "shadow") === "enforce" ? "enforce" : "shadow",
       replayStore: durableReplay(),
     });
@@ -97,7 +115,7 @@ Deno.serve(async (req) => {
     return json({ ok: false, reason: "keyring_misconfigured" }, 500);
   }
 
-  // The gate decides. Everything below it runs only on a permit.
+  // 1. the gate decides. Everything below it runs only on a permit.
   let result;
   try {
     // deno-lint-ignore no-explicit-any
@@ -111,14 +129,26 @@ Deno.serve(async (req) => {
     return json({ ok: false, refused: true, reason: result.reason, mode: Deno.env.get("PSI_GATE_MODE") ?? "shadow" }, 403);
   }
 
-  // The tier and the amount come from the SIGNED proposal, not from the body.
-  const args = (body.args ?? {}) as { tier?: string; amount_minor?: number };
-  const tier = TIERS[String(args.tier ?? "")];
-  if (!tier || !tier.priceId) return json({ ok: false, refused: true, reason: "tier_not_permitted" }, 403);
-  const amount = Number(args.amount_minor ?? 0);
-  if (!Number.isInteger(amount) || amount <= 0 || amount > tier.maxMinor) {
-    return json({ ok: false, refused: true, reason: "over_spend" }, 403);
+  // 2. the door's money rules. The mandate is the one the gate just verified:
+  // the gate refuses a proposal that names another mandate (proposal_mid_mismatch),
+  // and it refuses args that are not the digest the proposal signed (args_mismatch).
+  const verdict = evaluatePayment(
+    {
+      tool: body.tool as string | undefined,
+      args: body.args as Record<string, unknown>,
+      mandate: body.mandate as Mandate | undefined,
+    },
+    TIERS,
+    { expectedTool: PAYMENT_TOOL },
+  );
+  if (!verdict.allowed) {
+    console.log(JSON.stringify({ door: "agent-checkout", refused: verdict.reason }));
+    return json({ ok: false, refused: true, reason: verdict.reason, mode: Deno.env.get("PSI_GATE_MODE") ?? "shadow" }, 403);
   }
+
+  // 3. the amount and the tier are the signed ones, and the price is the server's.
+  const tier = TIERS[verdict.tier as string];
+  if (!tier.priceId) return json({ ok: false, refused: true, reason: "tier_not_permitted" }, 403);
 
   const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, { httpClient: Stripe.createFetchHttpClient() });
   const session = await stripe.checkout.sessions.create({
@@ -131,7 +161,10 @@ Deno.serve(async (req) => {
     ok: true,
     url: session.url,
     tier: tier.label.toLowerCase(),
+    amount_minor: verdict.amountMinor,
+    currency: verdict.currency,
     permit: result.permit,
     header: result.permit?.header,
+    keyring_fingerprint: trustedFingerprint,
   });
 });
