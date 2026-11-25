@@ -4,7 +4,9 @@
 - [x] Build /gate around the existing live authorization-receipt checker; no payment execution or signing changes.
 - [x] Add private, downloadable check reports and link the existing mandate and payment recipe pages.
 - [x] Test fail-closed results and verify real expired/missing receipt refusals and JSON/PDF exports on desktop and mobile (208 tests passed, 5 live-test skips). No live unexpired receipt was available; positive signature acceptance covered by signed unit tests, not a production action.
-- [ ] Connect the production sender/receiver gate and signed three-case vectors — waiting for the laptop's frozen contract and published gate address.
+- [x] Receiver gate live as a server function; all 18 signed example cases answer exactly as the laptop measured (conformance mode, moves no money).
+- [ ] Turn on live shadow mode — waiting for the real public keyring (server secret PSI_GATE_KEYRING) from whoever signs mandates.
+- [ ] /breach-pack refusal bundle page — next build.
 - [ ] Connect paid dispute exports — held by the standing no-public-checkout rule; no payment or certification claims.
 
 # Phone launch recovery (18 Oct 2026)

@@ -296,6 +296,60 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://www.ai-governance-standard.com/articles/ed25519-signatures-for-secure-ai-audit-trails-tivr6r</loc>
+    <lastmod>2026-11-24T09:06:24.156Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/what-is-ai-governance-technical-definition-for-2026-wf1anw</loc>
+    <lastmod>2026-11-24T09:06:24.156Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/ai-accountability-why-logs-are-not-evidence-83k53j</loc>
+    <lastmod>2026-11-24T09:06:24.156Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/verifiable-ai-governance-without-vendor-trust-w5fkun</loc>
+    <lastmod>2026-11-23T09:06:30.920Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-z7r9mz</loc>
+    <lastmod>2026-11-23T09:06:30.920Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-audit-trail-requirements-compliance-guide-xk3992</loc>
+    <lastmod>2026-11-23T09:06:30.920Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-audit-trail-requirements-mklnux</loc>
+    <lastmod>2026-11-22T09:06:29.069Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/ai-compliance-automation-what-can-can-t-be-automated-n3xjeb</loc>
+    <lastmod>2026-11-22T09:06:29.069Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-audit-trail-requirements-ft1tki</loc>
+    <lastmod>2026-11-22T09:06:29.069Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.ai-governance-standard.com/articles/nist-ai-rmf-vs-eu-ai-act-key-differences-rkduu7</loc>
     <lastmod>2026-11-21T09:06:29.550Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6238,60 +6292,6 @@
   <url>
     <loc>https://www.ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-r1n1jb</loc>
     <lastmod>2026-09-19T15:06:50.681Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/nist-ai-rmf-vs-eu-ai-act-key-differences-xlcotv</loc>
-    <lastmod>2026-09-19T12:07:40.631Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-governance-framework-checklist-for-enterprises-7iuw7w</loc>
-    <lastmod>2026-09-19T12:07:40.631Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-compliance-automation-what-can-and-can-t-be-automated-h3qcyy</loc>
-    <lastmod>2026-09-19T12:07:40.631Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-2gbunc</loc>
-    <lastmod>2026-09-19T09:06:50.745Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-iv2vc5</loc>
-    <lastmod>2026-09-19T09:06:50.745Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-governance-framework-checklist-for-enterprises-ij6e3z</loc>
-    <lastmod>2026-09-19T09:06:50.745Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-article-12-record-keeping-compliance-nsb1fw</loc>
-    <lastmod>2026-09-19T06:07:34.666Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/verifiable-ai-compliance-ietf-draft-singh-psi-00-07zqmm</loc>
-    <lastmod>2026-09-19T06:07:34.666Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-transparency-requirements-what-regulators-ask-5cyc67</loc>
-    <lastmod>2026-09-19T06:07:34.666Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

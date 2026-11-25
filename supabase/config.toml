@@ -163,3 +163,6 @@ verify_jwt = false
 # we advertise to agents would be locked by the platform rather than by us.
 [functions.apex-psi-mcp]
 verify_jwt = false
+
+[functions.machine-checkout]
+verify_jwt = false

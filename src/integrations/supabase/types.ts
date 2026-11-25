@@ -721,6 +721,24 @@ export type Database = {
         }
         Relationships: []
       }
+      gate_replay: {
+        Row: {
+          created_at: string
+          replay_key: string
+          scope: string
+        }
+        Insert: {
+          created_at?: string
+          replay_key: string
+          scope: string
+        }
+        Update: {
+          created_at?: string
+          replay_key?: string
+          scope?: string
+        }
+        Relationships: []
+      }
       harvest_log: {
         Row: {
           completed_at: string | null

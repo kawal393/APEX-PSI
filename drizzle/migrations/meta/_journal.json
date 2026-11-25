@@ -64,6 +64,13 @@
       "when": 1794471550352,
       "tag": "0008_deprecate_internal_job_tokens",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1795579678361,
+      "tag": "0009_migration",
+      "breakpoints": true
     }
   ]
 }
