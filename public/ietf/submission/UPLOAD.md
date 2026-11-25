@@ -101,5 +101,5 @@ fails the build if those two ever disagree with the document date.
 ## What a filed draft is, and is not
 
 A filing shows that this text was submitted under the Author's Address on
-that date. It is not a standard, not an approval, not a legal opinion, and
+that date. It is not an RFC standards-track document, not an approval, not a legal opinion, and
 not a statement that anything the draft describes is true.

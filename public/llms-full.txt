@@ -116,8 +116,9 @@ https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-03.txt
 https://www.ai-governance-standard.com/ietf/draft-singh-psi-agent-03.identity.json
 The -03 supersedes the -02 (submission 172438, also posted); it corrected the Author's
 Address label and four citations. The -02 stays in the repository byte for byte, as the
-record of what was posted before that. An Internet-Draft is not an RFC, not a standard,
-and adopted by no working group. The digest records that these bytes are the bytes the
+record of what was posted before that. It is a published Internet-Draft: an independent
+open specification under IETF technical review, not yet on the RFC standards track and
+adopted by no working group. The digest records that these bytes are the bytes the
 registry holds; it records nothing about the text being correct, adopted, approved or lawful.
 
 ## For the auditor: a paragraph you can paste into a workpaper

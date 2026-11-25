@@ -1,7 +1,7 @@
 {
   "document": "draft-singh-psi-agent-03",
   "title": "Binding Decisions and Settlements to Agent Action Records",
-  "status": "Posted. The IETF datatracker received these bytes on 15 November 2026 as submission 172443, both submission checks passed (idnits 2.17.1: no issues found; idnits3 3.1.0: 0 errors, 0 warnings, 0 comments), the author of the previous revision approved it, and the registry recorded 'Posted' on 15 November 2026. The registry now serves the filed copy at https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt and the bytes it serves are the bytes recorded below. Not an RFC, not a standard, not adopted by any working group.",
+  "status": "Posted. The IETF datatracker received these bytes on 15 November 2026 as submission 172443, both submission checks passed (idnits 2.17.1: no issues found; idnits3 3.1.0: 0 errors, 0 warnings, 0 comments), the author of the previous revision approved it, and the registry recorded 'Posted' on 15 November 2026. The registry now serves the filed copy at https://www.ietf.org/archive/id/draft-singh-psi-agent-03.txt and the bytes it serves are the bytes recorded below. A published Internet-Draft: an independent open specification under IETF technical review, not yet on the RFC standards track and not adopted by any working group.",
   "sha256": "ce14437dd82a91deb7921287d9b862caf6c1fa5b9dd5f6a55b033ab93bc753fd",
   "bytes": 34484,
   "lines": 840,

@@ -112,7 +112,7 @@ const AgentSpecAnchor = () => {
           rest on our say-so.
         </p>
         <p className="mx-auto mt-4 max-w-3xl text-center font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          Filed with the IETF and posted. Not an RFC, not a standard, adopted by no working group.
+          An independent open specification, filed with the IETF and posted for technical review. Not yet on the RFC standards track.
         </p>
         <p className="mx-auto mt-4 max-w-3xl text-center text-xs leading-relaxed text-muted-foreground/80">
           First, and dated. As at 15 November 2026 we know of no other published specification —

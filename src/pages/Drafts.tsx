@@ -73,8 +73,9 @@ const Drafts = () => (
                     Submitted to the IETF datatracker on 15 November 2026 as submission 172443, and
                     posted the same day after the author of the previous revision approved it. It
                     supersedes the -02 (submission 172438, also posted), which it corrected: the
-                    Author's Address label and four citations. It is not an RFC, not a standard and
-                    not adopted by any working group. The -02 stays in the repository, byte for byte,
+                    Author's Address label and four citations. It is a published Internet-Draft: an
+                    independent open specification under IETF technical review, not yet on the RFC
+                    standards track and adopted by no working group. The -02 stays in the repository, byte for byte,
                     as the record of what was posted before it.
                   </p>
                 </div>

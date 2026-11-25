@@ -104,7 +104,7 @@ const AgentPaymentRecipe = () => {
           <section className="mb-12 border border-border p-5">
             <h2 className="text-sm font-bold tracking-widest uppercase text-muted-foreground mb-2">Status — checked 12 Nov 2026</h2>
             <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
-              <li><span className="text-foreground">Envelope format:</span> draft-singh-psi-agent-03 is filed with the IETF — submitted 15 November 2026 as submission 172443 and posted the same day — and it is not a standard. <Link to="/drafts" className="underline text-primary">Read it</Link>.</li>
+              <li><span className="text-foreground">Envelope format:</span> draft-singh-psi-agent-03 is filed with the IETF — submitted 15 November 2026 as submission 172443 and posted the same day — an independent open specification under IETF technical review, not yet on the RFC standards track. <Link to="/drafts" className="underline text-primary">Read it</Link>.</li>
               <li><span className="text-foreground">Sealing the envelope:</span> live today on the hosted notary and through the MCP server.</li>
               <li><span className="text-foreground">Paying APEX by machine (x402):</span> implemented but dormant on this deployment. A payment sent now is refused with <code className="font-mono">apex_x402_door_not_configured</code> and nothing is charged.</li>
               <li><span className="text-foreground">Your own rail:</span> the settlement statement works with any rail — x402, card, bank — because it records the rail's own reference.</li>
