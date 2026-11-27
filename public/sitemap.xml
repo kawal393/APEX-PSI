@@ -296,6 +296,60 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-article-50-marking-detection-duties-ksbswr</loc>
+    <lastmod>2026-11-27T09:06:42.010Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/how-to-prove-an-ai-decision-existed-at-a-specific-time-om1low</loc>
+    <lastmod>2026-11-27T09:06:42.010Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/ai-governance-standards-eu-ai-act-nist-iso-42001-uuspq8</loc>
+    <lastmod>2026-11-27T09:06:42.010Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-audit-trail-requirements-a8zxxu</loc>
+    <lastmod>2026-11-26T09:06:33.408Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/ai-insurance-underwriting-with-cryptographic-proofs-uvjv8k</loc>
+    <lastmod>2026-11-26T09:06:33.408Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/post-quantum-signatures-for-ai-ml-dsa-and-lms-f0o7af</loc>
+    <lastmod>2026-11-26T09:06:33.408Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/eu-ai-act-article-50-marking-detection-duties-lts3wk</loc>
+    <lastmod>2026-11-25T09:06:42.842Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-ef9ssc</loc>
+    <lastmod>2026-11-25T09:06:42.842Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.ai-governance-standard.com/articles/cryptographic-evidence-for-ai-transparency-7m8bbm</loc>
+    <lastmod>2026-11-25T09:06:42.842Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.ai-governance-standard.com/articles/ed25519-signatures-for-secure-ai-audit-trails-tivr6r</loc>
     <lastmod>2026-11-24T09:06:24.156Z</lastmod>
     <changefreq>weekly</changefreq>
@@ -6238,60 +6292,6 @@
   <url>
     <loc>https://www.ai-governance-standard.com/articles/c2pa-content-credentials-for-ai-outputs-ydyu17</loc>
     <lastmod>2026-09-20T00:07:03.695Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-insurance-underwriting-with-cryptographic-proofs-dbja7r</loc>
-    <lastmod>2026-09-19T21:07:09.198Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/verifiable-ai-compliance-ietf-draft-singh-psi-00-vs1bk1</loc>
-    <lastmod>2026-09-19T21:07:09.198Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/nist-ai-rmf-vs-eu-ai-act-key-differences-30hpgi</loc>
-    <lastmod>2026-09-19T21:07:09.198Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/c2pa-content-credentials-for-ai-outputs-1x28d3</loc>
-    <lastmod>2026-09-19T18:06:49.576Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/c2pa-provenance-and-content-credentials-for-ai-9a1m1x</loc>
-    <lastmod>2026-09-19T18:06:49.576Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-s0tofb</loc>
-    <lastmod>2026-09-19T18:06:49.576Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/ai-governance-standards-eu-ai-act-nist-iso-42001-209yvm</loc>
-    <lastmod>2026-09-19T15:06:50.681Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/what-is-ai-governance-technical-definition-for-2026-5ihrbv</loc>
-    <lastmod>2026-09-19T15:06:50.681Z</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.ai-governance-standard.com/articles/bitcoin-anchored-proofs-for-ai-governance-r1n1jb</loc>
-    <lastmod>2026-09-19T15:06:50.681Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
