@@ -5,6 +5,8 @@
 // The human door (create-checkout) is untouched: a person's signed-in session
 // is that permission. This door exists for agents, which must carry a signed
 // mandate, a signed proposal and a signed decision.
+// Agents call server-to-server; Stripe must return buyers to the website, never the functions host.
+const SITE_URL = "https://www.ai-governance-standard.com";
 import { createPublicKey, createHash, type KeyObject } from "node:crypto";
 import { Buffer } from "node:buffer";
 import { createReceiverGate, type ReceiverGate } from "../_shared/psi-agent/receiver.ts";
@@ -75,7 +77,6 @@ let trustedFingerprint: string | null = null;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
-  const url = new URL(req.url);
 
   if (req.method === "GET") {
     const ringRaw = Deno.env.get("PSI_GATE_KEYRING");
@@ -154,8 +155,8 @@ Deno.serve(async (req) => {
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     line_items: [{ price: tier.priceId, quantity: 1 }],
-    success_url: `${url.origin}/upgrade?status=success&tier=${tier.label.toLowerCase()}`,
-    cancel_url: `${url.origin}/upgrade?status=cancelled&tier=${tier.label.toLowerCase()}`,
+    success_url: `${SITE_URL}/upgrade?status=success&tier=${tier.label.toLowerCase()}`,
+    cancel_url: `${SITE_URL}/upgrade?status=cancelled&tier=${tier.label.toLowerCase()}`,
   });
   return json({
     ok: true,
