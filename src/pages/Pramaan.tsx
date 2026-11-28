@@ -292,7 +292,7 @@ const Pramaan = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Helmet>
-        <title>Apex Pramaan — The Truth Protocol — Apex PSI — Universal Verification Protocol</title>
+        <title>Apex Pramaan — The Proof Protocol — Apex PSI — Universal Verification Protocol</title>
         <meta name="description" content="Apex Pramaan: client-side cryptographic proof for any photo, video, or file. Seal it, anchor it, verify it — in 30 seconds, on any phone." />
         <link rel="canonical" href="https://www.ai-governance-standard.com/pramaan" />
       </Helmet>
@@ -309,7 +309,7 @@ const Pramaan = () => {
             <span className="text-gold-gradient">APEX PRAMAAN</span>
           </h1>
           <p className="text-lg md:text-2xl font-mono text-emerald-400/90 mb-6">
-            Pramāṇ · प्रमाण · &quot;Proof&quot;. The Truth Protocol.
+            Pramāṇ · प्रमाण · &quot;Proof&quot;. The Proof Protocol.
           </p>
           <p className="text-base md:text-xl text-muted-foreground max-w-3xl mb-8">
             After the AI flood, truth and lies floated together. <span className="text-foreground font-semibold">Pramaan is the oil-in-water mechanism</span> — a 2 KB cryptographic receipt that anchors any photo, video, or file to an append-only chain. Re-hash. Compare. Done. Verifiable on any phone, in 30 seconds, with zero accounts.
@@ -463,7 +463,7 @@ const Pramaan = () => {
             <h2 className="text-lg font-bold">Governance Ledger · Lineage Audit</h2>
           </div>
           {audit.length === 0 ? (
-            <p className="text-sm text-muted-foreground font-mono">No seals yet. Drop a file above to begin your truth chain.</p>
+            <p className="text-sm text-muted-foreground font-mono">No seals yet. Drop a file above to begin your record chain.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
@@ -528,7 +528,7 @@ const Pramaan = () => {
           <Card className="p-6 bg-card/60 border-border">
             <h3 className="font-bold mb-3 flex items-center gap-2"><Cpu className="h-4 w-4 text-emerald-400" /> The Oil-in-Water Mechanism</h3>
             <p className="text-sm text-muted-foreground mb-3">
-              A 2 KB JSON receipt anchors a multi-gigabyte reality. The hash is the ocean; the receipt is the drop of oil that always floats to the surface — even after a million forwards, re-encodes, and screenshots, the math doesn&apos;t lie.
+              A 2 KB JSON receipt anchors a multi-gigabyte reality. The hash is the ocean; the receipt is the drop of oil that always floats to the surface — even after a million forwards, re-encodes, and screenshots, the math doesn&apos;t judge — it remembers.
             </p>
             <ul className="text-xs font-mono space-y-1 text-foreground/80">
               <li>· SHA-256 of source bytes</li>
@@ -543,17 +543,16 @@ const Pramaan = () => {
             <pre className="text-[10px] font-mono bg-background/60 p-3 rounded border border-border overflow-x-auto">
 {`{
   "spec": "PRAMAN-SPEC-v1",
+  "sample": true,
   "sealed_at": "2026-06-17T10:24:00Z",
   "file": { "name": "evidence.jpg", "size_bytes": 2847119 },
   "sha256": "9f86d081884c7d659a2feaa0c55ad015...",
   "anchor": {
     "chain": "bitcoin",
-    "block_height": 877421,
-    "txid_preview": "pram_9f86d081...c55ad0",
+    "status": "pending — not yet anchored",
     "method": "merkle-aggregate"
   },
-  "issuer": "apex.psi.pramaan",
-  "verified": true
+  "issuer": "apex.psi.pramaan"
 }`}
             </pre>
           </Card>
@@ -580,7 +579,7 @@ const Pramaan = () => {
         <Card className="p-6 md:p-8 bg-gradient-to-br from-emerald-400/5 to-gold/5 border-emerald-400/30">
           <h2 className="text-2xl font-bold mb-4">Connect Pramaan to Everything You Own</h2>
           <p className="text-muted-foreground mb-6 max-w-3xl">
-            Pramaan is a protocol, not an app. One line of code adds truth-anchoring to any phone camera, any newsroom CMS, any AI pipeline, any chat app.
+            Pramaan is a protocol, not an app. One line of code adds proof-anchoring to any phone camera, any newsroom CMS, any AI pipeline, any chat app.
           </p>
           <div className="grid md:grid-cols-3 gap-4 text-xs font-mono">
             <Card className="p-4 bg-background/60 border-border">

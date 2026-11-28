@@ -126,11 +126,11 @@ const License = () => {
               across both distributions, and every line carries a readable rule citation.
             </p>
             <pre className="mt-4 overflow-x-auto rounded-md border border-border bg-background/60 p-4 text-xs leading-relaxed text-muted-foreground">
-{`PSI-SEAL v1.2.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
+{`PSI-SEAL v1.7.0 REJECT: seal is not conformant to PSI-SEAL/1.0.0 — rule 1.1
 canonical schema digest: <sha-256 of the normative rule set>
 received schema: PSI-SEAL/1.0.0 (digest match: false)
 findings:
-  PSI-SEAL v1.2.0 REJECT: schema_digest mismatch — rule 4.2
+  PSI-SEAL v1.7.0 REJECT: schema_digest mismatch — rule 4.2
 generate a conformant seal: https://ai-governance-standard.com/seal
 canonical schema: https://www.ai-governance-standard.com/.well-known/psi-schema.json
 legacy escape hatch (report-only): enforce=false
