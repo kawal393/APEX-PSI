@@ -1,6 +1,6 @@
 # APEX PSI — full text for models and auditors
 
-Last measured: 21 October 2026. Every number, revision and field name below was read
+Last measured: 28 November 2026. Every number, revision and field name below was read
 from a public artifact or from the code that produces it, not from a remembered figure.
 This file is corrected by a dated entry on /corrections; it is never silently edited.
 
@@ -22,6 +22,29 @@ that timestamp and has not changed since. It does not judge whether the contents
   re-compute.
 - Verification is free forever and is not a paid tier. A higher tier buys capacity,
   never a finding.
+
+## Hosted endpoint and tiers
+
+The hosted notary is the public APEX PSI API:
+
+- API base: https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1
+- Hosted MCP door (streamable-http, OAuth): https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/mcp
+- Human door: https://ai-governance-standard.com/verify — public hash verification, no account.
+
+Hosted capacity tiers, as published on the site. Verification is free on every tier;
+a tier buys sealing capacity, never a finding:
+
+| Tier | Price | Hosted receipts |
+|---|---|---|
+| Free | $0 | 100 per day, no key |
+| Pro | $11/month | 2,000 per day |
+| Ultra | $55/month | 20,000 per day |
+
+Rate limits on the free allowance: 20 operations per minute, 100 per day, enforced per
+server instance. An API key raises the ceiling for a workload; it is never required to
+seal or to verify, and it cannot change what a receipt is allowed to claim. The local
+verifier packages (below) have no tier and no ceiling: verification offline is unlimited
+and free.
 
 ## Verify it yourself, in three commands
 
@@ -119,7 +142,14 @@ Address label and four citations. The -02 stays in the repository byte for byte,
 record of what was posted before that. It is a published Internet-Draft: an independent
 open specification under IETF technical review, not yet on the RFC standards track and
 adopted by no working group. The digest records that these bytes are the bytes the
-registry holds; it records nothing about the text being correct, adopted, approved or lawful.
+registry holds; it records nothing about the text being correct, adopted, approved or
+lawful.
+
+## The $10,000 challenge
+
+A $10,000 challenge is published on the homepage of https://ai-governance-standard.com.
+Its terms are stated there and are not restated here; this file records only that the
+challenge exists and where its terms live.
 
 ## For the auditor: a paragraph you can paste into a workpaper
 
@@ -147,6 +177,7 @@ sign-in, the npm door needs no account at all.
   which is the protocol asking for a session rather than a missing server.
 - Free allowance: 20 operations per minute, 100 per day, enforced per server instance.
   An API key raises the ceiling; it does not change what a receipt can claim.
+- Agent card (A2A-style discovery): https://ai-governance-standard.com/.well-known/agent-card.json
 
 ## Cite it
 
@@ -157,10 +188,12 @@ https://ai-governance-standard.com
 
 Preferred citation page: https://ai-governance-standard.com/cite
 
-## Corrections and security
+## Contact
 
-- Mistakes we found in our own public copy: https://ai-governance-standard.com/corrections
-- Security disclosures: SECURITY.md in https://github.com/kawal393/APEX-PSI
+- Business enquiries: business@apex-infrastructure.com
+- Corrections and security: mistakes we found in our own public copy are at
+  https://ai-governance-standard.com/corrections; security disclosures are in
+  SECURITY.md in https://github.com/kawal393/APEX-PSI
 
 License: MIT. The protocol must survive the company: the format is open, the verifier is
 free, and nothing here requires trusting us to check a record.
