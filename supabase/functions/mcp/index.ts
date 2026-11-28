@@ -3,10 +3,10 @@
 // supabase function: mcp
 // Bundled from src/lib/mcp/index.ts by @lovable.dev/mcp-js.
 // src/lib/mcp/index.ts
-import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.26.3";
 
 // src/lib/mcp/tools/seal.ts
-import { defineTool } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { defineTool } from "npm:@lovable.dev/mcp-js@0.26.3";
 import { z } from "npm:zod@^4.4.3";
 
 // src/lib/mcp/supabase.ts
@@ -96,7 +96,7 @@ var seal_default = defineTool({
 });
 
 // src/lib/mcp/tools/verify-hash.ts
-import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.26.3";
 import { z as z2 } from "npm:zod@^4.4.3";
 var verify_hash_default = defineTool2({
   name: "verify_hash",
@@ -132,7 +132,7 @@ var verify_hash_default = defineTool2({
 });
 
 // src/lib/mcp/tools/anchor-status.ts
-import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.26.3";
 import { z as z3 } from "npm:zod@^4.4.3";
 var anchor_status_default = defineTool3({
   name: "anchor_status",
@@ -181,7 +181,7 @@ var anchor_status_default = defineTool3({
 });
 
 // src/lib/mcp/tools/list-attestations.ts
-import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.26.3";
 import { z as z4 } from "npm:zod@^4.4.3";
 var list_attestations_default = defineTool4({
   name: "list_attestations",
@@ -211,7 +211,7 @@ var list_attestations_default = defineTool4({
 });
 
 // src/lib/mcp/tools/ledger-stats.ts
-import { defineTool as defineTool5 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { defineTool as defineTool5 } from "npm:@lovable.dev/mcp-js@0.26.3";
 var ledger_stats_default = defineTool5({
   name: "ledger_stats",
   title: "APEX PSI ledger statistics",
@@ -247,7 +247,7 @@ var ledger_stats_default = defineTool5({
 });
 
 // src/lib/mcp/tools/protocol-info.ts
-import { defineTool as defineTool6 } from "npm:@lovable.dev/mcp-js@0.26.1";
+import { defineTool as defineTool6 } from "npm:@lovable.dev/mcp-js@0.26.3";
 import { z as z5 } from "npm:zod@^4.4.3";
 var SPEC = {
   protocol: "APEX PSI \u2014 Proof of Stateful Integrity",
@@ -299,5 +299,5 @@ var mcp_default = defineMcp({
 });
 
 // lovable-mcp-supabase-entry.ts
-import { createSupabaseHandler } from "npm:@lovable.dev/mcp-js@0.26.1/stacks/supabase";
+import { createSupabaseHandler } from "npm:@lovable.dev/mcp-js@0.26.3/stacks/supabase";
 Deno.serve(createSupabaseHandler(mcp_default, { functionName: "mcp" }));

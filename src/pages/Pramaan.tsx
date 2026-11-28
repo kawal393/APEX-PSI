@@ -19,6 +19,11 @@ type AuditEntry = {
   sha256: string;
   blockHeight: number;
   txid: string;
+  receiptId?: string;
+  merkleRoot?: string;
+  receiptUrl?: string;
+  ledgerTs?: string;
+  ledgerStatus?: "sealed" | "local-only";
   mode: "AI_GEN" | "VERIFY";
   verified: boolean;
   gps?: { lat: number; lng: number; accuracy?: number } | null;
@@ -26,15 +31,9 @@ type AuditEntry = {
 
 const WITNESS_COUNT_KEY = "praman.witness.count";
 const VERIFY_BASE = "https://www.ai-governance-standard.com/verify";
+const NOTARIZE_URL = "https://qhtntebpcribjiwrdtdd.supabase.co/functions/v1/notarize";
 
 const STORAGE_KEY = "praman.audit.v1";
-
-// Simulated, deterministic-ish "current" BTC block height (grows over time from a baseline).
-function simulatedBlockHeight() {
-  const baseline = 877000; // ~mid 2026 baseline
-  const minutesSinceBaseline = Math.floor((Date.now() - new Date("2026-01-01T00:00:00Z").getTime()) / 60000);
-  return baseline + Math.floor(minutesSinceBaseline / 10);
-}
 
 async function sha256Hex(buf: ArrayBuffer) {
   const digest = await crypto.subtle.digest("SHA-256", buf);
@@ -52,7 +51,6 @@ const Pramaan = () => {
   const [busy, setBusy] = useState(false);
   const [current, setCurrent] = useState<AuditEntry | null>(null);
   const [audit, setAudit] = useState<AuditEntry[]>([]);
-  const [blockHeight, setBlockHeight] = useState(simulatedBlockHeight());
   const [gps, setGps] = useState<{ lat: number; lng: number; accuracy?: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const lastFileRef = useRef<File | null>(null);
@@ -63,8 +61,6 @@ const Pramaan = () => {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) setAudit(JSON.parse(raw));
     } catch { /* noop */ }
-    const t = setInterval(() => setBlockHeight(simulatedBlockHeight()), 30000);
-    return () => clearInterval(t);
   }, []);
 
   const persist = (next: AuditEntry[]) => {
@@ -95,18 +91,45 @@ const Pramaan = () => {
       const hash = await sha256Hex(buf);
       await gpsPromise;
       setGps(capturedGps);
-      const bh = simulatedBlockHeight();
+      // Seal into the live APEX ledger. Only the hash leaves this device.
+      let ledger: { receiptId: string; merkleRoot: string; receiptUrl: string; ledgerTs: string } | null = null;
+      try {
+        const res = await fetch(NOTARIZE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            decision: `APEX_SEAL sha256:${hash}`,
+            predicate: "APEX_TRUTH_PROTOCOL",
+          }),
+        });
+        if (res.ok) {
+          const j: any = await res.json();
+          if (j && j.receipt_id) {
+            ledger = {
+              receiptId: j.receipt_id,
+              merkleRoot: j.merkle_root ?? "",
+              receiptUrl: j.receipt_page_url ?? "",
+              ledgerTs: j.timestamp ?? "",
+            };
+          }
+        }
+      } catch { /* Ledger unreachable: the entry is marked local-only below, never presented as sealed. */ }
       const entry: AuditEntry = {
         id: crypto.randomUUID(),
         ts: new Date().toISOString(),
         fileName: file.name,
         size: file.size,
         sha256: hash,
-        blockHeight: bh,
-        txid: shortTxid(hash),
+        blockHeight: 0,
+        txid: ledger ? ledger.receiptId : shortTxid(hash),
         mode,
         verified: true,
         gps: capturedGps,
+        receiptId: ledger?.receiptId,
+        merkleRoot: ledger?.merkleRoot,
+        receiptUrl: ledger?.receiptUrl,
+        ledgerTs: ledger?.ledgerTs,
+        ledgerStatus: ledger ? "sealed" : "local-only",
       };
       setCurrent(entry);
       persist([entry, ...audit]);
@@ -116,7 +139,8 @@ const Pramaan = () => {
         localStorage.setItem(WITNESS_COUNT_KEY, String(cur + 1));
         window.dispatchEvent(new CustomEvent("praman:witness", { detail: cur + 1 }));
       } catch { /* noop */ }
-      toast.success("Sealed. Truth anchored.");
+      if (ledger) toast.success("Sealed. Receipt issued by the APEX ledger.");
+      else toast.warning("Hashed on this device only — the ledger did not answer, so no receipt was issued.");
     } catch (e: any) {
       toast.error(e.message || "Hashing failed");
     } finally {
@@ -135,6 +159,9 @@ const Pramaan = () => {
         sha256: current.sha256,
         blockHeight: current.blockHeight,
         txid: current.txid,
+        receiptId: current.receiptId,
+        merkleRoot: current.merkleRoot,
+        receiptUrl: current.receiptUrl,
         mode: current.mode,
         verified: current.verified,
         issuer: "apex.psi.pramaan",
@@ -147,7 +174,7 @@ const Pramaan = () => {
       a.download = `${current.fileName}.praman.pdf`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success("Certificate of Truth downloaded");
+      toast.success("Certificate downloaded");
     } catch (e: any) {
       toast.error(e.message || "PDF generation failed");
     }
@@ -167,19 +194,26 @@ const Pramaan = () => {
       sealed_at: current.ts,
       file: { name: current.fileName, size_bytes: current.size },
       sha256: current.sha256,
-      anchor: {
-        chain: "bitcoin",
-        block_height: current.blockHeight,
-        txid_preview: current.txid,
-        method: "merkle-aggregate (client-side simulation; published anchors via /verify)",
-      },
+      anchor: current.receiptId
+        ? {
+            ledger: "APEX PSI append-only ledger",
+            receipt_id: current.receiptId,
+            merkle_root: current.merkleRoot ?? null,
+            receipt_url: current.receiptUrl ?? null,
+            ledger_timestamp: current.ledgerTs ?? null,
+            method: "hosted notarize (functions/v1/notarize) — SHA-256 + Ed25519 + ML-DSA-65",
+          }
+        : {
+            ledger: null,
+            method: "local hash only — no ledger receipt was issued for this entry",
+          },
       geolocation: current.gps
         ? { lat: current.gps.lat, lng: current.gps.lng, accuracy_m: current.gps.accuracy ?? null }
         : null,
       mode: current.mode,
       verified: current.verified,
       issuer: "apex.psi.pramaan",
-      notice: "Portable, offline-verifiable truth anchor. Re-hash the source file and compare sha256.",
+      notice: "Portable, offline-checkable record. Re-hash the source file and compare sha256. A receipt proves the record existed in this exact state at this time — not that its contents are true.",
     };
     const blob = new Blob([JSON.stringify(receipt, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -220,13 +254,21 @@ const Pramaan = () => {
     if (!file || !current) return;
     setEmbedding(true);
     try {
+      const assertions: { label: string; data: Record<string, unknown> }[] = [];
+      if (current.gps) {
+        assertions.push({ label: "psi.geolocation", data: { lat: current.gps.lat, lng: current.gps.lng, accuracy_m: current.gps.accuracy ?? null } });
+      }
+      if (current.receiptId) {
+        assertions.push({
+          label: "psi.ledger_receipt",
+          data: { receipt_id: current.receiptId, merkle_root: current.merkleRoot ?? null, receipt_url: current.receiptUrl ?? null, ledger_timestamp: current.ledgerTs ?? null },
+        });
+      }
       const res = await embedInBandCredentials(file, {
         sourceType: "capture",
         watermark: true,
         generator: "APEX-PSI/1.0 (apex-pramaan)",
-        extraAssertions: current.gps
-          ? [{ label: "psi.geolocation", data: { lat: current.gps.lat, lng: current.gps.lng, accuracy_m: current.gps.accuracy ?? null } }]
-          : [],
+        extraAssertions: assertions,
       });
       const url = URL.createObjectURL(res.blob);
       const a = document.createElement("a");
@@ -290,7 +332,7 @@ const Pramaan = () => {
                 <h2 className="text-lg font-bold">I Witness This</h2>
               </div>
               <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 border border-emerald-400/40 rounded-full px-2 py-0.5">
-                MODE · VERIFY
+                SEAL · APEX LEDGER
               </span>
             </div>
 
@@ -305,13 +347,12 @@ const Pramaan = () => {
                 {busy ? "SEALING…" : "I WITNESS THIS"}
               </p>
               <p className="text-xs text-muted-foreground mt-3 font-mono">
-                {busy ? "Hashing in browser via crypto.subtle" : "Tap to capture · SHA-256 stays on your device"}
+                {busy ? "Hashing in browser via crypto.subtle" : "Tap to choose any file · SHA-256 stays on your device"}
               </p>
               <input
                 ref={inputRef}
                 type="file"
-                accept="image/*"
-                capture="environment"
+                accept="image/*,video/*,audio/*,.pdf,.zip"
                 className="hidden"
                 onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
               />
@@ -320,7 +361,7 @@ const Pramaan = () => {
             {current && (
               <div className="mt-6 space-y-3 font-mono text-xs">
                 <div className="flex items-center gap-2 text-emerald-400">
-                  <CheckCircle2 className="h-4 w-4" /> SEALED · {current.mode}
+                  <CheckCircle2 className="h-4 w-4" /> {current.receiptId ? "SEALED · APEX LEDGER" : "HASHED ON DEVICE · NO LEDGER RECEIPT"}
                 </div>
                 <div className="bg-background/60 rounded p-3 border border-border space-y-2">
                   <div className="flex justify-between gap-2">
@@ -333,14 +374,27 @@ const Pramaan = () => {
                       {current.sha256.slice(0, 24)}… <Copy className="h-3 w-3" />
                     </button>
                   </div>
-                  <div className="flex justify-between gap-2">
-                    <span className="text-muted-foreground">btc_block</span>
-                    <span>#{current.blockHeight.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between gap-2">
-                    <span className="text-muted-foreground">txid</span>
-                    <span className="text-gold">{current.txid}</span>
-                  </div>
+                  {current.receiptId ? (
+                    <>
+                      <div className="flex justify-between gap-2">
+                        <span className="text-muted-foreground">receipt</span>
+                        <span className="text-gold">{current.receiptId}</span>
+                      </div>
+                      <div className="flex justify-between gap-2">
+                        <span className="text-muted-foreground">ledger</span>
+                        {current.receiptUrl ? (
+                          <a href={current.receiptUrl} target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">Open the receipt page ↗</a>
+                        ) : (
+                          <span className="text-emerald-400">APEX PSI ledger</span>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex justify-between gap-2">
+                      <span className="text-muted-foreground">ledger</span>
+                      <span className="text-gold">local only — no receipt issued</span>
+                    </div>
+                  )}
                   {current.gps && (
                     <div className="flex justify-between gap-2">
                       <span className="text-muted-foreground flex items-center gap-1"><MapPin className="h-3 w-3" /> gps</span>
@@ -376,8 +430,12 @@ const Pramaan = () => {
             </div>
             <div className="font-mono text-xs space-y-3">
               <div>
-                <p className="text-muted-foreground">Bitcoin block height</p>
-                <p className="text-2xl text-emerald-400">#{blockHeight.toLocaleString()}</p>
+                <p className="text-muted-foreground">Latest ledger receipt</p>
+                {current?.receiptId ? (
+                  <p className="text-sm text-emerald-400 break-all">{current.receiptId}</p>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No seal yet this session — drop a file and the live ledger issues your receipt.</p>
+                )}
               </div>
               <div className="border-t border-border pt-3">
                 <p className="text-muted-foreground mb-2">Anchor cadence</p>
@@ -415,7 +473,7 @@ const Pramaan = () => {
                     <th className="text-left py-2 px-2">File</th>
                     <th className="text-left py-2 px-2">SHA-256</th>
                     <th className="text-left py-2 px-2">Mode</th>
-                    <th className="text-left py-2 px-2">Block</th>
+                    <th className="text-left py-2 px-2">Receipt</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -429,7 +487,7 @@ const Pramaan = () => {
                           {e.verified ? "✓ VERIFIED" : "◇ AI_GEN"}
                         </span>
                       </td>
-                      <td className="py-2 px-2">#{e.blockHeight.toLocaleString()}</td>
+                      <td className="py-2 px-2">{e.receiptId ? `${e.receiptId.slice(0, 18)}…` : "local only"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -444,7 +502,7 @@ const Pramaan = () => {
         <div className="flex items-center gap-3 mb-2 flex-wrap">
           <h2 className="text-3xl font-bold text-gold-gradient">PRAMAN-SPEC-v1</h2>
           <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 border border-emerald-400/40 rounded-full px-2.5 py-1">
-            C2PA Compatible
+            PSI-INBAND-v1
           </span>
         </div>
         <p className="text-muted-foreground mb-6 max-w-3xl">
@@ -452,11 +510,11 @@ const Pramaan = () => {
         </p>
 
         <Card className="p-6 bg-card/60 border-border mb-6">
-          <h3 className="font-bold mb-3">C2PA Content Credentials Compatibility</h3>
+          <h3 className="font-bold mb-3">In-Band Signed Metadata — PSI-INBAND-v1</h3>
           <p className="text-sm text-muted-foreground mb-3">
-            The .praman receipt is C2PA Content Credentials compatible. When sealing JPEG, PNG, MP4, or PDF files, the
-            signed metadata is embedded directly in the file using C2PA manifest format (APP1 for images, ISO BMFF for
-            video, XMP for documents).
+            When sealing JPEG, PNG, MP4, WAV or PDF files, a hybrid-signed PSI claim (Ed25519 + ML-DSA-65) is embedded
+            directly in the file's own bytes, using each format's native container mechanism, bound to the file's
+            pre-embed SHA-256. This is not C2PA; it uses the same container placements so the claim travels with the file.
           </p>
           <ul className="text-sm space-y-1.5 text-foreground/80">
             <li>· The signature travels WITH the file, not as a separate receipt</li>

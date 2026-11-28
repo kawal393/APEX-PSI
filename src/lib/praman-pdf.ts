@@ -8,6 +8,9 @@ export type PramanReceipt = {
   sha256: string;
   blockHeight: number | string;
   txid: string;
+  receiptId?: string;
+  merkleRoot?: string;
+  receiptUrl?: string;
   mode: "AI_GEN" | "VERIFY";
   verified: boolean;
   issuer?: string;
@@ -224,30 +227,50 @@ export async function generatePramanPDF(r: PramanReceipt): Promise<Blob> {
   setText(doc, MUTED);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7);
-  doc.text("BLOCKCHAIN ANCHOR", 62, anchorY + 18, { charSpace: 2 });
+  doc.text(r.receiptId ? "LEDGER RECEIPT" : "BLOCKCHAIN ANCHOR", 62, anchorY + 18, { charSpace: 2 });
 
   setText(doc, PAPER);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.text("Bitcoin  ·  OpenTimestamps", 62, anchorY + 36);
+  doc.text(r.receiptId ? "APEX PSI  ·  Append-Only Ledger" : "Bitcoin  ·  OpenTimestamps", 62, anchorY + 36);
 
-  setText(doc, MUTED);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(7);
-  doc.text("BLOCK HEIGHT", 62, anchorY + 58);
-  setText(doc, GOLD);
-  doc.setFont("courier", "bold");
-  doc.setFontSize(18);
-  doc.text(`#${r.blockHeight.toLocaleString?.() ?? r.blockHeight}`, 62, anchorY + 78);
+  if (r.receiptId) {
+    setText(doc, MUTED);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.text("RECEIPT ID", 62, anchorY + 58);
+    setText(doc, GOLD);
+    doc.setFont("courier", "bold");
+    doc.setFontSize(13);
+    doc.text(r.receiptId, 62, anchorY + 78);
 
-  setText(doc, MUTED);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(7);
-  doc.text("TXID PREVIEW", 62, anchorY + 96);
-  setText(doc, EMERALD);
-  doc.setFont("courier", "normal");
-  doc.setFontSize(10);
-  doc.text(r.txid, 62, anchorY + 112);
+    setText(doc, MUTED);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.text("MERKLE ROOT", 62, anchorY + 96);
+    setText(doc, EMERALD);
+    doc.setFont("courier", "normal");
+    doc.setFontSize(8);
+    doc.text(r.merkleRoot ? `${r.merkleRoot.slice(0, 44)}…` : "—", 62, anchorY + 112);
+  } else {
+    setText(doc, MUTED);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.text("BLOCK HEIGHT", 62, anchorY + 58);
+    setText(doc, GOLD);
+    doc.setFont("courier", "bold");
+    doc.setFontSize(18);
+    doc.text(`#${r.blockHeight.toLocaleString?.() ?? r.blockHeight}`, 62, anchorY + 78);
+
+    setText(doc, MUTED);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.text("TXID PREVIEW", 62, anchorY + 96);
+    setText(doc, EMERALD);
+    doc.setFont("courier", "normal");
+    doc.setFontSize(10);
+    doc.text(r.txid, 62, anchorY + 112);
+  }
 
   // QR box
   const qrBoxX = 388;
